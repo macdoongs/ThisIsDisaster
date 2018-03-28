@@ -155,6 +155,23 @@ public class Timer
     }
 }
 
+public static class GameStaticInfo {
+    /// <summary>
+    /// Value of  x / y (2)
+    /// </summary>
+    public const float VerticalRatio = 2f;
+
+    /// <summary>
+    /// Value of  y / x (0.5)
+    /// </summary>
+    public const float HorizontalRatio = 0.5f;
+
+    /// <summary>
+    /// Value of  z / x (0.2)
+    /// </summary>
+    public const float CrossRatio = 0.2f;
+}
+
 public class PlayerMoveController : MonoBehaviour {
     public float moveSpeed = 1f;
     public float jumpDelay = 1f;
@@ -245,13 +262,13 @@ public class PlayerMoveController : MonoBehaviour {
     //deltaTime : 프레임에 렉이 걸린만큼 값이 커져 프레임렉을 보정
     void MoveUp(ref Vector3 pos)
     {
-        transform.Translate(0,moveSpeed * Time.deltaTime, 0);
+        transform.Translate(0,moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
     }
 
     void MoveDown(ref Vector3 pos)
     {
 
-        transform.Translate(0, -moveSpeed * Time.deltaTime, 0);
+        transform.Translate(0, -moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
     }
 
     void MoveLeft(ref Vector3 pos)
