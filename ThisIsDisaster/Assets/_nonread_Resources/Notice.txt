@@ -1,0 +1,6 @@
+이 폴더 아래의 에셋들은 Resources폴더 내의 에셋들과는 다르게 Resources로는 바로 읽을 수 없게 됩니다.
+
+대신 빌드에서 무시되는 것은 아닙니다.
+
+메모
+https://docs.unity3d.com/Manual/SpecialFolders.html

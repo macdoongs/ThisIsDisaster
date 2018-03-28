@@ -1,0 +1,17 @@
+이 폴더에 있는 파일들은 모두 코드상에서
+
+	Resources.Load<[Type]>("[SRC]");
+
+같은 형태로 읽을 수 있게 됩니다.
+
+
+예를 들어 이 폴더 하위폴더인 Sprites에 Test.png가 있다면
+
+	Sprite sprite = null;
+	sprite = Resources.Load<Sprite>("Sprites/Test");
+
+같은 형태로 스프라이트를 읽어 올 수 있습니다.
+
+
+[Type]에는 Sprite, AudioClip, Texture 등 유니티에서 지원하는 타입들이 있습니다.
+

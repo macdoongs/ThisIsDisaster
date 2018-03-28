@@ -47,6 +47,7 @@ TextureImporter:
     21300080: Armor-Template_0
     21300082: Armor-Template_1
     21300084: Armor-Template_2
+  externalObjects: {}
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -55,6 +56,8 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -70,10 +73,13 @@ TextureImporter:
   textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
+    serializedVersion: 2
     filterMode: 1
     aniso: 16
     mipBias: -1
-    wrapMode: 1
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -82,8 +88,9 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -95,36 +102,44 @@ TextureImporter:
   platformSettings:
   - buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   - buildTarget: Standalone
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   - buildTarget: iPhone
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   - buildTarget: Android
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -140,6 +155,7 @@ TextureImporter:
       pivot: {x: 0.525, y: 0.575}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_1
@@ -153,6 +169,7 @@ TextureImporter:
       pivot: {x: 0.525, y: 0.585}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_2
@@ -166,6 +183,7 @@ TextureImporter:
       pivot: {x: 0.52, y: 0.6}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_3
@@ -179,6 +197,7 @@ TextureImporter:
       pivot: {x: 0.51, y: 0.585}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_4
@@ -192,6 +211,7 @@ TextureImporter:
       pivot: {x: 0.51, y: 0.575}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_5
@@ -205,6 +225,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.6}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_6
@@ -218,6 +239,7 @@ TextureImporter:
       pivot: {x: 0.5164556, y: 0.46258143}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_7
@@ -231,6 +253,7 @@ TextureImporter:
       pivot: {x: 0.5164556, y: 0.4625814}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_8
@@ -244,6 +267,7 @@ TextureImporter:
       pivot: {x: 0.5164556, y: 0.4625814}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_9
@@ -257,6 +281,7 @@ TextureImporter:
       pivot: {x: 0.5164556, y: 0.4625814}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_10
@@ -270,6 +295,7 @@ TextureImporter:
       pivot: {x: 0.5164556, y: 0.4625814}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_11
@@ -283,6 +309,7 @@ TextureImporter:
       pivot: {x: 0.5164556, y: 0.4625814}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_12
@@ -296,6 +323,7 @@ TextureImporter:
       pivot: {x: 0.46666667, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_13
@@ -309,6 +337,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.697826}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_14
@@ -322,6 +351,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.697826}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_15
@@ -335,6 +365,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.697826}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_16
@@ -348,6 +379,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.697826}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_17
@@ -361,6 +393,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.697826}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_18
@@ -374,6 +407,7 @@ TextureImporter:
       pivot: {x: 0.41648743, y: 0.7352564}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_19
@@ -387,6 +421,7 @@ TextureImporter:
       pivot: {x: 0.4164874, y: 0.7352564}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_20
@@ -400,6 +435,7 @@ TextureImporter:
       pivot: {x: 0.4164874, y: 0.7352564}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_21
@@ -413,6 +449,7 @@ TextureImporter:
       pivot: {x: 0.4164874, y: 0.7352564}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_22
@@ -426,6 +463,7 @@ TextureImporter:
       pivot: {x: 0.4164874, y: 0.7352564}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_23
@@ -439,6 +477,7 @@ TextureImporter:
       pivot: {x: 0.46623608, y: 0.727027}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_24
@@ -452,6 +491,7 @@ TextureImporter:
       pivot: {x: 0.4662361, y: 0.727027}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_25
@@ -465,6 +505,7 @@ TextureImporter:
       pivot: {x: 0.4662361, y: 0.727027}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_26
@@ -478,6 +519,7 @@ TextureImporter:
       pivot: {x: 0.4662361, y: 0.727027}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_27
@@ -491,6 +533,7 @@ TextureImporter:
       pivot: {x: 0.4662361, y: 0.727027}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_28
@@ -504,6 +547,7 @@ TextureImporter:
       pivot: {x: 0.4662361, y: 0.727027}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_29
@@ -517,6 +561,7 @@ TextureImporter:
       pivot: {x: 0.48250002, y: 0.8472222}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_30
@@ -530,6 +575,7 @@ TextureImporter:
       pivot: {x: 0.4825, y: 0.8472222}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_31
@@ -543,6 +589,7 @@ TextureImporter:
       pivot: {x: 0.4825, y: 0.8472222}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_32
@@ -556,6 +603,7 @@ TextureImporter:
       pivot: {x: 0.4825, y: 0.8472222}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_33
@@ -569,6 +617,7 @@ TextureImporter:
       pivot: {x: 0.4825, y: 0.8472222}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template2_34
@@ -582,6 +631,7 @@ TextureImporter:
       pivot: {x: 0.4825, y: 0.8472222}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template3_0
@@ -595,6 +645,7 @@ TextureImporter:
       pivot: {x: 0.6, y: 0.4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template3_1
@@ -608,6 +659,7 @@ TextureImporter:
       pivot: {x: 0.6, y: 0.4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template3_2
@@ -621,6 +673,7 @@ TextureImporter:
       pivot: {x: 0.6, y: 0.4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template3_3
@@ -634,6 +687,7 @@ TextureImporter:
       pivot: {x: 0.6, y: 0.4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template3_4
@@ -647,6 +701,7 @@ TextureImporter:
       pivot: {x: 0.6, y: 0.4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template_0
@@ -660,6 +715,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.65}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template_1
@@ -673,6 +729,7 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.65}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     - serializedVersion: 2
       name: Armor-Template_2
@@ -686,8 +743,10 @@ TextureImporter:
       pivot: {x: 0.35, y: 0.65}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
     outline: []
+    physicsShape: []
   spritePackingTag: 
   userData: 
   assetBundleName: gamedata/renderstruct/scene/0
