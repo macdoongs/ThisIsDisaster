@@ -38,6 +38,13 @@ player_win_x86_s.pdb
 xmls.unitypackage
 xmls.zip
 
+Library
+obj
+Debug
+Release
+Temp
+build
+
 *.vscode
 
 # Unity3D generated meta files
