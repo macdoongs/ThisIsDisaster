@@ -202,6 +202,12 @@ public class PlayerMoveController : MonoBehaviour {
     public Animator PlayerMovementCTRL;
     public Transform FlipPivot;
 	public static PlayerMoveController Player{ get; private set;}
+
+    public float MaxHealth = 100f;
+
+    public float health = 100f;
+    public float stamina = 100f;
+
     float CurrentPivotXScale { get { return FlipPivot.transform.localScale.x; } }
 
     Timer _jumpDelayTimer = new Timer();

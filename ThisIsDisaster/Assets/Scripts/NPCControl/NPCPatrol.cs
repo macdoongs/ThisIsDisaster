@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class NPCPatrol : MonoBehaviour {
+
+    public Image HPBar;
 
 	public float speed;
 	private float waitTime;
@@ -15,6 +18,7 @@ public class NPCPatrol : MonoBehaviour {
 	void Start () {
 		waitTime = startWaitTime;
 		randomSpot = Random.Range (0, moveSpots.Length);
+
 	}
 
 	void Awake(){
@@ -50,8 +54,20 @@ public class NPCPatrol : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision){
-		Debug.Log (collision.gameObject.name);
-		//Destroy (gameObject);
 
+        Debug.Log (collision.gameObject.name);
+        //Destroy (gameObject);
+        float MaxHP;
+     //   
+
+        if(collision.gameObject.tag == "Player")
+        {
+            var player = PlayerMoveController.Player;
+            MaxHP = player.MaxHealth;
+
+            player.health -=  10f;
+            HPBar.fillAmount = player.health / MaxHP;
+
+        }
 	}
 }
