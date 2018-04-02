@@ -50,12 +50,16 @@ public class TempMapSetter : MonoBehaviour {
     public int Width = 0;
     [ReadOnly]
     public int Height = 0;
+    public GameObject _tileCollider;
+    //Collider Info
+    public Vector3 _col_localpos = Vector3.zero;
+    public Vector3 _col_localrot = new Vector3(60f, 0f, 45f);
+    public Vector3 _col_localscl = new Vector3(0.7f, 0.7f, 0.9f);
 
     const char sepMatch = '|';
     const float _xDelta = 0.5f;
     const float _yDelta = 0.25f;
     const float _zDelta = 0.1f;
-    public GameObject _tileCollider;
 
     // Use this for initialization
     void Start () {
@@ -139,6 +143,12 @@ public class TempMapSetter : MonoBehaviour {
                     copy.transform.localPosition = Vector3.zero;
                     copy.transform.localScale = new Vector3(0.7f, 0.7f, 0.9f);
                     copy.transform.localRotation = Quaternion.Euler(60f, 0f, 45f);
+                    if (curTile.transform.childCount != 0) {
+                        int max = curTile.transform.childCount;
+                        for (int i = max - 1; i >= 0; i--) {
+                            DestroyImmediate(curTile.transform.GetChild(i).gameObject);
+                        }
+                    }
                 }
             }
             xInitial += _xDelta;

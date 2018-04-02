@@ -42,6 +42,15 @@ ThisIsDisaster\Temp/
 ThisIsDisaster\Builds/
 ThisIsDisaster\Debug/
 
+/ThisIsDisaster/[Ll]ibrary/
+/ThisIsDisaster/[Tt]emp/
+/ThisIsDisaster/[Oo]bj/
+/ThisIsDisaster/[Bb]uild/
+/ThisIsDisaster/[Bb]uilds/
+/ThisIsDisaster/[Rr]elease/
+/ThisIsDisaster/[Dd]ebug/
+/ThisIsDisaster/Assets/AssetStoreTools*
+
 *.vscode
 
 # Unity3D generated meta files
