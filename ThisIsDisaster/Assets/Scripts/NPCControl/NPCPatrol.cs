@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 
 public class NPCPatrol : MonoBehaviour {
-
-    public Image HPBar;
 
 	public float speed;
 	private float waitTime;
@@ -18,7 +15,6 @@ public class NPCPatrol : MonoBehaviour {
 	void Start () {
 		waitTime = startWaitTime;
 		randomSpot = Random.Range (0, moveSpots.Length);
-
 	}
 
 	void Awake(){
@@ -54,20 +50,20 @@ public class NPCPatrol : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision){
+		Debug.Log (collision.gameObject.name);
+		//Destroy (gameObject);
+		var player = PlayerMoveController.Player;
 
-        Debug.Log (collision.gameObject.name);
-        //Destroy (gameObject);
-        float MaxHP;
-     //   
+		Sprite[] itemList = Resources.LoadAll<Sprite> ("item/weapon01");
 
-        if(collision.gameObject.tag == "Player")
-        {
-            var player = PlayerMoveController.Player;
-            MaxHP = player.MaxHealth;
+		Debug.Log (itemList[0]);
 
-            player.health -=  10f;
-            HPBar.fillAmount = player.health / MaxHP;
-
-        }
+		GameObject copy = new GameObject ();
+		var renderer = copy.AddComponent<SpriteRenderer> ();
+		copy.name = "Renderer";
+		renderer.sprite = itemList [0];
+		copy.transform.localPosition = this.transform.position;
+		copy.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+		copy.transform.localRotation = Quaternion.Euler(60f, 0f, 45f);
 	}
 }
