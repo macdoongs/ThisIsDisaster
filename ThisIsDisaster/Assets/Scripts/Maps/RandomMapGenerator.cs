@@ -9,9 +9,9 @@ using UnityEditor;
 [AddComponentMenu("Utils/MapGenerator")]
 [System.Serializable]
 [RequireComponent(typeof(SpriteRenderer))]
-public class MapGenerator : MonoBehaviour
+public class RandomMapGenerator : MonoBehaviour
 {
-    public static MapGenerator Instance { get; private set; }
+    public static RandomMapGenerator Instance { get; private set; }
 
     //x, list(y)
     Dictionary<int, List<TileUnit>> dic = new Dictionary<int, List<TileUnit>>();
@@ -128,39 +128,81 @@ public class MapGenerator : MonoBehaviour
     Sprite GetRandomSprite() {
         return _randomTileSprites[UnityEngine.Random.Range(0, _randomTileSprites.Count)];
     }
-}
 
-#if UNITY_EDITOR
-[CustomEditor(typeof(MapGenerator)), CanEditMultipleObjects]
-public class MapGeneratorEditor : Editor
-{
-    private SerializedObject m_object;
-    MapGenerator Generator { get { return target as MapGenerator; } }
-
-    private void OnEnable()
-    {
-        m_object = new SerializedObject(targets);
+    Sprite GetSprite(int isMovable) {
+        return _randomTileSprites[isMovable];
+        //return isMovable ? _randomTileSprites[0] : _randomTileSprites[1];
     }
 
-    public override void OnInspectorGUI()
-    {
-        m_object.Update();
-        DrawDefaultInspector();
-
-        Generator.Width = EditorGUILayout.IntField("Width", Generator.Width);
-        Generator.Height = EditorGUILayout.IntField("Width", Generator.Height);
+    public void GenerateMapByAlogrithm(int[,] map, int w, int h) {
+        ClearMap();
+        this.Width = w;
+        this.Height = h;
         
-        if (GUILayout.Button("Generate"))
+        for (int x = 0; x < Width; x++)
         {
-            Generator.GenerateMap();
+
+            for (int y = 0; y < Height; y++)
+            {
+                GameObject copy = Instantiate(_tileUnit);
+                copy.transform.SetParent(transform);
+
+                Sprite sprite = GetSprite(map[x, y]);
+
+                TempTileModel model = new TempTileModel()
+                {
+                    xPos = x,
+                    yPos = y,
+                    spriteName = sprite.name
+                };
+
+                string name = string.Format("{0}|{1}", x, y);
+                copy.name = name;
+
+                var unit = copy.GetComponent<TileUnit>();
+                unit.SetModel(model);
+                unit.spriteRenderer.sprite = sprite;
+
+                var list = GetVertical(x);
+                list.Add(unit);
+            }
         }
 
-        if (GUILayout.Button("Clear")) {
-            Generator.ClearMap();
-        }
-        
+        UpdatePosition();
     }
-
-
 }
-#endif
+
+//#if UNITY_EDITOR
+//[CustomEditor(typeof(RandomMapGenerator)), CanEditMultipleObjects]
+//public class MapGeneratorEditor : Editor
+//{
+//    private SerializedObject m_object;
+//    RandomMapGenerator Generator { get { return target as RandomMapGenerator; } }
+
+//    private void OnEnable()
+//    {
+//        m_object = new SerializedObject(targets);
+//    }
+
+//    public override void OnInspectorGUI()
+//    {
+//        m_object.Update();
+//        DrawDefaultInspector();
+
+//        Generator.Width = EditorGUILayout.IntField("Width", Generator.Width);
+//        Generator.Height = EditorGUILayout.IntField("Width", Generator.Height);
+        
+//        if (GUILayout.Button("Generate"))
+//        {
+//            Generator.GenerateMap();
+//        }
+
+//        if (GUILayout.Button("Clear")) {
+//            Generator.ClearMap();
+//        }
+        
+//    }
+
+
+//}
+//#endif
