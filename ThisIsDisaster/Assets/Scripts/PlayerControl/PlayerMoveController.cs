@@ -201,7 +201,7 @@ public class PlayerMoveController : MonoBehaviour {
     public float jumpDelay = 1f;
     public Animator PlayerMovementCTRL;
     public Transform FlipPivot;
-
+	public static PlayerMoveController Player{ get; private set;}
     float CurrentPivotXScale { get { return FlipPivot.transform.localScale.x; } }
 
     Timer _jumpDelayTimer = new Timer();
@@ -209,12 +209,17 @@ public class PlayerMoveController : MonoBehaviour {
     float _movableSpace_x = 0f;
     float _movableSpace_y = 0f;
 
+	void Awake(){
+
+		Player = this;
+	}
+
     private void Start()
     {
-        transform.position = new Vector3(0f, GameStaticInfo.ZeroHeight);
+        //transform.position = new Vector3(0f, GameStaticInfo.ZeroHeight);
 
-        _movableSpace_x = MapGenerator.Instance.Width * 0.5f;
-        _movableSpace_y = MapGenerator.Instance.Height * 0.25f;
+        //_movableSpace_x = MapGenerator.Instance.Width * 0.5f;
+        //_movableSpace_y = MapGenerator.Instance.Height * 0.25f;
     }
     
     void Update() {
@@ -244,7 +249,7 @@ public class PlayerMoveController : MonoBehaviour {
         newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
         newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
 
-        transform.localPosition = newPos;
+        //transform.localPosition = newPos;
 
         if (movePos != Vector3.zero)
         {
@@ -304,24 +309,24 @@ public class PlayerMoveController : MonoBehaviour {
     void MoveUp(ref Vector3 pos)
     {
         pos.y += moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        //transform.Translate(0, moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
+        transform.Translate(0, moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
     }
 
     void MoveDown(ref Vector3 pos)
     {
         pos.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        //transform.Translate(0, -moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
+        transform.Translate(0, -moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
     }
 
     void MoveLeft(ref Vector3 pos)
     {
         pos.x -= moveSpeed * Time.deltaTime;
-        //transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
+        transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
     }
 
     void MoveRight(ref Vector3 pos)
     {
         pos.x += moveSpeed * Time.deltaTime;
-        //transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
+        transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
     }
 }
