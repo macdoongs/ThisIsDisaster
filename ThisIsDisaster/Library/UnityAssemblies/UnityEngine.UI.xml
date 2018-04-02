@@ -858,7 +858,7 @@
     </member>
     <member name="M:UnityEngine.EventSystems.IPointerClickHandler.OnPointerClick(UnityEngine.EventSystems.PointerEventData)">
       <summary>
-        <para>Use this callback to detect clicks.</para>
+        <para></para>
       </summary>
       <param name="eventData">Current event data.</param>
     </member>
@@ -952,32 +952,32 @@
     </member>
     <member name="T:UnityEngine.EventSystems.MoveDirection">
       <summary>
-        <para>This is an 8 direction movement enum.</para>
+        <para>8 direction movement enum.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.EventSystems.MoveDirection.Down">
       <summary>
-        <para>The Down State of MoveDirection. Assign functionality for moving in a downward direction.</para>
+        <para>Down.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.EventSystems.MoveDirection.Left">
       <summary>
-        <para>This is the Left state of MoveDirection.  Assign functionality for moving to the left.</para>
+        <para>Left.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.EventSystems.MoveDirection.None">
       <summary>
-        <para>This is the None state. Assign functionality that stops movement.</para>
+        <para>None.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.EventSystems.MoveDirection.Right">
       <summary>
-        <para>This is the Right state of MoveDirection. Assign functionality for moving to the right.</para>
+        <para>Right.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.EventSystems.MoveDirection.Up">
       <summary>
-        <para>This is the Up state of MoveDirection.  Assign functionality for moving in an upward direction.</para>
+        <para>Up.</para>
       </summary>
     </member>
     <member name="T:UnityEngine.EventSystems.Physics2DRaycaster">
@@ -1736,11 +1736,10 @@
         <para>See MonoBehaviour.OnDisable.</para>
       </summary>
     </member>
-    <member name="M:UnityEngine.UI.AspectRatioFitter.SetDirty()">
+    <member name="M:UnityEngine.UI.AspectRatioFitter.SetDirty">
       <summary>
         <para>Mark the AspectRatioFitter as dirty.</para>
       </summary>
-      <param name="delayUpdate"></param>
     </member>
     <member name="M:UnityEngine.UI.AspectRatioFitter.SetLayoutHorizontal">
       <summary>
@@ -2403,7 +2402,7 @@ One point is 112 of a pica, and 172 of an inch.</para>
     </member>
     <member name="P:UnityEngine.UI.Dropdown.value">
       <summary>
-        <para>The Value is the index number of the current selection in the Dropdown. 0 is the first option in the Dropdown, 1 is the second, and so on.</para>
+        <para>The index of the currently selected option. 0 is the first option, 1 is the second, and so on.</para>
       </summary>
     </member>
     <member name="M:UnityEngine.UI.Dropdown.AddOptions(System.Collections.Generic.List`1&lt;UnityEngine.UI.Dropdown/OptionData&gt;)">
@@ -2916,7 +2915,7 @@ If you have modified the list of options, you should call this method afterwards
     </member>
     <member name="M:UnityEngine.UI.GraphicRaycaster.Raycast(UnityEngine.EventSystems.PointerEventData,System.Collections.Generic.List`1&lt;UnityEngine.EventSystems.RaycastResult&gt;)">
       <summary>
-        <para>Determines if the cursor is over a Graphics element in the Scene. See: BaseRaycaster.</para>
+        <para>See: BaseRaycaster.</para>
       </summary>
       <param name="eventData"></param>
       <param name="resultAppendList"></param>
@@ -5377,7 +5376,7 @@ Characters 0-9, . (dot), and - (dash / minus sign) are allowed. The dash is only
     </member>
     <member name="M:UnityEngine.UI.Selectable.IsHighlighted(UnityEngine.EventSystems.BaseEventData)">
       <summary>
-        <para>Returns whether the selectable is currently 'highlighted' or not.</para>
+        <para>Is the selectable currently 'highlighted'.</para>
       </summary>
       <param name="eventData"></param>
     </member>
@@ -5832,7 +5831,7 @@ Characters 0-9, . (dot), and - (dash / minus sign) are allowed. The dash is only
     </member>
     <member name="P:UnityEngine.UI.Text.text">
       <summary>
-        <para>The string value this Text displays.</para>
+        <para>The string value this text will display.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.UI.Text.verticalOverflow">
@@ -5892,7 +5891,7 @@ Characters 0-9, . (dot), and - (dash / minus sign) are allowed. The dash is only
     </member>
     <member name="P:UnityEngine.UI.Toggle.isOn">
       <summary>
-        <para>Return or set whether the Toggle is on or not.</para>
+        <para>Is the toggle on.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.UI.Toggle.onValueChanged">
