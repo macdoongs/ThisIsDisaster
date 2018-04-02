@@ -52,6 +52,18 @@ public class NPCPatrol : MonoBehaviour {
 	private void OnTriggerEnter2D(Collider2D collision){
 		Debug.Log (collision.gameObject.name);
 		//Destroy (gameObject);
+		var player = PlayerMoveController.Player;
 
+		Sprite[] itemList = Resources.LoadAll<Sprite> ("item/weapon01");
+
+		Debug.Log (itemList[0]);
+
+		GameObject copy = new GameObject ();
+		var renderer = copy.AddComponent<SpriteRenderer> ();
+		copy.name = "Renderer";
+		renderer.sprite = itemList [0];
+		copy.transform.localPosition = this.transform.position;
+		copy.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+		copy.transform.localRotation = Quaternion.Euler(60f, 0f, 45f);
 	}
 }
