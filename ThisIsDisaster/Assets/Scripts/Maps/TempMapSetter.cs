@@ -55,9 +55,11 @@ public class TempMapSetter : MonoBehaviour {
     const float _xDelta = 0.5f;
     const float _yDelta = 0.25f;
     const float _zDelta = 0.1f;
+    public GameObject _tileCollider;
 
     // Use this for initialization
     void Start () {
+        _tileCollider = Resources.Load<GameObject>("Map/TileCubeCollider");
 	}
 	
 	// Update is called once per frame
@@ -130,6 +132,14 @@ public class TempMapSetter : MonoBehaviour {
 
                 curTile.transform.localPosition = new Vector3(xPos, yPos, zPos);
                 Debug.Log(string.Format("{0}:{1}", curTile._model.spriteName, curTile.transform.localPosition));
+
+                if (_tileCollider) {
+                    GameObject copy = Instantiate(_tileCollider);
+                    copy.transform.SetParent(curTile.transform);
+                    copy.transform.localPosition = Vector3.zero;
+                    copy.transform.localScale = new Vector3(0.7f, 0.7f, 0.9f);
+                    copy.transform.localRotation = Quaternion.Euler(60f, 0f, 45f);
+                }
             }
             xInitial += _xDelta;
             yInitial += _yDelta;
