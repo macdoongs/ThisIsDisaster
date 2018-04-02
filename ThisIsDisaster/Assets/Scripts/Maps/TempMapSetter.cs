@@ -50,6 +50,11 @@ public class TempMapSetter : MonoBehaviour {
     public int Width = 0;
     [ReadOnly]
     public int Height = 0;
+    public GameObject _tileCollider;
+    //Collider Info
+    public Vector3 _col_localpos = Vector3.zero;
+    public Vector3 _col_localrot = new Vector3(60f, 0f, 45f);
+    public Vector3 _col_localscl = new Vector3(0.7f, 0.7f, 0.9f);
 
     const char sepMatch = '|';
     const float _xDelta = 0.5f;
@@ -58,6 +63,7 @@ public class TempMapSetter : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        _tileCollider = Resources.Load<GameObject>("Map/TileCubeCollider");
 	}
 	
 	// Update is called once per frame
@@ -130,6 +136,20 @@ public class TempMapSetter : MonoBehaviour {
 
                 curTile.transform.localPosition = new Vector3(xPos, yPos, zPos);
                 Debug.Log(string.Format("{0}:{1}", curTile._model.spriteName, curTile.transform.localPosition));
+
+                if (_tileCollider) {
+                    GameObject copy = Instantiate(_tileCollider);
+                    copy.transform.SetParent(curTile.transform);
+                    copy.transform.localPosition = Vector3.zero;
+                    copy.transform.localScale = new Vector3(0.7f, 0.7f, 0.9f);
+                    copy.transform.localRotation = Quaternion.Euler(60f, 0f, 45f);
+                    if (curTile.transform.childCount != 0) {
+                        int max = curTile.transform.childCount;
+                        for (int i = max - 1; i >= 0; i--) {
+                            DestroyImmediate(curTile.transform.GetChild(i).gameObject);
+                        }
+                    }
+                }
             }
             xInitial += _xDelta;
             yInitial += _yDelta;

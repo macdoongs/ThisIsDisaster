@@ -60,7 +60,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Erases data on a grid within the given bounds.</para>
       </summary>
-      <param name="gridLayout">Grid used for layout.</param>
+      <param name="gridLayout"> used for layout.</param>
       <param name="brushTarget">Target of the erase operation. By default the currently selected GameObject.</param>
       <param name="position">The bounds to erase data from.</param>
     </member>
@@ -68,7 +68,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Box fills tiles and GameObjects into given bounds within the selected layers.</para>
       </summary>
-      <param name="gridLayout">Grid used for layout.</param>
+      <param name="gridLayout"> used for layout.</param>
       <param name="brushTarget">Target of box fill operation. By default the currently selected GameObject.</param>
       <param name="position">The bounds to box fill data to.</param>
     </member>
@@ -76,7 +76,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Erases data on a grid within the given bounds.</para>
       </summary>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="brushTarget">Target of the erase operation. By default the currently selected GameObject.</param>
       <param name="position">The coordinates of the cell to erase data from.</param>
       <param name="gridLayout"></param>
@@ -107,7 +107,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Flood fills data onto a grid given the starting coordinates of the cell.</para>
       </summary>
-      <param name="gridLayout">Grid used for layout.</param>
+      <param name="gridLayout"> used for layout.</param>
       <param name="brushTarget">Targets of flood fill operation. By default the currently selected GameObject.</param>
       <param name="position">Starting position of the flood fill.</param>
     </member>
@@ -115,7 +115,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Move is called when user moves the area previously selected with the selection marquee.</para>
       </summary>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="brushTarget">Target of the move operation. By default the currently selected GameObject.</param>
       <param name="from">Source bounds of the move.</param>
       <param name="to">Target bounds of the move.</param>
@@ -127,14 +127,14 @@ Only one class at any one time should set defaultBrush to true.</para>
       </summary>
       <param name="position">Layers affected by the move operation.</param>
       <param name="brushTarget">Target of the move operation. By default the currently selected GameObject.</param>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="gridLayout"></param>
     </member>
     <member name="M:UnityEngine.GridBrushBase.MoveStart(UnityEngine.GridLayout,UnityEngine.GameObject,UnityEngine.BoundsInt)">
       <summary>
         <para>MoveEnd is called when user starts moving the area previously selected with the selection marquee.</para>
       </summary>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="brushTarget">Target of the move operation. By default the currently selected GameObject.</param>
       <param name="position">Position where the move operation has started.</param>
       <param name="gridLayout"></param>
@@ -143,7 +143,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Paints data into a grid within the given bounds.</para>
       </summary>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="brushTarget">Target of the paint operation. By default the currently selected GameObject.</param>
       <param name="position">The coordinates of the cell to paint data to.</param>
       <param name="gridLayout"></param>
@@ -152,7 +152,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Picks data from a grid given the coordinates of the cells.</para>
       </summary>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="brushTarget">Target of the paint operation. By default the currently selected GameObject.</param>
       <param name="position">The coordinates of the cells to paint data from.</param>
       <param name="pivot">Pivot of the picking brush.</param>
@@ -184,7 +184,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <summary>
         <para>Select an area of a grid.</para>
       </summary>
-      <param name="grid">Grid used for layout.</param>
+      <param name="grid"> used for layout.</param>
       <param name="brushTarget">Targets of paint operation. By default the currently selected GameObject.</param>
       <param name="position">Area to get selected.</param>
       <param name="gridLayout"></param>
@@ -349,7 +349,7 @@ Only one class at any one time should set defaultBrush to true.</para>
     </member>
     <member name="P:UnityEngine.Tilemaps.Tile.transform">
       <summary>
-        <para>Matrix4x4|Transform matrix of the Tile.</para>
+        <para>.</para>
       </summary>
     </member>
     <member name="T:UnityEngine.Tilemaps.Tile.ColliderType">
@@ -475,7 +475,7 @@ Only one class at any one time should set defaultBrush to true.</para>
     </member>
     <member name="P:UnityEngine.Tilemaps.TileData.transform">
       <summary>
-        <para>Matrix4x4|Transform matrix of the Tile.</para>
+        <para>.</para>
       </summary>
     </member>
     <member name="T:UnityEngine.Tilemaps.TileFlags">
@@ -540,12 +540,12 @@ Only one class at any one time should set defaultBrush to true.</para>
     </member>
     <member name="P:UnityEngine.Tilemaps.Tilemap.layoutGrid">
       <summary>
-        <para>Gets the Grid associated with this tile map.</para>
+        <para>Gets the associated with this tile map.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Tilemaps.Tilemap.layoutGrid">
       <summary>
-        <para>Gets the Grid associated with this tile map.</para>
+        <para>Gets the associated with this tile map.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Tilemaps.Tilemap.localBounds">
@@ -585,7 +585,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       <param name="position">Position of the Tile on the Tilemap.</param>
       <param name="flags">TileFlags to add (with bitwise or) onto the flags provided by Tile.TileBase.</param>
     </member>
-    <member name="M:UnityEngine.Tilemaps.Tilemap.BoxFill(UnityEngine.Vector3Int,UnityEngine.Tilemaps.TileBase,System.Int32,System.Int32,System.Int32,System.Int32)">
+    <member name="M:UnityEngine.Tilemaps.Tilemap.BoxFill">
       <summary>
         <para>Does a box fill with the given. Starts from given coordinates and fills the limits from start to end (inclusive).</para>
       </summary>
@@ -620,25 +620,14 @@ Only one class at any one time should set defaultBrush to true.</para>
         <para>Whether the Tilemap contains the tile.</para>
       </returns>
     </member>
-    <member name="M:UnityEngine.Tilemaps.Tilemap.EditorPreviewBoxFill(UnityEngine.Vector3Int,UnityEngine.Object,System.Int32,System.Int32,System.Int32,System.Int32)">
-      <summary>
-        <para>Does an editor preview of a box fill with the given. Starts from given coordinates and fills the limits from start to end (inclusive).</para>
-      </summary>
-      <param name="position">Position of the Tile on the Tilemap.</param>
-      <param name="tile"> to place.</param>
-      <param name="startX">The start X coordinate limit to fill to.</param>
-      <param name="startY">The start Y coordinate limit to fill to.</param>
-      <param name="endX">The ending X coordinate limit to fill to.</param>
-      <param name="endY">The ending Y coordinate limit to fill to.</param>
-    </member>
     <member name="M:UnityEngine.Tilemaps.Tilemap.EditorPreviewFloodFill(UnityEngine.Vector3Int,UnityEngine.Tilemaps.TileBase)">
       <summary>
         <para>Does an editor preview of a flood fill with the given starting from the given coordinates.</para>
       </summary>
       <param name="position">Start position of the flood fill on the Tilemap.</param>
-      <param name="tile">TileBase to place.</param>
+      <param name="tile"> to place.</param>
     </member>
-    <member name="M:UnityEngine.Tilemaps.Tilemap.FloodFill(UnityEngine.Vector3Int,UnityEngine.Tilemaps.TileBase)">
+    <member name="M:UnityEngine.Tilemaps.Tilemap.FloodFill">
       <summary>
         <para>Does a flood fill with the given starting from the given coordinates.</para>
       </summary>
@@ -683,7 +672,7 @@ Only one class at any one time should set defaultBrush to true.</para>
     </member>
     <member name="M:UnityEngine.Tilemaps.Tilemap.GetEditorPreviewColor(UnityEngine.Vector3Int)">
       <summary>
-        <para>Gets the Color of an editor preview.</para>
+        <para>Gets the color of an editor preview.</para>
       </summary>
       <param name="position">Position of the Tile on the Tilemap.</param>
       <returns>
@@ -759,7 +748,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       </summary>
       <param name="position">Position of the Tile on the Tilemap.</param>
       <returns>
-        <para>Tilemaps.TileBase placed at the cell.</para>
+        <para> placed at the cell.</para>
       </returns>
     </member>
     <member name="M:UnityEngine.Tilemaps.Tilemap.GetTile(UnityEngine.Vector3Int)">
@@ -768,7 +757,7 @@ Only one class at any one time should set defaultBrush to true.</para>
       </summary>
       <param name="position">Position of the Tile on the Tilemap.</param>
       <returns>
-        <para>Tilemaps.TileBase|Tile of type T placed at the cell.</para>
+        <para> placed at the cell.</para>
       </returns>
     </member>
     <member name="M:UnityEngine.Tilemaps.Tilemap.GetTileFlags(UnityEngine.Vector3Int)">
@@ -968,7 +957,7 @@ Only one class at any one time should set defaultBrush to true.</para>
     </member>
     <member name="M:UnityEngine.Tilemaps.Tilemap.SwapTile(UnityEngine.Tilemaps.TileBase,UnityEngine.Tilemaps.TileBase)">
       <summary>
-        <para>Swaps all existing tiles of changeTile to newTile and refreshes all the swapped tiles.</para>
+        <para>Swaps all existing tiles of and refreshes all the swapped tiles.</para>
       </summary>
       <param name="changeTile">Tile to swap.</param>
       <param name="newTile">Tile to swap to.</param>

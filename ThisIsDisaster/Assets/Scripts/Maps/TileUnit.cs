@@ -11,18 +11,10 @@ public enum TileType {
 public class TileUnit : MonoBehaviour {
     public TileType type;
     public TempTileModel _model;
+    public SpriteRenderer spriteRenderer;
 
     public void SetModel(TempTileModel model){
         _model = model;
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

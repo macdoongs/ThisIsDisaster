@@ -37,6 +37,19 @@ player_win_x86.pdb
 player_win_x86_s.pdb
 xmls.unitypackage
 xmls.zip
+ThisIsDisaster/Library/
+ThisIsDisaster\Temp/
+ThisIsDisaster\Builds/
+ThisIsDisaster\Debug/
+
+/ThisIsDisaster/[Ll]ibrary/
+/ThisIsDisaster/[Tt]emp/
+/ThisIsDisaster/[Oo]bj/
+/ThisIsDisaster/[Bb]uild/
+/ThisIsDisaster/[Bb]uilds/
+/ThisIsDisaster/[Rr]elease/
+/ThisIsDisaster/[Dd]ebug/
+/ThisIsDisaster/Assets/AssetStoreTools*
 
 *.vscode
 
