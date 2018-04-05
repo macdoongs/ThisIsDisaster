@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/GoldenSkullStudios/2D_Iso_Tile_Pack_Starter/ExampleScene.unity
-  isLoaded: 1
-  isActive: 1
