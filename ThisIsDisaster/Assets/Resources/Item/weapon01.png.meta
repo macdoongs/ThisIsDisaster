@@ -26,7 +26,6 @@ TextureImporter:
     21300038: weapon18
     21300040: weapon19-1
     21300042: weapon19-2
-  externalObjects: {}
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -35,8 +34,6 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
-    mipMapsPreserveCoverage: 0
-    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -44,7 +41,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-  isReadable: 1
+  isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -52,13 +49,10 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    serializedVersion: 2
     filterMode: 1
     aniso: -1
     mipBias: -1
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapMode: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -67,9 +61,8 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spritePixelsToUnits: 100
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -81,44 +74,36 @@ TextureImporter:
   platformSettings:
   - buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   - buildTarget: Standalone
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   - buildTarget: iPhone
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   - buildTarget: Android
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -134,7 +119,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.22}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon02
@@ -148,7 +132,6 @@ TextureImporter:
       pivot: {x: 0.71, y: 0.32}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon03
@@ -162,7 +145,6 @@ TextureImporter:
       pivot: {x: 0.51, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon04
@@ -176,7 +158,6 @@ TextureImporter:
       pivot: {x: 0.43111613, y: 0.31680417}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon05
@@ -190,7 +171,6 @@ TextureImporter:
       pivot: {x: 0.70033085, y: 0.4635763}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon06
@@ -204,7 +184,6 @@ TextureImporter:
       pivot: {x: 0.53205323, y: 0.4554823}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon07
@@ -218,7 +197,6 @@ TextureImporter:
       pivot: {x: 0.437397, y: 0.37386632}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon08
@@ -232,7 +210,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.23}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon09
@@ -246,7 +223,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.28}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon10
@@ -260,7 +236,6 @@ TextureImporter:
       pivot: {x: 0.52, y: 0.23}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon11
@@ -274,7 +249,6 @@ TextureImporter:
       pivot: {x: 0.55, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon12
@@ -288,7 +262,6 @@ TextureImporter:
       pivot: {x: 0.39456338, y: 0.18}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon13
@@ -302,7 +275,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon14
@@ -316,7 +288,6 @@ TextureImporter:
       pivot: {x: 0.52, y: 0.22}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon15
@@ -330,7 +301,6 @@ TextureImporter:
       pivot: {x: 0.57, y: 0.23}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon16-1
@@ -344,7 +314,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon16-2
@@ -358,7 +327,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon17-1
@@ -372,7 +340,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon17-2
@@ -386,7 +353,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon18
@@ -400,7 +366,6 @@ TextureImporter:
       pivot: {x: 0.52683043, y: 0.28887588}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon19-1
@@ -414,7 +379,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: weapon19-2
@@ -428,10 +392,8 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     outline: []
-    physicsShape: []
   spritePackingTag: 
   userData: 
   assetBundleName: decoratedata/utilitysprite/weapon/weapon01
