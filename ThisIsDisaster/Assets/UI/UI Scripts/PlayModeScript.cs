@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayModeScript : MonoBehaviour {
 
     public GameObject playModePannel;
+    public GameObject startPannel;
 
     public Text singleText;
     public GameObject singleUnderLine;
@@ -17,14 +18,20 @@ public class PlayModeScript : MonoBehaviour {
     {
         PlayModePannelDefault();
         playModePannel.SetActive(true);
-
+        
 
     }
+
+    public void StartPannelOn()
+    {
+        startPannel.SetActive(true);
+    }
+
 
     public void ModePannelOff()
     {
         playModePannel.SetActive(false);
-
+        startPannel.SetActive(false);
     }
 
     public void SingleFocused()
@@ -35,6 +42,7 @@ public class PlayModeScript : MonoBehaviour {
         multiText.color = Color.black;
         multiUnderLine.SetActive(false);
 
+        StartPannelOn();
     }
 
     public void MultiFocused()
@@ -44,6 +52,7 @@ public class PlayModeScript : MonoBehaviour {
 
         multiText.color = Color.yellow;
         multiUnderLine.SetActive(true);
+        StartPannelOn();
 
     }
 

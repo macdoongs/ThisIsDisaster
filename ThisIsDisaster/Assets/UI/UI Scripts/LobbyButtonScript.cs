@@ -5,25 +5,26 @@ using UnityEngine.UI;
 
 public class LobbyButtonScript : MonoBehaviour {
 
+    public Color focusedTextColor;
+    public Color defaultTextColor;
+
     public Text focusedText;
     public GameObject focusedUnderLine;
 
-    public Text anotherText1;
-    public GameObject anotherUnderLIne1;
-
-    public Text anotherText2;
-    public GameObject anotherUnderLIne2;
-    
+    public Text[] anotherTexts = new Text[2];
+    public GameObject[] anotherUnderLInes = new GameObject[2];
 
     public void OnClick()
     {
         focusedText.color = Color.yellow;
         focusedUnderLine.SetActive(true);
 
-        anotherText1.color = Color.white;
-        anotherUnderLIne1.SetActive(false);
-        anotherText2.color = Color.white;
-        anotherUnderLIne2.SetActive(false);
+        for(int i = 0; i < anotherTexts.Length; i++)
+        {
+            anotherTexts[i].color = defaultTextColor;
+            anotherUnderLInes[i].SetActive(false);
+
+        }
 
     }
     
