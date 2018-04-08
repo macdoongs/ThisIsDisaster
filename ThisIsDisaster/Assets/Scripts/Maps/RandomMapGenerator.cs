@@ -22,7 +22,7 @@ public class RandomMapGenerator : MonoBehaviour
 
     public GameObject _tileUnit;
     public List<Sprite> _randomTileSprites;
-
+    public int roomThresholdSize = 50;
     const char sepMatch = '|';
     const float _xDelta = 0.5f;
     const float _yDelta = 0.25f;
@@ -46,39 +46,6 @@ public class RandomMapGenerator : MonoBehaviour
         foreach (Transform t in transform) {
             DestroyImmediate(t.gameObject);
         }
-    }
-
-    public void GenerateMap() {
-        ClearMap();
-
-        for (int x = 0; x < Width; x++) {
-
-            for (int y = 0; y < Height; y++) {
-                GameObject copy = Instantiate(_tileUnit);
-                copy.transform.SetParent(transform);
-
-                Sprite sprite = GetRandomSprite();
-
-                TempTileModel model = new TempTileModel()
-                {
-                    xPos = x,
-                    yPos = y,
-                    spriteName = sprite.name
-                };
-
-                string name = string.Format("{0}|{1}", x, y);
-                copy.name = name;
-
-                var unit = copy.GetComponent<TileUnit>();
-                unit.SetModel(model);
-                unit.spriteRenderer.sprite = sprite;
-
-                var list = GetVertical(x);
-                list.Add(unit);
-            }
-        }
-
-        UpdatePosition();
     }
 
     public void UpdatePosition()
