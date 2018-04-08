@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEditorInternal;
+
 using System.Reflection;
 
 #if UNITY_EDITOR
+using UnityEditorInternal;
 using UnityEditor;
 #endif
 
