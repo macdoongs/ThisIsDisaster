@@ -49,6 +49,13 @@ public class ItemManager {
         instanceId = 0;
     }
 
+    public void InitTypeInfoList(List<ItemTypeInfo> infos) {
+        _typeInfoDic.Clear();
+        foreach (var info in infos) {
+            _typeInfoDic.Add(info.metaId, info);
+        }
+    }
+
     public static void Log(string desc, bool isError = false) {
 #if UNITY_EDITOR
         if (isError)
