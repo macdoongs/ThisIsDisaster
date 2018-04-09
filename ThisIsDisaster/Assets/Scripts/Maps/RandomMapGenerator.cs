@@ -23,6 +23,8 @@ public class RandomMapGenerator : MonoBehaviour
     public GameObject _tileUnit;
     public List<Sprite> _randomTileSprites;
     public int roomThresholdSize = 50;
+    public bool useRandomSeed;
+    public bool debugTest;
     const char sepMatch = '|';
     const float _xDelta = 0.5f;
     const float _yDelta = 0.25f;

@@ -10,8 +10,9 @@ public class CellularAutomata : MonoBehaviour {
 
 	public string seed;
 	public bool useRandomSeed;
+    private bool debugTest;
 
-	[Range(0,100)]
+    [Range(0,100)]
 	public int randomFillPercent;
 
 	int[,] map; //생성된 2차원 배열맵 저장할 변수
@@ -36,13 +37,12 @@ public class CellularAutomata : MonoBehaviour {
 		}
 
         ProcessMap();
-
-        if (RandomMapGenerator.Instance) {
+        
+        if (RandomMapGenerator.Instance)
+        {
             RandomMapGenerator.Instance.GenerateMapByAlogrithm(map,width, height);
         }
-
-
-        UnityEngine.Debug.Log(map);
+        
     }
 
     void ProcessMap()
@@ -79,12 +79,37 @@ public class CellularAutomata : MonoBehaviour {
                 survivingRooms.Add(new Room(roomRegion, map));
             }
         }
-
+        survivingRooms.Sort();
+        survivingRooms[0].isMainRoom = true; // 가장 큰 방 메인룸
+        survivingRooms[0].isAccessibleFromMainRoom = true;
         ConnectClosestRooms(survivingRooms);
     }
 
-    void ConnectClosestRooms(List<Room> allRooms)
+    void ConnectClosestRooms(List<Room> allRooms, bool forceAccessibilityFromMainRoom = false)
     {
+
+        List<Room> roomListA = new List<Room>(); // 메인룸에 연결안된 방
+        List<Room> roomListB = new List<Room>(); // 메인룸에 연결된 방
+
+        if (forceAccessibilityFromMainRoom) // 메인룸에 모든길이 연결
+        {
+            foreach (Room room in allRooms)
+            {
+                if (room.isAccessibleFromMainRoom)
+                {
+                    roomListB.Add(room);
+                }
+                else
+                {
+                    roomListA.Add(room);
+                }
+            }
+        }
+        else
+        {
+            roomListA = allRooms;
+            roomListB = allRooms;
+        }
 
         int bestDistance = 0;
         Coord bestTileA = new Coord();
@@ -93,20 +118,22 @@ public class CellularAutomata : MonoBehaviour {
         Room bestRoomB = new Room();
         bool possibleConnectionFound = false;
 
-        foreach (Room roomA in allRooms)
+        foreach (Room roomA in roomListA)
         {
-            possibleConnectionFound = false;
-
-            foreach (Room roomB in allRooms)
+            if (!forceAccessibilityFromMainRoom)
             {
-                if (roomA == roomB)
+                possibleConnectionFound = false;
+                if (roomA.connectedRooms.Count > 0)
                 {
                     continue;
                 }
-                if (roomA.IsConnected(roomB))
+            }
+
+            foreach (Room roomB in roomListB)
+            {
+                if (roomA == roomB || roomA.IsConnected(roomB))
                 {
-                    possibleConnectionFound = false;
-                    break;
+                    continue;
                 }
 
                 for (int tileIndexA = 0; tileIndexA < roomA.edgeTiles.Count; tileIndexA++)
@@ -129,23 +156,120 @@ public class CellularAutomata : MonoBehaviour {
                     }
                 }
             }
-
-            if (possibleConnectionFound)
+            if (possibleConnectionFound && !forceAccessibilityFromMainRoom)
             {
                 CreatePassage(bestRoomA, bestRoomB, bestTileA, bestTileB);
             }
         }
+
+        if (possibleConnectionFound && forceAccessibilityFromMainRoom)
+        {
+            CreatePassage(bestRoomA, bestRoomB, bestTileA, bestTileB);
+            ConnectClosestRooms(allRooms, true);
+        }
+
+        if (!forceAccessibilityFromMainRoom)
+        {
+            ConnectClosestRooms(allRooms, true); // 아직도 메인에 연결안되면 
+        }
     }
 
+    //룸과 룸사이 연결선을 그림
     void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB)
     {
         Room.ConnectRooms(roomA, roomB);
+        debugTest = RandomMapGenerator.Instance.debugTest;
+        if (debugTest)
         Debug.DrawLine(CoordToWorldPoint(tileA), CoordToWorldPoint(tileB), Color.green, 100);
+
+        List<Coord> line = GetLine(tileA, tileB);
+        foreach (Coord c in line)
+        {
+            DrawCircle(c, 5);
+        }
+    }
+
+    void DrawCircle(Coord c, int r)
+    {
+        for (int x = -r; x <= r; x++)
+        {
+            for (int y = -r; y <= r; y++)
+            {
+                if (x * x + y * y <= r * r)
+                {
+                    int drawX = c.tileX + x;
+                    int drawY = c.tileY + y;
+                    if (IsInMapRange(drawX, drawY))
+                    {
+                        map[drawX, drawY] = 0;
+                    }
+                }
+            }
+        }
     }
 
     Vector3 CoordToWorldPoint(Coord tile)
     {
-        return new Vector3(-width / 2 + .5f + tile.tileX, 2, -height / 2 + .5f + tile.tileY);
+        return new Vector3(-width / 2 + .5f + tile.tileX, -height / 2 + .5f + tile.tileY, -10);
+    }
+
+    List<Coord> GetLine(Coord from, Coord to) // 라인을 그리는 함수
+    {
+        List<Coord> line = new List<Coord>();
+
+        int x = from.tileX;
+        int y = from.tileY;
+
+        int dx = to.tileX - from.tileX;
+        int dy = to.tileY - from.tileY;
+
+        bool inverted = false;
+        int step = Math.Sign(dx);
+        int gradientStep = Math.Sign(dy);
+
+        int longest = Mathf.Abs(dx);
+        int shortest = Mathf.Abs(dy);
+
+        if (longest < shortest)
+        {
+            inverted = true;
+            longest = Mathf.Abs(dy);
+            shortest = Mathf.Abs(dx);
+
+            step = Math.Sign(dy);
+            gradientStep = Math.Sign(dx);
+        }
+
+        int gradientAccumulation = longest / 2;
+        for (int i = 0; i < longest; i++)
+        {
+            line.Add(new Coord(x, y));
+
+            if (inverted)
+            {
+                y += step;
+            }
+            else
+            {
+                x += step;
+            }
+
+            gradientAccumulation += shortest;
+            if (gradientAccumulation >= longest)
+            {
+                if (inverted)
+                {
+                    x += gradientStep;
+                }
+                else
+                {
+                    y += gradientStep;
+                }
+                gradientAccumulation -= longest;
+            }
+        }
+
+        return line;
     }
 
     List<List<Coord>> GetRegions(int tileType)
@@ -215,6 +339,7 @@ public class CellularAutomata : MonoBehaviour {
 
 
     void RandomFillMap() {
+        useRandomSeed = RandomMapGenerator.Instance.useRandomSeed;
 		if (useRandomSeed) {
 			seed = Time.time.ToString();
 		}
@@ -267,8 +392,9 @@ public class CellularAutomata : MonoBehaviour {
 
 
 	void OnDrawGizmos() {
-        return;
-		if (map != null) {
+        debugTest = RandomMapGenerator.Instance.debugTest;
+        if (debugTest == false) return;
+		else if (map != null) {
 			for (int x = 0; x < width; x ++) {
 				for (int y = 0; y < height; y ++) {
 					Gizmos.color = (map[x,y] == 1)?Color.black:Color.white;
@@ -291,12 +417,14 @@ public class CellularAutomata : MonoBehaviour {
         }
     }
 
-    class Room
+    class Room : IComparable<Room>
     {
         public List<Coord> tiles;
         public List<Coord> edgeTiles;
         public List<Room> connectedRooms;
         public int roomSize;
+        public bool isAccessibleFromMainRoom;
+        public bool isMainRoom;
 
         public Room()
         {
@@ -327,8 +455,28 @@ public class CellularAutomata : MonoBehaviour {
             }
         }
 
+        public void SetAccessibleFromMainRoom()
+        {
+            if (!isAccessibleFromMainRoom)
+            {
+                isAccessibleFromMainRoom = true;
+                foreach (Room connectedRoom in connectedRooms)
+                {
+                    connectedRoom.SetAccessibleFromMainRoom();
+                }
+            }
+        }
+
         public static void ConnectRooms(Room roomA, Room roomB)
         {
+            if (roomA.isAccessibleFromMainRoom)
+            {
+                roomB.SetAccessibleFromMainRoom();
+            }
+            else if (roomB.isAccessibleFromMainRoom)
+            {
+                roomA.SetAccessibleFromMainRoom();
+            }
             roomA.connectedRooms.Add(roomB);
             roomB.connectedRooms.Add(roomA);
         }
@@ -337,5 +485,11 @@ public class CellularAutomata : MonoBehaviour {
         {
             return connectedRooms.Contains(otherRoom);
         }
+
+        public int CompareTo(Room otherRoom)
+        {
+            return otherRoom.roomSize.CompareTo(roomSize);
+        }
     }
+
 }

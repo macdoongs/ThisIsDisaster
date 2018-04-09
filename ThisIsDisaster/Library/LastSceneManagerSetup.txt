@@ -1,8 +1,4 @@
 sceneSetups:
-<<<<<<< HEAD
 - path: Assets/Scene/CellularAutomata.unity
-=======
-- path: Assets/Scene/GameLobby.unity
->>>>>>> cc44669c8733faad175310163cb21a148754bcef
   isLoaded: 1
   isActive: 1
