@@ -25,7 +25,7 @@ public class GlobalGameManager : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-        developmentConsole.gameObject.SetActive(false);	
+        developmentConsole.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
