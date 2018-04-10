@@ -21,6 +21,8 @@ public enum ItemType
 
 public class ItemTypeInfo
 {
+    public long metaId = 0;
+
     /// <summary>
     /// 아이템 이름
     /// </summary>
@@ -41,5 +43,23 @@ public class ItemTypeInfo
     /// </summary>
     public ItemType itemType = ItemType.EQUIPMENT;
 
+
+    public List<string> tags = new List<string>();
+
+    public static ItemType ParseType(string typeText) {
+        switch (typeText.ToLower()) {
+            case "equipment":return ItemType.EQUIPMENT;
+            default: return ItemType.EXPENDABLES;
+        }
+    }
+
+    public ItemTypeInfo(long metaId, string name, int maxCount, ItemType type, string[] tags) {
+        this.metaId = metaId;
+        this.Name = name;
+        this._defaultMaxCount = maxCount;
+        this.itemType = type;
+        if (tags.Length > 0)
+            this.tags.AddRange(tags);
+    }
     //smth else info
 }
