@@ -4,8 +4,20 @@ using UnityEngine;
 
 namespace ProtoType
 {
+    public enum EnvironmentType {
+        Grass,
+        Glacier,
+        Desert,
+    }
     public class PrototypeMapController : MonoBehaviour
     {
+        [System.Serializable]
+        public class SpriteSet {
+            public EnvironmentType type;
+            public Sprite WaterLevel;
+            public Sprite GroundLevel1;
+            public Sprite GroundLevel2;
+        }
         const char sepMatch = '|';
         public static PrototypeMapController Controller
         {
@@ -22,6 +34,9 @@ namespace ProtoType
         public Sprite waterReference;
         public Sprite groundLevel1;
         public Sprite groundLevel2;
+
+        public List<SpriteSet> spriteSets;
+        public EnvironmentType currentType;
         #endregion
 
         void Awake()
@@ -43,6 +58,27 @@ namespace ProtoType
         void Update()
         {
 
+        }
+
+        void ApplyEnviroment() {
+            SpriteSet currentSet = spriteSets[(int)currentType];
+
+            for (int i = 0; i < _xSize; i++) {
+                for (int j = 0; j < _ySize; j++) {
+                    var current = map[i][j];
+                    if (current.type == TileType.GROUND_UNWALKABLE)
+                    {
+                        current.spriteRenderer.sprite = currentSet.GroundLevel1;
+                    }
+                    else if (current.type == TileType.GROUND_WALKABLE)
+                    {
+                        current.spriteRenderer.sprite = currentSet.GroundLevel2;
+                    }
+                    else {
+                        current.spriteRenderer.sprite = currentSet.WaterLevel;
+                    }
+                }
+            }
         }
 
         void ReadMap()
@@ -67,7 +103,7 @@ namespace ProtoType
                 else {
                     tile.type = TileType.GROUND_UNWALKABLE;
                     var local = tile.transform.localPosition;
-                    local.y += 0.25f;
+                    //local.y += 0.25f;
                     tile.transform.localPosition = local;
                 }
 
@@ -102,11 +138,13 @@ namespace ProtoType
                         current.type = TileType.GROUND_WALKABLE;
                         current.spriteRenderer.sprite = groundLevel2;
                         var local = current.transform.localPosition;
-                        local.y += 0.25f;
+                        //local.y += 0.25f;
                         current.transform.localPosition = local;
                     }
                 }
             }
+
+            ApplyEnviroment();
         }
 
         void ReadIsNearWater(TileUnit current, int x, int y) {
