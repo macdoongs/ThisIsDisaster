@@ -680,22 +680,22 @@
         <para>Enum provding terrain rendering options.</para>
       </summary>
     </member>
-    <member name="F:UnityEngine.TerrainRenderFlags.All">
+    <member name="F:UnityEngine.TerrainRenderFlags.all">
       <summary>
         <para>Render all options.</para>
       </summary>
     </member>
-    <member name="F:UnityEngine.TerrainRenderFlags.Details">
+    <member name="F:UnityEngine.TerrainRenderFlags.details">
       <summary>
         <para>Render terrain details.</para>
       </summary>
     </member>
-    <member name="F:UnityEngine.TerrainRenderFlags.Heightmap">
+    <member name="F:UnityEngine.TerrainRenderFlags.heightmap">
       <summary>
         <para>Render heightmap.</para>
       </summary>
     </member>
-    <member name="F:UnityEngine.TerrainRenderFlags.Trees">
+    <member name="F:UnityEngine.TerrainRenderFlags.trees">
       <summary>
         <para>Render trees.</para>
       </summary>

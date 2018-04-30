@@ -1419,14 +1419,13 @@ Can only be called by the relay group owner.</para>
       <param name="subversion">Subversion part of the credentials associated with this broadcast.</param>
       <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
-    <member name="M:UnityEngine.Networking.NetworkTransport.SetPacketStat(System.Int32,System.Int32,System.Int32,System.Int32)">
+    <member name="M:UnityEngine.Networking.NetworkTransport.SetPacketStat">
       <summary>
         <para>Used to inform the profiler of network packet statistics.</para>
       </summary>
       <param name="packetStatId">The ID of the message being reported.</param>
-      <param name="numMsgs">Number of messages being reported.</param>
+      <param name="numMsgs">Number of message being reported.</param>
       <param name="numBytes">Number of bytes used by reported messages.</param>
-      <param name="direction">Whether the packet is outgoing (-1) or incoming (0).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.Shutdown">
       <summary>

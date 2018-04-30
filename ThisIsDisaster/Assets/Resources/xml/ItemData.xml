@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <item id="0" name="_dummy_item" type="equipment" max="1" tag="dummy"/>
+  <item id="1" name="_dummy_item" type="equipment" max="1" tag="dummy"/>
+  <item id="2" name="_dummy_item" type="equipment" max="1" tag="dummy"/>
+  <item id="3" name="_dummy_item" type="equipment" max="1" tag="dummy"/>
+</root>
