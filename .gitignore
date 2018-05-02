@@ -1,3 +1,5 @@
+/Library/
+
 # Visual Studio 2015 cache directory
 /.vs/
 
@@ -32,11 +34,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-
-obj/
-Temp/
-
-/Library/
-/ProjectSettings/
-/obj/
-/Temp/
