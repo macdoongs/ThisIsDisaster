@@ -33,7 +33,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-Library/
 obj/
 ProjectSettings/
 Temp/
