@@ -34,7 +34,7 @@ sysinfo.txt
 *.unitypackage
 
 obj/
-ProjectSettings/
 Temp/
 
-ThisIsDisaster/Library/
+/ThisIsDisaster/Library/
+/ThisIsDisaster/ProjectSettings/
