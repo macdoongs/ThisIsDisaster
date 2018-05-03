@@ -31,5 +31,17 @@ public class UnitModel {
 
         return true;
     }
-    
+
+
+    public void PrintAllItems() {
+        Debug.Log("Unit Items");
+        foreach (var kv in ItemSpace) {
+            Debug.Log(kv.Value.metaInfo.ToString());
+        }
+    }
+
+    public List<ItemModel> GetAllItems() {
+        List<ItemModel> output = new List<ItemModel>(ItemSpace.Values);
+        return output;
+    }
 }

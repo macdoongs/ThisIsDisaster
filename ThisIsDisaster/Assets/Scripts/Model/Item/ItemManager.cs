@@ -54,6 +54,15 @@ public class ItemManager {
         foreach (var info in infos) {
             _typeInfoDic.Add(info.metaId, info);
         }
+
+        LogExistItems();
+    }
+
+    public void LogExistItems() {
+        foreach (var info in _typeInfoDic) {
+            UnityEngine.Debug.Log(info.ToString());
+            
+        }
     }
 
     public static void Log(string desc, bool isError = false) {
@@ -84,7 +93,10 @@ public class ItemManager {
     }
 
     public void AddItem(UnitModel target, long itemMetaId) {
-        
+        var item = MakeItem(itemMetaId);
+        if (item != null) {
+            AddItem(target, item);
+        }
     }
 
     /// <summary>

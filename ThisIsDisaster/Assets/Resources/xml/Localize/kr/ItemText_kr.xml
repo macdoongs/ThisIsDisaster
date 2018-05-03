@@ -1,4 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
-  <node id="_dummy_item">더미 아이템</node>
+  <node id="_dummy_head">기본 헬멧</node>
+  <node id="_dummy_stick">기본 막대</node>
+  <node id="_dummy_util_flash">손전등</node>
+  <node id="_dummy_util_bag">가방</node>
+  <node id="_dummy_util_raincoat">우비</node>
+  <node id="_dummy_food">음식</node>
+  <node id="_dummy_water">물</node>
+  <node id="_dummy_kit">구급 상자</node>
 </root>

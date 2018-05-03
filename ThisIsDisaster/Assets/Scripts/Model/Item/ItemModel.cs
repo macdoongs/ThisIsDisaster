@@ -24,8 +24,50 @@ public class ItemModel {
         //do smth
         Owner = null;
     }
+
+    public virtual float GetDefense()
+    {
+        return GetStat("defense");
+    }
+
+    public virtual float GetHealth()
+    {
+        return GetStat("health");
+    }
+
+    public virtual float GetDamage() {
+        return GetStat("damage");
+    }
+
+    public float GetStat(string statName) {
+        float output = 0f;
+        metaInfo.stats.TryGetValue(statName, out output);
+        return output;
+    }
+
 }
 
-public class DummyItem : ItemModel {
-    
+public class WeaponModel : ItemModel {
+
+    public void OnStartAttack()
+    {
+        //smth todo
+        float damage = GetDamage();
+    }
+
+    public void OnGiveDamage() {
+        //smth todo
+    }
+
+}
+
+public class HeadModel : ItemModel {
+}
+
+public class UtilModel : ItemModel {
+
+}
+
+public class EtcModel : ItemModel {
+
 }
