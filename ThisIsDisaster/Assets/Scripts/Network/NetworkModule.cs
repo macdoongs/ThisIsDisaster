@@ -20,6 +20,11 @@ namespace NetworkComponents
             BOTH
         }
 
+        public static NetworkModule Instance {
+            private set;
+            get;
+        }
+
         private TransportTCP _tcp = null;
         private TransportUDP _udp = null;
         private Thread _thread = null;
@@ -37,6 +42,11 @@ namespace NetworkComponents
 
         private void Awake()
         {
+            if (Instance != null) {
+                Destroy(gameObject); return;
+            }
+            
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
