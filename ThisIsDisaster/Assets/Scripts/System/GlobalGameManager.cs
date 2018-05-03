@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NetworkComponents;
 
 public class GlobalGameManager : MonoBehaviour {
 
@@ -22,6 +23,14 @@ public class GlobalGameManager : MonoBehaviour {
         GameStaticDataLoader.Loader.LoadAll();
 
         LocalizeTextDataModel.Instance.LogAllData();
+
+        GameObject networkObject = GameObject.Find("NetworkModule");
+        if (networkObject) {
+            NetworkModule network = networkObject.GetComponent<NetworkModule>();
+            if (network) {
+                
+            }
+        }
     }
     // Use this for initialization
     void Start () {
