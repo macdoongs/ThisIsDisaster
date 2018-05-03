@@ -81,6 +81,14 @@ namespace NetworkComponents {
             return true;
         }
 
+        public long GetDataSize() {
+            return _buffer.Length;
+        }
+
+        public Endianness GetEndian() {
+            return _endianness;
+        }
+
         #region Serialize
         protected bool Serialize(bool element) {
             byte[] data = BitConverter.GetBytes(element);
