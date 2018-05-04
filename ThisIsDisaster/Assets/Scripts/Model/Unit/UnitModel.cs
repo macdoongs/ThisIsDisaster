@@ -31,8 +31,7 @@ public class UnitModel {
 
         return true;
     }
-
-
+    
     public void PrintAllItems() {
         Debug.Log("Unit Items");
         foreach (var kv in ItemSpace) {
