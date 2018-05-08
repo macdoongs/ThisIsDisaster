@@ -5,26 +5,34 @@ using System.Text;
 
 public class CharacterModel : UnitModel {
 
+    //가방(인벤토리) 사이즈. 
+    //util 아이템에 따라 사이즈 증가 가능하게 구현할 예정
     public int defaultBagSize = 30;
-
+    
+    //캐릭터 기본 스텟
     public float defaultHealth = 100.0f;
     public float defaultStamina = 100.0f;
     public float defaultDefense = 10.0f;
     public float defaultDamage = 10.0f;
 
+    //캐릭터 맥스 스텟. 
+    //맥스스텟 = 기본 스텟 + 아이템으로 증가하는 스텟
     public float maxHealth = 0.0f;
     public float maxStamina = 0.0f;
 
+    //캐릭터 현재 스텟
     public float health = 0.0f;
     public float stamina = 0.0f;
     public float defense = 0.0f;
     public float damage = 0.0f;
     
+    //아이템으로 증가하는 스텟
     public float itemHealth = 0.0f;
     public float itemStamina = 0.0f;
     public float itemDefense = 0.0f;
     public float itemDamage =0.0f;
 
+    //아이템 착용 슬롯
     public ItemModel headSlot = null;
     public ItemModel weaponSlot = null;
     public ItemModel utilSlot1 = null;
@@ -263,7 +271,7 @@ public class CharacterModel : UnitModel {
 
     }
 
-    //테스트용. 현재 스텟 출력
+    //테스트용. 현재 맥스 스텟 출력
     public virtual string MaxStatsToString()
     {
         StringBuilder builder = new StringBuilder();
