@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Net;
+using System.Net.Sockets;
+using System.Linq;
 using System.Collections;
 
 using NetworkComponents;
@@ -21,8 +23,9 @@ public class NetworkSetupControl : MonoBehaviour
 
         Dummy,//for indexing
     }
-
+    public CanvasGroup ControlGroup;
     public InputField AddressField;
+    public InputField AccountField;
     private bool _isHost = false;
 
     private Step _currentStep = Step.None;
@@ -35,7 +38,8 @@ public class NetworkSetupControl : MonoBehaviour
     void Start()
     {
         Initialize();
-
+        UpdateAccountId();
+        NetworkModule.Instance.RegisterReceiveNotification(PacketId.GameSyncInfo, OnReceiveGameSyncPacket);
     }
 
     public void Initialize()
@@ -45,7 +49,14 @@ public class NetworkSetupControl : MonoBehaviour
         _currentStep = Step.None;
         _nextStep = Step.Wait;
 
+        SetControl(true);
         gameObject.SetActive(true);
+    }
+
+    public void SetControl(bool isControllable) {
+        ControlGroup.alpha = isControllable ? 1f : 0f;
+        ControlGroup.blocksRaycasts = isControllable;
+        ControlGroup.interactable = isControllable;
     }
 
     // Update is called once per frame
@@ -101,10 +112,14 @@ public class NetworkSetupControl : MonoBehaviour
                 //check sync
                 if (CheckGameSyncState()) {
                     _nextStep = Step.Started;
+                    SetControl(false);
+                    //gen test character
                 }
                 break;
             case Step.Error:
                 _nextStep = Step.Restart;
+
+                SetControl(true);
                 break;
             case Step.Wait:
             case Step.Restart:
@@ -116,9 +131,10 @@ public class NetworkSetupControl : MonoBehaviour
     public void ServerStart()
     {
         int port = _isHost ? NetConfig.GAME_PORT : NetConfig.GAME_PORT + 1;
-        bool state = StartServer(port);
+        //port += GlobalParameters.Param.AdditionalPortNum;
+        bool state = StartServer(port, NetworkModule.ConnectionType.UDP);
         if (_isHost) {
-            NetworkModule.Instance.StartGameServer();
+            state &= NetworkModule.Instance.StartGameServer();
         }
         LogStepState(state, Step.ServerStart);
         if (!state) {
@@ -141,6 +157,7 @@ public class NetworkSetupControl : MonoBehaviour
 
     public void ClientConnect() {
         int port = _isHost ? NetConfig.GAME_PORT + 1 : NetConfig.GAME_PORT;
+        //port += GlobalParameters.Param.AdditionalPortNum;
         bool state = Connect(GetHostAddress(), port, NetworkModule.ConnectionType.UDP);
         LogStepState(state, Step.ClientConnect);
         if (!state) {
@@ -156,11 +173,12 @@ public class NetworkSetupControl : MonoBehaviour
     public void OnClickConnect()
     {
         _isHost = false;
+        GlobalParameters.Param.AdditionalPortNum += 10;
         _nextStep = Step.ServerStart;
     }
 
-    bool StartServer(int port) {
-        return NetworkModule.Instance.StartServer(port, NetworkModule.ConnectionType.UDP);
+    bool StartServer(int port, NetworkModule.ConnectionType connectType) {
+        return NetworkModule.Instance.StartServer(port, connectType);
     }
 
     bool Connect(string addr, int port, NetworkModule.ConnectionType type) {
@@ -173,11 +191,14 @@ public class NetworkSetupControl : MonoBehaviour
     }
 
     string GetLocalHost() {
-        string hostAddress = "";
-        string hostName = Dns.GetHostName();
-        IPAddress[] addrList = Dns.GetHostAddresses(hostName);
-        hostAddress = addrList[0].ToString();
-        return hostAddress;
+        //string hostAddress = "";
+        //string hostName = Dns.GetHostName();
+        //IPAddress[] addrList = Dns.GetHostAddresses(hostName);
+        //var firstIPv4Address = addrList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+        //hostAddress = firstIPv4Address.ToString();
+        //return hostAddress;
+
+        return Network.player.ipAddress.ToString();
     }
 
     void ResetNetwork() {
@@ -185,6 +206,8 @@ public class NetworkSetupControl : MonoBehaviour
         net.Disconnect();
         net.StopGameServer();
         net.StopServer();
+
+        SetControl(true);
     }
 
     public bool CheckGameSyncState() {
@@ -199,5 +222,30 @@ public class NetworkSetupControl : MonoBehaviour
         else {
             Debug.LogError("Failed to " + step.ToString());
         }
+    }
+
+    public void OnSetAccount(string account) {
+        GlobalGameManager.Param.accountName = account;
+        if (GameManager.CurrentGameManager != null) {
+            GameManager.CurrentGameManager.GetLocalPlayer().SetUnitName(GlobalParameters.Param.accountName);
+        }
+    }
+
+    void UpdateAccountId()
+    {
+        //change this network user id
+        GlobalGameManager.Param.accountId = System.Diagnostics.Process.GetCurrentProcess().Id;
+    }
+
+    public void OnReceiveGameSyncPacket(PacketId id, int packetSender, byte[] data) {
+        Debug.LogError("Received Sync Info" + packetSender);
+        GameSyncPacket packet = new GameSyncPacket(data);
+        GameSyncData sync = packet.GetPacket();
+
+        if (packetSender == GlobalParameters.Param.accountId) return;
+
+        var remoteCharacter = GameManager.MakePlayerCharacter(sync.accountName, packetSender, false);
+        remoteCharacter.SetUnitName(sync.accountName);
+        //make remote char
     }
 }

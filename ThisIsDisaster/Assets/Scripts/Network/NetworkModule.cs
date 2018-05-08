@@ -34,7 +34,7 @@ namespace NetworkComponents
 
         private const int _packetMax = (int)PacketId.Max;
 
-        public delegate void RecvNotifier(PacketId id, byte[] data);
+        public delegate void RecvNotifier(PacketId id, int senderId, byte[] data);
         private Dictionary<int, RecvNotifier> _notifier = new Dictionary<int, RecvNotifier>();
         private NetworkComponents.EventHandler _handler;
 
@@ -57,7 +57,16 @@ namespace NetworkComponents
 
         private void Update()
         {
+            if (IsConnected()) {
+                byte[] packet = new byte[NetConfig.PACKET_SIZE];
+                while (_tcp != null && _tcp.Receive(ref packet, packet.Length) > 0) {
+                    ReceivePacket(packet);
+                }
 
+                while (_udp != null && _udp.Receive(ref packet, packet.Length) > 0) {
+                    ReceivePacket(packet);
+                }
+            }
         }
 
         private void OnApplicationQuit()
@@ -93,11 +102,11 @@ namespace NetworkComponents
             }
             catch
             {
-                Debug.Log("Network::StartServer fail.!");
+                Debug.Log("Network::StartServer fail");
                 return false;
             }
 
-            Debug.Log("Network::Server started.!");
+            Debug.Log("Network::Server started");
 
             _isServer = true;
 
@@ -177,18 +186,8 @@ namespace NetworkComponents
 
         public bool StartGameServer()
         {
-            //log
-            GameObject obj = new GameObject("GameServer");
-            GameServer server = obj.AddComponent<GameServer>();
-            if (server == null)
-            {
-                //log failed
-                return false;
-            }
-            server.StartServer();
-            DontDestroyOnLoad(server);
             //log started
-            return true;
+            return GameServer.Instance.StartServer();
         }
 
         public void StopGameServer()
@@ -328,6 +327,7 @@ namespace NetworkComponents
                 PacketHeaderSerializer serializer = new PacketHeaderSerializer();
 
                 header.packetId = id;
+                header.packetSender = GlobalParameters.Param.accountId;
 
                 byte[] headerData = null;
                 if (serializer.Serialize(header) == true)
@@ -353,6 +353,8 @@ namespace NetworkComponents
                 PacketHeader header = new PacketHeader();
                 PacketHeaderSerializer serializer = new PacketHeaderSerializer();
                 header.packetId = packet.GetPacketID();
+                header.packetSender = GlobalParameters.Param.accountId;
+
                 byte[] headerData = null;
                 if (serializer.Serialize(header)) {
                     headerData = serializer.GetSerializedData();
@@ -379,6 +381,8 @@ namespace NetworkComponents
                 PacketHeaderSerializer serializer = new PacketHeaderSerializer();
 
                 header.packetId = id;
+                header.packetSender = GlobalParameters.Param.accountId;
+
                 byte[] headerData = null;
                 if (serializer.Serialize(header))
                 {
@@ -407,6 +411,7 @@ namespace NetworkComponents
                 PacketHeader header = new PacketHeader();
                 PacketHeaderSerializer serializer = new PacketHeaderSerializer();
                 header.packetId = packet.GetPacketID();
+                header.packetSender = GlobalParameters.Param.accountId;
 
                 byte[] headerData = null;
                 if (serializer.Serialize(header))
@@ -426,7 +431,7 @@ namespace NetworkComponents
         }
 
         public bool ReceivePacket(byte[] data)
-        {
+        {   
             PacketHeader header = new PacketHeader();
             PacketHeaderSerializer serializer = new PacketHeaderSerializer();
 
@@ -449,12 +454,15 @@ namespace NetworkComponents
             }
 
             int packetId = (int)header.packetId;
+            
+            int packetSender = header.packetSender;
+            Debug.LogError(string.Format("Recieved From {0} Packet {1}", header.packetId, header.packetSender));
             if (_notifier.ContainsKey(packetId) && _notifier[packetId] != null)
             {
                 int headerSize = Marshal.SizeOf(typeof(PacketHeader));//sizeof(PacketId) + sizeof(int);
                 byte[] packetData = new byte[data.Length - headerSize];
                 Buffer.BlockCopy(data, headerSize, packetData, 0, packetData.Length);
-                _notifier[packetId]((PacketId)packetId, packetData);
+                _notifier[packetId]((PacketId)packetId, packetSender, packetData);
             }
 
             return ret;

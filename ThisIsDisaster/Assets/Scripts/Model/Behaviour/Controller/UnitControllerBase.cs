@@ -10,16 +10,11 @@ public class UnitControllerBase : MonoBehaviour
     private NetworkComponents.NetworkModule _network;
     public NetworkComponents.NetworkModule Network {
         get {
-            if (_network == null) {
-                var go = GameObject.Find("NetworkModule");
-                if (go != null) {
-                    _network = go.GetComponent<NetworkComponents.NetworkModule>();
-                }
-
-            }
-            return _network;
+            return NetworkModule.Instance;
         }
     }
+
+    public UnityEngine.UI.Text NameText;
 
     private void Awake()
     {
@@ -29,13 +24,19 @@ public class UnitControllerBase : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Network.RegisterReceiveNotification(PacketId.Coordinates, OnReceiveCharacterCoordinate);
+        //Network.RegisterReceiveNotification(PacketId.Coordinates, OnReceiveCharacterCoordinate);
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void SetUnitName(string name) {
+        if (NameText) {
+            NameText.text = name;
+        }
     }
 
     public Vector3 GetPosition() {
@@ -55,12 +56,11 @@ public class UnitControllerBase : MonoBehaviour
 
     }
 
-    public void SendCharacterCoordinate(string charId, int index, List<CharacterCoordinates> coords) {
+    public void SendCharacterCoordinate(int index, List<CharacterCoordinates> coords) {
         if (Network) {
             if (!Network.IsConnected()) return;
             CharacterData data = new CharacterData()
             {
-                characterId = charId,
                 index = index,
                 dataNum = coords.Count,
                 coordinates = new CharacterCoordinates[coords.Count]
@@ -80,17 +80,15 @@ public class UnitControllerBase : MonoBehaviour
         }   
     }
 
-    public void OnReceiveCharacterCoordinate(PacketId id, byte[] data) {
-        CharacterMovingPacket packet = new CharacterMovingPacket(data);
-        CharacterData charData = packet.GetPacket();
-
+    public void OnReceiveCharacterCoordinate(CharacterData data) {
+        behaviour.CalcCoordinates(data.index, data.coordinates);
         //check movable state
-        if (true) ;
 
+        //behaviour.CalcRemotePosition();
         //update position
     }
 
-    public void onEventHandling(NetEventState state) {
+    public void OnEventHandling(NetEventState state) {
         switch (state.type) {
             case NetEventType.Connect:
 

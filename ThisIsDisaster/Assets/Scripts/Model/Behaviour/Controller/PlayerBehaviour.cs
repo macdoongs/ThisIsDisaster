@@ -5,24 +5,24 @@ using NetworkComponents;
 
 public class PlayerBehaviour : UnitBehaviourBase
 {
-    private const int _PLOT_NUM = 4;
-    private const int _CULLING_NUM = 10;
-
-    private int _plotIndex = 0;
-
-    private List<CharacterCoordinates> _culling = new List<CharacterCoordinates>();
-    private List<CharacterCoordinates> _plots = new List<CharacterCoordinates>();
-
-
-
+    
     private void Start()
     {
-        
+
+        _prevPos = Controller.GetPosition();
     }
 
     private void Update()
     {
-        
+        try
+        {
+            CalcRemotePosition();
+            CalcLocalPosition();
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+        }
     }
 
     public virtual bool IsLocal() {
@@ -34,64 +34,6 @@ public class PlayerBehaviour : UnitBehaviourBase
         
     }
 
-    protected void ExecuteStepMove() {
-        Vector3 pos = Controller.GetPosition();
-        if (_plots.Count > 0) {
-            CharacterCoordinates coord = _plots[0];
-            pos = new Vector3(coord.x, pos.y, coord.z);
-            _plots.RemoveAt(0);
-        }
-
-        if (Vector3.Distance(pos, Controller.GetPosition()) > 0f) {
-            Controller.SetPosition(pos);
-        }
-
-    }
-
-    public void ReceivePointFromNetwork(Vector3 pos) {
-        CharacterCoordinates coord;
-        coord.x = pos.x;
-        coord.z = pos.z;
-
-        _culling.Add(coord);
-
-        SplineData spline = new SplineData();
-        spline.CalcSpline(_culling, 4);
-        _plots.Clear();
-        if (spline.GetPlotNum() > 0) {
-            for (int i = 0; i < spline.GetPlotNum(); i++) {
-                CharacterCoordinates plot;
-                spline.GetPoint(i, out plot);
-                _plots.Add(plot);
-            }
-        }
-        
-    }
-
-    public void CalcCoordinates(int index, CharacterCoordinates[] data) {
-        SplineData spline = new SplineData();
-        for(int i = 0; i < data.Length; i++)
-        {
-            int p = index - _PLOT_NUM - i + 1;
-            if (p < _plotIndex) {
-                _culling.Add(data[i]);
-            }
-
-        }
-
-        _plotIndex = index;
-        spline.CalcSpline(_culling, _CULLING_NUM);
-
-        CharacterCoordinates plot = new CharacterCoordinates();
-        for (int i = 0; i < spline.GetPlotNum(); i++) {
-            spline.GetPoint(i, out plot);
-            _plots.Add(plot);
-        }
-
-        if (_culling.Count > _PLOT_NUM) {
-            _culling.RemoveAt(0);
-        }
-    }
 }
 
 public class SplineData {

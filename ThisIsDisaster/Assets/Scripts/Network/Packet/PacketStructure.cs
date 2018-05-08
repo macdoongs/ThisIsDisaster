@@ -18,6 +18,15 @@ namespace NetworkComponents
 
     public struct PacketHeader {
         public PacketId packetId;
+        public int packetSender;
+    }
+
+    public struct GameSyncData {
+        public int serverVersion;
+        public string accountName;
+        public int accountId;
+
+        public const int MAX_ACCOUNT_LENGTH = 128;
     }
 
     public struct CharacterCoordinates {
@@ -43,10 +52,15 @@ namespace NetworkComponents
             c.z = Mathf.Lerp(a.z, b.z, rate);
             return c;
         }
+
+        public override string ToString()
+        {
+            return "Coordinate "+ x + ", " + z;
+        }
     }
 
     public struct CharacterData {
-        public string characterId;
+        //public string characterId;
         public int index;
         public int dataNum;
         public CharacterCoordinates[] coordinates;
