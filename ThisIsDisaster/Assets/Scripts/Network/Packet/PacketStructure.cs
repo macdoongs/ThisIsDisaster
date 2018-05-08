@@ -11,7 +11,7 @@ namespace NetworkComponents
         GameSyncInfo,
         CharacterData,
         ItemData,
-        Moving,
+        Coordinates,
 
         Max//dummy End
     }
@@ -20,5 +20,37 @@ namespace NetworkComponents
         public PacketId packetId;
     }
 
+    public struct CharacterCoordinates {
+        public float x;
+        public float z;
 
+        public CharacterCoordinates(float x, float z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        public Vector3 GetVector() {
+            return new Vector3(x, 0f, z);
+        }
+
+        public static CharacterCoordinates SetFromVector(Vector3 v) {
+            return new CharacterCoordinates(v.x, v.z);
+        }
+
+        public static CharacterCoordinates Lerp(CharacterCoordinates a, CharacterCoordinates b, float rate) {
+            CharacterCoordinates c;
+            c.x = Mathf.Lerp(a.x, b.x, rate);
+            c.z = Mathf.Lerp(a.z, b.z, rate);
+            return c;
+        }
+    }
+
+    public struct CharacterData {
+        public string characterId;
+        public int index;
+        public int dataNum;
+        public CharacterCoordinates[] coordinates;
+        
+        public const int MAX_CHAR_ID = 64;
+    }
 }

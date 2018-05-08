@@ -8,7 +8,7 @@ using System.Xml;
 namespace GameStaticData {
     public class ItemDataLoader : StaticDataLoader
     {
-        const string _itemXmlFilePath = "xml/ItemData";
+        public const string _itemXmlFilePath = "xml/ItemData";
         const char _tagDiv = ',';
 
         protected override bool Load()
@@ -39,7 +39,8 @@ namespace GameStaticData {
             string typeText = "";
             int maxCount = 0;
             List<string> tags = new List<string>();
-            ItemType type = ItemType.EXPENDABLES;
+            ItemType type = ItemType.Etc;
+            Dictionary<string, float> statDic = new Dictionary<string, float>();
 
             XmlNode idNode = itemNode.Attributes.GetNamedItem("id");
             if (idNode!=null) {
@@ -74,7 +75,28 @@ namespace GameStaticData {
                 }
             }
 
+            foreach (XmlNode statNode in itemNode.ChildNodes) {
+                string statName = "";
+                float statValue = 0f;
+
+                statName = statNode.Name.Trim();
+                statValue = float.Parse(statNode.InnerText.Trim());
+
+                if (string.IsNullOrEmpty(statName)) continue;
+                statDic.Add(statName, statValue);
+            }
+
             ItemTypeInfo newInfo = new ItemTypeInfo(id, name, maxCount, type, tags.ToArray());
+            newInfo.stats = statDic;
+
+
+            XmlNode spriteNode = itemNode.Attributes.GetNamedItem("sprite");
+            if (spriteNode != null)
+            {
+                string src = spriteNode.InnerText.Trim();
+                newInfo.spriteSrc = src;
+            }
+
             list.Add(newInfo);
         }
     }

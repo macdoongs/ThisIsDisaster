@@ -9,14 +9,24 @@ using System.Text;
 public enum ItemType
 {
     /// <summary>
-    /// 장비 - 단일 존재 개체
+    /// 무기
     /// </summary>
-    EQUIPMENT,
+    Weapon = 0,
 
     /// <summary>
-    /// 소모품 - 다수 소지 가능
+    /// 모자
     /// </summary>
-    EXPENDABLES
+    Head,
+
+    /// <summary>
+    /// 유틸리티
+    /// </summary>
+    Util,
+
+    /// <summary>
+    /// 기타 소모품
+    /// </summary>
+    Etc
 }
 
 public class ItemTypeInfo
@@ -33,7 +43,7 @@ public class ItemTypeInfo
     /// </summary>
     public int MaxCount
     {
-        get { return itemType == ItemType.EQUIPMENT ? 1 : _defaultMaxCount; }
+        get { return itemType == ItemType.Etc ? _defaultMaxCount : 1; }
     }
 
     private int _defaultMaxCount = 0;
@@ -41,15 +51,21 @@ public class ItemTypeInfo
     /// <summary>
     /// 아이템의 타입 - 장비, 소모품
     /// </summary>
-    public ItemType itemType = ItemType.EQUIPMENT;
+    public ItemType itemType = ItemType.Weapon;
+
+    public string spriteSrc = "";
+    public Dictionary<string, float> stats = new Dictionary<string, float>();
 
 
     public List<string> tags = new List<string>();
 
     public static ItemType ParseType(string typeText) {
         switch (typeText.ToLower()) {
-            case "equipment":return ItemType.EQUIPMENT;
-            default: return ItemType.EXPENDABLES;
+            case "head": return ItemType.Head;
+            case "weapon": return ItemType.Weapon;
+            case "util": return ItemType.Util;
+            case "etc":
+            default: return ItemType.Etc;
         }
     }
 
@@ -61,5 +77,21 @@ public class ItemTypeInfo
         if (tags.Length > 0)
             this.tags.AddRange(tags);
     }
+
     //smth else info
+
+
+    public override string ToString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.AppendFormat("{0} : {1} : {2}", metaId, itemType, Name);
+        foreach (var kv in stats)
+        {
+            builder.AppendLine();
+            builder.AppendFormat("   {0}:{1}", kv.Key, kv.Value);
+        }
+
+
+        return builder.ToString();
+    }
 }
