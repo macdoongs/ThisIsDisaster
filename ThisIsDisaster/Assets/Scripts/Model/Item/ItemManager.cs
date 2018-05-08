@@ -92,10 +92,10 @@ public class ItemManager {
         return output;
     }
 
-    public void AddItem(UnitModel target, long itemMetaId) {
+    public void AddItem(UnitModel target, long itemMetaId, int amount) {
         var item = MakeItem(itemMetaId);
         if (item != null) {
-            AddItem(target, item);
+            AddItem(target, item, amount);
         }
     }
 
@@ -104,11 +104,11 @@ public class ItemManager {
     /// </summary>
     /// <param name="owner"></param>
     /// <param name="item"></param>
-    public void AddItem(UnitModel owner, ItemModel item)
+    public void AddItem(UnitModel owner, ItemModel item, int amount)
     {
         //check item movable state
 
-        if (owner.AddItem(item)) {
+        if (owner.AddItem(item, amount)) {
             item.OnItemAqquired(owner);
         }
     }

@@ -34,6 +34,10 @@ public class ItemModel {
     {
         return GetStat("health");
     }
+    public virtual float GetStamina()
+    {
+        return GetStat("stamina");
+    }
 
     public virtual float GetDamage() {
         return GetStat("damage");
