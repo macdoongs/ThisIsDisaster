@@ -78,9 +78,11 @@ public class GameManager : MonoBehaviour {
 
         if (isLocal)
         {
+            output.behaviour.IsRemoteCharacter = false;
             CurrentGameManager._localPlayer = output;
         }
         else {
+            output.behaviour.IsRemoteCharacter = true;
             CurrentGameManager.RemotePlayer.Add(id, output);
         }
 

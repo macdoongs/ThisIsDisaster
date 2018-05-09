@@ -456,7 +456,7 @@ namespace NetworkComponents
             int packetId = (int)header.packetId;
             
             int packetSender = header.packetSender;
-            Debug.LogError(string.Format("Recieved From {0} Packet {1}", header.packetId, header.packetSender));
+            Debug.LogError(string.Format("Recieved From {1} Packet {0}", header.packetId, header.packetSender));
             if (_notifier.ContainsKey(packetId) && _notifier[packetId] != null)
             {
                 int headerSize = Marshal.SizeOf(typeof(PacketHeader));//sizeof(PacketId) + sizeof(int);

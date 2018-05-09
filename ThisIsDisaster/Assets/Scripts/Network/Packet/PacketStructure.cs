@@ -41,7 +41,7 @@ namespace NetworkComponents
         }
 
         public Vector3 GetVector() {
-            return new Vector3(x, 0f, z);
+            return new Vector3(x, y, z);
         }
 
         public static CharacterCoordinates SetFromVector(Vector3 v) {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class UnitControllerBase : MonoBehaviour
 {
+    protected string _unitName = "";
     public UnitBehaviourBase behaviour = null;
     private ItemManager _itemManager = null;
     private NetworkComponents.NetworkModule _network;
@@ -37,6 +38,7 @@ public class UnitControllerBase : MonoBehaviour
         if (NameText) {
             NameText.text = name;
         }
+        _unitName = name;
     }
 
     public Vector3 GetPosition() {
@@ -46,6 +48,7 @@ public class UnitControllerBase : MonoBehaviour
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
+        Debug.Log(string.Format("{0} set position {1}", _unitName, position));
     }
 
     public float GetDirection() {
@@ -91,7 +94,7 @@ public class UnitControllerBase : MonoBehaviour
     public void OnEventHandling(NetEventState state) {
         switch (state.type) {
             case NetEventType.Connect:
-
+                 
                 break;
             case NetEventType.Disconnect:
 

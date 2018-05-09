@@ -13,6 +13,9 @@ public class UnitBehaviourBase : MonoBehaviour
     private const float _SEND_SQR_DIFF = 0.0001f;
     protected int _coordSendCount = 0;
     protected Vector3 _prevPos = Vector3.zero;
+    private const float _ZERO_VECTOR_MAG = 0.005f;
+
+    public bool IsRemoteCharacter = false;
 
     public UnitControllerBase Controller = null;
 
@@ -75,16 +78,15 @@ public class UnitBehaviourBase : MonoBehaviour
             _culling.RemoveAt(0);
         }
     }
-
-
-
+    
     protected void ExecuteStepMove()
     {
+        return;
         Vector3 pos = Controller.GetPosition();
         if (_plots.Count > 0)
         {
             CharacterCoordinates coord = _plots[0];
-            pos = new Vector3(coord.x, pos.y, coord.z);
+            pos = new Vector3(coord.x, coord.y, coord.z);
             _plots.RemoveAt(0);
         }
 
@@ -123,11 +125,18 @@ public class UnitBehaviourBase : MonoBehaviour
         Vector3 newPos = Controller.GetPosition();
         if (_plots.Count > 0) {
             CharacterCoordinates coord = _plots[0];
-            newPos = new Vector3(coord.x, newPos.y, coord.z);
+            newPos = new Vector3(coord.x, coord.y, coord.z);
             _plots.RemoveAt(0);
         }
 
         if (Vector3.Distance(newPos, Controller.GetPosition()) > 0f) {
+            if (newPos.magnitude <= _ZERO_VECTOR_MAG)
+            {
+                if (Controller.GetPosition().magnitude > _ZERO_VECTOR_MAG)
+                {
+                    return;
+                }
+            }
             Controller.SetPosition(newPos);
         }
     }
