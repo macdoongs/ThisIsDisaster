@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 114448368653945306}
   - component: {fileID: 114883223767581492}
   m_Layer: 5
-  m_Name: InGameUI
+  m_Name: InGameUI_800_600
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2883,6 +2883,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d945011a1644e4baf5997651f436c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMenus: []
+  statusMenu: {fileID: 0}
+  inventory: {fileID: 0}
+  listMenu: {fileID: 0}
+  isMenuOpen: 000000
+  isAnyMenuOpen: 0
+  Inventory: {fileID: 0}
+  listMenus:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114084974364706128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3071,6 +3081,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99803895b91bdb541b72fda83cc6170f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemBorders:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  defaultColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &114161833872550548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3676,6 +3694,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d945011a1644e4baf5997651f436c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMenus: []
+  statusMenu: {fileID: 0}
+  inventory: {fileID: 0}
+  listMenu: {fileID: 0}
+  isMenuOpen: 000000
+  isAnyMenuOpen: 0
+  Inventory: {fileID: 0}
+  listMenus:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114292758520573148
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4009,6 +4037,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1611422f258660140ae2f834c566763b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultColor: {r: 0, g: 0, b: 0, a: 0}
+  focusedColor: {r: 0, g: 0, b: 0, a: 0}
+  itemTypes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114344221114791534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5447,6 +5482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d1ad4c5a8f5754993d1bf084fd0d19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  closeObject: {fileID: 0}
 --- !u!114 &114604684430374000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5955,6 +5991,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d945011a1644e4baf5997651f436c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMenus: []
+  statusMenu: {fileID: 0}
+  inventory: {fileID: 0}
+  listMenu: {fileID: 0}
+  isMenuOpen: 000000
+  isAnyMenuOpen: 0
+  Inventory: {fileID: 0}
+  listMenus:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114707817487227940
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6455,6 +6501,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d945011a1644e4baf5997651f436c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMenus: []
+  statusMenu: {fileID: 0}
+  inventory: {fileID: 0}
+  listMenu: {fileID: 0}
+  isMenuOpen: 000000
+  isAnyMenuOpen: 0
+  Inventory: {fileID: 0}
+  listMenus:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114789062004091542
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7590,6 +7646,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d945011a1644e4baf5997651f436c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMenus: []
+  statusMenu: {fileID: 0}
+  inventory: {fileID: 0}
+  listMenu: {fileID: 0}
+  isMenuOpen: 000000
+  isAnyMenuOpen: 0
+  Inventory: {fileID: 0}
+  listMenus:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114944378926183792
 MonoBehaviour:
   m_ObjectHideFlags: 1

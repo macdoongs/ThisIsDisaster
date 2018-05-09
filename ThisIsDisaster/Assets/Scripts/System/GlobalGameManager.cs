@@ -21,8 +21,11 @@ public class GlobalGameManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
 
         GameStaticDataLoader.Loader.LoadAll();
+        GameStaticData.ItemDataLoader itemLoader = new GameStaticData.ItemDataLoader();
+        itemLoader.Initialize(GameStaticData.ItemDataLoader._itemXmlFilePath);
+        itemLoader.LoadData();
 
-        LocalizeTextDataModel.Instance.LogAllData();
+        //LocalizeTextDataModel.Instance.LogAllData();
 
         GameObject networkObject = GameObject.Find("NetworkModule");
         if (networkObject) {
