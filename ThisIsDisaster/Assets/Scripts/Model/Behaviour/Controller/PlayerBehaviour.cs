@@ -97,7 +97,18 @@ public class SplineData {
             ve = v3;
         }
 
-        
+        SimpleSpline.Curve spline = new SimpleSpline.Curve();
+        spline.AppendCV(ps, vs * 0.5f);
+        spline.AppendCV(pe, ve * 0.5f);
+        SimpleSpline.Tracer tracer = new SimpleSpline.Tracer();
+
+        tracer.Attach(spline);
+        float totalDist = spline.CalcTotalDistance();
+        for (int i = 0; i < SEND_ITERVAL; i++) {
+            float rate = (float)i / (float)SEND_ITERVAL;
+            tracer.ProceedByDistance(totalDist * rate);
+            _points.Add(CharacterCoordinates.SetFromVector(tracer.GetCurrent().position));
+        }
     }
 
     public int GetPlotNum() {
@@ -107,8 +118,7 @@ public class SplineData {
     public void GetPoint(int index, out CharacterCoordinates coord) {
         coord = _points[index];
     }
-
-
+    
 }
 
 namespace SimpleSpline {

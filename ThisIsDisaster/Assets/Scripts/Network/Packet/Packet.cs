@@ -61,6 +61,7 @@ namespace NetworkComponents {
 
                 for (int i = 0; i < packet.dataNum; ++i) {
                     Serialize(packet.coordinates[i].x);
+                    Serialize(packet.coordinates[i].y);
                     Serialize(packet.coordinates[i].z);
                 }
                 return true;
@@ -77,6 +78,7 @@ namespace NetworkComponents {
                 data.coordinates = new CharacterCoordinates[data.dataNum];
                 for (int i = 0; i < data.dataNum; i++) {
                     Deserialize(ref data.coordinates[i].x);
+                    Deserialize(ref data.coordinates[i].y);
                     Deserialize(ref data.coordinates[i].z);
                 }
 

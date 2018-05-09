@@ -66,7 +66,7 @@ public class UnitControllerBase : MonoBehaviour
                 coordinates = new CharacterCoordinates[coords.Count]
             };
 
-            for (int i = 0; i < coords.Count; ++i) {
+            for (int i = 0; i < coords.Count; i++) {
                 data.coordinates[i] = coords[i];
             }
 

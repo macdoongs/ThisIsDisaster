@@ -88,16 +88,14 @@ public class GameManager : MonoBehaviour {
     }
 
     public void OnReceiveCharacterCoordinate(NetworkComponents.PacketId packetId, int packetSender, byte[] data) {
-        NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
-        NetworkComponents.CharacterData charData = packet.GetPacket();
-
         UnitControllerBase controller = null;
-        if (RemotePlayer.TryGetValue(packetSender, out controller)) {
-            Debug.LogError("Position Info " + packetSender);
+        if (RemotePlayer.TryGetValue(packetSender, out controller))
+        {
+            NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
+            NetworkComponents.CharacterData charData = packet.GetPacket();
+
+            //Debug.LogError("Position Info " + packetSender);
             controller.OnReceiveCharacterCoordinate(charData);
-            foreach (var c in charData.coordinates) {
-                Debug.Log(c.ToString());
-            }
         }
     }
 }

@@ -31,10 +31,12 @@ namespace NetworkComponents
 
     public struct CharacterCoordinates {
         public float x;
+        public float y;
         public float z;
 
-        public CharacterCoordinates(float x, float z) {
+        public CharacterCoordinates(float x, float y, float z) {
             this.x = x;
+            this.y = y;
             this.z = z;
         }
 
@@ -43,19 +45,20 @@ namespace NetworkComponents
         }
 
         public static CharacterCoordinates SetFromVector(Vector3 v) {
-            return new CharacterCoordinates(v.x, v.z);
+            return new CharacterCoordinates(v.x, v.y, v.z);
         }
 
         public static CharacterCoordinates Lerp(CharacterCoordinates a, CharacterCoordinates b, float rate) {
             CharacterCoordinates c;
             c.x = Mathf.Lerp(a.x, b.x, rate);
+            c.y = Mathf.Lerp(a.y, b.y, rate);
             c.z = Mathf.Lerp(a.z, b.z, rate);
             return c;
         }
 
         public override string ToString()
         {
-            return "Coordinate "+ x + ", " + z;
+            return "Coordinate [" + x + "," + y + "," + z + "]";
         }
     }
 

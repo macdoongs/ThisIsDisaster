@@ -99,6 +99,7 @@ public class UnitBehaviourBase : MonoBehaviour
     {
         CharacterCoordinates coord;
         coord.x = pos.x;
+        coord.y = pos.y;
         coord.z = pos.z;
 
         _culling.Add(coord);
@@ -141,10 +142,10 @@ public class UnitBehaviourBase : MonoBehaviour
             {
                 break;
             }
-            Vector3 target = Controller.GetPosition();
+            Vector3 target = Controller.GetPosition() + Vector3.left;
             Vector3 diff = _prevPos - target;
             if (diff.sqrMagnitude > _SEND_SQR_DIFF) {
-                CharacterCoordinates coord = new CharacterCoordinates(target.x, target.z);
+                CharacterCoordinates coord = new CharacterCoordinates(target.x, target.y, target.z);
                 _culling.Add(coord);
                 Controller.SendCharacterCoordinate(_plotIndex++, _culling);
                 if (_culling.Count >= _PLOT_NUM) {
