@@ -69,10 +69,11 @@ public class RandomMapGenerator : MonoBehaviour
                 float zPos = 0f;
 
                 xPos = xInitial + yInd * _xDelta;
-                yPos = yInitial - (yInd - map[xInd,yInd]) * _yDelta;
+                yPos = yInitial - yInd * _yDelta;
                 zPos = zInitial - yInd * _zDelta;
 
-                curTile.transform.localPosition = new Vector3(xPos, yPos, zPos);
+                curTile.SetPosition(new Vector3(xPos, yPos, zPos));
+                curTile.SetHeight(map[xInd, yInd]);
             }
             xInitial += _xDelta;
             yInitial += _yDelta;
