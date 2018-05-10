@@ -9,19 +9,19 @@
     <damage>1</damage>
   </item>
   
-  <item id="30000" type="util"    name="_dummy_util_flash" sprite="Item/three" max="1" tag="dummy"/>
-  <item id="30001" type="util"    name="_dummy_util_bag" sprite="Item/four"  max="1" tag="dummy"/>
-  <item id="30002" type="util"    name="_dummy_util_raincoat" sprite="Item/five"  max="1" tag="dummy"/>
+  <item id="30000" type="util"    name="_dummy_util_flash" sprite="Item/sample/lantern_sample" max="1" tag="dummy"/>
+  <item id="30001" type="util"    name="_dummy_util_bag" sprite="Item/sample/backpack_sample"  max="1" tag="dummy"/>
+  <item id="30002" type="util"    name="_dummy_util_raincoat" sprite="Item/sample/raincoat_sample"  max="1" tag="dummy"/>
   
-  <item id="40000" type="etc"     name="_dummy_food" sprite="Item/six"  max="10" tag="dummy">
+  <item id="40000" type="etc"     name="_dummy_food" sprite="Item/sample/cake_sample"  max="10" tag="dummy">
   <health>10</health>
 </item>
 
-  <item id="40001" type="etc"     name="_dummy_water" sprite="Item/Apple"  max="10" tag="dummy">
+  <item id="40001" type="etc"     name="_dummy_water" sprite="Item/sample/drink_sample"  max="10" tag="dummy">
   <stamina>10</stamina>
 </item>
 
-  <item id="40002" type="etc"     name="_dummy_kit" sprite="Item/Cake" max="10" tag="dummy">
+  <item id="40002" type="etc"     name="_dummy_kit" sprite="Item/sample/bandage_sample" max="10" tag="dummy">
   <health>10</health>
 </item>
 

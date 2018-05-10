@@ -5,6 +5,11 @@ using System.Text;
 
 public class CharacterModel : UnitModel {
 
+
+    //테스트용 값
+    public string PlayerName = "TestID";
+    public string PlayerLevel = "123";
+
     //가방(인벤토리) 사이즈. 
     //util 아이템에 따라 사이즈 증가 가능하게 구현할 예정
     public int defaultBagSize = 30;
@@ -51,8 +56,11 @@ public class CharacterModel : UnitModel {
 
 
     //장비 착용.
-    public virtual void WearEquipment(ItemModel equipment)
+    public virtual bool WearEquipment(ItemModel equipment)
     {
+
+        bool result = false;
+
         ItemType equipType = equipment.metaInfo.itemType;
 
         if (equipType.Equals(ItemType.Weapon))
@@ -60,6 +68,7 @@ public class CharacterModel : UnitModel {
             if(weaponSlot == null){
                 weaponSlot = equipment;
                 AddStats(weaponSlot);
+                result = true;
             }
             else
             {
@@ -72,6 +81,7 @@ public class CharacterModel : UnitModel {
             {
                 headSlot = equipment;
                 AddStats(headSlot);
+                result = true;
             }
             else
             {
@@ -84,22 +94,27 @@ public class CharacterModel : UnitModel {
             {
                 utilSlot1 = equipment;
                 AddStats(utilSlot1);
+                result = true;
             }
             else if (utilSlot2 == null)
             {
                 utilSlot2 = equipment;
                 AddStats(utilSlot2);
+                result = true;
             }
             else if (utilSlot3 == null)
             {
                 utilSlot3 = equipment;
                 AddStats(utilSlot3);
+                result = true;
             }
             else
             {
                 UnityEngine.Debug.Log("All UtilSlot is full");
             }//유틸 슬롯 풀
         }
+
+        return result;
     }
     
     //장비 착용. 착용할 슬롯과 아이템 모델을 변수로 
@@ -117,32 +132,66 @@ public class CharacterModel : UnitModel {
     }
 
     //장비 제거 
-    public virtual void RemoveEquipment(ItemModel Slot)
+    public virtual void RemoveEquipment(string SlotName)
     {
-        if(Slot == null)
-        {
-            Debug.Log("Slot is alread empty");
-            return ;
-        }
 
-        ItemType slotType = Slot.metaInfo.itemType;
-        
-        
 
-        if (slotType.Equals(ItemType.Weapon))
+        if (SlotName.Equals("weapon"))
         {
+            if(weaponSlot == null)
+            {
+                Debug.Log("Slot is Empty");
+                return;
+            }
+
+            SubtractStats(weaponSlot);
             weaponSlot = null;
-            SubtractStats(Slot);
         }
-        else if (slotType.Equals(ItemType.Head))
+        else if (SlotName.Equals("head"))
         {
+            if (headSlot == null)
+            {
+                Debug.Log("Slot is Empty");
+                return;
+            }
+
+            SubtractStats(headSlot);
             headSlot = null;
-            SubtractStats(Slot);
         }
-        else if (slotType.Equals(ItemType.Util))
+        else if (SlotName.Equals("util1"))
         {
-            //
+            if (utilSlot1 == null)
+            {
+                Debug.Log("Slot is Empty");
+                return;
+            }
+            SubtractStats(utilSlot1);
+            utilSlot1 = null;
         }
+        else if (SlotName.Equals("util2"))
+        {
+            if (utilSlot2 == null)
+            {
+                Debug.Log("Slot is Empty");
+                return;
+            }
+
+            SubtractStats(utilSlot2);
+            utilSlot2 = null;
+        }
+        else if (SlotName.Equals("util3"))
+        {
+            if (utilSlot3 == null)
+            {
+                Debug.Log("Slot is Empty");
+                return;
+            }
+
+            SubtractStats(utilSlot3);
+            utilSlot3 = null;
+        }
+
+
 
         UpdateStat();
 
@@ -186,22 +235,29 @@ public class CharacterModel : UnitModel {
     }
 
     //소모품 사용. HP회복, Stamina회복
-    public void UseExpendables(ItemModel etc)
+    public bool UseExpendables(ItemModel etc)
     {
+        bool result = false;
+
         float etcHealth = etc.GetHealth();
         if(etcHealth != 0f)
         {
-            PlusHealth(etcHealth);
+            if (PlusHealth(etcHealth))
+                result = true;
         }
 
 
         float etcStamina = etc.GetStamina();
         if (etcStamina != 0f)
         {
-            PlusStamina(etcStamina);
+            if (PlusStamina(etcStamina))
+                result = true;
         }
 
         UpdateStat();
+
+
+        return result;
     }
 
     //HP 감소
@@ -217,8 +273,9 @@ public class CharacterModel : UnitModel {
     }
 
     //소모품 사용시 체력 회복. MaxHealth 이상은 회복되지 않음
-    public void PlusHealth(float weight)
+    public bool PlusHealth(float weight)
     {
+        bool result = false;
         if(health < maxHealth)
         {
             health += weight;
@@ -226,11 +283,14 @@ public class CharacterModel : UnitModel {
             {
                 health = maxHealth;
             }
+            result = true;
         }
         else
         {
             Debug.Log("HP is Full");
         }
+
+        return result;
     }
 
     //Stamina 감소
@@ -246,8 +306,9 @@ public class CharacterModel : UnitModel {
     }
 
     //아이템 사용시 Stamina회복. MaxStamina 이상은 회복 안됨
-    public void PlusStamina(float weight)
+    public bool PlusStamina(float weight)
     {
+        bool result = false;
         if (stamina < maxStamina)
         {
             stamina += weight;
@@ -255,58 +316,14 @@ public class CharacterModel : UnitModel {
             {
                 stamina = maxStamina;
             }
+            result = true;
         }
         else
         {
             Debug.Log("Stamina is Full");
         }
+
+        return result;
     }
 
-
-    //테스트용. 현재 스텟 출력
-    public virtual void PrintStats()
-    {
-        UnityEngine.Debug.Log(MaxStatsToString());
-        UnityEngine.Debug.Log(CurrentStatsToString());
-
-    }
-
-    //테스트용. 현재 맥스 스텟 출력
-    public virtual string MaxStatsToString()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.Append("Max Stats : ");
-        builder.Append(maxHealth);
-        builder.Append(" , ");
-        builder.Append(maxStamina);
-        builder.Append(" , ");
-        builder.Append(defense);
-        builder.Append(" , ");
-        builder.Append(damage);
-        builder.AppendLine();
-        string output = builder.ToString();
-
-        return output;
-
-    }
-
-
-    //테스트용. 현재 스텟 출력 
-    public virtual string CurrentStatsToString()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.Append("Current Stats : ");
-        builder.Append(health);
-        builder.Append(" , ");
-        builder.Append(stamina);
-        builder.Append(" , ");
-        builder.Append(defense);
-        builder.Append(" , ");
-        builder.Append(damage);
-        builder.AppendLine();
-        string output = builder.ToString();
-
-        return output;
-
-    }
 }

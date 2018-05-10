@@ -12,6 +12,17 @@ public class InGameUIScript : MonoBehaviour
     // 인벤토리 컨트롤러가 저장되는 게임 오브젝트
     public GameObject InventoryManager;
 
+    public GameObject StatusBarManager;
+
+
+    public void Start()
+    {
+        StatusBarManager.GetComponent<StatusBarUIScript>().
+            SetPlayerInfo(PlayerCharacter);
+        InventoryManager.GetComponent<InventoryUIController>().
+            InitialItemTypes();
+    }
+
     public void Update()
     {
         StatusManager.GetComponent<StatusUIController>().
@@ -20,14 +31,13 @@ public class InGameUIScript : MonoBehaviour
         InventoryManager.GetComponent<InventoryUIController>().
             SlotSprite(PlayerCharacter);
         InventoryManager.GetComponent<InventoryUIController>().
-            SetPreviewSprite(PlayerCharacter);        
-    }
+            SetPreviewSprite(PlayerCharacter);
+        InventoryManager.GetComponent<InventoryUIController>().
+            InventoryUpdate(PlayerCharacter);
 
-    
-
-
-
-    
+        StatusBarManager.GetComponent<StatusBarUIScript>().
+            UpdateStatusBar(PlayerCharacter);
+    }  
 }
 
 
