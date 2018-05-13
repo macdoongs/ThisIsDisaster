@@ -140,6 +140,15 @@ public class RandomMapGenerator : MonoBehaviour
 
         UpdatePosition(map);
     }
+
+    public void GetDepthByCoor(float x, float y)
+    {
+        int ix = Mathf.FloorToInt(x);
+        int iy = Mathf.FloorToInt(y);
+        //dic[ix][iy].originalPosition;
+        UnityEngine.Debug.Log(string.Format(dic[ix][iy].HeightLevel+"ix :"+ix+"iy :"+iy));
+        return;
+    }
 }
 
 //#if UNITY_EDITOR

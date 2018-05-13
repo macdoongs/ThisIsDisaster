@@ -311,10 +311,15 @@ public class PlayerMoveController : MonoBehaviour {
         }
     }
 
+    public Vector3 GetCurrentPos()
+    {
+        return transform.position;
+    }
     //deltaTime : 프레임에 렉이 걸린만큼 값이 커져 프레임렉을 보정
     void MoveUp(ref Vector3 pos)
     {
         pos.y += moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
+        RandomMapGenerator.Instance.GetDepthByCoor(transform.position[0],transform.position[1]);
         transform.Translate(0, moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
     }
 
