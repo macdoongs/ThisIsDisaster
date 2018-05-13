@@ -24,9 +24,9 @@ public class CellularAutomata : MonoBehaviour {
     
 	void Update() {
         //테스트용 코드. 왼쪽클릭시 맵 다시 생성
-		if (Input.GetMouseButtonDown(0)) {
-			GenerateMap();
-		}
+		//if (Input.GetMouseButtonDown(0)) {
+		//	GenerateMap();
+		//}
 	}
 
 	void GenerateMap() {
@@ -44,6 +44,12 @@ public class CellularAutomata : MonoBehaviour {
         makeDepth(2);
         makeDepth(3);
 
+<<<<<<< HEAD
+=======
+            UnityEngine.Debug.Log(worldMap[i, 50]);
+        }
+
+>>>>>>> 808a6df11ebdf6c6a4732a4120940365dd6b87eb
         if (RandomMapGenerator.Instance)
         {
             RandomMapGenerator.Instance.GenerateMapByAlgorithm(worldMap, width, height);
@@ -423,18 +429,28 @@ public class CellularAutomata : MonoBehaviour {
     }
 
 	void OnDrawGizmos() {
-        debugTest = RandomMapGenerator.Instance.debugTest;
-        if (debugTest == false) return;
-		else if (map != null) {
-			for (int x = 0; x < width; x ++) {
-				for (int y = 0; y < height; y ++) {
-					Gizmos.color = (map[x,y] == 1)?Color.black:Color.white;
-					Vector3 pos = new Vector3(-width/2 + x + .5f, -height/2 + y+.5f, 0);
-					Gizmos.DrawCube(pos,Vector3.one);
-				}
-			}
-		}
-	}
+        try
+        {
+            debugTest = RandomMapGenerator.Instance.debugTest;
+            if (debugTest == false) return;
+            else if (map != null)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
+                        Vector3 pos = new Vector3(-width / 2 + x + .5f, -height / 2 + y + .5f, 0);
+                        Gizmos.DrawCube(pos, Vector3.one);
+                    }
+                }
+            }
+        }
+        catch {
+
+        }
+
+    }
 
     struct Coord
     {

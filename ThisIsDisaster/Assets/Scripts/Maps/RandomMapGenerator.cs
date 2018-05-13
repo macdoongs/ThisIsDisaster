@@ -21,6 +21,7 @@ public class RandomMapGenerator : MonoBehaviour
     public int Height = 0;
 
     public GameObject _tileUnit;
+    public Transform pivot;
     public List<Sprite> _randomTileSprites;
     public int roomThresholdSize = 50;
     public bool useRandomSeed;
@@ -29,7 +30,7 @@ public class RandomMapGenerator : MonoBehaviour
     const float _xDelta = 0.5f;
     const float _yDelta = 0.25f;
     public float _zDelta = 0.1f;
-
+    public float _zCastDist = 0f;
     
 
     private void Awake()
@@ -39,13 +40,16 @@ public class RandomMapGenerator : MonoBehaviour
 
     public void ClearMap() {
         foreach (var list in dic.Values) {
-            foreach (var u in list) {
+            foreach (var u in list)
+            {
+                if (u.gameObject == pivot.gameObject) continue;
                 DestroyImmediate(u.gameObject);
             }
         }
         dic.Clear();
 
         foreach (Transform t in transform) {
+            if (t.gameObject == pivot.gameObject) continue;
             DestroyImmediate(t.gameObject);
         }
     }
@@ -74,12 +78,12 @@ public class RandomMapGenerator : MonoBehaviour
 
                 curTile.SetPosition(new Vector3(xPos, yPos, zPos));
                 curTile.SetHeight(map[xInd, yInd]);
+                curTile.SetCoord(xInd, yInd);
             }
             xInitial += _xDelta;
             yInitial += _yDelta;
             zInitial += _zDelta;
         }
-
         transform.localPosition = new Vector3(-Width * 0.5f + GameStaticInfo.TileWidth_Half, 0f, 0f);
     }
 
@@ -141,6 +145,7 @@ public class RandomMapGenerator : MonoBehaviour
         UpdatePosition(map);
     }
 
+<<<<<<< HEAD
     public void GetDepthByCoor(float x, float y)
     {
         int ix = Mathf.FloorToInt(x);
@@ -148,6 +153,46 @@ public class RandomMapGenerator : MonoBehaviour
         //dic[ix][iy].originalPosition;
         UnityEngine.Debug.Log(string.Format(dic[ix][iy].HeightLevel+"ix :"+ix+"iy :"+iy));
         return;
+=======
+    public TileUnit GetTile(Vector3 globalPosition) {
+        TileUnit output = null;
+
+        pivot.transform.position = new Vector3(globalPosition.x, globalPosition.y, pivot.transform.position.z);
+
+        Collider2D[] cs = Physics2D.OverlapPointAll(pivot.transform.position);
+        
+        if (cs != null && cs.Length > 0)
+        {
+            Collider2D tile = null;
+            foreach (var h in cs) {
+                if (h.tag == "Tile") {
+                    tile = h;
+                    break;
+                }
+            }
+            if (tile) {
+                TileUnit unit = tile.transform.parent.GetComponent<TileUnit>();
+
+                output = unit;
+            }
+        }
+
+        return output;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(pivot.transform.position, new Vector3(0f, 0f, 1f) * 10f);
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) {
+            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            TileUnit t = GetTile(pos);
+        }
+>>>>>>> 808a6df11ebdf6c6a4732a4120940365dd6b87eb
     }
 }
 
