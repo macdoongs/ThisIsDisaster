@@ -145,15 +145,16 @@ public class RandomMapGenerator : MonoBehaviour
         UpdatePosition(map);
     }
 
-<<<<<<< HEAD
+    //<<<<<<< HEAD
     public void GetDepthByCoor(float x, float y)
     {
         int ix = Mathf.FloorToInt(x);
         int iy = Mathf.FloorToInt(y);
         //dic[ix][iy].originalPosition;
-        UnityEngine.Debug.Log(string.Format(dic[ix][iy].HeightLevel+"ix :"+ix+"iy :"+iy));
+        UnityEngine.Debug.Log(string.Format(dic[ix][iy].HeightLevel + "ix :" + ix + "iy :" + iy));
         return;
-=======
+    }
+//=======
     public TileUnit GetTile(Vector3 globalPosition) {
         TileUnit output = null;
 
@@ -192,7 +193,7 @@ public class RandomMapGenerator : MonoBehaviour
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TileUnit t = GetTile(pos);
         }
->>>>>>> 808a6df11ebdf6c6a4732a4120940365dd6b87eb
+//>>>>>>> 808a6df11ebdf6c6a4732a4120940365dd6b87eb
     }
 }
 
