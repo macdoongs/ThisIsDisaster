@@ -258,7 +258,6 @@ public class PlayerMoveController : MonoBehaviour {
             currentTile = tile;
             renderLayerChanger.ReferenceRenderer.sortingOrder = tile.y + tile.HeightLevel;
             renderLayerChanger.UpdateLayerInfo();
-            Debug.Log(tile);
             //
         }
 

@@ -31,7 +31,9 @@ public class RandomMapGenerator : MonoBehaviour
     const float _yDelta = 0.25f;
     public float _zDelta = 0.1f;
     public float _zCastDist = 0f;
-    
+
+    public int[,] worldMap = null;
+     
 
     private void Awake()
     {
@@ -112,6 +114,8 @@ public class RandomMapGenerator : MonoBehaviour
         ClearMap();
         this.Width = w;
         this.Height = h;
+
+        worldMap = new int[w, h];
         
         for (int x = 0; x < Width; x++)
         {
@@ -137,12 +141,22 @@ public class RandomMapGenerator : MonoBehaviour
                 unit.SetModel(model);
                 unit.spriteRenderer.sprite = sprite;
 
+                unit.spriteRenderer.sortingOrder = y;
                 var list = GetVertical(x);
                 list.Add(unit);
+
+                worldMap[x, y] = map[x, y];
             }
         }
 
         UpdatePosition(map);
+    }
+
+    public int GetDepth(Vector3 globalPosition)
+    {
+        TileUnit tileUnit = GetTile(globalPosition);
+        Debug.Log(worldMap[tileUnit.x, tileUnit.y]);
+        return worldMap[tileUnit.x, tileUnit.y];
     }
 
     public TileUnit GetTile(Vector3 globalPosition) {
