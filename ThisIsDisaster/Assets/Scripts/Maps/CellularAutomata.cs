@@ -44,8 +44,7 @@ public class CellularAutomata : MonoBehaviour {
         makeDepth(2);
         makeDepth(3);
         
-            UnityEngine.Debug.Log(worldMap[i, 50]);
-        }
+        
     
         if (RandomMapGenerator.Instance)
         {

@@ -19,6 +19,7 @@ public class RandomMapGenerator : MonoBehaviour
     public int Width = 0;
     [ReadOnly]
     public int Height = 0;
+    public int[,] worldMap;
 
     public GameObject _tileUnit;
     public Transform pivot;
@@ -112,6 +113,7 @@ public class RandomMapGenerator : MonoBehaviour
         ClearMap();
         this.Width = w;
         this.Height = h;
+        worldMap = new int[w,h];
         
         for (int x = 0; x < Width; x++)
         {
@@ -137,11 +139,14 @@ public class RandomMapGenerator : MonoBehaviour
                 unit.SetModel(model);
                 unit.spriteRenderer.sprite = sprite;
 
+                unit.spriteRenderer.sortingOrder = y;
+
                 var list = GetVertical(x);
                 list.Add(unit);
+                worldMap[x, y] = map[x, y];
             }
         }
-
+        
         UpdatePosition(map);
     }
 
@@ -179,6 +184,12 @@ public class RandomMapGenerator : MonoBehaviour
         }
 
         return output;
+    }
+
+    public int GetDepth(Vector3 globalPosition)
+    {
+        TileUnit tileUnit = GetTile(globalPosition);
+        return worldMap[tileUnit.x, tileUnit.y];
     }
 
     private void OnDrawGizmos()
