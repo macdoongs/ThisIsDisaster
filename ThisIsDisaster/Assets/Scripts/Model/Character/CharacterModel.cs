@@ -135,7 +135,6 @@ public class CharacterModel : UnitModel {
     public virtual void RemoveEquipment(string SlotName)
     {
 
-
         if (SlotName.Equals("weapon"))
         {
             if(weaponSlot == null)
@@ -190,8 +189,6 @@ public class CharacterModel : UnitModel {
             SubtractStats(utilSlot3);
             utilSlot3 = null;
         }
-
-
 
         UpdateStat();
 

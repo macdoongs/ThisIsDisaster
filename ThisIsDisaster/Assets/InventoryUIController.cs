@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUIController : MonoBehaviour {
+    
+    public GameObject Player;
+    public CharacterModel PlayerCharacter;
 
     public int bagSize = 30;
 
@@ -12,19 +15,17 @@ public class InventoryUIController : MonoBehaviour {
     public int prevPosition = 0;
 
     //인벤토리 타입 상단 아이템 종류 텍스트
-    public Text[] ItemTypes = new Text[5];
+    public Text[] Category = new Text[5];
 
     //인벤토리 타입 하단 언더바 이미지
-    public GameObject[] ItemTypeUnderbars = new GameObject[5];
+    public GameObject[] CategoryUnderBar = new GameObject[5];
 
     public Color defaultItemTypeColor;
     public Color focusedItemTypeColor;
     public Color typeColor;
 
-
     public GameObject Content;
-
-
+    
     //인벤토리 아이템 슬롯 이미지
     public Image[] ItemSlots ;
     //인벤토리 아이템 개수 텍스트
@@ -36,6 +37,8 @@ public class InventoryUIController : MonoBehaviour {
 
     //인벤토리 착용장비 슬롯 이미지
     public Image[] PreviewSlots = new Image[5];
+    public string[] PreviewSlotName = new string[5] { "head", "weapon", "util1", "util2", "util3" };
+    public ItemModel[] PreviewItems = new ItemModel[5];
 
     //인벤토리 착용장비 기본 이미지셋 
     public Sprite[] defaultSlotSprite = new Sprite[5];
@@ -45,22 +48,77 @@ public class InventoryUIController : MonoBehaviour {
 
     public GameObject DescriptionPanel;
 
-    public Image DescriptionItemImage;
-    public Text DescriptionItemName;
-    public Text DescriptionItemDescription;
-    public Text[] DescriptionItemStats = new Text[3];
-    public Text[] DescriptionItemStatAmount = new Text[3];
-    public Text DescriptionItemUseButton ;
-    public Text DescriptionItemDeleteButton ;
-    public GameObject DescriptionItemRegisterButton;
+    public Image SlotDescriptionItemImage;
+    public Text SlotDescriptionItemName;
+    public Text SlotDescriptionItemDescription;
+    public Text[] SlotDescriptionItemStats = new Text[3];
+    public Text[] SlotDescriptionItemStatAmount = new Text[3];
+    public Text SlotDescriptionRightButton;
+    public Text SlotDescriptionLeftButton;
+    public GameObject SlotDescriptionRegisterButton;
+    
+    
+    public GameObject PrevDescriptionPanel;
 
-    public GameObject Player;
+    public Image PrevDescriptionItemImage;
+    public Text PrevDescriptionItemName;
+    public Text PrevDescriptionItemDescription;
+    public Text[] PrevDescriptionItemStats = new Text[3];
+    public Text[] PrevDescriptionItemStatAmount = new Text[3];
+    public Text PrevDescriptionRightButton;
+    public Text PrevDescriptionLeftButton;
+
+
+    DescriptionUI SlotDescription;
+    DescriptionUI PrevDescription;
+    DescriptionUI FirstItemDescription;
+    DescriptionUI SecondItemDescription;
 
     
+    
+    public GameObject ChangePanel;
+
+    public Image FirstItemImage;
+    public Text FirstItemName;
+    public Text[] FirstItemStats = new Text[3];
+    public Text[] FirstItemStatAmount = new Text[3];
+
+    public Image SecondItemImage;
+    public Text SecondItemName;
+    public Text[] SecondItemStats = new Text[3];
+    public Text[] SecondItemStatAmount = new Text[3];
+
+    public GameObject PresetPanel;
+    public Image[] PresetSprites;
+    public GameObject[] PresetRemoves;
+    public int presetPosition;
+    public Button[] PresetButtons = new Button[6];
+    public Button PresetRegisterButton;
+    public PresetItem[] PresetItems = new PresetItem[6];
+
+    public Image[] PresetBarSprite = new Image[6];
+    public Text[] PresetBarCounts = new Text[6];
+
+
+    public ItemModel[] ItemSlot ;
+
     public void Start()
     {
+        PlayerCharacter = Player.GetComponent<CharacterModel>();
+
+        SlotDescription = new DescriptionUI(DescriptionPanel , SlotDescriptionItemImage, SlotDescriptionItemName, SlotDescriptionItemDescription, 
+        SlotDescriptionItemStats, SlotDescriptionItemStatAmount,  SlotDescriptionLeftButton, SlotDescriptionRightButton, SlotDescriptionRegisterButton);
+
+        PrevDescription = new DescriptionUI(PrevDescriptionPanel, PrevDescriptionItemImage, PrevDescriptionItemName, PrevDescriptionItemDescription,
+        PrevDescriptionItemStats, PrevDescriptionItemStatAmount, PrevDescriptionLeftButton ,PrevDescriptionRightButton );
+
+        FirstItemDescription = new DescriptionUI(FirstItemImage, FirstItemName, FirstItemStats, FirstItemStatAmount);
+        SecondItemDescription = new DescriptionUI(SecondItemImage, SecondItemName, SecondItemStats, SecondItemStatAmount);
+
+
         Image[] temp = Content.transform.GetComponentsInChildren<Image>();
         Image[] items = new Image[30];
+
         for(int i =0; i < temp.Length; i++)
         {
             if(i%4 == 0)
@@ -82,11 +140,44 @@ public class InventoryUIController : MonoBehaviour {
             ItemButtons[i] = items[i].transform.GetComponentInChildren<Button>();
             int index = i;
             ItemButtons[i].onClick.AddListener(() => GetItemPosition(index));
-            ItemButtons[i].onClick.AddListener(() => SlotItemClicked(Player));
+            ItemButtons[i].onClick.AddListener(() => SlotItemClicked());
         }
 
+        PreviewItems = new ItemModel[5] { PlayerCharacter.headSlot , PlayerCharacter.weaponSlot , PlayerCharacter.utilSlot1
+                , PlayerCharacter.utilSlot2, PlayerCharacter.utilSlot3};
+
+        PresetRegisterButton.onClick.AddListener(() => PresetEditOpen());
     }
 
+    //인벤토리 업데이트. InGameUIScript에서 사용.
+    public void InventoryUpdate()
+    {
+        SlotCategory(typePosition);
+
+        DefaultBorder();
+
+        switch (typePosition)
+        {
+            case 0:
+                break;
+            case 1:
+                HighlightsCategory(ItemType.Head);
+                break;
+            case 2:
+                HighlightsCategory(ItemType.Weapon);
+                break;
+            case 3:
+                HighlightsCategory(ItemType.Util);
+                break;
+            case 4:
+                HighlightsCategory(ItemType.Etc);
+                break;
+        }
+        PresetUpdate(); 
+    }
+
+    //****************************************************************************************//
+    // 아이템 인벤토리 관련 기능들
 
     //인벤토리 슬롯 스프라이트 초기화
     public void initialSprite()
@@ -100,11 +191,11 @@ public class InventoryUIController : MonoBehaviour {
     }
 
     //아이템 슬롯 스프라이트 추가.
-    public void SlotSprite(GameObject PlayerCharacter)
+    public void SlotSprite()
     {
         initialSprite();
-        var items = PlayerCharacter.GetComponent<CharacterModel>().GetAllItems();
-        var counts = PlayerCharacter.GetComponent<CharacterModel>().GetAllCounts();
+        var items = PlayerCharacter.GetAllItems();
+        var counts = PlayerCharacter.GetAllCounts();
 
         int index = 0;
 
@@ -120,28 +211,157 @@ public class InventoryUIController : MonoBehaviour {
                 ItemSlots[index].color = Color.white;
                 ItemSlots[index].preserveAspect = true;
                 ItemCounts[index].text = counts[index].ToString();
-            }
-            
+            }           
         }
     }
-    
+ 
+    //인벤토리 상단 아이템 카테고리 선택시
+    public void SlotCategory(int index)
+    {
+        DefaultCategory();
+        Category[index].color = focusedItemTypeColor;
+        CategoryUnderBar[index].SetActive(true);
+    }
+
+    public void DefaultCategory()
+    {
+        for (int i = 0; i < Category.Length; i++)
+        {
+            Category[i].color = defaultItemTypeColor;
+            CategoryUnderBar[i].SetActive(false);
+        }
+    }
+
+    //인벤토리 상단 아이템 카테고리 초기 상태. InGameUIScript에서 사용
+    public void InitialCategory()
+    {
+        DefaultCategory();
+        SlotCategory(0);
+    }
+
+
+    public void DefaultBorder()
+    {
+        int i = 0;
+        foreach(ItemModel item in PlayerCharacter.ItemLists)
+        {
+            ItemBorders[i].color = defaultItemTypeColor;
+            i++;
+        }
+    }
+
+
+    public void GetPosition(int pos)
+    {
+        typePosition = pos;
+    }
+
+    //인벤토리 상단 아이템 카테고리 선택시 해당 아이템 타입 보더 변경. Update 에서 사용됨
+    public void HighlightsCategory(ItemType type )
+    {
+        List<ItemModel> items = PlayerCharacter.ItemLists;
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].metaInfo.itemType.Equals(type))
+            {
+                ItemBorders[i].color = typeColor;
+            }
+        }
+    }
+
+    //인벤토리 아이템 슬롯 클릭시
+    public void SlotItemClicked()
+    {
+        defaultDescriptions();
+
+        ItemModel item = null;
+
+        try
+        {
+            item = PlayerCharacter.ItemLists[itemPosition];
+        }
+        catch
+        {
+            Debug.Log("Item Slot is Empty");
+            DescriptionPanel.SetActive(false);
+            return;
+        }
+
+        if (item != null)
+        {
+            SlotDescription.SetDescription(item);
+        }
+
+        SlotDescription.DescriptionPanel.SetActive(true);
+    }
+
+    public void UseSlotItem()
+    {
+
+        ItemModel item = PlayerCharacter.ItemLists[itemPosition];
+        if (item.metaInfo.itemType.Equals(ItemType.Etc)){
+            UseEtc();
+        }
+        else{
+            WearEquip();
+        }
+    }
+
+    public void UseEtc()
+    {
+        ItemModel etc = PlayerCharacter.ItemLists[itemPosition];
+        if (PlayerCharacter.UseExpendables(etc)){
+            PlayerCharacter.ItemCounts[itemPosition]--;
+            if (PlayerCharacter.ItemCounts[itemPosition] == 0){
+                RemoveSlotItem();                
+            }
+        }
+    }
+
+    public void WearEquip()
+    {
+        ItemModel equip = PlayerCharacter.ItemLists[itemPosition];
+        if (PlayerCharacter.WearEquipment(equip)){
+            RemoveSlotItem();
+        }
+        else{
+            ChangeUIOpen();
+        }
+    }
+
+    public void RemoveSlotItem()
+    {
+        ItemModel item = PlayerCharacter.ItemLists[itemPosition];
+
+        int removedItemPosition = itemPosition;
+        PresetItemRunOut(item , removedItemPosition);
+        PlayerCharacter.RemoveItemAtIndex(itemPosition);
+        SlotDescription.ClearDescription();
+
+    }
+
+    //인벤토리 아이템 클릭 시 해당 아이템의 포지션 반환
+    public void GetItemPosition(int position)
+    {
+        itemPosition = position;
+    }
+
+    //****************************************************************************************//
+    //프리뷰 슬롯 관련 기능들
+
     //인벤토리 좌측 프리뷰 슬롯 스프라이트 할당
-    public void SetPreviewSprite(GameObject PlayerCharacter)
+    public void PreviewSprite()
     {
         //착용중인 장비 슬롯
-        ItemModel head = PlayerCharacter.GetComponent<CharacterModel>().headSlot;
-        ItemModel weapon = PlayerCharacter.GetComponent<CharacterModel>().weaponSlot;
-        ItemModel util1 = PlayerCharacter.GetComponent<CharacterModel>().utilSlot1;
-        ItemModel util2 = PlayerCharacter.GetComponent<CharacterModel>().utilSlot2;
-        ItemModel util3 = PlayerCharacter.GetComponent<CharacterModel>().utilSlot3;
-        ItemModel[] slots = new ItemModel[] { head, weapon, util1, util2, util3 };
+        getPreviewItems();
 
         for (int i = 0; i < 5; i++)
         {
 
-            if (slots[i] != null)
+            if (PreviewItems[i] != null)
             {
-                string src = slots[i].metaInfo.spriteSrc;
+                string src = PreviewItems[i].metaInfo.spriteSrc;
                 if (string.IsNullOrEmpty(src)) continue;
                 Sprite s = Resources.Load<Sprite>(src);
 
@@ -161,468 +381,364 @@ public class InventoryUIController : MonoBehaviour {
         }
     }
 
-    //인벤토리 상단 아이템 카테고리 선택시
-    public void ItemTypeFocused(int index)
+    public void getPreviewItems()
     {
-        DefaultItemTypes();
-        ItemTypes[index].color = focusedItemTypeColor;
-        ItemTypeUnderbars[index].SetActive(true);
+        PreviewItems = new ItemModel[5] { PlayerCharacter.headSlot , PlayerCharacter.weaponSlot , PlayerCharacter.utilSlot1
+                , PlayerCharacter.utilSlot2, PlayerCharacter.utilSlot3};
     }
 
-    public void DefaultItemTypes()
+    public void PreviewItemClicked()
     {
-        for (int i = 0; i < ItemTypes.Length; i++)
-        {
-            ItemTypes[i].color = defaultItemTypeColor;
-            ItemTypeUnderbars[i].SetActive(false);
-        }
-    }
+        defaultDescriptions();
 
-    //인벤토리 상단 아이템 카테고리 초기 상태. InGameUIScript에서 사용
-    public void InitialItemTypes()
-    {
-        DefaultItemTypes();
-        ItemTypeFocused(0);
-    }
+        getPreviewItems();
 
-
-    public void DefaultBorder(GameObject PlayerCharacter)
-    {
-        int i = 0;
-        foreach(ItemModel item in PlayerCharacter.GetComponent<CharacterModel>().ItemLists)
-        {
-            ItemBorders[i].color = defaultItemTypeColor;
-            i++;
-        }
-    }
-
-
-    public void GetPosition(int pos)
-    {
-        typePosition = pos;
-    }
-
-
-    //인벤토리 업데이트. InGameUIScript에서 사용.
-    public void InventoryUpdate(GameObject PlayerCharacter)
-    {    
-        ItemTypeFocused(typePosition);
-
-        DefaultBorder(PlayerCharacter);
-
-        switch (typePosition)
-        {           
-            case 0:
-                break;
-            case 1:
-                HighlightsType(ItemType.Head, PlayerCharacter);
-                break;
-            case 2:
-                HighlightsType(ItemType.Weapon, PlayerCharacter);
-                break;
-            case 3:
-                HighlightsType(ItemType.Util, PlayerCharacter);
-                break;
-            case 4:
-                HighlightsType(ItemType.Etc, PlayerCharacter);
-                break;
-        }
-
-    }
-
-    //인벤토리 상단 아이템 카테고리 선택시 해당 아이템 타입 보더 변경
-    public void HighlightsType(ItemType type, GameObject PlayerCharacter)
-    {
-        List<ItemModel> items = PlayerCharacter.GetComponent<CharacterModel>().ItemLists;
-
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (items[i].metaInfo.itemType.Equals(type))
+        //선택된 preview item
+        ItemModel item = PreviewItems[prevPosition];
+        
+        if (item != null)
             {
-                ItemBorders[i].color = typeColor;
+                PrevDescription.SetDescription(item);           
+                PrevDescriptionPanel.SetActive(true);
             }
-        }
+            else
+                return ;
     }
-
-    public void PreviewItemClicked(GameObject PlayerCharacter)
+    
+    public void RemovePreviewItem()
     {
-        ClearDescription();
-        ItemModel item = null;
+        getPreviewItems();
+        ItemModel PrevItem = PreviewItems[prevPosition];
+        long metaID = PrevItem.metaInfo.metaId;
+        ItemManager.Manager.AddItem(PlayerCharacter, metaID, 1);
 
-        ClearDescription();
+        string slotName = PreviewSlotName[prevPosition];
+        PlayerCharacter.RemoveEquipment(slotName);
 
-        switch (prevPosition)
-        {
-            case 0:
-                {
-                    try
-                    {
-                        if(PlayerCharacter.GetComponent<CharacterModel>().headSlot!=null)
-                            item = PlayerCharacter.GetComponent<CharacterModel>().headSlot;
-                    }
-                    catch
-                    {
-                        return ;
-                    }
-                    break;
-                }
-            case 1:
-                {
-                    try
-                    {
-                        if (PlayerCharacter.GetComponent<CharacterModel>().weaponSlot != null)
-                            item = PlayerCharacter.GetComponent<CharacterModel>().weaponSlot;
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                    break;
-                }
-            case 2:
-                {
-                    try
-                    {
-                        if (PlayerCharacter.GetComponent<CharacterModel>().utilSlot1 != null)
-                            item = PlayerCharacter.GetComponent<CharacterModel>().utilSlot1;
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                    break;
-                }
-            case 3:
-                {
-                    try
-                    {
-                        if (PlayerCharacter.GetComponent<CharacterModel>().utilSlot2 != null)
-                            item = PlayerCharacter.GetComponent<CharacterModel>().utilSlot2;
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                    break;
-                }
-            case 4:
-                try
-                {
-                    if (PlayerCharacter.GetComponent<CharacterModel>().utilSlot3 != null)
-                        item = PlayerCharacter.GetComponent<CharacterModel>().utilSlot3;
-                }
-                catch
-                {
-                    return;
-                }
-                break;
-
-        }
-
-
-     if (item != null)
-        {
-            SetDescriptionPannel(item);
-
-            DescriptionPanel.SetActive(true);
-        }
-        else
-            return ;
+        PrevDescription.ClearDescription();
     }
-
-    public void SlotItemClicked(GameObject PlayerCharacter)
-    {
-        DescriptionPanel.SetActive(false);
-        ClearDescription();
-        ItemDescription(PlayerCharacter);
-    }
-
-    public void ItemDescription(GameObject PlayerCharacter)
-    {
-
-        ItemModel item = null;
-
-
-        try
-        {
-            item = PlayerCharacter.GetComponent<CharacterModel>().
-            ItemLists[itemPosition];
-        }
-        catch
-        {
-            Debug.Log("Item Slot is Empty");
-            DescriptionPanel.SetActive(false);
-            return;
-        }
-
-        SetDescriptionPannel(item);
-    }
-
-
-    public void SetDescriptionPannel(ItemModel item)
-    {
-
-        if (item == null)
-        {
-            Debug.Log("Item Slot is Empty");
-            return;
-        }
-
-        if (item.metaInfo.itemType.Equals(ItemType.Etc))
-        {
-            DescriptionItemUseButton.text = "사용";
-            DescriptionItemRegisterButton.SetActive(true);
-        }
-        else
-        {
-            DescriptionItemUseButton.text = "착용";
-            DescriptionItemRegisterButton.SetActive(false);
-        }
-
-        string src = item.metaInfo.spriteSrc;
-
-        Sprite s = Resources.Load<Sprite>(src);
-
-        DescriptionItemImage.sprite = s;
-        DescriptionItemImage.color = Color.white;
-        DescriptionItemImage.preserveAspect = true;
-
-        DescriptionItemName.text = item.metaInfo.Name;
-
-        Dictionary<string, float> stats = GetItemStats(item);
-
-        int i = 0;
-        foreach (var key in stats)
-        {
-            DescriptionItemStats[i].text = key.Key;
-            DescriptionItemStatAmount[i].text = key.Value.ToString();
-            i++;
-        }
-
-        DescriptionPanel.SetActive(true);
-    }
-
-    public void ClearDescription()
-    {
-        DescriptionPanel.SetActive(false);
-        DescriptionItemImage.sprite = null;
-        DescriptionItemImage.color = Color.clear;
-
-        DescriptionItemName.text = "";
-
-        for (int i = 0; i<3; i++)
-        {
-            DescriptionItemStats[i].text = "";
-            DescriptionItemStatAmount[i].text = "";
-        }
-
-    }
-
-    public Dictionary<string , float> GetItemStats(ItemModel item)
-    {
-        // 순서 : HP , Stamina , Damage , Defense 
-
-        Dictionary<string, float> result = new Dictionary<string, float>();
-
-        if(item.GetHealth() != 0f)
-        {
-            result.Add("health", item.GetHealth());
-        }
-
-        if (item.GetStamina() != 0f)
-        {
-            result.Add("stamina", item.GetStamina());
-        }
-        if (item.GetDamage() != 0f)
-        {
-            result.Add("damage", item.GetDamage());
-        }
-        if (item.GetDefense() != 0f)
-        {
-            result.Add("defense", item.GetDefense());
-        }
-        return result;
-    }
-
-    public void RemoveItemSlot(string slotName)
-    {
-        Player.GetComponent<CharacterModel>().RemoveEquipment(slotName);
-    }
-
-    public void RemoveHead()
-    {
-        RemoveItemSlot("head");
-    }
-    public void RemoveWeapon()
-    {
-        RemoveItemSlot("weapon");
-    }
-    public void RemoveUtil1()
-    {
-        RemoveItemSlot("util1");
-    }
-    public void RemoveUtil2()
-    {
-        RemoveItemSlot("util2");
-    }
-    public void RemoveUtil3()
-    {
-        RemoveItemSlot("util3");
-    }
-
-
-
-
-    //인벤토리 아이템 클릭 시 해당 아이템의 포지션 반환
-    public void GetItemPosition(int position)
-    {
-        itemPosition = position;
-    }
-
+    
     //프리뷰 아이템 슬롯 클릭 시 해당 슬롯의 포지션 반환
     public void GetPrevPosition(int position)
     {
         prevPosition = position;
     }
 
-    public void OpenObject(GameObject target)
+    //****************************************************************************************//
+    //아이템 교체(장비 아이템) 관련 기능
+
+    //아이템 교체 창 오픈
+    public void ChangeUIOpen()
     {
-        target.SetActive(true);
+        ItemModel first, second;
+        findChageItems(out first, out second);
+
+        SetChangeDescription(first, second);
+
+        ChangePanel.SetActive(true);
     }
 
-    public void CloseObject(GameObject target)
+
+    // 교체할 장비(second) 와 교체될 장비(first) 반환
+    private void findChageItems(out ItemModel first, out ItemModel second)
     {
-        target.SetActive(false);
+        second = PlayerCharacter.ItemLists[itemPosition];
+        ItemType type = second.metaInfo.itemType;
+
+        if (type.Equals(ItemType.Head))
+            first = PlayerCharacter.headSlot;
+        else if (type.Equals(ItemType.Weapon))
+            first = PlayerCharacter.weaponSlot;
+        else
+            first = PlayerCharacter.utilSlot3; ;
     }
 
-    public void UseItemInInventory(GameObject PlayerCharacter)
+    //교체 아이템 정보 입력
+    public void SetChangeDescription(ItemModel First, ItemModel Second)
     {
-        ItemModel item = PlayerCharacter.GetComponent<CharacterModel>().ItemLists[itemPosition];
-        if (item.metaInfo.itemType.Equals(ItemType.Etc))
+        FirstItemDescription.ClearDescription();
+        FirstItemDescription.SetDescription(First);
+        SecondItemDescription.ClearDescription();
+        SecondItemDescription.SetDescription(Second);
+    }
+
+    //아이템 교체.
+    public void ChangeItem()
+    {
+        ItemType type = PlayerCharacter.ItemLists[itemPosition].metaInfo.itemType;
+        getPrevPositionByType(type);
+        RemovePreviewItem();
+        WearEquip();
+        defaultDescriptions();
+    }
+
+
+    public void defaultDescriptions()
+    {
+        SlotDescription.ClearDescription();
+        PrevDescription.ClearDescription();
+        ChangePanel.SetActive(false);
+        PresetPanel.SetActive(false);
+    }
+
+    public void getPrevPositionByType(ItemType type)
+    {
+        if (type.Equals(ItemType.Head))
         {
-            UseEtc(PlayerCharacter);
+            GetPrevPosition(0);
+        }
+        else if (type.Equals(ItemType.Weapon))
+        {
+            GetPrevPosition(1);
         }
         else
         {
-            WearEquip(PlayerCharacter);
+            GetPrevPosition(4);
         }
     }
 
-    public void RemoveItmeInInventory(GameObject PlayerCharacter)
-    {
-        PlayerCharacter.GetComponent<CharacterModel>().RemoveItemAtIndex(itemPosition);
-    }
 
-    public void UseEtc(GameObject PlayerCharacter)
+    //****************************************************************************************//
+    //아이템(소모품) 등록 관련 기능
+
+    public class PresetItem
     {
-        ItemModel etc = PlayerCharacter.GetComponent<CharacterModel>().ItemLists[itemPosition];
-        if (PlayerCharacter.GetComponent<CharacterModel>().UseExpendables(etc))
+        public int itemPosition;
+        public ItemModel Item;
+
+        public PresetItem()
+        {
+            itemPosition = -1;
+            Item = null;
+        }
+
+        public PresetItem(int position, ItemModel item)
+        {
+            itemPosition = position;
+            Item = item;
+        }
+
+        public void PrintPresetItem()
         {
 
-            PlayerCharacter.GetComponent<CharacterModel>().ItemCounts[itemPosition]--;
-            if(PlayerCharacter.GetComponent<CharacterModel>().ItemCounts[itemPosition] == 0)
+            string result = "";
+            result = result + "ItemName : " + Item.metaInfo.Name.ToString() + "\n"
+                + "Position : " + itemPosition.ToString() + "\n";
+
+            Debug.Log(result);
+        }
+    }
+
+    public void OpenPrestSetting()
+    {
+        PresetEditClose();
+        RegisterButtonOn();
+        PresetPanel.SetActive(true);
+    }
+
+    public void PresetRegister()
+    {
+        if(PresetItems[presetPosition] != null)
+        {
+            return ;
+        }
+
+        ItemModel item = PlayerCharacter.ItemLists[itemPosition];
+
+        if (CheckRegistered(itemPosition))
+        {
+
+            PresetItems[presetPosition] = new PresetItem(itemPosition, item);
+
+            //PresetSprite(item);
+            PresetUpdate();
+        }
+        else
+        {
+            Debug.Log("Item is already registered");
+        }
+        PrintPresetItem();
+    }
+
+    public void PresetSprite(ItemModel item)
+    {
+
+        string src = item.metaInfo.spriteSrc;
+        Sprite s = Resources.Load<Sprite>(src);
+
+        PresetSprites[presetPosition].sprite = s;
+        PresetSprites[presetPosition].color = Color.white;
+
+        PresetBarSprite[presetPosition].sprite = s;
+        PresetBarSprite[presetPosition].color = Color.white;
+        PresetBarCounts[presetPosition].text = ItemCounts[itemPosition].text;
+
+    }
+
+    public void PresetUpdate()
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            PresetItem presetItem = PresetItems[i];
+
+            if(presetItem != null)
             {
-                RemoveItmeInInventory(PlayerCharacter);
-                ClearDescription();
+                if(presetItem.Item != null)
+                {
+                    string src = presetItem.Item.metaInfo.spriteSrc;
+                    Sprite s = Resources.Load<Sprite>(src);
+
+
+                    int position = presetItem.itemPosition;
+
+                    PresetSprites[i].sprite = s;
+                    PresetSprites[i].color = Color.white;
+
+                    PresetBarSprite[i].sprite = s;
+                    PresetBarSprite[i].color = Color.white;
+                    PresetBarCounts[i].text = PlayerCharacter.ItemCounts[position].ToString();
+                }
+            }
+            else if(presetItem == null)
+            {
+                PresetSprites[i].sprite = null;
+                PresetSprites[i].color = Color.clear;
+
+                PresetBarSprite[i].sprite = null;
+                PresetBarSprite[i].color = Color.clear;
+                PresetBarCounts[i].text = "";
+            }
+        }
+
+
+    }
+
+    public void PresetEditOpen()
+    {
+
+        foreach (var btn in PresetRemoves)
+        {
+            btn.SetActive(true);
+        }
+
+        PresetRegisterButton.GetComponentInChildren<Text>().text = "단축키 등록";
+        PresetRegisterButton.onClick.AddListener(() => PresetEditClose());
+        RegisterButtonOff();
+    }
+
+    public void PresetEditClose()
+    {
+        RegisterButtonOn();
+        foreach (var btn in PresetRemoves)
+        {
+            btn.SetActive(false);
+        }
+
+        PresetRegisterButton.GetComponentInChildren<Text>().text = "단축키 편집";
+        PresetRegisterButton.onClick.AddListener(() => PresetEditOpen());
+
+    }
+
+    public void PresetRemove(int position)
+    {
+        PresetItems[position] = null;
+
+        PresetSprites[position].sprite = null;
+        PresetSprites[position].color = Color.clear;
+
+        PresetBarSprite[presetPosition].sprite = null;
+        PresetBarSprite[presetPosition].color = Color.clear;
+    }
+
+    public void RegisterButtonOn()
+    {
+        for (int i = 0; i < 6; i++) {
+            PresetButtons[i].onClick.AddListener(() => PresetRegister());
+        }
+    }
+
+    public void RegisterButtonOff()
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            PresetButtons[i].onClick.RemoveListener(PresetRegister);
+        }
+    }
+
+    //true면 아직 등록되지 않음. false면 이미 등록됨
+    public bool CheckRegistered(int position)
+    {
+        foreach(var preset in PresetItems)
+        {
+
+            if((preset != null) && (preset.itemPosition == position))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void getPresetPosition(int position)
+    {
+        presetPosition = position;
+    }
+
+    public void PresetBarClicked(int position)
+    {
+        PrintPresetItem();
+
+        if (PresetItems[position] != null)
+        {
+            if(PresetItems[position].Item != null)
+            {
+                int temp = itemPosition;
+
+                itemPosition = PresetItems[position].itemPosition;
+                UseSlotItem();
+                itemPosition = temp;
             }
         }
     }
 
-    public void WearEquip(GameObject PlayerCharacter)
+    public void PresetItemRunOut(ItemModel item, int removedItemPosition)
     {
-        ItemModel equip = PlayerCharacter.GetComponent<CharacterModel>().ItemLists[itemPosition];
-        if (PlayerCharacter.GetComponent<CharacterModel>().WearEquipment(equip))
+
+        for(int i = 0; i < 6; i++)
         {
-            RemoveItmeInInventory(PlayerCharacter);
-            ClearDescription();
+            PresetItem presetItem = PresetItems[i];
+
+            if(presetItem != null)
+            {
+                if (presetItem.Item.Equals(item))
+                {
+                    PresetItems[i] = null;
+                    continue;
+                }
+
+                if (presetItem.itemPosition > removedItemPosition)
+                {
+                    presetItem.itemPosition--;
+                }
+            }
+
+
         }
+
+        PresetUpdate();
+    }
+
+
+    public void PrintPresetItem()
+    {
+
+        foreach(var presetItem in PresetItems)
+        {
+            if(presetItem != null)
+            {
+                presetItem.PrintPresetItem();
+            }
+        }        
     }
 }
-/*
-    public void ItemClicked(GameObject PlayerCharacter)
-    {
-        DestroyAllButton(PlayerCharacter);
-        Vector3 pos = ItemSlots[itemPosition].transform.position;
-        GameObject button;
-        ItemModel selectedItem = null;
-
-        Debug.Log("Item Clicked");
-
-        try
-        {
-            selectedItem = PlayerCharacter.GetComponent<CharacterModel>().ItemLists[itemPosition];
-        }
-        catch
-        {
-            return ;
-        }
-        
-
-        if (selectedItem != null)
-        {
-            if (selectedItem.metaInfo.itemType.Equals(ItemType.Etc))
-            {
-                button = Instantiate(EtcButton) as GameObject;
-            }
-            else
-            {
-                button = Instantiate(EquipButton) as GameObject;
-            }
-
-            button.transform.SetParent(ItemSlots[itemPosition].transform.parent.transform);
-            button.transform.localScale = new Vector3(1, 1, 1);
-            button.transform.localPosition = new Vector3(1, 1, 1);
-
-        }
-        else
-        {
-            Debug.Log("Selected Item Slot is Empty");
-        }
-            return ;
-    }
-
-
-    public void DestroyAllButton(GameObject PlayerCharacter)
-    {
-
-        List<ItemType> itemTypes = new List<ItemType>();
-
-        foreach(ItemModel item in PlayerCharacter.GetComponent<CharacterModel>().ItemLists)
-        {
-            ItemType _itemType = item.metaInfo.itemType;
-            itemTypes.Add(_itemType);
-        }
-
-
-        for(int index = 0; index < 30; index++)
-        {
-            GameObject parent = ItemSlots[index].transform.parent.gameObject;
-            GameObject button;
-
-            if (itemTypes[index].Equals(ItemType.Etc))
-            {
-                try
-                {
-                    button = parent.transform.FindChild("ItemClickBtn_Etc(Clone)").gameObject;
-                }
-                catch
-                {
-                    return ;
-                }
-            }
-            else
-            {
-                try
-                {
-                    button = parent.transform.FindChild("ItemClickBtn_Equip(Clone)").gameObject;
-                }
-                catch
-                {
-                    return ;
-                }                
-            }
-            Destroy(button);
-        }
-
-    }
-*/

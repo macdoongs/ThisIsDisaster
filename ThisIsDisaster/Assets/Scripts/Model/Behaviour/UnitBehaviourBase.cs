@@ -1,36 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
-using SimpleSpline;
-using System.Collections.Generic;
-using NetworkComponents;
 
 public class UnitBehaviourBase : MonoBehaviour
 {
-    private const int _PLOT_NUM = 4;
-    private const int _CULLING_NUM = 10;
-    private int _plotIndex = 0;
-
-    private const float _SEND_SQR_DIFF = 0.0001f;
-    protected int _coordSendCount = 0;
-    protected Vector3 _prevPos = Vector3.zero;
-    private const float _ZERO_VECTOR_MAG = 0.005f;
-
-    public bool IsRemoteCharacter = false;
-
     public UnitControllerBase Controller = null;
 
-    
-    private List<CharacterCoordinates> _culling = new List<CharacterCoordinates>();
-    private List<CharacterCoordinates> _plots = new List<CharacterCoordinates>();
     // Use this for initialization
     void Start()
     {
-        _prevPos = Controller.GetPosition();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+<<<<<<< HEAD
+
+=======
         try
         {
             //CalcRemotePosition();
@@ -41,6 +27,7 @@ public class UnitBehaviourBase : MonoBehaviour
         catch (System.Exception e) {
             Debug.Log(e);
         }
+>>>>>>> d97cb236d0e2e96f1c2a3d235d7ce60cc462394e
     }
 
     public virtual void Initialize() { }
@@ -50,36 +37,9 @@ public class UnitBehaviourBase : MonoBehaviour
     public virtual void OnExecute() { }
 
     public virtual void OnLateExecute() { }
-
-    public virtual void CalcCoordinates(int index, CharacterCoordinates[] data)
-    {
-        SplineData spline = new SplineData();
-        for (int i = 0; i < data.Length; i++)
-        {
-            int p = index - _PLOT_NUM - i + 1;
-            if (p < _plotIndex)
-            {
-                _culling.Add(data[i]);
-            }
-
-        }
-
-        _plotIndex = index;
-        spline.CalcSpline(_culling, _CULLING_NUM);
-
-        CharacterCoordinates plot = new CharacterCoordinates();
-        for (int i = 0; i < spline.GetPlotNum(); i++)
-        {
-            spline.GetPoint(i, out plot);
-            _plots.Add(plot);
-        }
-
-        if (_culling.Count > _PLOT_NUM)
-        {
-            _culling.RemoveAt(0);
-        }
-    }
     
+<<<<<<< HEAD
+=======
     protected void ExecuteStepMove()
     {
         return;
@@ -167,4 +127,5 @@ public class UnitBehaviourBase : MonoBehaviour
         }
         while (false);
     }
+>>>>>>> d97cb236d0e2e96f1c2a3d235d7ce60cc462394e
 }

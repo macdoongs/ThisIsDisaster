@@ -8,7 +8,7 @@ public class CellularAutomata : MonoBehaviour {
 	public int width;
 	public int height;
 
-	public int seed;
+	public string seed;
 	public bool useRandomSeed;
     private bool debugTest;
 
@@ -16,7 +16,6 @@ public class CellularAutomata : MonoBehaviour {
 	public int randomFillPercent;
 
 	int[,] map; //생성된 2차원 배열맵 저장할 변수
-    int[,] worldMap;
 
 	void Start() {
 		GenerateMap();
@@ -31,50 +30,29 @@ public class CellularAutomata : MonoBehaviour {
 
 	void GenerateMap() {
 		map = new int[width,height];
-        worldMap = new int[width, height];
+		RandomFillMap();
+
+		for (int i = 0; i < 5; i ++) {
+			SmoothMap();
+		}
+
+<<<<<<< HEAD
         ProcessMap();
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                worldMap[x, y] = map[x, y];
-            }
-        }
-
-
-
-        for (int i = 50; i < 60; i++)
-        {
-            UnityEngine.Debug.Log(map[i, 50]);
-
+        
+=======
             UnityEngine.Debug.Log(worldMap[i, 50]);
         }
 
-        makeDepth(2);
-        makeDepth(3);
-        for (int i = 50; i < 60; i++)
-        {
-            UnityEngine.Debug.Log(map[i, 50]);
-
-            UnityEngine.Debug.Log(worldMap[i, 50]);
-        }
-
+>>>>>>> d97cb236d0e2e96f1c2a3d235d7ce60cc462394e
         if (RandomMapGenerator.Instance)
         {
-            RandomMapGenerator.Instance.GenerateMapByAlgorithm(worldMap, width, height);
+            RandomMapGenerator.Instance.GenerateMapByAlogrithm(map,width, height);
         }
         
     }
 
     void ProcessMap()
     {
-        RandomFillMap();
-
-        for (int i = 0; i < 5; i++)
-        {
-            SmoothMap();
-        }
-
         List<List<Coord>> wallRegions = GetRegions(1);
         int wallThresholdSize = 50;
 
@@ -367,16 +345,12 @@ public class CellularAutomata : MonoBehaviour {
 
 
     void RandomFillMap() {
-        int newSeed;
         useRandomSeed = RandomMapGenerator.Instance.useRandomSeed;
-        do
-        {
-            newSeed = UnityEngine.Random.Range(0,100);
-        } while (seed == newSeed);
-        seed = newSeed;
-        UnityEngine.Debug.Log("seed :" + seed);
+		if (useRandomSeed) {
+			seed = Time.time.ToString();
+		}
 
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+		System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 
 		for (int x = 0; x < width; x ++) {
 			for (int y = 0; y < height; y ++) {
@@ -422,20 +396,6 @@ public class CellularAutomata : MonoBehaviour {
 		return wallCount;
 	}
 
-    void makeDepth(int depth)
-    {
-        ProcessMap();
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (map[x,y] == 1 && worldMap[x,y] == 1)
-                {
-                    worldMap[x, y] = depth;
-                }
-            }
-        }
-    }
 
 	void OnDrawGizmos() {
         try
