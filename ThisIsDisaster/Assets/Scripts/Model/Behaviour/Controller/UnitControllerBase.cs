@@ -7,7 +7,7 @@ public class UnitControllerBase : MonoBehaviour
 {
     public UnitBehaviourBase behaviour = null;
     private ItemManager _itemManager = null;
-    private NetworkComponents.NetworkModule _network;
+
     public NetworkComponents.NetworkModule Network {
         get {
             if (_network == null) {

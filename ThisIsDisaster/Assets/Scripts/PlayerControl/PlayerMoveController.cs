@@ -13,6 +13,7 @@ public static class AnimatorUtil {
     }
 
     public static void SetInteger(Animator animator, string paramName, int value) {
+        if (animator == null) return;
         if (HasParameter(animator, paramName))
         {
             animator.SetInteger(paramName, value);
@@ -27,6 +28,7 @@ public static class AnimatorUtil {
 
     public static void SetBool(Animator animator, string paramName, bool value)
     {
+        if (animator == null) return;
         if (HasParameter(animator, paramName))
         {
             animator.SetBool(paramName, value);
@@ -42,6 +44,7 @@ public static class AnimatorUtil {
 
     public static void SetTrigger(Animator animator, string paramName)
     {
+        if (animator == null) return;
         if (HasParameter(animator, paramName))
         {
             animator.SetTrigger(paramName);
