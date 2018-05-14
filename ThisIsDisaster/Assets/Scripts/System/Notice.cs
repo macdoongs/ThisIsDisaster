@@ -61,4 +61,7 @@ public class Notice {
 
 public interface IObserver {
     void OnNotice(string notice, params object[] param);
+
+    void ObserveNotices();
+    void RemoveNotices();
 }
