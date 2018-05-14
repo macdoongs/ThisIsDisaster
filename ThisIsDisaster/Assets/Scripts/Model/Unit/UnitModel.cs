@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class UnitModel : MonoBehaviour {
+public class UnitModel {
+    public long instanceId = 0;
 
     public Dictionary<long, ItemModel> ItemSpace = new Dictionary<long, ItemModel>();
-
-
+    
     public List<ItemModel> ItemLists = new List<ItemModel> { };
     public List<String> ItemNames = new List<string> { };
     public List<int> ItemCounts = new List<int> { };

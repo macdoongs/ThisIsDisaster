@@ -179,10 +179,10 @@ public class RandomMapGenerator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)) {
-            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            TileUnit t = GetTile(pos);
-        }
+        //if (Input.GetMouseButtonDown(0)) {
+        //    Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    TileUnit t = GetTile(pos);
+        //}
     }
 }
 
