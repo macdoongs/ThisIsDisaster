@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using NetworkComponents;
 
+public enum GameState
+{
+    Lobby,
+    Stage,
+    None
+}
+
 public class GlobalParameters {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
@@ -29,6 +36,9 @@ public class GlobalGameManager : MonoBehaviour {
 
     public DevelopmentConsole developmentConsole;
     public GlobalParameters param = null;
+    
+    [ReadOnly]
+    public GameState GameState = GameState.Lobby;
 
     private void Awake()
     {
@@ -46,6 +56,10 @@ public class GlobalGameManager : MonoBehaviour {
         itemLoader.Initialize(GameStaticData.ItemDataLoader._itemXmlFilePath);
         itemLoader.LoadData();
 
+        GameStaticData.NPCDataLoader npcLoader = new GameStaticData.NPCDataLoader();
+        npcLoader.Initialize(GameStaticData.NPCDataLoader._npcXmlFilePath);
+        npcLoader.LoadData();
+        
         //LocalizeTextDataModel.Instance.LogAllData();
 
         GameObject networkObject = GameObject.Find("NetworkModule");
@@ -75,5 +89,10 @@ public class GlobalGameManager : MonoBehaviour {
                 developmentConsole.Open();
             }
         }
+    }
+
+    public void SetGameState(GameState state) {
+        Debug.Log("Set State: " + state);
+        GameState = state;
     }
 }

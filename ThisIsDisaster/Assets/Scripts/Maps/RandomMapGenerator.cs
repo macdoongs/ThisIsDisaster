@@ -19,7 +19,6 @@ public class RandomMapGenerator : MonoBehaviour
     public int Width = 0;
     [ReadOnly]
     public int Height = 0;
-    public int[,] worldMap;
 
     public GameObject _tileUnit;
     public Transform pivot;
@@ -113,7 +112,6 @@ public class RandomMapGenerator : MonoBehaviour
         ClearMap();
         this.Width = w;
         this.Height = h;
-        worldMap = new int[w,h];
         
         for (int x = 0; x < Width; x++)
         {
@@ -139,27 +137,14 @@ public class RandomMapGenerator : MonoBehaviour
                 unit.SetModel(model);
                 unit.spriteRenderer.sprite = sprite;
 
-                unit.spriteRenderer.sortingOrder = y;
-
                 var list = GetVertical(x);
                 list.Add(unit);
-                worldMap[x, y] = map[x, y];
             }
         }
-        
+
         UpdatePosition(map);
     }
 
-    //<<<<<<< HEAD
-    public void GetDepthByCoor(float x, float y)
-    {
-        int ix = Mathf.FloorToInt(x);
-        int iy = Mathf.FloorToInt(y);
-        //dic[ix][iy].originalPosition;
-        UnityEngine.Debug.Log(string.Format(dic[ix][iy].HeightLevel + "ix :" + ix + "iy :" + iy));
-        return;
-    }
-//=======
     public TileUnit GetTile(Vector3 globalPosition) {
         TileUnit output = null;
 
@@ -186,12 +171,6 @@ public class RandomMapGenerator : MonoBehaviour
         return output;
     }
 
-    public int GetDepth(Vector3 globalPosition)
-    {
-        TileUnit tileUnit = GetTile(globalPosition);
-        return worldMap[tileUnit.x, tileUnit.y];
-    }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -200,11 +179,7 @@ public class RandomMapGenerator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)) {
-            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            TileUnit t = GetTile(pos);
-        }
-//>>>>>>> 808a6df11ebdf6c6a4732a4120940365dd6b87eb
+
     }
 }
 

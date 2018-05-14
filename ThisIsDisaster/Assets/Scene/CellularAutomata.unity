@@ -460,10 +460,9 @@ MonoBehaviour:
   _tileUnit: {fileID: 1498860092583490, guid: 6dc8f847908a9e3479c6d5cfa1cc9356, type: 2}
   pivot: {fileID: 696363115}
   _randomTileSprites:
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
   - {fileID: 21300000, guid: 2c5a3117d5db1264188c0e85c12e64c7, type: 3}
-  - {fileID: 21300000, guid: 4a40a5d6062d3994eb89546484780c26, type: 3}
-  - {fileID: 21300000, guid: 5730cda6685e57845ae807d3a19f8386, type: 3}
+  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
+  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
   roomThresholdSize: 50
   useRandomSeed: 1
   debugTest: 0
@@ -842,6 +841,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 80
   height: 80
-  seed: 0
+  seed: 
   useRandomSeed: 1
   randomFillPercent: 50

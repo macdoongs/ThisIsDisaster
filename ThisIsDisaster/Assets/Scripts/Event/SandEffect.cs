@@ -10,7 +10,7 @@ public class SandEffect : MonoBehaviour
     public void SetLevel(int level)
     {
         this.level = level;
-        //눈의 세기를 바꿔 준다
+        //황사의 세기를 바꿔 준다
     }
 
     public void SetActive(bool state)

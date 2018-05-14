@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class StatusUIController : MonoBehaviour {
 
+    public Text PlayerLevel;
+    public Text PlayerName;
 
     //상태창 텍스트
     public Text[] StatusPane;
@@ -36,5 +38,13 @@ public class StatusUIController : MonoBehaviour {
                 PlayerCharacter.GetComponent<CharacterModel>().damage.ToString();
         Defense.GetComponent<Text>().text =
             PlayerCharacter.GetComponent<CharacterModel>().defense.ToString();
-    }    
+    }
+
+    public void SetPlayerInfo(GameObject PlayerCharacter)
+    {
+        PlayerName.text = PlayerCharacter.GetComponent<CharacterModel>().PlayerName;
+
+        PlayerLevel.text = PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel;
+
+    }
 }

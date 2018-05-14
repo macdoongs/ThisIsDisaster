@@ -6,14 +6,15 @@ using UnityEngine.UI;
 public class ItemTestCharacter : MonoBehaviour {
     //static long[] _defaultEquipments = { 10000, 20000, 30000, 30001, 30002, 40000, 40001, 40002 };
     static long[] _etcs = { 40000 , 40001, 40002 };
-    static long[] _equip = { 10000, 20000, 30000, 30001, 30002};
+    static long[] _equip = { 10001, 20001, 30000, 29999, 30002};
+    static long[] _equip2 = { 10000, 20000, 30000, 30001, 30002 };
     public GameObject PlayerCharacter;
 
     public CharacterModel CharacterUnit;
 
     public GameObject UIController;
 
-    
+    public GameObject Canvas;
 
     public void Awake()
     {
@@ -30,12 +31,10 @@ public class ItemTestCharacter : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.F1)){
             WearAllEquipType();
-            //WearWeapon();
         }
 
         if (Input.GetKeyDown(KeyCode.F2)) {
             RemoveAllEquipType();
-            //RemoveWeapon();
         }
 
         if (Input.GetKeyDown(KeyCode.F3))
@@ -79,6 +78,15 @@ public class ItemTestCharacter : MonoBehaviour {
         {
             RemoveFirstItem();
         }
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            OpenCanvas();
+        }
+    }
+
+    void OpenCanvas()
+    {
+        Canvas.SetActive(true);
     }
 
     void WearAllEquipType()
@@ -144,7 +152,7 @@ public class ItemTestCharacter : MonoBehaviour {
 
     void GetEquip()
     {
-        foreach (long id in _equip)
+        foreach (long id in _equip2)
         {
             ItemManager.Manager.AddItem(CharacterUnit, id, 1);
         }
@@ -172,4 +180,5 @@ public class ItemTestCharacter : MonoBehaviour {
             }
         }
     }
+
 }
