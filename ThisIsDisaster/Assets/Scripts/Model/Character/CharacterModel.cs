@@ -44,6 +44,10 @@ public class CharacterModel : UnitModel {
     public ItemModel utilSlot2 = null;
     public ItemModel utilSlot3 = null;
 
+    public SpriteRenderer Body;
+
+    public SpriteRenderer[] SpriteParts = new SpriteRenderer[18];
+
     //초기화 
     public virtual void initialState()
     {
@@ -323,4 +327,72 @@ public class CharacterModel : UnitModel {
         return result;
     }
 
+    public void SpriteUpdate()
+    {
+        HeadSprite();
+        WeaponSprite();
+        UtilSprite();
+    }
+
+    public void HeadSprite()
+    {
+        if (weaponSlot != null)
+        {
+            string src = weaponSlot.metaInfo.spriteSrc;
+            Sprite s = Resources.Load<Sprite>(src);
+
+
+            SpriteParts[7].sprite = s;
+        }
+        else
+        {
+            SpriteParts[7].sprite = null;
+        }
+    }
+
+
+    public void WeaponSprite()
+    {
+        if (headSlot != null)
+        {
+            string src = headSlot.metaInfo.spriteSrc;
+            Sprite s = Resources.Load<Sprite>(src);
+
+
+            SpriteParts[9].sprite = s;
+            SpriteParts[14].color = Color.clear;
+            SpriteParts[15].color = Color.clear;
+        }
+        else
+        {
+            SpriteParts[9].sprite = null;
+            SpriteParts[14].color = Color.white;
+            SpriteParts[15].color = Color.white;
+        }
+    }
+
+    public void UtilSprite()
+    {
+        ItemModel[] Utils = new ItemModel[] { utilSlot1, utilSlot2, utilSlot3 };
+
+        foreach(var util in Utils)
+        {
+            if (util != null && util.metaInfo.tags.Contains("backpack"))
+            {
+                string src = util.metaInfo.spriteSrc;
+                Sprite s = Resources.Load<Sprite>(src);
+
+
+                SpriteParts[4].sprite = s;
+
+            }
+            else
+            {
+                SpriteParts[4].sprite = null;
+
+            }
+        }
+
+
+    }
 }
