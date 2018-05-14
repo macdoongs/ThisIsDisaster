@@ -32,10 +32,12 @@ public class EventManager : MonoBehaviour {
 
     private Dictionary<EventType, EventBase> dictioary = new Dictionary<EventType, EventBase>();
 
+    public GameObject cycloneObject = null;
     public GameObject rainObject = null;
     public GameObject darkObject = null;
     public GameObject snowObject = null;
     public GameObject sandObject = null;
+
     public EventType currentTestType = EventType.None;
     
     private void Awake()
@@ -165,7 +167,7 @@ public class EventManager : MonoBehaviour {
         }
     }         // 메뉴 실행 키
 
-    public GameObject MakeWorldRain() {
+    public GameObject MakeWorldRain() {                       // 공통 비
         if (rainObject == null)
         {
             GameObject effectObject = Resources.Load<GameObject>("Prefabs/Rain");
@@ -187,7 +189,7 @@ public class EventManager : MonoBehaviour {
         return rainObject;
     }
 
-    public GameObject MakeWorldDark() {
+    public GameObject MakeWorldDark() {                       //공통 어둠
         if (darkObject == null)
         {
             GameObject effectObject = Resources.Load<GameObject>("Prefabs/Brightness");
@@ -263,6 +265,30 @@ public class EventManager : MonoBehaviour {
         return sandObject.GetComponent<SandEffect>();
     }
 
+    public CycloneEffect MakeWorldCyclone()
+    {
+        if (cycloneObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/CycloneEffect");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.transform.SetParent(Camera.main.transform);
+                effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
+                effectObject.transform.localScale = new Vector3(3f,1f,1f);
+                effectObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                effectObject.SetActive(false);
+
+            }
+
+            cycloneObject = effectObject;
+
+        }
+
+        return cycloneObject.GetComponent<CycloneEffect>();
+    }
+
+
     public GameObject MakeFire(Vector3 position)
     {
         GameObject effectObject = Resources.Load<GameObject>("Prefabs/fire");
@@ -309,9 +335,8 @@ public class EventBase {
 }
 
 public class CycloneEvent : EventBase {
-    GameObject rainObject = null;
+    CycloneEffect cycloneObject = null;
     GameObject darkObject = null;
-    GameObject windObject = null;
     
     public CycloneEvent() {
         type = EventType.Cyclone;
@@ -319,21 +344,21 @@ public class CycloneEvent : EventBase {
 
     public override void OnGenerated()
     {
-        rainObject = EventManager.Manager.MakeWorldRain();
+        cycloneObject = EventManager.Manager.MakeWorldCyclone();
         darkObject = EventManager.Manager.MakeWorldDark();
 
-        windObject = null;//make wind
+      
     }
 
     public override void OnStart()
     {
-        rainObject.SetActive(true);
+        cycloneObject.SetActive(true);
         darkObject.SetActive(true);
     }
 
     public override void OnEnd()
     {
-        rainObject.SetActive(false);
+        cycloneObject.SetActive(false);
         darkObject.SetActive(false);
     }
 
