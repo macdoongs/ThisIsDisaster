@@ -3,43 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using NetworkComponents;
 
-public class GlobalParameters {
-    public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
-    public int accountId = 0;
-    public string accountName = "";
-    public bool isHost = false;
-    public bool isConnected = false;
-    public bool isDisconnnected = false;
-
-    public int AdditionalPortNum = 0;
-    
-    public void Init() { }
-}
-
 public class GlobalGameManager : MonoBehaviour {
 
-    public static GlobalGameManager Instance {
+    public static GlobalGameManager GlobalGameManagement {
         private set;
         get;
     }
 
-    public static GlobalParameters Param {
-        get { return Instance.param; }
-    }
-
     public DevelopmentConsole developmentConsole;
-    public GlobalParameters param = null;
 
     private void Awake()
     {
-        if (Instance != null) {
+        if (GlobalGameManagement != null) {
             Destroy(gameObject); return;
         }
-        Instance = this;
+        GlobalGameManagement = this;
         DontDestroyOnLoad(gameObject);
-
-        param = new GlobalParameters();
-        param.Init();
 
         GameStaticDataLoader.Loader.LoadAll();
         GameStaticData.ItemDataLoader itemLoader = new GameStaticData.ItemDataLoader();
@@ -62,18 +41,17 @@ public class GlobalGameManager : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update ()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
+	void Update () {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Tab)) {
             if (developmentConsole.gameObject.activeInHierarchy)
             {
                 developmentConsole.Close();
             }
-            else
-            {
+            else {
                 developmentConsole.Open();
             }
         }
+#endif
     }
 }

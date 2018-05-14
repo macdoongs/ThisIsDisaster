@@ -17,10 +17,11 @@ public class InGameUIScript : MonoBehaviour
 
     public void Start()
     {
+        StatusManager.GetComponent<StatusUIController>().SetPlayerInfo(PlayerCharacter);
         StatusBarManager.GetComponent<StatusBarUIScript>().
             SetPlayerInfo(PlayerCharacter);
         InventoryManager.GetComponent<InventoryUIController>().
-            InitialItemTypes();
+            InitialCategory();
     }
 
     public void Update()
@@ -29,11 +30,11 @@ public class InGameUIScript : MonoBehaviour
             GetStatus(PlayerCharacter);
 
         InventoryManager.GetComponent<InventoryUIController>().
-            SlotSprite(PlayerCharacter);
+            SlotSprite();
         InventoryManager.GetComponent<InventoryUIController>().
-            SetPreviewSprite(PlayerCharacter);
+            PreviewSprite();
         InventoryManager.GetComponent<InventoryUIController>().
-            InventoryUpdate(PlayerCharacter);
+            InventoryUpdate();
 
         StatusBarManager.GetComponent<StatusBarUIScript>().
             UpdateStatusBar(PlayerCharacter);

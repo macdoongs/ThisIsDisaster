@@ -50,7 +50,7 @@ public class RandomMapGenerator : MonoBehaviour
         }
     }
 
-    public void UpdatePosition(int[,] map)
+    public void UpdatePosition()
     {
 
         float xInitial = 0f;
@@ -69,7 +69,7 @@ public class RandomMapGenerator : MonoBehaviour
                 float zPos = 0f;
 
                 xPos = xInitial + yInd * _xDelta;
-                yPos = yInitial - (yInd - map[xInd,yInd]) * _yDelta;
+                yPos = yInitial - yInd * _yDelta;
                 zPos = zInitial - yInd * _zDelta;
 
                 curTile.transform.localPosition = new Vector3(xPos, yPos, zPos);
@@ -103,7 +103,7 @@ public class RandomMapGenerator : MonoBehaviour
         //return isMovable ? _randomTileSprites[0] : _randomTileSprites[1];
     }
 
-    public void GenerateMapByAlgorithm(int[,] map, int w, int h) {
+    public void GenerateMapByAlogrithm(int[,] map, int w, int h) {
         ClearMap();
         this.Width = w;
         this.Height = h;
@@ -137,7 +137,7 @@ public class RandomMapGenerator : MonoBehaviour
             }
         }
 
-        UpdatePosition(map);
+        UpdatePosition();
     }
 }
 
