@@ -8,7 +8,7 @@ public class UnitControllerBase : MonoBehaviour
     protected string _unitName = "";
     public UnitBehaviourBase behaviour = null;
     private ItemManager _itemManager = null;
-    private NetworkComponents.NetworkModule _network;
+
     public NetworkComponents.NetworkModule Network {
         get {
             return NetworkModule.Instance;

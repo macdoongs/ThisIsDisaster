@@ -35,7 +35,8 @@ public class UnitBehaviourBase : MonoBehaviour
         {
             //CalcRemotePosition();
             ExecuteStepMove();
-            CalcLocalPosition();
+            if (!IsRemoteCharacter)
+                CalcLocalPosition();
         }
         catch (System.Exception e) {
             Debug.Log(e);
@@ -139,6 +140,7 @@ public class UnitBehaviourBase : MonoBehaviour
             }
             Controller.SetPosition(newPos);
         }
+        
     }
 
     public void CalcLocalPosition() {
@@ -151,7 +153,7 @@ public class UnitBehaviourBase : MonoBehaviour
             {
                 break;
             }
-            Vector3 target = Controller.GetPosition() + Vector3.left;
+            Vector3 target = Controller.GetPosition();
             Vector3 diff = _prevPos - target;
             if (diff.sqrMagnitude > _SEND_SQR_DIFF) {
                 CharacterCoordinates coord = new CharacterCoordinates(target.x, target.y, target.z);

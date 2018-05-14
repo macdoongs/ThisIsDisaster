@@ -38,6 +38,7 @@ public class SplineData
         {
             ps = dPoints[pointCount - 2].GetVector();
             pe = dPoints[pointCount - 1].GetVector();
+
             vs = (dPoints[pointCount - 2].GetVector() - dPoints[pointCount - 3].GetVector());
 
             Vector3 v0 = (dPoints[pointCount - 2].GetVector() - dPoints[pointCount - 3].GetVector());
@@ -50,7 +51,7 @@ public class SplineData
         }
         else if (pointCount >= 4)
         {
-            pe = dPoints[pointCount - 2].GetVector();
+            ps = dPoints[pointCount - 2].GetVector();
             pe = dPoints[pointCount - 1].GetVector();
 
             vs = (dPoints[pointCount - 2].GetVector() - dPoints[pointCount - 3].GetVector());
