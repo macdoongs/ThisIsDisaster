@@ -55,7 +55,7 @@ namespace GameStaticData
                     catch (ArgumentException argumentException)
                     {
 #if UNITY_EDITOR
-                        Debug.LogError("ArgumentException At " + key);
+                        Debug.LogError("ArgumentException At " + key + System.Environment.NewLine + argumentException.ToString());
 #endif
                         continue;
                     }

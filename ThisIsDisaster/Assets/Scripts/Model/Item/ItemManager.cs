@@ -55,7 +55,7 @@ public class ItemManager {
             _typeInfoDic.Add(info.metaId, info);
         }
 
-        LogExistItems();
+        //LogExistItems();
     }
 
     public void LogExistItems() {

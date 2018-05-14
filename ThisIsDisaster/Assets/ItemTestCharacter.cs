@@ -5,15 +5,16 @@ using UnityEngine.UI;
 
 public class ItemTestCharacter : MonoBehaviour {
     //static long[] _defaultEquipments = { 10000, 20000, 30000, 30001, 30002, 40000, 40001, 40002 };
-    static long[] _defaultEquipments = { 40000 };
-    static long[] _equip = { 10000};
+    static long[] _etcs = { 40000 , 40001, 40002 };
+    static long[] _equip = { 10001, 20001, 30000, 29999, 30002};
+    static long[] _equip2 = { 10000, 20000, 30000, 30001, 30002 };
     public GameObject PlayerCharacter;
 
     public CharacterModel CharacterUnit;
 
     public GameObject UIController;
 
-    
+    public GameObject Canvas;
 
     public void Awake()
     {
@@ -29,11 +30,11 @@ public class ItemTestCharacter : MonoBehaviour {
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1)){
-            WearWeapon();
+            WearAllEquipType();
         }
 
         if (Input.GetKeyDown(KeyCode.F2)) {
-            RemoveWeapon();
+            RemoveAllEquipType();
         }
 
         if (Input.GetKeyDown(KeyCode.F3))
@@ -77,7 +78,35 @@ public class ItemTestCharacter : MonoBehaviour {
         {
             RemoveFirstItem();
         }
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            OpenCanvas();
+        }
     }
+
+    void OpenCanvas()
+    {
+        Canvas.SetActive(true);
+    }
+
+    void WearAllEquipType()
+    {
+        foreach(var item in _equip)
+        {
+            ItemModel weapon = ItemManager.Manager.MakeItem(item);
+            CharacterUnit.WearEquipment(weapon);
+        }
+    }
+
+    void RemoveAllEquipType()
+    {
+        CharacterUnit.RemoveEquipment("weapon");
+        CharacterUnit.RemoveEquipment("head");
+        CharacterUnit.RemoveEquipment("util1");
+        CharacterUnit.RemoveEquipment("util2");
+        CharacterUnit.RemoveEquipment("util3");
+    }
+
     void WearWeapon()
     {
         ItemModel weapon = ItemManager.Manager.MakeItem(20000);
@@ -86,7 +115,7 @@ public class ItemTestCharacter : MonoBehaviour {
 
     void RemoveWeapon()
     {
-        CharacterUnit.RemoveEquipment(CharacterUnit.weaponSlot);
+        CharacterUnit.RemoveEquipment("weapon");
     }
 
     void WearHead()
@@ -97,7 +126,7 @@ public class ItemTestCharacter : MonoBehaviour {
 
     void RemoveHead()
     {
-        CharacterUnit.RemoveEquipment(CharacterUnit.headSlot);
+        CharacterUnit.RemoveEquipment("head");
     }
 
     void EatFood()
@@ -114,7 +143,7 @@ public class ItemTestCharacter : MonoBehaviour {
 
     void EquipDefaultItems()
     {
-        foreach (long id in _defaultEquipments)
+        foreach (long id in _etcs)
         {
             ItemManager.Manager.AddItem(CharacterUnit, id, 10);
         }
@@ -123,7 +152,7 @@ public class ItemTestCharacter : MonoBehaviour {
 
     void GetEquip()
     {
-        foreach (long id in _equip)
+        foreach (long id in _equip2)
         {
             ItemManager.Manager.AddItem(CharacterUnit, id, 1);
         }
@@ -151,4 +180,5 @@ public class ItemTestCharacter : MonoBehaviour {
             }
         }
     }
+
 }

@@ -13,6 +13,7 @@ public static class AnimatorUtil {
     }
 
     public static void SetInteger(Animator animator, string paramName, int value) {
+        if (animator == null) return;
         if (HasParameter(animator, paramName))
         {
             animator.SetInteger(paramName, value);
@@ -27,6 +28,7 @@ public static class AnimatorUtil {
 
     public static void SetBool(Animator animator, string paramName, bool value)
     {
+        if (animator == null) return;
         if (HasParameter(animator, paramName))
         {
             animator.SetBool(paramName, value);
@@ -42,6 +44,7 @@ public static class AnimatorUtil {
 
     public static void SetTrigger(Animator animator, string paramName)
     {
+        if (animator == null) return;
         if (HasParameter(animator, paramName))
         {
             animator.SetTrigger(paramName);
@@ -150,6 +153,9 @@ public class Timer
         }
         catch (System.ArithmeticException e)
         {
+#if UNITY_EDITOR
+            Debug.Log(e);
+#endif
             return 1f;
         }
     }
@@ -194,6 +200,11 @@ public static class GameStaticInfo {
     /// 게임에서 사용되는 타일의 y 축 기준점->플레이어 유닛, NPC등에 사용될 것
     /// </summary>
     public const float ZeroHeight = 0.35f;
+
+    /// <summary>
+    /// 이동속도 배수
+    /// </summary>
+    public const float GameSpeedFactor = 0.01f;
 }
 
 public class PlayerMoveController : MonoBehaviour {

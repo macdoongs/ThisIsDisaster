@@ -77,8 +77,11 @@ namespace NetworkComponents
                     _socket.Add(socket);
                 }
             }
-            catch
+            catch (Exception e)
             {
+#if UNITY_EDITOR
+                Debug.LogError(string.Format("Connect Failed : {0} {1}\r\n{2}", address, port, e.ToString()));
+#endif
                 return false;
             }
 
@@ -165,15 +168,23 @@ namespace NetworkComponents
         public void AcceptClient()
         {
 #if UNITY_EDITOR
-            Debug.Log("AcceptClient");
+            //Debug.Log("AcceptClient");
 #else
-        Console.WriteLine("AcceptClient");
+            //Console.WriteLine("AcceptClient");
 #endif
             if (_listener != null && _listener.Poll(0, SelectMode.SelectRead))
             {
                 Socket socket = _listener.Accept();
                 _socket.Add(socket);
                 _isConnected = true;
+
+                StringBuilder logger = new StringBuilder();
+                IPEndPoint local = socket.LocalEndPoint as IPEndPoint;
+                IPEndPoint remote = socket.RemoteEndPoint as IPEndPoint;
+                logger.AppendFormat("Connected Client\r\n[Local Info]\tIP: {0}\t\tPort: {1}\r\n[Remote Info]\tIP: {2}\t\tPort: {3}",
+                    local.Address, local.Port, remote.Address, remote.Port);
+                Debug.LogError(logger.ToString());
+
                 if (_handler != null)
                 {
                     NetEventState state = new NetEventState()
@@ -185,9 +196,15 @@ namespace NetworkComponents
                     _handler(state);
                 }
 
-
-                Debug.Log("Connected from client, port : " + _port);
             }
+        }
+
+        void LogSendState(Socket sendPoint) {
+            StringBuilder sb = new StringBuilder();
+            IPEndPoint from = sendPoint.LocalEndPoint as IPEndPoint;
+            IPEndPoint to = sendPoint.RemoteEndPoint as IPEndPoint;
+            sb.AppendFormat("[Local]\t\t[IP: {0}\t\tPort: {1}]\r\n[Remote]\t\t[IP: {2}\t\tPort: {3}]", from.Address, from.Port, to.Address, to.Port);
+            Debug.LogError(sb.ToString());
         }
 
         void DispatchSend()
@@ -199,8 +216,10 @@ namespace NetworkComponents
                 int sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
                 while (sendSize > 0)
                 {
+                    Debug.Log("Send TCP : " + sendSize);
                     foreach (Socket socket in _socket)
                     {
+                        LogSendState(socket);
                         socket.Send(buffer, sendSize, SocketFlags.None);
                     }
                     sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
@@ -222,7 +241,7 @@ namespace NetworkComponents
 
         void DispatchReceive()
         {
-            if (_socket != null) { return; }
+            if (_socket == null) { return; }
 
             try
             {
