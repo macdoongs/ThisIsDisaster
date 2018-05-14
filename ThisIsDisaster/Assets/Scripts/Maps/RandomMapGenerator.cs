@@ -54,7 +54,7 @@ public class RandomMapGenerator : MonoBehaviour
         }
     }
 
-    public void UpdatePosition()
+    public void UpdatePosition(int[,] map)
     {
 
         float xInitial = 0f;
@@ -108,7 +108,7 @@ public class RandomMapGenerator : MonoBehaviour
         //return isMovable ? _randomTileSprites[0] : _randomTileSprites[1];
     }
 
-    public void GenerateMapByAlogrithm(int[,] map, int w, int h) {
+    public void GenerateMapByAlgorithm(int[,] map, int w, int h) {
         ClearMap();
         this.Width = w;
         this.Height = h;
@@ -142,7 +142,7 @@ public class RandomMapGenerator : MonoBehaviour
             }
         }
 
-        UpdatePosition();
+        UpdatePosition(map);
     }
 
     public TileUnit GetTile(Vector3 globalPosition) {
@@ -179,10 +179,10 @@ public class RandomMapGenerator : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetMouseButtonDown(0)) {
-        //    Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    TileUnit t = GetTile(pos);
-        //}
+        if (Input.GetMouseButtonDown(0)) {
+            Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            TileUnit t = GetTile(pos);
+        }
     }
 }
 

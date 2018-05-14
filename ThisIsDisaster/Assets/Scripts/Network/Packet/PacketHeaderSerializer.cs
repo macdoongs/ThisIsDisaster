@@ -12,6 +12,7 @@ namespace NetworkComponents
             Clear();
             bool ret = true;
             ret &= Serialize((int)data.packetId);
+            ret &= Serialize(data.packetSender);
             return ret;
         }
 
@@ -19,8 +20,11 @@ namespace NetworkComponents
             bool ret = SetDesrializedData(data);
             if (!ret) return false;
             int packetId = 0;
+            int packetSender = 0;
             ret &= Deserialize(ref packetId);
+            ret &= Deserialize(ref packetSender);
             serialized.packetId = (PacketId)packetId;
+            serialized.packetSender = packetSender;
             return ret;
         }
     }
