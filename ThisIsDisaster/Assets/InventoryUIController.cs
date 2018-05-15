@@ -173,7 +173,8 @@ public class InventoryUIController : MonoBehaviour {
                 HighlightsCategory(ItemType.Etc);
                 break;
         }
-        PresetUpdate(); 
+        PresetUpdate();
+        PlayerCharacter.SpriteUpdate();
     }
 
     //****************************************************************************************//
@@ -243,11 +244,11 @@ public class InventoryUIController : MonoBehaviour {
     public void DefaultBorder()
     {
         int i = 0;
-        foreach(ItemModel item in PlayerCharacter.ItemLists)
+
+        for(i =0; i < bagSize; i++)
         {
             ItemBorders[i].color = defaultItemTypeColor;
-            i++;
-        }
+        }        
     }
 
 
@@ -323,7 +324,7 @@ public class InventoryUIController : MonoBehaviour {
     {
         ItemModel equip = PlayerCharacter.ItemLists[itemPosition];
         if (PlayerCharacter.WearEquipment(equip)){
-            RemoveSlotItem();
+            RemoveSlotItem();            
         }
         else{
             ChangeUIOpen();
@@ -338,7 +339,6 @@ public class InventoryUIController : MonoBehaviour {
         PresetItemRunOut(item , removedItemPosition);
         PlayerCharacter.RemoveItemAtIndex(itemPosition);
         SlotDescription.ClearDescription();
-
     }
 
     //인벤토리 아이템 클릭 시 해당 아이템의 포지션 반환
@@ -732,7 +732,6 @@ public class InventoryUIController : MonoBehaviour {
 
     public void PrintPresetItem()
     {
-
         foreach(var presetItem in PresetItems)
         {
             if(presetItem != null)

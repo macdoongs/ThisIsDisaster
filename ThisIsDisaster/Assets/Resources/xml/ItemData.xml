@@ -23,7 +23,7 @@
 
 
   <item id="30000" type="util"    name="_dummy_util_flash" sprite="Item/sample/lantern_sample" max="1" tag="dummy"/>
-  <item id="30001" type="util"    name="_dummy_util_bag" sprite="Item/sample/backpack_sample"  max="1" tag="dummy"/>
+  <item id="30001" type="util"    name="_dummy_util_bag" sprite="Item/sample/backpack_sample"  max="1" tag="backpack"/>
   <item id="30002" type="util"    name="_dummy_util_raincoat" sprite="Item/sample/raincoat_sample"  max="1" tag="dummy"/>
   
   <item id="40000" type="etc"     name="_dummy_food" sprite="Item/sample/cake_sample"  max="10" tag="dummy">
