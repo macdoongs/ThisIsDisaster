@@ -17,14 +17,19 @@ public class TileUnit : MonoBehaviour {
 
     public int HeightLevel = 0;
     public Vector3 originalPosition;
-
     public bool isNearWater = false;
 
     public int x = 0, y = 0;
 
-    public void SetModel(TempTileModel model){
+    public void SetModel(TempTileModel model) {
         _model = model;
         //spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        //GameObject _text = new GameObject(_model.xPos + ", " + _model.yPos);
+        //_text.transform.SetParent(RandomMapGenerator.Instance.gameObject.GetComponentInChildren<RectTransform>());
+        //_text.transform.localScale = Vector3.one;
+        //_text.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        //_text.transform.localPosition = 
     }
 
     public void SetPosition(Vector3 pos) {
@@ -43,5 +48,10 @@ public class TileUnit : MonoBehaviour {
     public void SetHeight(int heightLevel) {
         HeightLevel = heightLevel;
         spriteRenderer.transform.localPosition = new Vector3(0, 0.25f * heightLevel + _DEF_HEIGHT, 0f);
+
+        spriteRenderer.sortingOrder = -(x - y) * RandomMapGenerator.SPRITE_ORDER_INTERVAL + HeightLevel;
+        //_text.text = GetSpriteOrder().ToString();
     }
+
+    public int GetSpriteOrder() { return spriteRenderer.sortingOrder; }
 }

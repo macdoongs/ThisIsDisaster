@@ -253,17 +253,53 @@ public class PlayerMoveController : MonoBehaviour {
         //_movableSpace_y = MapGenerator.Instance.Height * 0.25f;
 
         currentTile = RandomMapGenerator.Instance.GetTile(transform.position);
-        Debug.Log(currentTile);
     }
-    
+
+    void CalculateSortingOrder(TileUnit tile) {
+        //List<TileUnit> ary = new List<TileUnit>();
+        //int min, max, cur;
+        //cur = min = max = tile.GetSpriteOrder();
+
+        //for (int i = -1; i < 2; i++)
+        //{
+        //    for (int j = -1; j < 2; j++) {
+        //        if (i == j) continue;
+
+        //        TileUnit tu = RandomMapGenerator.Instance.GetTile(tile.x + i, tile.y + j);
+        //        if (tu == null) continue;
+        //        int order = tu.GetSpriteOrder();
+
+        //        if (i < j)
+        //        {
+        //            if (max <= order)
+        //            {
+        //                max = order;
+        //            }
+        //        }
+        //        else if (i > 1) {
+        //            if (min >= order) {
+        //                min = order;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //Debug.Log(string.Format("Current : {0}\tMin : {1}\tMax : {2}", cur, min, max));
+        //int so = Mathf.Max(cur, max);
+        //so = Mathf.Min(so, min);
+        renderLayerChanger.ReferenceRenderer.sortingOrder = tile.GetSpriteOrder() + 1;
+        renderLayerChanger.UpdateLayerInfo();
+
+
+    }
+
     void Update() {
         var tile = RandomMapGenerator.Instance.GetTile(transform.position);
         if (tile != currentTile) {
             currentTile = tile;
-            renderLayerChanger.ReferenceRenderer.sortingOrder
-                = tile.HeightLevel * 2+1;
-            renderLayerChanger.UpdateLayerInfo();
-
+            //renderLayerChanger.ReferenceRenderer.sortingOrder = currentTile.GetSpriteOrder() + 1;
+            //renderLayerChanger.UpdateLayerInfo();
+            CalculateSortingOrder(currentTile);
             _targetHeight = currentTile.HeightLevel * 0.25f;
             _initialHeight = FlipPivot.transform.localPosition.y;
             _heightChangeTimer.StartTimer(_heightChangeTime);

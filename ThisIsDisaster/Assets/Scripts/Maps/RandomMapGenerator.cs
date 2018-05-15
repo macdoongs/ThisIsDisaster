@@ -11,6 +11,7 @@ using UnityEditor;
 [RequireComponent(typeof(SpriteRenderer))]
 public class RandomMapGenerator : MonoBehaviour
 {
+    public const int SPRITE_ORDER_INTERVAL = 3;//타일 높이 카운트 개수
     public static RandomMapGenerator Instance { get; private set; }
 
     //x, list(y)
@@ -23,6 +24,7 @@ public class RandomMapGenerator : MonoBehaviour
     public GameObject _tileUnit;
     public Transform pivot;
     public List<Sprite> _randomTileSprites;
+    public RectTransform _uiPivot;
     public int roomThresholdSize = 50;
     public bool useRandomSeed;
     public bool debugTest;
@@ -33,6 +35,8 @@ public class RandomMapGenerator : MonoBehaviour
     public float _zCastDist = 0f;
 
     public float _zPos = 10f;
+    public RectTransform _DebugParent;
+    public GameObject _DebugText;
 
     public int[,] worldMap = null;
      
@@ -81,8 +85,20 @@ public class RandomMapGenerator : MonoBehaviour
                 zPos = zInitial - yInd * _zDelta;
 
                 curTile.SetPosition(new Vector3(xPos, yPos, zPos));
-                curTile.SetHeight(map[xInd, yInd]);
                 curTile.SetCoord(xInd, yInd);
+                curTile.SetHeight(map[xInd, yInd]);
+
+                if (xInd >= 35 && xInd <= 45 && yInd >= 35 && yInd <= 45)
+                {
+                    GameObject cp = Instantiate(_DebugText);
+                    UnityEngine.UI.Text t = cp.GetComponent<UnityEngine.UI.Text>();
+                    cp.transform.SetParent(_DebugParent);
+                    RectTransform rect = cp.GetComponent<RectTransform>();
+                    rect.localScale = new Vector3(0.01f, 0.01f, 1f);
+
+                    Vector2 p = RectTransformUtility.WorldToScreenPoint(Camera.main, curTile.transform.position);
+                    rect.anchoredPosition = p;
+                }
             }
             xInitial += _xDelta;
             yInitial += _yDelta;
@@ -143,7 +159,6 @@ public class RandomMapGenerator : MonoBehaviour
                 unit.SetModel(model);
                 unit.spriteRenderer.sprite = sprite;
 
-                unit.spriteRenderer.sortingOrder = unit.HeightLevel *2;
                 var list = GetVertical(x);
                 list.Add(unit);
 
@@ -159,6 +174,13 @@ public class RandomMapGenerator : MonoBehaviour
         TileUnit tileUnit = GetTile(globalPosition);
         Debug.Log(worldMap[tileUnit.x, tileUnit.y]);
         return worldMap[tileUnit.x, tileUnit.y];
+    }
+
+    public TileUnit GetTile(int x, int y) {
+        if (x < 0 || x >= Width) return null;
+        if (y < 0 || y >= Height) return null;
+
+        return dic[x][y];
     }
 
     public TileUnit GetTile(Vector3 globalPosition) {
