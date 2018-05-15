@@ -231,6 +231,10 @@ public class PlayerMoveController : MonoBehaviour {
     float CurrentPivotXScale { get { return FlipPivot.transform.localScale.x; } }
 
     Timer _jumpDelayTimer = new Timer();
+    Timer _heightChangeTimer = new Timer();
+    public float _heightChangeTime = 0.5f;
+    float _targetHeight = 0f;
+    float _initialHeight = 0f;
 
     float _movableSpace_x = 0f;
     float _movableSpace_y = 0f;
@@ -256,9 +260,23 @@ public class PlayerMoveController : MonoBehaviour {
         var tile = RandomMapGenerator.Instance.GetTile(transform.position);
         if (tile != currentTile) {
             currentTile = tile;
-            renderLayerChanger.ReferenceRenderer.sortingOrder = tile.y + tile.HeightLevel;
+            renderLayerChanger.ReferenceRenderer.sortingOrder
+                = tile.HeightLevel * 2+1;
             renderLayerChanger.UpdateLayerInfo();
-            //
+
+            _targetHeight = currentTile.HeightLevel * 0.25f;
+            _initialHeight = FlipPivot.transform.localPosition.y;
+            _heightChangeTimer.StartTimer(_heightChangeTime);
+        }
+
+        if (_heightChangeTimer.started) {
+            float rate = Mathf.Lerp(_initialHeight, _targetHeight, _heightChangeTimer.Rate);
+            var lp = FlipPivot.transform.localPosition;
+            if (_heightChangeTimer.RunTimer()) {
+                rate = _targetHeight;
+            }
+            lp.y = rate;
+            FlipPivot.transform.localPosition = lp;
         }
 
         Vector3 currentPos = transform.position;

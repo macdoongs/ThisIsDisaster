@@ -21,22 +21,22 @@ namespace NPC
         public Animator animator;
         #endregion
 
+        Vector3 oldPos = Vector3.zero;
+
         public void SetModel(NPCModel model) {
             Model = model;
             //onsetevent
         }
-
-
+        
         // Use this for initialization
         void Start()
         {
-
+            oldPos = transform.position;
         }
 
         // Update is called once per frame
         void Update()
         {
-
         }
 
         public void OnDestroied() {
@@ -55,6 +55,32 @@ namespace NPC
             loaded.transform.localScale = Vector3.one;
             loaded.transform.localRotation = Quaternion.Euler(Vector3.zero);
             return loaded;
+        }
+
+        private void LateUpdate()
+        {
+            Vector3 currentPos = transform.position;
+            
+            if (currentPos.x > oldPos.x) {
+                //set left
+                SetDirection(UnitDirection.LEFT);
+            }
+            else if (currentPos.x < oldPos.x) {
+                //set right
+                SetDirection(UnitDirection.RIGHT);
+            }
+            oldPos = currentPos;
+        }
+
+        public void SetDirection(UnitDirection dir) {
+            Vector3 scale = Vector3.one;
+            if (dir == UnitDirection.LEFT)
+            {
+                scale.x *= -1;
+            }
+
+            animTarget.transform.localScale = scale;
+
         }
     }
 }

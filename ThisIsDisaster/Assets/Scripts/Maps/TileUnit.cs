@@ -31,7 +31,7 @@ public class TileUnit : MonoBehaviour {
         originalPosition = pos;
         transform.localPosition = pos;
         Vector3 colPos = collider.transform.position;
-        colPos.z = 0f;
+        colPos.z = RandomMapGenerator.Instance.transform.position.z;
         collider.transform.position = colPos;
     }
 

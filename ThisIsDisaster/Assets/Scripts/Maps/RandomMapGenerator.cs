@@ -32,6 +32,8 @@ public class RandomMapGenerator : MonoBehaviour
     public float _zDelta = 0.1f;
     public float _zCastDist = 0f;
 
+    public float _zPos = 10f;
+
     public int[,] worldMap = null;
      
 
@@ -86,7 +88,7 @@ public class RandomMapGenerator : MonoBehaviour
             yInitial += _yDelta;
             zInitial += _zDelta;
         }
-        transform.localPosition = new Vector3(-Width * 0.5f + GameStaticInfo.TileWidth_Half, 0f, 0f);
+        transform.localPosition = new Vector3(-Width * 0.5f + GameStaticInfo.TileWidth_Half, 0f, _zPos);
     }
 
     List<TileUnit> GetVertical(int x)
@@ -141,7 +143,7 @@ public class RandomMapGenerator : MonoBehaviour
                 unit.SetModel(model);
                 unit.spriteRenderer.sprite = sprite;
 
-                unit.spriteRenderer.sortingOrder = y;
+                unit.spriteRenderer.sortingOrder = unit.HeightLevel *2;
                 var list = GetVertical(x);
                 list.Add(unit);
 
@@ -184,13 +186,7 @@ public class RandomMapGenerator : MonoBehaviour
 
         return output;
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(pivot.transform.position, new Vector3(0f, 0f, 1f) * 10f);
-    }
-
+    
     private void Update()
     {
 

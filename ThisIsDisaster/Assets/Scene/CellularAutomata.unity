@@ -88,7 +88,6 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -176,7 +175,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 58658237}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 73.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1315204259}
@@ -465,10 +464,10 @@ MonoBehaviour:
   _tileUnit: {fileID: 1498860092583490, guid: 6dc8f847908a9e3479c6d5cfa1cc9356, type: 2}
   pivot: {fileID: 696363115}
   _randomTileSprites:
+  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
   - {fileID: 21300000, guid: 2c5a3117d5db1264188c0e85c12e64c7, type: 3}
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
+  - {fileID: 21300000, guid: 4fa1d04c987d2824ab1a53a2abad9069, type: 3}
+  - {fileID: 21300000, guid: 5730cda6685e57845ae807d3a19f8386, type: 3}
   roomThresholdSize: 50
   useRandomSeed: 1
   debugTest: 0
@@ -623,7 +622,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1643413057
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1527115499 stripped
@@ -765,7 +764,6 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
