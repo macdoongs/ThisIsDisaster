@@ -35,8 +35,6 @@ public class RandomMapGenerator : MonoBehaviour
     public float _zCastDist = 0f;
 
     public float _zPos = 10f;
-    public RectTransform _DebugParent;
-    public GameObject _DebugText;
 
     public int[,] worldMap = null;
      
@@ -87,21 +85,6 @@ public class RandomMapGenerator : MonoBehaviour
                 curTile.SetPosition(new Vector3(xPos, yPos, zPos));
                 curTile.SetCoord(xInd, yInd);
                 curTile.SetHeight(map[xInd, yInd]);
-
-                if (xInd >= Width/2 -  5 && xInd <= Width/2 + 5 && yInd >= Height / 2 - 5 && yInd <= Height / 2 + 5)
-                {
-                    GameObject cp = Instantiate(_DebugText);
-                    UnityEngine.UI.Text t = cp.GetComponent<UnityEngine.UI.Text>();
-                    cp.transform.SetParent(_DebugParent);
-                    RectTransform rect = cp.GetComponent<RectTransform>();
-                    rect.localScale = new Vector3(1f,1f,1f);
-
-                    //Vector2 p = curTile.transform.position;
-                    Vector3 p = curTile.transform.position;
-                    p.x -= Width / 2;
-                    
-                    rect.transform.position = p;
-                }
             }
             xInitial += _xDelta;
             yInitial += _yDelta;
