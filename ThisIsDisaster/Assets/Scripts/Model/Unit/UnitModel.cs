@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class UnitModel : MonoBehaviour{
+public class UnitModel : MonoBehaviour {
     public long instanceId = 0;
 
     public Dictionary<long, ItemModel> ItemSpace = new Dictionary<long, ItemModel>();

@@ -23,8 +23,8 @@ public class NPCLayer : MonoBehaviour {
 
         NPCUnit unit = unitObject.AddComponent<NPCUnit>();
         unit.SetModel(model);
-        unit.LoadPrefab();
         model.SetUnit(unit);
+        unit.LoadPrefab();
 
         return unit;
     }

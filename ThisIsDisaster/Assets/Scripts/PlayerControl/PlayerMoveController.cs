@@ -347,9 +347,9 @@ public class PlayerMoveController : MonoBehaviour {
             MoveRight(ref movePos);
         }
 
-        Vector3 newPos = currentPos;
-        newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
-        newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
+        //Vector3 newPos = currentPos;
+        //newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
+        //newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
 
         //transform.localPosition = newPos;
 
@@ -425,7 +425,8 @@ public class PlayerMoveController : MonoBehaviour {
         int currentDepth = RandomMapGenerator.Instance.GetDepth(currentTile.x, currentTile.y);
         if (nextDepth - currentDepth - _jumpingLevel < 2)
         {
-            transform.Translate(pos);
+            if (_heightChangeTimer.started == false)
+                transform.Translate(pos);
         }
     }
 
