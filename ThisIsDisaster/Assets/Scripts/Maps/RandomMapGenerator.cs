@@ -88,16 +88,19 @@ public class RandomMapGenerator : MonoBehaviour
                 curTile.SetCoord(xInd, yInd);
                 curTile.SetHeight(map[xInd, yInd]);
 
-                if (xInd >= 35 && xInd <= 45 && yInd >= 35 && yInd <= 45)
+                if (xInd >= Width/2 -  5 && xInd <= Width/2 + 5 && yInd >= Height / 2 - 5 && yInd <= Height / 2 + 5)
                 {
                     GameObject cp = Instantiate(_DebugText);
                     UnityEngine.UI.Text t = cp.GetComponent<UnityEngine.UI.Text>();
                     cp.transform.SetParent(_DebugParent);
                     RectTransform rect = cp.GetComponent<RectTransform>();
-                    rect.localScale = new Vector3(0.01f, 0.01f, 1f);
+                    rect.localScale = new Vector3(1f,1f,1f);
 
-                    Vector2 p = RectTransformUtility.WorldToScreenPoint(Camera.main, curTile.transform.position);
-                    rect.anchoredPosition = p;
+                    //Vector2 p = curTile.transform.position;
+                    Vector3 p = curTile.transform.position;
+                    p.x -= Width / 2;
+                    
+                    rect.transform.position = p;
                 }
             }
             xInitial += _xDelta;
@@ -172,8 +175,14 @@ public class RandomMapGenerator : MonoBehaviour
     public int GetDepth(Vector3 globalPosition)
     {
         TileUnit tileUnit = GetTile(globalPosition);
-        Debug.Log(worldMap[tileUnit.x, tileUnit.y]);
+        if (tileUnit == null) {
+            return -1;
+        }
         return worldMap[tileUnit.x, tileUnit.y];
+    }
+
+    public int GetDepth(int x, int y) {
+        return worldMap[x, y];
     }
 
     public TileUnit GetTile(int x, int y) {

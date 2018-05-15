@@ -53,5 +53,11 @@ public class TileUnit : MonoBehaviour {
         //_text.text = GetSpriteOrder().ToString();
     }
 
+    public void SetRendererAlpha(float alpha) {
+        Color c = spriteRenderer.color;
+        c.a = alpha;
+        spriteRenderer.color = c;
+    }
+
     public int GetSpriteOrder() { return spriteRenderer.sortingOrder; }
 }
