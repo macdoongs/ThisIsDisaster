@@ -1,5 +1,7 @@
 **/Library/
 **/Temp/
+**/Backup/
+**/.vs/
 
 # Visual Studio 2015 cache directory
 /.vs/
