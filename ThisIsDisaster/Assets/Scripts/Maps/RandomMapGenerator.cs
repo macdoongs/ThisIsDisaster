@@ -153,6 +153,8 @@ public class RandomMapGenerator : MonoBehaviour
         }
 
         UpdatePosition(map);
+
+        AstarCalculator.Instance.Init(dic, w, h);
     }
 
     public int GetDepth(Vector3 globalPosition)
