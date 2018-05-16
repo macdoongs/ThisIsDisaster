@@ -19,6 +19,9 @@ namespace NPC
         #region Inspector
         public GameObject animTarget;
         public Animator animator;
+
+        public AttackSender AttackSender;
+        public AttackReceiver AttackReceiver;
         #endregion
 
         Vector3 oldPos = Vector3.zero;
@@ -26,6 +29,8 @@ namespace NPC
         public void SetModel(NPCModel model) {
             Model = model;
             //onsetevent
+
+            AttackSender.SetOwner(model);
         }
         
         // Use this for initialization

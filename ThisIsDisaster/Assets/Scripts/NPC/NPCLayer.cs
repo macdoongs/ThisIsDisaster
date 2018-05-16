@@ -9,13 +9,18 @@ public class NPCLayer : MonoBehaviour {
         get;
     }
 
+    public GameObject Unit;
+
     private void Awake()
     {
         CurrentLayer = this;
     }
 
     public NPCUnit MakeUnit(NPCModel model) {
-        GameObject unitObject = new GameObject(model.MetaInfo.Name);
+
+        GameObject unitObject = Instantiate(Unit);
+        unitObject.name = model.MetaInfo.Name;
+
         unitObject.transform.SetParent(transform);
         unitObject.transform.localPosition = Vector3.zero;
         unitObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
@@ -23,8 +28,8 @@ public class NPCLayer : MonoBehaviour {
 
         NPCUnit unit = unitObject.AddComponent<NPCUnit>();
         unit.SetModel(model);
-        unit.LoadPrefab();
         model.SetUnit(unit);
+        unit.LoadPrefab();
 
         return unit;
     }

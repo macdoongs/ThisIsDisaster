@@ -68,7 +68,6 @@ public class Timer
     public float maxTime = 0f;
     public bool started = false;
     public bool autoStop = true;
-    public int jumping = 0;
     public float Rate
     {
         get
@@ -90,7 +89,6 @@ public class Timer
         }
         else
         {
-            this.jumping = 1;
             this.started = true;
         }
     }
@@ -109,7 +107,6 @@ public class Timer
         elapsed += Time.deltaTime;
         if (elapsed >= maxTime)
         {
-            this.jumping = 0;
             if (autoStop)
             {
                 elapsed = 0f;
@@ -129,7 +126,6 @@ public class Timer
     public virtual void StartTimer()
     {
         this.maxTime = float.MaxValue;
-        this.jumping = 1;
 
         if (this.started)
         {
@@ -211,6 +207,8 @@ public static class GameStaticInfo {
     /// 이동속도 배수
     /// </summary>
     public const float GameSpeedFactor = 0.01f;
+
+        
 }
 
 public class PlayerMoveController : MonoBehaviour {
@@ -232,12 +230,15 @@ public class PlayerMoveController : MonoBehaviour {
 
     Timer _jumpDelayTimer = new Timer();
     Timer _heightChangeTimer = new Timer();
-    public float _heightChangeTime = 0.5f;
+    public float _heightAscendTime = 0.1f;
+    public float _heightDescendTime = 0.25f;
     float _targetHeight = 0f;
     float _initialHeight = 0f;
 
     float _movableSpace_x = 0f;
     float _movableSpace_y = 0f;
+
+    private int _jumpingLevel = 0;
 
 	void Awake(){
 
@@ -247,26 +248,71 @@ public class PlayerMoveController : MonoBehaviour {
 
     private void Start()
     {
-        //transform.position = new Vector3(0f, GameStaticInfo.ZeroHeight);
-
-        //_movableSpace_x = MapGenerator.Instance.Width * 0.5f;
-        //_movableSpace_y = MapGenerator.Instance.Height * 0.25f;
-
         currentTile = RandomMapGenerator.Instance.GetTile(transform.position);
-        Debug.Log(currentTile);
     }
-    
+
+    void OnChangeCurrentTile(TileUnit tile)
+    {
+        //revert old tile transparent
+
+        SetNearTileAlpha(currentTile, 1f);
+
+        currentTile = tile;
+
+        SetNearTileAlpha(currentTile, 0.6f);
+
+        renderLayerChanger.ReferenceRenderer.sortingOrder = tile.GetSpriteOrder() + 3;
+        renderLayerChanger.UpdateLayerInfo();
+
+        _targetHeight = currentTile.HeightLevel * 0.25f;//no magic numer, change const
+        _initialHeight = FlipPivot.transform.localPosition.y;
+        if (_targetHeight != _initialHeight) {
+            float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
+            _heightChangeTimer.StartTimer(time);
+        }
+    }
+
+    void SetNearTileAlpha(TileUnit tile, float alpha)
+    {
+        if (tile == null) return;
+        var list = GetTransparentTargets(tile);
+
+        foreach (var t in list) {
+            if (t.HeightLevel > tile.HeightLevel) {
+                t.SetRendererAlpha(alpha);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 알파값을 1로 되돌리는 것은 배열을 받지 말고 저장하고 있는 편이 유리하지 않을까
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
+    List<TileUnit> GetTransparentTargets(TileUnit tile)
+    {
+        List<TileUnit> output = new List<TileUnit>
+        {
+            //RandomMapGenerator.Instance.GetTile(tile.x - 1  , tile.y - 1),
+            RandomMapGenerator.Instance.GetTile(tile.x - 1  , tile.y    ),
+            RandomMapGenerator.Instance.GetTile(tile.x - 1  , tile.y + 1),
+            RandomMapGenerator.Instance.GetTile(tile.x      , tile.y + 1),
+            //RandomMapGenerator.Instance.GetTile(tile.x + 1  , tile.y + 1)
+        };
+
+        for (int i = output.Count - 1; i >= 0; i--) {
+            if (output[i] == null) {
+                output.RemoveAt(i);
+            }
+        }
+
+        return output;
+    }
+
     void Update() {
         var tile = RandomMapGenerator.Instance.GetTile(transform.position);
         if (tile != currentTile) {
-            currentTile = tile;
-            renderLayerChanger.ReferenceRenderer.sortingOrder
-                = tile.HeightLevel * 2+1;
-            renderLayerChanger.UpdateLayerInfo();
-
-            _targetHeight = currentTile.HeightLevel * 0.25f;
-            _initialHeight = FlipPivot.transform.localPosition.y;
-            _heightChangeTimer.StartTimer(_heightChangeTime);
+            OnChangeCurrentTile(tile);
         }
 
         if (_heightChangeTimer.started) {
@@ -283,7 +329,6 @@ public class PlayerMoveController : MonoBehaviour {
         Vector3 movePos = Vector3.zero;
         if (Input.GetKey(KeyCode.W))
         {
-            //currentPos.y += moveSpeed;
             MoveUp(ref movePos);
         }
 
@@ -302,9 +347,9 @@ public class PlayerMoveController : MonoBehaviour {
             MoveRight(ref movePos);
         }
 
-        Vector3 newPos = currentPos;
-        newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
-        newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
+        //Vector3 newPos = currentPos;
+        //newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
+        //newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
 
         //transform.localPosition = newPos;
 
@@ -336,7 +381,9 @@ public class PlayerMoveController : MonoBehaviour {
         }
 
         if (_jumpDelayTimer.started) {
-            _jumpDelayTimer.RunTimer();
+            if (_jumpDelayTimer.RunTimer()) {
+                _jumpingLevel = 0;
+            }
         }
     }
 
@@ -354,10 +401,12 @@ public class PlayerMoveController : MonoBehaviour {
         //position update needed?
 
         if (input && _jumpDelayTimer.started) return;
+        if (_heightChangeTimer.started) return;
 
         AnimatorUtil.SetTrigger(PlayerMovementCTRL, "Jump");
 
         if (input) {
+            _jumpingLevel = 1;
             _jumpDelayTimer.StartTimer(jumpDelay);
         }
     }
@@ -366,45 +415,42 @@ public class PlayerMoveController : MonoBehaviour {
     {
         return transform.position;
     }
+
     //deltaTime : 프레임에 렉이 걸린만큼 값이 커져 프레임렉을 보정
+
+    //공용 이동처리
+    void Move(Vector3 pos) {
+        int nextDepth = RandomMapGenerator.Instance.GetDepth(transform.position + pos);
+        if (nextDepth == -1) return;
+        int currentDepth = RandomMapGenerator.Instance.GetDepth(currentTile.x, currentTile.y);
+        if (nextDepth - currentDepth - _jumpingLevel < 2)
+        {
+            if (_heightChangeTimer.started == false)
+                transform.Translate(pos);
+        }
+    }
+
     void MoveUp(ref Vector3 pos)
     {
         pos.y += moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        //RandomMapGenerator.Instance.GetDepthByCoor(transform.position[0],transform.position[1]);
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-            - _jumpDelayTimer.jumping < 2)
-        {
-            transform.Translate(0, moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
-        }
+        Move(pos);
     }
 
     void MoveDown(ref Vector3 pos)
     {
         pos.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-            - _jumpDelayTimer.jumping < 2)
-        {
-            transform.Translate(0, -moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
-        }
+        Move(pos);
     }
 
-        void MoveLeft(ref Vector3 pos)
+    void MoveLeft(ref Vector3 pos)
     {
         pos.x -= moveSpeed * Time.deltaTime;
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-                - _jumpDelayTimer.jumping < 2)
-        {
-            transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
-        }
+        Move(pos);
     }
 
     void MoveRight(ref Vector3 pos)
     {
         pos.x += moveSpeed * Time.deltaTime;
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-            - _jumpDelayTimer.jumping < 2)
-        {
-            transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
-        }
+        Move(pos);
     }
 }
