@@ -18,8 +18,8 @@ namespace NPC {
         Battle,
         None//dummy and end Index
     }
-    
-    public class NPCModel {
+
+    public class NPCModel : UnitModel {
         public NPCUnit Unit {
             get; private set;
         }
@@ -38,7 +38,12 @@ namespace NPC {
         private NPCExectueState _executeState = NPCExectueState.None;
         public NPCExectueState ExecuteState { get { return _executeState; } }
 
-        public long instanceId = 0;
+        #region Stats
+        public float MaxHP { get { return MetaInfo.GetMaxHp(); } }
+        public float CurrentHp = 0f;
+
+        public float Defense { get{ return MetaInfo.GetDefense(); } }
+        #endregion
 
         /// <summary>
         /// Call After MetaInfo Set
@@ -62,6 +67,7 @@ namespace NPC {
 
         public void SetUnit(NPCUnit unit) {
             Unit = unit;
+            unit.AttackReceiver.SetReceiveAction(OnTakeDamage);
         }
 
         public void Init() {
@@ -155,6 +161,10 @@ namespace NPC {
                 0f);
             distVector *= randomDist;
             return Unit.transform.position + distVector;
+        }
+
+        public void OnTakeDamage(UnitModel attacker, float damage) {
+
         }
     }
     

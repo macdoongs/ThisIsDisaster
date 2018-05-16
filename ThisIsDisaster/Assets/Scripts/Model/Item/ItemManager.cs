@@ -92,7 +92,7 @@ public class ItemManager {
         return output;
     }
 
-    public void AddItem(UnitModel target, long itemMetaId, int amount) {
+    public void AddItem(CharacterModel target, long itemMetaId, int amount) {
         var item = MakeItem(itemMetaId);
         if (item != null) {
             AddItem(target, item, amount);
@@ -104,7 +104,7 @@ public class ItemManager {
     /// </summary>
     /// <param name="owner"></param>
     /// <param name="item"></param>
-    public void AddItem(UnitModel owner, ItemModel item, int amount)
+    public void AddItem(CharacterModel owner, ItemModel item, int amount)
     {
         //check item movable state
 
@@ -118,7 +118,7 @@ public class ItemManager {
     /// </summary>
     /// <param name="owner"></param>
     /// <param name="item"></param>
-    public void RemoveItem(UnitModel owner, ItemModel item) {
+    public void RemoveItem(CharacterModel owner, ItemModel item) {
         if (owner.RemoveItem(item)) {
             item.OnItemRemoved(owner);
         }
