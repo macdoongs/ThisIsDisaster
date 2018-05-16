@@ -67,7 +67,6 @@ namespace NPC {
 
         public void SetUnit(NPCUnit unit) {
             Unit = unit;
-            unit.AttackReceiver.SetReceiveAction(OnTakeDamage);
         }
 
         public void Init() {
@@ -85,6 +84,7 @@ namespace NPC {
             switch (_executeState) {
                 case NPCExectueState.None:
                     _executeState = NPCExectueState.Wander;
+                    Unit.SetSensing(true);
                     break;
                 case NPCExectueState.Wander:
                     WanderExectue();
@@ -130,6 +130,7 @@ namespace NPC {
         public void OnVictoried() {
             Script.OnVictoried();
             _executeState = NPCExectueState.Wander;
+            Unit.SetSensing(true);
         }
 
         public void Update() {
@@ -163,8 +164,19 @@ namespace NPC {
             return Unit.transform.position + distVector;
         }
 
-        public void OnTakeDamage(UnitModel attacker, float damage) {
+        public override void OnTakeDamage(UnitModel attacker, float damage) {
+            Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+        }
 
+        public void OnDetectedTarget(UnitModel target) {
+            Unit.SetSensing(false);
+            _executeState = NPCExectueState.Movement;
+            //move to target
+        }
+
+        public override string GetUnitName()
+        {
+            return MetaInfo.Name;
         }
     }
     

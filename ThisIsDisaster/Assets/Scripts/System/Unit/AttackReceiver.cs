@@ -4,9 +4,11 @@ using System.Collections;
 public class AttackReceiver : MonoBehaviour
 {
     public delegate void OnAttackReceived(UnitModel attacker, float damage);
+
+    public UnitModel Owner { get; private set; }
     public Collider2D _reciveCollider;
     public Rigidbody2D _rigiedBody;
-    OnAttackReceived _receivedAction = null;
+    protected OnAttackReceived _receivedAction = null;
 
     // Use this for initialization
     void Start()
@@ -22,7 +24,11 @@ public class AttackReceiver : MonoBehaviour
 
     }
 
-    void EmergencyLoadCollider() {
+    public void SetOwner(UnitModel owner) {
+        Owner = owner;
+    }
+
+    protected void EmergencyLoadCollider() {
         _reciveCollider = gameObject.AddComponent<BoxCollider2D>();
         _rigiedBody = gameObject.AddComponent<Rigidbody2D>();
 
@@ -37,5 +43,6 @@ public class AttackReceiver : MonoBehaviour
         if (_receivedAction != null) {
             _receivedAction(attacker, damage);
         }
+        Owner.OnTakeDamage(attacker, damage);
     }
 }

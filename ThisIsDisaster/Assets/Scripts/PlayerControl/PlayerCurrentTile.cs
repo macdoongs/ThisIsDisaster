@@ -11,11 +11,12 @@ public class PlayerCurrentTile : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        if (RandomMapGenerator.Instance == null) enabled = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        
         if (debugText) {
             var tile = RandomMapGenerator.Instance.GetTile(transform.position);
             if (tile != null)

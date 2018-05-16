@@ -9,56 +9,49 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1046200954615242}
+  m_RootGameObject: {fileID: 1875794047541372}
   m_IsPrefabParent: 1
---- !u!1 &1046200954615242
+--- !u!1 &1875794047541372
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4351137232065180}
-  - component: {fileID: 114957451650645136}
+  - component: {fileID: 4197294532619862}
+  - component: {fileID: 114737600931171442}
   m_Layer: 0
-  m_Name: StatusManager
+  m_Name: UIController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4351137232065180
+--- !u!4 &4197294532619862
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1046200954615242}
+  m_GameObject: {fileID: 1875794047541372}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 452.70602, y: 169.95494, z: -6.346881}
+  m_LocalPosition: {x: 628.3829, y: 241.49751, z: 9.125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114957451650645136
+--- !u!114 &114737600931171442
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1046200954615242}
+  m_GameObject: {fileID: 1875794047541372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c625df76cee281c498af50826cf20847, type: 3}
+  m_Script: {fileID: 11500000, guid: 8574a4bb25bcfa74a99afa54edbedfd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerLevel: {fileID: 0}
-  PlayerName: {fileID: 0}
-  StatusPane:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  Health: {fileID: 0}
-  Stamina: {fileID: 0}
-  Defense: {fileID: 0}
-  Damage: {fileID: 0}
+  PlayerCharacter: {fileID: 0}
+  StatusManager: {fileID: 0}
+  InventoryManager: {fileID: 0}
+  StatusBarManager: {fileID: 0}

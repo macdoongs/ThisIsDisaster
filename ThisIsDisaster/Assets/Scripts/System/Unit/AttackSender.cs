@@ -51,9 +51,14 @@ public class AttackSender : MonoBehaviour
         AttackReceiver recv = collision.GetComponent<AttackReceiver>();
         if (recv == null) return;
         if (_attackedTargets.Contains(recv)) return;
+        if (recv.Owner.Equals(this.Owner)) return;
 
         _attackedTargets.Add(recv);
         recv.OnAttackReceive(Owner, Owner.GetAttackDamage());
+    }
+
+    public bool IsAttacking() {
+        return _attackActivateTimer.started;
     }
 
     //private void OnTriggerExit2D(Collider2D collision)

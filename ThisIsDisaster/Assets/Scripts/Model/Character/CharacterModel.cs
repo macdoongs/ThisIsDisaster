@@ -5,9 +5,31 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/// <summary>
+/// 임시
+/// </summary>
+public class PlayerModel : UnitModel
+{
+    public CharacterModel _character;
+
+    public override float GetAttackDamage()
+    {
+        return _character.damage;
+    }
+
+    public override string GetUnitName()
+    {
+        return _character.PlayerName;
+    }
+
+    public override void OnTakeDamage(UnitModel attacker, float damage)
+    {
+        Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+    }
+}
+
 public class CharacterModel : MonoBehaviour {
-
-
+    
     //테스트용 값
     public string PlayerName = "TestID";
     public string PlayerLevel = "123";
@@ -58,6 +80,23 @@ public class CharacterModel : MonoBehaviour {
     public List<int> ItemCounts = new List<int> { };
 
     public int cursor = 0;
+
+    private PlayerModel _player;
+    public AttackSender attackSender;
+    public AttackReceiver attackReceiver;
+
+    private void Awake()
+    {
+        _player = new PlayerModel
+        {
+            _character = this
+        };
+
+        if (attackSender)
+            attackSender.SetOwner(_player);
+        if (attackReceiver)
+            attackReceiver.SetOwner(_player);
+    }
 
     public virtual bool AddItem(ItemModel item, int amount)
     {

@@ -2,215 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class AnimatorUtil {
-    public static bool HasParameter(Animator animator, string paramName) {
-        foreach (var v in animator.parameters) {
-            if (v.name == paramName) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void SetInteger(Animator animator, string paramName, int value) {
-        if (animator == null) return;
-        if (HasParameter(animator, paramName))
-        {
-            animator.SetInteger(paramName, value);
-        }
-        else {
-#if UNITY_EDITOR
-            string log = string.Format("Animator of [{0}] Doesn't has Parameter [{1}]", animator.gameObject.name, paramName);
-            Debug.LogError(log);
-#endif
-        }
-    }
-
-    public static void SetBool(Animator animator, string paramName, bool value)
-    {
-        if (animator == null) return;
-        if (HasParameter(animator, paramName))
-        {
-            animator.SetBool(paramName, value);
-        }
-        else
-        {
-#if UNITY_EDITOR
-            string log = string.Format("Animator of [{0}] Doesn't has Parameter [{1}]", animator.gameObject.name, paramName);
-            Debug.LogError(log);
-#endif
-        }
-    }
-
-    public static void SetTrigger(Animator animator, string paramName)
-    {
-        if (animator == null) return;
-        if (HasParameter(animator, paramName))
-        {
-            animator.SetTrigger(paramName);
-        }
-        else
-        {
-#if UNITY_EDITOR
-            string log = string.Format("Animator of [{0}] Doesn't has Parameter [{1}]", animator.gameObject.name, paramName);
-            Debug.LogError(log);
-#endif
-        }
-    }
-}
-
-[System.Serializable]
-public class Timer
-{
-    public delegate void OnTimerRunningEnd();
-
-    public float elapsed = 0f;
-    public float maxTime = 0f;
-    public bool started = false;
-    public bool autoStop = true;
-    public float Rate
-    {
-        get
-        {
-            if (maxTime == 0f) return 0f;
-            return elapsed / maxTime;
-        }
-    }
-
-    public OnTimerRunningEnd endCmd = null;
-
-    public virtual void StartTimer(float time)
-    {
-        this.maxTime = time;
-
-        if (this.started)
-        {
-            this.elapsed = 0f;
-        }
-        else
-        {
-            this.started = true;
-        }
-    }
-
-    public virtual void SetEndCmd(OnTimerRunningEnd cmd)
-    {
-        this.endCmd = cmd;
-    }
-
-    public virtual bool RunTimer()
-    {
-        if (!this.started)
-        {
-            return false;
-        }
-        elapsed += Time.deltaTime;
-        if (elapsed >= maxTime)
-        {
-            if (autoStop)
-            {
-                elapsed = 0f;
-                started = false;
-
-                if (endCmd != null)
-                {
-                    endCmd();
-                    endCmd = null;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public virtual void StartTimer()
-    {
-        this.maxTime = float.MaxValue;
-
-        if (this.started)
-        {
-            this.elapsed = 0f;
-        }
-        else
-            this.started = true;
-    }
-
-    public virtual void StopTimer()
-    {
-        this.started = false;
-        this.elapsed = 0f;
-        this.maxTime = 0f;
-    }
-
-    public override string ToString()
-    {
-        return base.ToString() + "::[State]" + started + " [Max Time]" + maxTime + " [Elapsed]" + elapsed;
-    }
-
-    public virtual float GetRate()
-    {
-        try
-        {
-            return elapsed / maxTime;
-        }
-        catch (System.ArithmeticException e)
-        {
-#if UNITY_EDITOR
-            Debug.Log(e);
-#endif
-            return 1f;
-        }
-    }
-}
-
-public static class GameStaticInfo {
-    /// <summary>
-    /// Value of  x / y (2)
-    /// </summary>
-    public const float VerticalRatio = 2f;
-
-    /// <summary>
-    /// Value of  y / x (0.5)
-    /// </summary>
-    public const float HorizontalRatio = 0.5f;
-
-    /// <summary>
-    /// Value of  z / x (0.2)
-    /// </summary>
-    public const float CrossRatio = 0.2f;
-
-    /// <summary>
-    /// 게임에서 사용되는 타일의 가로 길이
-    /// </summary>
-    public const float TileWidth = 1f;
-
-    /// <summary>
-    /// 게임에서 사용되는 타일의 가로 길이의 절반
-    /// </summary>
-    public const float TileWidth_Half = 0.5f;
-
-    /// <summary>
-    /// 게임에서 사용되는 타일의 세로 높이
-    /// </summary>
-    public const float TileHeight = 0.5f;
-    /// <summary>
-    /// 게임에서 사용되는 타일의 세로 높이의 절반
-    /// </summary>
-    public const float TileHeight_Half = 0.25f;
-
-    /// <summary>
-    /// 게임에서 사용되는 타일의 y 축 기준점->플레이어 유닛, NPC등에 사용될 것
-    /// </summary>
-    public const float ZeroHeight = 0.35f;
-
-    /// <summary>
-    /// 이동속도 배수
-    /// </summary>
-    public const float GameSpeedFactor = 0.01f;
-
-        
-}
-
 public class PlayerMoveController : MonoBehaviour {
     public float moveSpeed = 1f;
     public float jumpDelay = 1f;
@@ -223,7 +14,7 @@ public class PlayerMoveController : MonoBehaviour {
     public float health = 100f;
     public float stamina = 100f;
 
-    public RenderLayerChanger renderLayerChanger;
+    public AutoTileMovementSetter autoTileMovementSetter;
     TileUnit currentTile = null;
 
     float CurrentPivotXScale { get { return FlipPivot.transform.localScale.x; } }
@@ -249,6 +40,7 @@ public class PlayerMoveController : MonoBehaviour {
     private void Start()
     {
         currentTile = RandomMapGenerator.Instance.GetTile(transform.position);
+        autoTileMovementSetter.SetChangeAction(OnChangeCurrentTile);
     }
 
     void OnChangeCurrentTile(TileUnit tile)
@@ -261,15 +53,12 @@ public class PlayerMoveController : MonoBehaviour {
 
         SetNearTileAlpha(currentTile, 0.6f);
 
-        renderLayerChanger.ReferenceRenderer.sortingOrder = tile.GetSpriteOrder() + 3;
-        renderLayerChanger.UpdateLayerInfo();
-
-        _targetHeight = currentTile.HeightLevel * 0.25f;//no magic numer, change const
-        _initialHeight = FlipPivot.transform.localPosition.y;
-        if (_targetHeight != _initialHeight) {
-            float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
-            _heightChangeTimer.StartTimer(time);
-        }
+        //_targetHeight = currentTile.HeightLevel * 0.25f;//no magic numer, change const
+        //_initialHeight = FlipPivot.transform.localPosition.y;
+        //if (_targetHeight != _initialHeight) {
+        //    float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
+        //    _heightChangeTimer.StartTimer(time);
+        //}
     }
 
     void SetNearTileAlpha(TileUnit tile, float alpha)
@@ -310,20 +99,20 @@ public class PlayerMoveController : MonoBehaviour {
     }
 
     void Update() {
-        var tile = RandomMapGenerator.Instance.GetTile(transform.position);
-        if (tile != currentTile) {
-            OnChangeCurrentTile(tile);
-        }
+        //var tile = RandomMapGenerator.Instance.GetTile(transform.position);
+        //if (tile != currentTile) {
+        //    OnChangeCurrentTile(tile);
+        //}
 
-        if (_heightChangeTimer.started) {
-            float rate = Mathf.Lerp(_initialHeight, _targetHeight, _heightChangeTimer.Rate);
-            var lp = FlipPivot.transform.localPosition;
-            if (_heightChangeTimer.RunTimer()) {
-                rate = _targetHeight;
-            }
-            lp.y = rate;
-            FlipPivot.transform.localPosition = lp;
-        }
+        //if (_heightChangeTimer.started) {
+        //    float rate = Mathf.Lerp(_initialHeight, _targetHeight, _heightChangeTimer.Rate);
+        //    var lp = FlipPivot.transform.localPosition;
+        //    if (_heightChangeTimer.RunTimer()) {
+        //        rate = _targetHeight;
+        //    }
+        //    lp.y = rate;
+        //    FlipPivot.transform.localPosition = lp;
+        //}
 
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
@@ -425,7 +214,7 @@ public class PlayerMoveController : MonoBehaviour {
         int currentDepth = RandomMapGenerator.Instance.GetDepth(currentTile.x, currentTile.y);
         if (nextDepth - currentDepth - _jumpingLevel < 2)
         {
-            if (_heightChangeTimer.started == false)
+            if (!autoTileMovementSetter.IsHeightChanging())
                 transform.Translate(pos);
         }
     }

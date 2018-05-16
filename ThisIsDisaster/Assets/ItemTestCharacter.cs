@@ -18,12 +18,12 @@ public class ItemTestCharacter : MonoBehaviour {
 
     public void Awake()
     {
-        CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
-        CharacterUnit.initialState();
     }
 
     public void Start()
     {
+        CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
+        CharacterUnit.initialState();
     }
 
     public void Update()

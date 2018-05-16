@@ -26,7 +26,7 @@ public class NPCLayer : MonoBehaviour {
         unitObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
         unitObject.transform.localScale = Vector3.one;
 
-        NPCUnit unit = unitObject.AddComponent<NPCUnit>();
+        NPCUnit unit = unitObject.GetComponent<NPCUnit>();
         unit.SetModel(model);
         model.SetUnit(unit);
         unit.LoadPrefab();
