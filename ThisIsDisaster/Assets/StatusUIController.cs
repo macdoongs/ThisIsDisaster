@@ -15,6 +15,11 @@ public class StatusUIController : MonoBehaviour {
     public Text Defense;
     public Text Damage;
 
+    private void Start()
+    {
+         
+    }
+
     public StatusUIController()
     {
         StatusPane = new Text[] { Health, Stamina, Defense, Damage };

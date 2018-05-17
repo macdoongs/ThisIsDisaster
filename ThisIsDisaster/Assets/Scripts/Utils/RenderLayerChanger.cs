@@ -28,6 +28,11 @@ public class RenderLayerChanger : MonoBehaviour
         UpdateInfo(transform);
     }
 
+    public void UpdateLayerInfo(int order) {
+        ReferenceRenderer.sortingOrder = order;
+        UpdateLayerInfo();
+    }
+
     void UpdateInfo(Transform tr)
     {
         foreach (Transform t in tr) {
@@ -35,6 +40,12 @@ public class RenderLayerChanger : MonoBehaviour
             if (sr != null) {
                 sr.sortingLayerName = ReferenceRenderer.sortingLayerName;
                 sr.sortingOrder = ReferenceRenderer.sortingOrder;
+            }
+            var ps = t.GetComponent<ParticleSystem>();
+            if (ps != null) {
+                var ps_Render = ps.GetComponent<ParticleSystemRenderer>();
+                ps_Render.sortingLayerName = ReferenceRenderer.sortingLayerName;
+                ps_Render.sortingOrder = ReferenceRenderer.sortingOrder;
             }
             UpdateInfo(t);
         }
@@ -62,24 +73,32 @@ public class RenderLayerEditor : Editor {
 
     public override void OnInspectorGUI()
     {
-        m_object.Update();
-        DrawDefaultInspector();
+        try
+        {
+            m_object.Update();
+            DrawDefaultInspector();
 
-        var options = GetSortingLayerNames();
-        var picks = new int[options.Length];
-        var name = renderer.sortingLayerName;
-        var choice = -1;
-        for (int i = 0; i < options.Length; i++) {
-            picks[i] = i;
-            if (name == options[i]) choice = i;
+            var options = GetSortingLayerNames();
+            var picks = new int[options.Length];
+            var name = renderer.sortingLayerName;
+            var choice = -1;
+            for (int i = 0; i < options.Length; i++)
+            {
+                picks[i] = i;
+                if (name == options[i]) choice = i;
+            }
+
+            choice = EditorGUILayout.IntPopup("Sorting Layer", choice, options, picks);
+            renderer.sortingLayerName = options[choice];
+            renderer.sortingOrder = EditorGUILayout.IntField("Sorting Order", renderer.sortingOrder);
+
+            if (GUILayout.Button("Update Info"))
+            {
+                Changer.UpdateLayerInfo();
+            }
         }
+        catch {
 
-        choice = EditorGUILayout.IntPopup("Sorting Layer", choice, options, picks);
-        renderer.sortingLayerName = options[choice];
-        renderer.sortingOrder = EditorGUILayout.IntField("Sorting Order", renderer.sortingOrder);
-
-        if (GUILayout.Button("Update Info")) {
-            Changer.UpdateLayerInfo();
         }
     }
 

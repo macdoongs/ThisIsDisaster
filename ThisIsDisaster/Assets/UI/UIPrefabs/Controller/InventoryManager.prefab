@@ -51,77 +51,135 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d34ee6d2b2aa90e4f9fd8f880301452c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemSlots:
+  Player: {fileID: 0}
+  PlayerCharacter: {fileID: 0}
+  bagSize: 30
+  typePosition: 0
+  itemPosition: 0
+  prevPosition: 0
+  Category:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  CategoryUnderBar:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  ItemCounts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  defaultItemTypeColor: {r: 0.7843138, g: 0.7843138, b: 0.7843138, a: 1}
+  focusedItemTypeColor: {r: 0.26666668, g: 0.3019608, b: 0.32941177, a: 1}
+  typeColor: {r: 0.26666668, g: 0.3019608, b: 0.32941177, a: 1}
+  Content: {fileID: 0}
+  ItemSlots: []
+  ItemCounts: []
+  ItemBorders: []
+  ItemButtons: []
   PreviewSlots:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  PreviewSlotName:
+  - head
+  - weapon
+  - util1
+  - util2
+  - util3
   defaultSlotSprite:
   - {fileID: 21300000, guid: 36a8999295e1d92458547854a575ae2e, type: 3}
   - {fileID: 21300000, guid: 8f82d47dd36b5504f9a51025e1e0b385, type: 3}
   - {fileID: 21300000, guid: b86e8ce2ce1971b40943ded1754bbc32, type: 3}
   - {fileID: 21300000, guid: e10844e83fd8ddb4a924ecb5aeea796a, type: 3}
   - {fileID: 21300000, guid: 565ed956ff6b726439caaa8f2824fcdf, type: 3}
+  DescriptionPanel: {fileID: 0}
+  SlotDescriptionItemImage: {fileID: 0}
+  SlotDescriptionItemName: {fileID: 0}
+  SlotDescriptionItemDescription: {fileID: 0}
+  SlotDescriptionItemStats:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SlotDescriptionItemStatAmount:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SlotDescriptionRightButton: {fileID: 0}
+  SlotDescriptionLeftButton: {fileID: 0}
+  SlotDescriptionRegisterButton: {fileID: 0}
+  PrevDescriptionPanel: {fileID: 0}
+  PrevDescriptionItemImage: {fileID: 0}
+  PrevDescriptionItemName: {fileID: 0}
+  PrevDescriptionItemDescription: {fileID: 0}
+  PrevDescriptionItemStats:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PrevDescriptionItemStatAmount:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PrevDescriptionRightButton: {fileID: 0}
+  PrevDescriptionLeftButton: {fileID: 0}
+  ChangePanel: {fileID: 0}
+  FirstItemImage: {fileID: 0}
+  FirstItemName: {fileID: 0}
+  FirstItemStats:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  FirstItemStatAmount:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SecondItemImage: {fileID: 0}
+  SecondItemName: {fileID: 0}
+  SecondItemStats:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SecondItemStatAmount:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PresetPanel: {fileID: 0}
+  PresetSprites:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PresetRemoves:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  presetPosition: 0
+  PresetButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PresetRegisterButton: {fileID: 0}
+  PresetBarSprite:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PresetBarCounts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

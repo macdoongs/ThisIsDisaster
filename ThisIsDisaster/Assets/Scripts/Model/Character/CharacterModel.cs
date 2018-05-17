@@ -1,11 +1,63 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
+using System.Linq;
 using System.Text;
+using UnityEngine;
 
-public class CharacterModel : UnitModel {
+/// <summary>
+/// 임시
+/// </summary>
+public class PlayerModel : UnitModel
+{
+    public CharacterModel _character;
 
+    public override float GetAttackDamage()
+    {
+        return _character.damage;
+    }
 
+    public override string GetUnitName()
+    {
+        return _character.PlayerName;
+    }
+
+    public override void OnTakeDamage(UnitModel attacker, float damage)
+    {
+        Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+    }
+}
+
+public class CharacterModel : MonoBehaviour
+{
+    public enum PlayerSpriteParts
+    {
+        Body = 0,
+        LowBody,
+        FrontLeg,
+        BackLeg,
+        BackOrnament,
+        FrontArm = 5,
+        Shoulder,
+        FrontWeapon,
+        Head,
+        HeadOrnament,
+        Back = 10,
+        Mask,
+        FrontHair,
+        Face,
+        BackHair,
+        Tail = 15,
+        BackArm,
+        BackWeapon
+    }
+    public struct DefaultSpriteInfo {
+        public PlayerSpriteParts part;
+        public Sprite sprite;
+        public Color color;
+        public bool enabled;
+    }
+    
     //테스트용 값
     public string PlayerName = "TestID";
     public string PlayerLevel = "123";
@@ -43,6 +95,170 @@ public class CharacterModel : UnitModel {
     public ItemModel utilSlot1 = null;
     public ItemModel utilSlot2 = null;
     public ItemModel utilSlot3 = null;
+
+    public SpriteRenderer Body;
+
+    public SpriteRenderer[] SpriteParts = new SpriteRenderer[18];
+    Dictionary<PlayerSpriteParts, DefaultSpriteInfo> _defaultSpriteInfo = new Dictionary<PlayerSpriteParts, DefaultSpriteInfo>();
+
+
+    public Dictionary<long, ItemModel> ItemSpace = new Dictionary<long, ItemModel>();
+
+    public List<ItemModel> ItemLists = new List<ItemModel> { };
+    public List<string> ItemNames = new List<string> { };
+    public List<int> ItemCounts = new List<int> { };
+
+    public int cursor = 0;
+
+    private PlayerModel _player;
+    public AttackSender attackSender;
+    public AttackReceiver attackReceiver;
+
+    private void Awake()
+    {
+        _player = new PlayerModel
+        {
+            _character = this
+        };
+
+        if (attackSender)
+            attackSender.SetOwner(_player);
+        if (attackReceiver)
+            attackReceiver.SetOwner(_player);
+
+        InitDefaultSprite();
+    }
+
+    void InitDefaultSprite() {
+        _defaultSpriteInfo.Clear();
+        int index = 0;
+        foreach (var renderer in SpriteParts) {
+            PlayerSpriteParts parts = (PlayerSpriteParts)index;
+            Sprite s = renderer.sprite;
+            Color c = renderer.color;
+            bool e = renderer.enabled;
+            DefaultSpriteInfo defInfo = new DefaultSpriteInfo()
+            {
+                part = parts,
+                sprite = s,
+                color = c,
+                enabled = e
+            };
+
+            _defaultSpriteInfo.Add(parts, defInfo);
+
+            index++;
+        }
+    }
+
+    public virtual bool AddItem(ItemModel item, int amount)
+    {
+        //   ItemModel oldData = null;
+
+        if (item.metaInfo.itemType.Equals(ItemType.Etc))//소모품은 이미 인벤토리에 있으면 개수만 늘어나야함
+        {
+            if (ItemNames.Contains<string>(item.metaInfo.Name))//이미 인벤토리에 들어가 있으면
+            {
+                int index = ItemNames.IndexOf(item.metaInfo.Name);
+                ItemCounts[index] += amount;
+            }
+            else
+            {
+                if (ItemLists.Count == 30)
+                {
+                    Debug.Log("Item Slot is Full");
+                    return false;
+                }
+
+                ItemLists.Add(item);
+                ItemNames.Add(item.metaInfo.Name);
+                ItemCounts.Add(amount);
+            }
+        }
+
+        else
+        {
+            if (ItemLists.Count == 30)
+            {
+                Debug.Log("Item Slot is Full");
+                return false;
+            }
+
+            ItemLists.Add(item);
+            ItemNames.Add(item.metaInfo.Name);
+            ItemCounts.Add(amount);
+        }
+
+        return true;
+    }
+
+    public void RemoveItemAtIndex(int index)
+    {
+        if (ItemLists.Count != 0)
+        {
+            if (ItemLists[index] != null)
+            {
+                ItemLists.RemoveAt(index);
+                ItemNames.RemoveAt(index);
+                ItemCounts.RemoveAt(index);
+            }
+        }
+        else
+            Debug.Log("Item is Empty");
+    }
+
+    public virtual bool RemoveItem(ItemModel item)
+    {
+
+        string itemName = item.metaInfo.Name;
+
+        if (ItemNames.Contains(itemName))
+        {
+            int index = ItemNames.IndexOf(itemName);
+            RemoveItemAtIndex(index);
+        }
+        else
+        {
+            Debug.Log("Item is Empty");
+            return false;
+        }
+
+        ItemSpace.Remove(item.instanceId);
+
+        return true;
+    }
+
+    public void PrintAllItems()
+    {
+        Debug.Log("Unit Items");
+        foreach (var kv in ItemSpace)
+        {
+            Debug.Log(kv.Value.instanceId + " : " + kv.Value.metaInfo.ToString());
+        }
+    }
+
+    public void PrintItemsInItems()
+    {
+        Debug.Log("Unit Items");
+        foreach (var kv in ItemLists)
+        {
+            int index = ItemNames.IndexOf(kv.metaInfo.Name);
+            Debug.Log("Item Name : " + kv.metaInfo.Name);
+            Debug.Log("Amount : " + ItemCounts[index]);
+        }
+    }
+
+    public List<ItemModel> GetAllItems()
+    {
+        List<ItemModel> output = new List<ItemModel>(ItemLists);
+        return output;
+    }
+
+    public List<int> GetAllCounts()
+    {
+        List<int> output = new List<int>(ItemCounts);
+        return output;
+    }
 
     //초기화 
     public virtual void initialState()
@@ -323,4 +539,165 @@ public class CharacterModel : UnitModel {
         return result;
     }
 
+    public void SpriteUpdate()
+    {
+        HeadSprite();
+        WeaponSprite();
+        UtilSprite();
+    }
+
+    /// <summary>
+    /// This is Odd
+    /// </summary>
+    public void WeaponSprite()
+    {
+        //if (weaponSlot != null)
+        //{
+        //    string src = weaponSlot.metaInfo.spriteSrc;
+        //    Sprite s = Resources.Load<Sprite>(src);
+
+
+        //    SpriteParts[7].sprite = s;
+        //}
+        //else
+        //{
+        //    //SpriteParts[7].sprite = null;
+        //    ClearSpritePart(PlayerSpriteParts.Head);
+        //}
+        if (weaponSlot != null)
+        {
+            SetSprite(PlayerSpriteParts.FrontWeapon, weaponSlot.metaInfo);
+        }
+        else {
+            ClearSprite(PlayerSpriteParts.FrontWeapon);
+        }
+    }
+
+
+    public void HeadSprite()
+    {
+        if (headSlot != null)
+        {
+            //string src = headSlot.metaInfo.spriteSrc;
+            //Sprite s = Resources.Load<Sprite>(src);
+            
+            SetSprite(PlayerSpriteParts.HeadOrnament, headSlot.metaInfo);
+            DisableSpritePart(PlayerSpriteParts.BackOrnament);
+            DisableSpritePart(PlayerSpriteParts.Tail);
+            //SpriteParts[9].sprite = s;
+            //SpriteParts[14].color = Color.clear;
+            //SpriteParts[15].color = Color.clear;
+        }
+        else
+        {
+            ClearSprite(PlayerSpriteParts.HeadOrnament);
+            ClearSprite(PlayerSpriteParts.BackHair);
+            ClearSprite(PlayerSpriteParts.Tail);
+            //SpriteParts[9].sprite = null;
+            //SpriteParts[14].color = Color.white;
+            //SpriteParts[15].color = Color.white;
+        }
+    }
+
+    public void UtilSprite()
+    {
+        ItemModel[] Utils = new ItemModel[] { utilSlot1, utilSlot2, utilSlot3 };
+
+        foreach(var util in Utils)
+        {
+            if (util != null && util.metaInfo.tags.Contains("backpack"))
+            {
+                //string src = util.metaInfo.spriteSrc;
+                //Sprite s = Resources.Load<Sprite>(src);
+
+
+                //SpriteParts[4].sprite = s;
+                SetSprite(PlayerSpriteParts.BackOrnament, util.metaInfo);
+
+            }
+            else
+            {
+                //SpriteParts[4].sprite = null;
+                //여기 백팩 체크과정 필요
+                ClearSprite(PlayerSpriteParts.BackOrnament);
+
+            }
+        }
+
+
+    }
+
+    /// <summary>
+    /// 색상 정보도 필요할 수 있음
+    /// </summary>
+    /// <param name="part"></param>
+    /// <param name="info"></param>
+    public void SetSprite(PlayerSpriteParts part, ItemTypeInfo info) {
+        Sprite sprite = Resources.Load<Sprite>(info.spriteSrc);
+        if (sprite == null)
+        {
+            ClearSprite(part);
+            return;
+        }
+        else {
+            SetSpritePart(part, sprite);
+        }
+    }
+
+    void ClearSprite(PlayerSpriteParts part) {
+        try {
+            var rend = SpriteParts[(int)part];
+            DefaultSpriteInfo def;
+            if (_defaultSpriteInfo.TryGetValue(part, out def))
+            {
+                rend.enabled = def.enabled;
+                rend.sprite = def.sprite;
+                rend.color = def.color;
+            }
+            else {
+                rend.enabled = false;
+            }
+        }
+        catch {
+
+        }
+    }
+
+    void DisableSpritePart(PlayerSpriteParts part) {
+        try
+        {
+            var rend = SpriteParts[(int)part];
+            rend.enabled = false;
+        }
+        catch { }
+    }
+
+    void SetSpritePart(PlayerSpriteParts part, Sprite s) {
+        try
+        {
+            var rend = SpriteParts[(int)part];
+            rend.enabled = true;
+            rend.sprite = s;
+            //color info?
+        }
+        catch (IndexOutOfRangeException ioe)
+        {
+            Debug.LogError("Could not find Player's sprite region " + part);
+            return;
+        }
+        catch (NullReferenceException ne) {
+            
+        }
+    }
+
+    void SetSpritePartColor(PlayerSpriteParts part, Color c) {
+        try
+        {
+            var rend = SpriteParts[(int)part];
+            rend.color = c;
+        }
+        catch {
+
+        }
+    }
 }

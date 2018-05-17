@@ -51,7 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c625df76cee281c498af50826cf20847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StatusPannel:
+  PlayerLevel: {fileID: 0}
+  PlayerName: {fileID: 0}
+  StatusPane:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

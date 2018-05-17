@@ -13,14 +13,14 @@ public class ItemModel {
     public ItemTypeInfo metaInfo;
     public long instanceId;
 
-    public UnitModel Owner = null;
+    public CharacterModel Owner = null;
 
-    public virtual void OnItemAqquired(UnitModel target) {
+    public virtual void OnItemAqquired(CharacterModel target) {
         //do smth
         Owner = target;
     }
 
-    public virtual void OnItemRemoved(UnitModel prevOwner) {
+    public virtual void OnItemRemoved(CharacterModel prevOwner) {
         //do smth
         Owner = null;
     }

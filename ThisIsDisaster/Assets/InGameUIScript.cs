@@ -17,6 +17,10 @@ public class InGameUIScript : MonoBehaviour
 
     public void Start()
     {
+        if (PlayerCharacter == null) {
+            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+        }
+
         StatusManager.GetComponent<StatusUIController>().SetPlayerInfo(PlayerCharacter);
         StatusBarManager.GetComponent<StatusBarUIScript>().
             SetPlayerInfo(PlayerCharacter);
