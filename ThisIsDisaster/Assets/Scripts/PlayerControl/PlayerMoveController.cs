@@ -222,57 +222,24 @@ public class PlayerMoveController : MonoBehaviour {
     void MoveUp(ref Vector3 pos)
     {
         pos.y += moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-<<<<<<< HEAD
-        //RandomMapGenerator.Instance.GetDepthByCoor(transform.position[0],transform.position[1]);
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-            - _jumpDelayTimer.jumping < 2 && RandomMapGenerator.Instance.GetDepth(transform.position + pos) != 0)
-        {
-            transform.Translate(0, moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
-        }
-=======
         Move(pos);
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
     }
 
     void MoveDown(ref Vector3 pos)
     {
         pos.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-<<<<<<< HEAD
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-            - _jumpDelayTimer.jumping < 2 && RandomMapGenerator.Instance.GetDepth(transform.position + pos) != 0)
-        {
-            transform.Translate(0, -moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio, 0);
-        }
-=======
         Move(pos);
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
     }
 
     void MoveLeft(ref Vector3 pos)
     {
         pos.x -= moveSpeed * Time.deltaTime;
-<<<<<<< HEAD
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-            - _jumpDelayTimer.jumping < 2 && RandomMapGenerator.Instance.GetDepth(transform.position + pos) != 0)
-        {
-            transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
-        }
-=======
         Move(pos);
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
     }
 
     void MoveRight(ref Vector3 pos)
     {
         pos.x += moveSpeed * Time.deltaTime;
-<<<<<<< HEAD
-        if (RandomMapGenerator.Instance.GetDepth(transform.position + pos) - RandomMapGenerator.Instance.GetDepth(transform.position)
-             - _jumpDelayTimer.jumping < 2 && RandomMapGenerator.Instance.GetDepth(transform.position + pos) != 0)
-        {
-            transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
-        }
-=======
         Move(pos);
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
     }
 }
