@@ -40,6 +40,7 @@ public class InventoryUIController : MonoBehaviour {
     public string[] PreviewSlotName = new string[5] { "head", "weapon", "util1", "util2", "util3" };
     public ItemModel[] PreviewItems = new ItemModel[5];
 
+
     //인벤토리 착용장비 기본 이미지셋 
     public Sprite[] defaultSlotSprite = new Sprite[5];
 
@@ -68,6 +69,7 @@ public class InventoryUIController : MonoBehaviour {
     public Text PrevDescriptionRightButton;
     public Text PrevDescriptionLeftButton;
 
+    public SpriteRenderer[] PreviewSpriteParts = new SpriteRenderer[18];
 
     DescriptionUI SlotDescription;
     DescriptionUI PrevDescription;
@@ -178,6 +180,7 @@ public class InventoryUIController : MonoBehaviour {
         }
         PresetUpdate();
         PlayerCharacter.SpriteUpdate();
+        PreviewCharacterSprite();
     }
 
     //****************************************************************************************//
@@ -353,6 +356,41 @@ public class InventoryUIController : MonoBehaviour {
     //****************************************************************************************//
     //프리뷰 슬롯 관련 기능들
 
+
+    public void PreviewCharacterSprite()
+    {
+        DefaultPreviewCharacterSprite();
+
+        int i = 0;
+        foreach(var part in PlayerCharacter.SpriteParts)
+        {
+            
+
+            if (part.sprite != null)
+            {
+                Sprite s = part.sprite;
+                PreviewSpriteParts[i].sprite = s;
+                PreviewSpriteParts[i].color = part.color;
+            }
+            else
+            {
+                PreviewSpriteParts[i].sprite = null;
+                PreviewSpriteParts[i].color = Color.clear;
+            }
+            i++;
+        }
+    }
+
+    public void DefaultPreviewCharacterSprite()
+    {
+        foreach(var sprite in PreviewSpriteParts)
+        {
+            sprite.sprite = null;
+            sprite.color = Color.white;
+        }
+    }
+
+
     //인벤토리 좌측 프리뷰 슬롯 스프라이트 할당
     public void PreviewSprite()
     {
@@ -520,16 +558,6 @@ public class InventoryUIController : MonoBehaviour {
             itemPosition = position;
             Item = item;
         }
-
-        public void PrintPresetItem()
-        {
-
-            string result = "";
-            result = result + "ItemName : " + Item.metaInfo.Name.ToString() + "\n"
-                + "Position : " + itemPosition.ToString() + "\n";
-
-            Debug.Log(result);
-        }
     }
 
     public void OpenPrestSetting()
@@ -553,14 +581,12 @@ public class InventoryUIController : MonoBehaviour {
 
             PresetItems[presetPosition] = new PresetItem(itemPosition, item);
 
-            //PresetSprite(item);
             PresetUpdate();
         }
         else
         {
             Debug.Log("Item is already registered");
         }
-        PrintPresetItem();
     }
 
     public void PresetSprite(ItemModel item)
@@ -690,7 +716,6 @@ public class InventoryUIController : MonoBehaviour {
 
     public void PresetBarClicked(int position)
     {
-        PrintPresetItem();
 
         if (PresetItems[position] != null)
         {
@@ -733,14 +758,5 @@ public class InventoryUIController : MonoBehaviour {
     }
 
 
-    public void PrintPresetItem()
-    {
-        foreach(var presetItem in PresetItems)
-        {
-            if(presetItem != null)
-            {
-                presetItem.PrintPresetItem();
-            }
-        }        
-    }
+
 }

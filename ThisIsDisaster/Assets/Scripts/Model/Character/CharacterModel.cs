@@ -99,6 +99,10 @@ public class CharacterModel : MonoBehaviour
     public SpriteRenderer Body;
 
     public SpriteRenderer[] SpriteParts = new SpriteRenderer[18];
+
+    public Sprite BackHair;
+    public Sprite Tail;
+
     Dictionary<PlayerSpriteParts, DefaultSpriteInfo> _defaultSpriteInfo = new Dictionary<PlayerSpriteParts, DefaultSpriteInfo>();
 
 
@@ -268,6 +272,9 @@ public class CharacterModel : MonoBehaviour
 
         health = maxHealth;
         stamina = maxStamina;
+        BackHair = SpriteParts[14].sprite;
+        Tail = SpriteParts[15].sprite;
+
     }
 
 
@@ -329,7 +336,7 @@ public class CharacterModel : MonoBehaviour
                 UnityEngine.Debug.Log("All UtilSlot is full");
             }//유틸 슬롯 풀
         }
-
+        SpriteUpdate();
         return result;
     }
     
@@ -412,6 +419,8 @@ public class CharacterModel : MonoBehaviour
             health = maxHealth;
         if (stamina > maxStamina)
             stamina = maxStamina;
+
+        SpriteUpdate();
     }
 
     //장비 착용시 스텟 업데이트
@@ -546,6 +555,7 @@ public class CharacterModel : MonoBehaviour
         UtilSprite();
     }
 
+
     /// <summary>
     /// This is Odd
     /// </summary>
@@ -578,6 +588,21 @@ public class CharacterModel : MonoBehaviour
     {
         if (headSlot != null)
         {
+
+            string src = headSlot.metaInfo.spriteSrc;
+            Sprite s = Resources.Load<Sprite>(src);
+
+
+            SpriteParts[9].sprite = s;
+            SpriteParts[14].sprite = null;
+            SpriteParts[15].sprite = null;
+        }
+        else
+        {
+            SpriteParts[9].sprite = null;
+            SpriteParts[14].sprite = BackHair;
+            SpriteParts[15].sprite = Tail;
+
             //string src = headSlot.metaInfo.spriteSrc;
             //Sprite s = Resources.Load<Sprite>(src);
             
@@ -588,7 +613,9 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[14].color = Color.clear;
             //SpriteParts[15].color = Color.clear;
         }
-        else
+       /* 
+        * else 가 2개인대 주석 처리된 부분을 제가 몰라서 일단 주석처리 했습니다.
+        * else
         {
             ClearSprite(PlayerSpriteParts.HeadOrnament);
             ClearSprite(PlayerSpriteParts.BackHair);
@@ -596,7 +623,7 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[9].sprite = null;
             //SpriteParts[14].color = Color.white;
             //SpriteParts[15].color = Color.white;
-        }
+        }*/
     }
 
     public void UtilSprite()
