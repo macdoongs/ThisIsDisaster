@@ -60,6 +60,9 @@ namespace NPC
         public AttackReceiver AttackReceiver;
         public RenderLayerChanger RenderLayerChanger;
         public NPCAttackController AttackControl;
+
+        [Header("UI")]
+        public UnityEngine.UI.Slider hpSlider;
         #endregion
 
         Vector3 oldPos = Vector3.zero;
@@ -83,6 +86,7 @@ namespace NPC
         void Update()
         {
             AttackControl.Update();
+
         }
 
         public void OnStartAttack() {
@@ -124,6 +128,12 @@ namespace NPC
                 SetDirection(UnitDirection.RIGHT);
             }
             oldPos = currentPos;
+
+
+            if (hpSlider != null)
+            {
+                hpSlider.value = Model.GetHpRate();
+            }
         }
 
         public void SetDirection(UnitDirection dir) {

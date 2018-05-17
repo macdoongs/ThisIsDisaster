@@ -7,6 +7,10 @@ using UnityEngine;
 public class UnitModel {
     public long instanceId = 0;
 
+    public virtual float GetHpRate() {
+        return 1f;
+    }
+
     public virtual string GetUnitName() {
         return "";
     }

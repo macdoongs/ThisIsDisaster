@@ -39,7 +39,15 @@ namespace NPC {
         public NPCExectueState ExecuteState { get { return _executeState; } }
 
         #region Stats
-        public float MaxHP { get { return MetaInfo.GetMaxHp(); } }
+        public float MaxHP
+        {
+            get
+            {
+                float output = MetaInfo.GetMaxHp();
+                if (output == 0f) { output = 10f; }
+                return output;
+            }
+        }
         public float CurrentHp = 0f;
 
         public float Defense { get{ return MetaInfo.GetDefense(); } }
@@ -71,6 +79,8 @@ namespace NPC {
 
         public void Init() {
             _state = NPCState.Generated;
+
+            CurrentHp = MaxHP;
         }
 
         public void OnGenerated() {
@@ -123,6 +133,7 @@ namespace NPC {
         }
 
         public void OnDefeated() {
+            Debug.Log(GetUnitName() + " died");
             Script.OnDefeated();
             _state = NPCState.Destroied;
         }
@@ -166,6 +177,11 @@ namespace NPC {
 
         public override void OnTakeDamage(UnitModel attacker, float damage) {
             Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+            CurrentHp -= damage;
+            if (CurrentHp <= 0f) {
+                CurrentHp = 0f;
+                OnDefeated();
+            }
         }
 
         public void OnDetectedTarget(UnitModel target) {
@@ -177,6 +193,11 @@ namespace NPC {
         public override string GetUnitName()
         {
             return MetaInfo.Name;
+        }
+
+        public override float GetHpRate()
+        {
+            return Mathf.Clamp(CurrentHp / MaxHP, 0f, 1f);
         }
     }
     

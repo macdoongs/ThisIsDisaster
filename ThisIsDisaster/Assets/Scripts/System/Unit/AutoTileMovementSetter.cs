@@ -30,8 +30,16 @@ public class AutoTileMovementSetter : MonoBehaviour {
             enabled = false;
             return;
         }
-        _currentTile = _map.GetTile(transform.position);
+        ChangeTile(_map.GetTile(transform.position));
+        //RenderOrderChange(_currentTile);
+        //HeightChange(_currentTile);
 	}
+
+    public void ChangeTile(TileUnit tile) {
+        _currentTile = tile;
+        RenderOrderChange(_currentTile);
+        HeightChange(_currentTile);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -41,9 +49,10 @@ public class AutoTileMovementSetter : MonoBehaviour {
             if (_changedAction != null) {
                 _changedAction(cur);
             }
-            _currentTile = cur;
-            RenderOrderChange(_currentTile);
-            HeightChange(_currentTile);
+            ChangeTile(cur);
+            //_currentTile = cur;
+            //RenderOrderChange(_currentTile);
+            //HeightChange(_currentTile);
         }
 
         if (_heightChangeTimer.started) {
