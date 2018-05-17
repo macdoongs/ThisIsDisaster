@@ -19,7 +19,7 @@ namespace NPC {
         None//dummy and end Index
     }
     
-    public class NPCModel : UnitModel {
+    public class NPCModel {
         public NPCUnit Unit {
             get; private set;
         }
@@ -38,9 +38,7 @@ namespace NPC {
         private NPCExectueState _executeState = NPCExectueState.None;
         public NPCExectueState ExecuteState { get { return _executeState; } }
 
-        public NPCModel() {
-
-        }
+        public long instanceId = 0;
 
         /// <summary>
         /// Call After MetaInfo Set

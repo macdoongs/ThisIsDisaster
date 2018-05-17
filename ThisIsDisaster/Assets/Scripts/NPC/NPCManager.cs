@@ -57,8 +57,10 @@ public class NPCManager : IObserver
         if (info == null) {
             return null;
         }
-        NPCModel model = new NPCModel();
-        model.instanceId = _instIdIndex++;
+        NPCModel model = new NPCModel()
+        {
+            instanceId = _instIdIndex++
+        };
         model.SetMetaInfo(info);
 
         if (GlobalGameManager.Instance.GameState == GameState.Stage) {

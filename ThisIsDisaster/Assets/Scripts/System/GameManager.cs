@@ -5,6 +5,11 @@ using UnityEngine;
 public class Prefab {
     public static GameObject LoadPrefab(string prefabSrc) {
         GameObject load = Resources.Load<GameObject>("Prefabs/" + prefabSrc);
+        if (load == null) {
+#if UNITY_EDITOR
+            Debug.LogError("Could not find prefab : " + prefabSrc);
+#endif
+        }
         GameObject copy = GameObject.Instantiate(load);
         return copy;
     }
@@ -93,6 +98,8 @@ public class GameManager : MonoBehaviour {
         {
             output.behaviour.IsRemoteCharacter = false;
             CurrentGameManager._localPlayer = output;
+            //attach chase
+            CurrentGameManager.MakeCameraMoveScript(output.gameObject);
         }
         else {
             output.behaviour.IsRemoteCharacter = true;
@@ -100,6 +107,14 @@ public class GameManager : MonoBehaviour {
         }
 
         return output;
+    }
+
+    void MakeCameraMoveScript(GameObject attach) {
+        Chasing script = Camera.main.gameObject.GetComponent<Chasing>();
+        if (!script) {
+            script = Camera.main.gameObject.AddComponent<Chasing>();
+        }
+        script.Target = attach;
     }
 
     public void OnReceiveCharacterCoordinate(NetworkComponents.PacketId packetId, int packetSender, byte[] data) {
