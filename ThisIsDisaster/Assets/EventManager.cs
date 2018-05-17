@@ -37,6 +37,7 @@ public class EventManager : MonoBehaviour {
     public GameObject darkObject = null;
     public GameObject snowObject = null;
     public GameObject sandObject = null;
+    public GameObject cloudyObject = null;
 
     public EventType currentTestType = EventType.None;
     
@@ -228,9 +229,9 @@ public class EventManager : MonoBehaviour {
             {
                 effectObject = Instantiate(effectObject);
                 effectObject.transform.SetParent(Camera.main.transform);
-                effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
+                effectObject.transform.localPosition = new Vector3(1f, 1f, 1f);    // 0  5 10
                 effectObject.transform.localScale = Vector3.one;
-                effectObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                effectObject.transform.localRotation = Quaternion.Euler(0f, 1f, 1f);
                 effectObject.SetActive(false);
 
             }
@@ -241,6 +242,28 @@ public class EventManager : MonoBehaviour {
 
         return snowObject.GetComponent<SnowEffect>();
     }
+
+   public CloudyEffect MakeWorldCloudy()
+    {                       
+        if (cloudyObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/Cloudy");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.transform.SetParent(Camera.main.transform);
+                effectObject.transform.localPosition = new Vector3(0f, 0f, 1f);
+                effectObject.transform.localScale = new Vector3(10f, 10f, 1f);
+                effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                effectObject.SetActive(false);
+
+            }
+            cloudyObject = effectObject;
+
+        }
+
+        return cloudyObject.GetComponent<CloudyEffect>();
+    }     // map을 하얗게하는 effect   
 
     public SandEffect MakeWorldSand()
     {
@@ -610,12 +633,11 @@ public class LandslidingEvent : EventBase
     }
 }  // 산사태 이벤트
 
-
 public class HeavysnowEvent : EventBase
 {
     int max = -1;//max level of this event
     SnowEffect snowObject = null;
-    GameObject cloudyObject = null;
+    CloudyEffect cloudyObject = null;  
 
     public HeavysnowEvent()
     {
@@ -626,21 +648,22 @@ public class HeavysnowEvent : EventBase
     {
         snowObject = EventManager.Manager.MakeWorldSnow();
 
-        cloudyObject = null;
+        cloudyObject = EventManager.Manager.MakeWorldCloudy();
     }
 
     public override void OnStart()
     {
         snowObject.SetActive(true);
         snowObject.SetLevel(5);
-        EventManager.Manager.SetWorldFilterColor(new Color(255f/255f, 1, 1, 0.4f));
+        EventManager.Manager.SetWorldFilterColor(new Color(71f/255f, 73f/255f, 73f/255f, 98f/255f));
+        cloudyObject.SetActive(true);
         
     }
 
     public override void OnEnd()
     {
         snowObject.SetActive(false);
-        cloudyObject = null;
+        cloudyObject.SetActive(false);
     }
 
     public override void OnDestroy()
