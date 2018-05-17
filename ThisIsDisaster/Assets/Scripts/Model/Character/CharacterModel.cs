@@ -47,6 +47,8 @@ public class CharacterModel : UnitModel {
     public SpriteRenderer Body;
 
     public SpriteRenderer[] SpriteParts = new SpriteRenderer[18];
+    public Sprite BackHair;
+    public Sprite Tail;
 
     //초기화 
     public virtual void initialState()
@@ -56,6 +58,9 @@ public class CharacterModel : UnitModel {
 
         health = maxHealth;
         stamina = maxStamina;
+        BackHair = SpriteParts[14].sprite;
+        Tail = SpriteParts[15].sprite;
+
     }
 
 
@@ -117,7 +122,7 @@ public class CharacterModel : UnitModel {
                 UnityEngine.Debug.Log("All UtilSlot is full");
             }//유틸 슬롯 풀
         }
-
+        SpriteUpdate();
         return result;
     }
     
@@ -200,6 +205,8 @@ public class CharacterModel : UnitModel {
             health = maxHealth;
         if (stamina > maxStamina)
             stamina = maxStamina;
+
+        SpriteUpdate();
     }
 
     //장비 착용시 스텟 업데이트
@@ -334,7 +341,7 @@ public class CharacterModel : UnitModel {
         UtilSprite();
     }
 
-    public void HeadSprite()
+    public void WeaponSprite()
     {
         if (weaponSlot != null)
         {
@@ -351,7 +358,7 @@ public class CharacterModel : UnitModel {
     }
 
 
-    public void WeaponSprite()
+    public void HeadSprite()
     {
         if (headSlot != null)
         {
@@ -360,14 +367,14 @@ public class CharacterModel : UnitModel {
 
 
             SpriteParts[9].sprite = s;
-            SpriteParts[14].color = Color.clear;
-            SpriteParts[15].color = Color.clear;
+            SpriteParts[14].sprite = null;
+            SpriteParts[15].sprite = null;
         }
         else
         {
             SpriteParts[9].sprite = null;
-            SpriteParts[14].color = Color.white;
-            SpriteParts[15].color = Color.white;
+            SpriteParts[14].sprite = BackHair;
+            SpriteParts[15].sprite = Tail;
         }
     }
 

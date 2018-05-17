@@ -9,17 +9,18 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1557284894256300}
+  m_RootGameObject: {fileID: 1808074095893594}
   m_IsPrefabParent: 1
---- !u!1 &1557284894256300
+--- !u!1 &1808074095893594
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4368367657096202}
-  - component: {fileID: 114004301231864450}
+  - component: {fileID: 4984713514645568}
+  - component: {fileID: 114098943552193350}
+  - component: {fileID: 114693226391901754}
   m_Layer: 0
   m_Name: LobbyController
   m_TagString: Untagged
@@ -27,12 +28,12 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4368367657096202
+--- !u!4 &4984713514645568
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1557284894256300}
+  m_GameObject: {fileID: 1808074095893594}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 607.6054, y: 302.05188, z: 12.125}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -40,21 +41,44 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114004301231864450
+--- !u!114 &114098943552193350
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1557284894256300}
+  m_GameObject: {fileID: 1808074095893594}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fca3a2ba3e9fffb4a933ba9caeefe161, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerName: {fileID: 0}
-  PlayerLevel: {fileID: 0}
-  PlayerExp: {fileID: 0}
-  name: 
-  level: 0
-  exp: 0
-  gold: 0
+--- !u!114 &114693226391901754
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1808074095893594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baaa09c291b3b624db9ed4a5f8366c6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  focusedTextColor: {r: 0.90196085, g: 0.62352943, b: 0.050980397, a: 1}
+  defaultTextColor: {r: 0.19607845, g: 0.19607845, b: 0.19607845, a: 1}
+  MenuTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Underbars:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  MenuPosition: -1
+  GameModePanel: {fileID: 0}
+  GameModeTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  GameModeUnderbars:
+  - {fileID: 0}
+  - {fileID: 0}
+  StartPanel: {fileID: 0}
