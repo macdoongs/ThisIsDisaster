@@ -185,8 +185,14 @@ public class ConsoleScript {
         };
         makeNpc.SetParameters(typeof(int));
         makeNpc.SetAction(MakeNPC);
-
         commands.Add("npc", makeNpc);
+
+        Command makeNpcMany = new Command() {
+            name = "Make NPC Many"
+        };
+        makeNpcMany.SetParameters(typeof(int), typeof(int));
+        makeNpcMany.SetAction(MakeNPCMany);
+        commands.Add("npcmany", makeNpcMany);
     }
 
     public void OnInput(string commandText) {
@@ -254,5 +260,25 @@ public class ConsoleScript {
 
     void MakeNPC(params object[] p) {
         NPCManager.Manager.MakeNPC((int)p[0]);
+    }
+
+    void MakeNPCMany(params object[] p) {
+        int count = (int)p[1];
+        int width = RandomMapGenerator.Instance.Width;
+        int height = RandomMapGenerator.Instance.Height;
+
+        int xRange = width / 2;
+        int yRange = height / 2;
+        for (int i = 0; i < count; i++) {
+            var model = NPCManager.Manager.MakeNPC((int)p[0]);
+            int x = UnityEngine.Random.Range(xRange -10, xRange + 10);
+            int y = UnityEngine.Random.Range(yRange - 10, yRange + 10);
+            TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+
+            Vector3 pos = model.Unit.transform.position;
+            pos.x = tile.transform.position.x;
+            pos.y = tile.transform.position.y;
+            model.Unit.transform.position = pos;
+        }
     }
 }

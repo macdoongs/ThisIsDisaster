@@ -429,6 +429,11 @@ Prefab:
       propertyPath: renderLayerChanger
       value: 
       objectReference: {fileID: 1527115502}
+    - target: {fileID: 114211578595463080, guid: 6abb62f911cd3de478c0d829434ee277,
+        type: 2}
+      propertyPath: _heightChangeTime
+      value: 0.25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6abb62f911cd3de478c0d829434ee277, type: 2}
   m_IsPrefabParent: 0
@@ -465,15 +470,17 @@ MonoBehaviour:
   _tileUnit: {fileID: 1498860092583490, guid: 6dc8f847908a9e3479c6d5cfa1cc9356, type: 2}
   pivot: {fileID: 696363115}
   _randomTileSprites:
+  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
   - {fileID: 21300000, guid: 2c5a3117d5db1264188c0e85c12e64c7, type: 3}
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
-  - {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
+  - {fileID: 21300000, guid: 4fa1d04c987d2824ab1a53a2abad9069, type: 3}
+  - {fileID: 21300000, guid: 5730cda6685e57845ae807d3a19f8386, type: 3}
+  _uiPivot: {fileID: 0}
   roomThresholdSize: 50
   useRandomSeed: 1
   debugTest: 0
   _zDelta: 0.1
   _zCastDist: 0
+  _zPos: 10
 --- !u!212 &1286982700
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -623,7 +630,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1643413057
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1527115499 stripped
@@ -815,7 +822,7 @@ GameObject:
   - component: {fileID: 2031852304}
   - component: {fileID: 2031852305}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CelluarAutomatobject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
