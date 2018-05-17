@@ -18,8 +18,8 @@ namespace NPC {
         Battle,
         None//dummy and end Index
     }
-    
-    public class NPCModel {
+
+    public class NPCModel : UnitModel {
         public NPCUnit Unit {
             get; private set;
         }
@@ -38,7 +38,20 @@ namespace NPC {
         private NPCExectueState _executeState = NPCExectueState.None;
         public NPCExectueState ExecuteState { get { return _executeState; } }
 
-        public long instanceId = 0;
+        #region Stats
+        public float MaxHP
+        {
+            get
+            {
+                float output = MetaInfo.GetMaxHp();
+                if (output == 0f) { output = 10f; }
+                return output;
+            }
+        }
+        public float CurrentHp = 0f;
+
+        public float Defense { get{ return MetaInfo.GetDefense(); } }
+        #endregion
 
         /// <summary>
         /// Call After MetaInfo Set
@@ -66,6 +79,8 @@ namespace NPC {
 
         public void Init() {
             _state = NPCState.Generated;
+
+            CurrentHp = MaxHP;
         }
 
         public void OnGenerated() {
@@ -79,6 +94,7 @@ namespace NPC {
             switch (_executeState) {
                 case NPCExectueState.None:
                     _executeState = NPCExectueState.Wander;
+                    Unit.SetSensing(true);
                     break;
                 case NPCExectueState.Wander:
                     WanderExectue();
@@ -117,6 +133,7 @@ namespace NPC {
         }
 
         public void OnDefeated() {
+            Debug.Log(GetUnitName() + " died");
             Script.OnDefeated();
             _state = NPCState.Destroied;
         }
@@ -124,6 +141,7 @@ namespace NPC {
         public void OnVictoried() {
             Script.OnVictoried();
             _executeState = NPCExectueState.Wander;
+            Unit.SetSensing(true);
         }
 
         public void Update() {
@@ -155,6 +173,31 @@ namespace NPC {
                 0f);
             distVector *= randomDist;
             return Unit.transform.position + distVector;
+        }
+
+        public override void OnTakeDamage(UnitModel attacker, float damage) {
+            Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+            CurrentHp -= damage;
+            if (CurrentHp <= 0f) {
+                CurrentHp = 0f;
+                OnDefeated();
+            }
+        }
+
+        public void OnDetectedTarget(UnitModel target) {
+            Unit.SetSensing(false);
+            _executeState = NPCExectueState.Movement;
+            //move to target
+        }
+
+        public override string GetUnitName()
+        {
+            return MetaInfo.Name;
+        }
+
+        public override float GetHpRate()
+        {
+            return Mathf.Clamp(CurrentHp / MaxHP, 0f, 1f);
         }
     }
     
