@@ -90,11 +90,14 @@ public class CharacterModel : MonoBehaviour
     public float itemDamage =0.0f;
 
     //아이템 착용 슬롯
+    public ItemModel[] EquipSlots;
     public ItemModel headSlot = null;
+    public ItemModel clothesSlot = null;
     public ItemModel weaponSlot = null;
-    public ItemModel utilSlot1 = null;
-    public ItemModel utilSlot2 = null;
-    public ItemModel utilSlot3 = null;
+    public ItemModel backpackSlot = null;
+    public ItemModel bottleSlot = null;
+    public ItemModel flashSlot = null;
+
 
     public SpriteRenderer Body;
 
@@ -298,6 +301,19 @@ public class CharacterModel : MonoBehaviour
                 Debug.Log("Weapon Slot is full");
             }
         }
+        else if (equipType.Equals(ItemType.Clothes))
+        {
+            if (clothesSlot == null)
+            {
+                clothesSlot = equipment;
+                AddStats(clothesSlot);
+                result = true;
+            }
+            else
+            {
+                Debug.Log("Clothes Slot is full");
+            }
+        }
         else if (equipType.Equals(ItemType.Head))
         {
             if (headSlot == null)
@@ -311,31 +327,46 @@ public class CharacterModel : MonoBehaviour
                 Debug.Log("Head Slot is full");
             }
         }
-        else if (equipType.Equals(ItemType.Util))
+        else if (equipType.Equals(ItemType.Backpack))
         {
-            if (utilSlot1 == null)
+            if (backpackSlot == null)
             {
-                utilSlot1 = equipment;
-                AddStats(utilSlot1);
-                result = true;
-            }
-            else if (utilSlot2 == null)
-            {
-                utilSlot2 = equipment;
-                AddStats(utilSlot2);
-                result = true;
-            }
-            else if (utilSlot3 == null)
-            {
-                utilSlot3 = equipment;
-                AddStats(utilSlot3);
+                backpackSlot = equipment;
+                AddStats(backpackSlot);
                 result = true;
             }
             else
             {
-                UnityEngine.Debug.Log("All UtilSlot is full");
-            }//유틸 슬롯 풀
+                Debug.Log("BackPack Slot is full");
+            }
         }
+        else if (equipType.Equals(ItemType.Bottle))
+        {
+            if (bottleSlot == null)
+            {
+                bottleSlot = equipment;
+                AddStats(bottleSlot);
+                result = true;
+            }
+            else
+            {
+                Debug.Log("Bottle Slot is full");
+            }
+        }
+        else if (equipType.Equals(ItemType.Flash))
+        {
+            if (flashSlot == null)
+            {
+                flashSlot = equipment;
+                AddStats(flashSlot);
+                result = true;
+            }
+            else
+            {
+                Debug.Log("Flash Slot is full");
+            }
+        }
+
         SpriteUpdate();
         return result;
     }
@@ -369,6 +400,17 @@ public class CharacterModel : MonoBehaviour
             SubtractStats(weaponSlot);
             weaponSlot = null;
         }
+        else if (SlotName.Equals("clothes"))
+        {
+            if (clothesSlot == null)
+            {
+                Debug.Log("Slot is Empty");
+                return;
+            }
+
+            SubtractStats(clothesSlot);
+            clothesSlot = null;
+        }
         else if (SlotName.Equals("head"))
         {
             if (headSlot == null)
@@ -380,37 +422,37 @@ public class CharacterModel : MonoBehaviour
             SubtractStats(headSlot);
             headSlot = null;
         }
-        else if (SlotName.Equals("util1"))
+        else if (SlotName.Equals("backpack"))
         {
-            if (utilSlot1 == null)
+            if (backpackSlot == null)
             {
                 Debug.Log("Slot is Empty");
                 return;
             }
-            SubtractStats(utilSlot1);
-            utilSlot1 = null;
+            SubtractStats(backpackSlot);
+            backpackSlot = null;
         }
-        else if (SlotName.Equals("util2"))
+        else if (SlotName.Equals("bottle"))
         {
-            if (utilSlot2 == null)
+            if (bottleSlot == null)
             {
                 Debug.Log("Slot is Empty");
                 return;
             }
 
-            SubtractStats(utilSlot2);
-            utilSlot2 = null;
+            SubtractStats(bottleSlot);
+            bottleSlot = null;
         }
-        else if (SlotName.Equals("util3"))
+        else if (SlotName.Equals("flash"))
         {
-            if (utilSlot3 == null)
+            if (flashSlot == null)
             {
                 Debug.Log("Slot is Empty");
                 return;
             }
 
-            SubtractStats(utilSlot3);
-            utilSlot3 = null;
+            SubtractStats(flashSlot);
+            flashSlot = null;
         }
 
         UpdateStat();
@@ -552,7 +594,6 @@ public class CharacterModel : MonoBehaviour
     {
         HeadSprite();
         WeaponSprite();
-        UtilSprite();
     }
 
 
@@ -623,34 +664,6 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[14].color = Color.white;
             //SpriteParts[15].color = Color.white;
         }
-    }
-
-    public void UtilSprite()
-    {
-        ItemModel[] Utils = new ItemModel[] { utilSlot1, utilSlot2, utilSlot3 };
-
-        foreach(var util in Utils)
-        {
-            if (util != null && util.metaInfo.tags.Contains("backpack"))
-            {
-                //string src = util.metaInfo.spriteSrc;
-                //Sprite s = Resources.Load<Sprite>(src);
-
-
-                //SpriteParts[4].sprite = s;
-                SetSprite(PlayerSpriteParts.BackOrnament, util.metaInfo);
-
-            }
-            else
-            {
-                //SpriteParts[4].sprite = null;
-                //여기 백팩 체크과정 필요
-                ClearSprite(PlayerSpriteParts.BackOrnament);
-
-            }
-        }
-
-
     }
 
     /// <summary>
