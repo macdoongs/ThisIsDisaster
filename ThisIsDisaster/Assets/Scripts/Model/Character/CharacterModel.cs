@@ -99,10 +99,10 @@ public class CharacterModel : MonoBehaviour
     public SpriteRenderer Body;
 
     public SpriteRenderer[] SpriteParts = new SpriteRenderer[18];
-<<<<<<< HEAD
+
     public Sprite BackHair;
     public Sprite Tail;
-=======
+
     Dictionary<PlayerSpriteParts, DefaultSpriteInfo> _defaultSpriteInfo = new Dictionary<PlayerSpriteParts, DefaultSpriteInfo>();
 
 
@@ -263,7 +263,6 @@ public class CharacterModel : MonoBehaviour
         List<int> output = new List<int>(ItemCounts);
         return output;
     }
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
 
     //초기화 
     public virtual void initialState()
@@ -556,12 +555,10 @@ public class CharacterModel : MonoBehaviour
         UtilSprite();
     }
 
-<<<<<<< HEAD
-=======
+
     /// <summary>
     /// This is Odd
     /// </summary>
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
     public void WeaponSprite()
     {
         //if (weaponSlot != null)
@@ -591,7 +588,7 @@ public class CharacterModel : MonoBehaviour
     {
         if (headSlot != null)
         {
-<<<<<<< HEAD
+
             string src = headSlot.metaInfo.spriteSrc;
             Sprite s = Resources.Load<Sprite>(src);
 
@@ -605,7 +602,7 @@ public class CharacterModel : MonoBehaviour
             SpriteParts[9].sprite = null;
             SpriteParts[14].sprite = BackHair;
             SpriteParts[15].sprite = Tail;
-=======
+
             //string src = headSlot.metaInfo.spriteSrc;
             //Sprite s = Resources.Load<Sprite>(src);
             
@@ -616,7 +613,9 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[14].color = Color.clear;
             //SpriteParts[15].color = Color.clear;
         }
-        else
+       /* 
+        * else 가 2개인대 주석 처리된 부분을 제가 몰라서 일단 주석처리 했습니다.
+        * else
         {
             ClearSprite(PlayerSpriteParts.HeadOrnament);
             ClearSprite(PlayerSpriteParts.BackHair);
@@ -624,8 +623,7 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[9].sprite = null;
             //SpriteParts[14].color = Color.white;
             //SpriteParts[15].color = Color.white;
->>>>>>> ef84a1427d8891d194091bb0659e7ed3befa8c55
-        }
+        }*/
     }
 
     public void UtilSprite()
