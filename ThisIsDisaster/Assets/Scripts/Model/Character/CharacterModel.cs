@@ -597,7 +597,7 @@ public class CharacterModel : MonoBehaviour
             SpriteParts[14].sprite = null;
             SpriteParts[15].sprite = null;
         }
-        else
+        /*else
         {
             SpriteParts[9].sprite = null;
             SpriteParts[14].sprite = BackHair;
@@ -613,9 +613,8 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[14].color = Color.clear;
             //SpriteParts[15].color = Color.clear;
         }
-       /* 
-        * else 가 2개인대 주석 처리된 부분을 제가 몰라서 일단 주석처리 했습니다.
-        * else
+        */
+       else
         {
             ClearSprite(PlayerSpriteParts.HeadOrnament);
             ClearSprite(PlayerSpriteParts.BackHair);
@@ -623,7 +622,7 @@ public class CharacterModel : MonoBehaviour
             //SpriteParts[9].sprite = null;
             //SpriteParts[14].color = Color.white;
             //SpriteParts[15].color = Color.white;
-        }*/
+        }
     }
 
     public void UtilSprite()

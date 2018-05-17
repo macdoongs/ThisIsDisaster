@@ -64,4 +64,10 @@ public class SettingUIController : MonoBehaviour {
         
     }
 
+    public void MenuButtonClicked(GameObject menu)
+    {
+        CloseAllMenu();
+        menu.SetActive(true);
+        HighlightCategory();
+    }
 }
