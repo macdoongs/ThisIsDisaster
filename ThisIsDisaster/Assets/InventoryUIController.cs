@@ -104,6 +104,9 @@ public class InventoryUIController : MonoBehaviour {
 
     public void Start()
     {
+        if (Player == null) {
+            Player = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+        }
         PlayerCharacter = Player.GetComponent<CharacterModel>();
 
         SlotDescription = new DescriptionUI(DescriptionPanel , SlotDescriptionItemImage, SlotDescriptionItemName, SlotDescriptionItemDescription, 

@@ -22,6 +22,9 @@ public class ItemTestCharacter : MonoBehaviour {
 
     public void Start()
     {
+        if (PlayerCharacter == null) {
+            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+        }
         CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
         CharacterUnit.initialState();
     }

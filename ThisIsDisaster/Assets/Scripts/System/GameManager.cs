@@ -38,12 +38,13 @@ public class GameManager : MonoBehaviour {
     {
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
+
+        var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
+            GlobalParameters.Param.accountId, true);
     }
 
     // Use this for initialization
     void Start () {
-        var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName, 
-            GlobalParameters.Param.accountId, true);
 
         if (NetworkComponents.NetworkModule.Instance != null)
         {

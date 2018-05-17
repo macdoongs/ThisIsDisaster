@@ -28,7 +28,35 @@ public class PlayerModel : UnitModel
     }
 }
 
-public class CharacterModel : MonoBehaviour {
+public class CharacterModel : MonoBehaviour
+{
+    public enum PlayerSpriteParts
+    {
+        Body = 0,
+        LowBody,
+        FrontLeg,
+        BackLeg,
+        BackOrnament,
+        FrontArm = 5,
+        Shoulder,
+        FrontWeapon,
+        Head,
+        HeadOrnament,
+        Back = 10,
+        Mask,
+        FrontHair,
+        Face,
+        BackHair,
+        Tail = 15,
+        BackArm,
+        BackWeapon
+    }
+    public struct DefaultSpriteInfo {
+        public PlayerSpriteParts part;
+        public Sprite sprite;
+        public Color color;
+        public bool enabled;
+    }
     
     //테스트용 값
     public string PlayerName = "TestID";
@@ -71,6 +99,7 @@ public class CharacterModel : MonoBehaviour {
     public SpriteRenderer Body;
 
     public SpriteRenderer[] SpriteParts = new SpriteRenderer[18];
+    Dictionary<PlayerSpriteParts, DefaultSpriteInfo> _defaultSpriteInfo = new Dictionary<PlayerSpriteParts, DefaultSpriteInfo>();
 
 
     public Dictionary<long, ItemModel> ItemSpace = new Dictionary<long, ItemModel>();
@@ -96,6 +125,30 @@ public class CharacterModel : MonoBehaviour {
             attackSender.SetOwner(_player);
         if (attackReceiver)
             attackReceiver.SetOwner(_player);
+
+        InitDefaultSprite();
+    }
+
+    void InitDefaultSprite() {
+        _defaultSpriteInfo.Clear();
+        int index = 0;
+        foreach (var renderer in SpriteParts) {
+            PlayerSpriteParts parts = (PlayerSpriteParts)index;
+            Sprite s = renderer.sprite;
+            Color c = renderer.color;
+            bool e = renderer.enabled;
+            DefaultSpriteInfo defInfo = new DefaultSpriteInfo()
+            {
+                part = parts,
+                sprite = s,
+                color = c,
+                enabled = e
+            };
+
+            _defaultSpriteInfo.Add(parts, defInfo);
+
+            index++;
+        }
     }
 
     public virtual bool AddItem(ItemModel item, int amount)
@@ -493,40 +546,56 @@ public class CharacterModel : MonoBehaviour {
         UtilSprite();
     }
 
-    public void HeadSprite()
+    /// <summary>
+    /// This is Odd
+    /// </summary>
+    public void WeaponSprite()
     {
+        //if (weaponSlot != null)
+        //{
+        //    string src = weaponSlot.metaInfo.spriteSrc;
+        //    Sprite s = Resources.Load<Sprite>(src);
+
+
+        //    SpriteParts[7].sprite = s;
+        //}
+        //else
+        //{
+        //    //SpriteParts[7].sprite = null;
+        //    ClearSpritePart(PlayerSpriteParts.Head);
+        //}
         if (weaponSlot != null)
         {
-            string src = weaponSlot.metaInfo.spriteSrc;
-            Sprite s = Resources.Load<Sprite>(src);
-
-
-            SpriteParts[7].sprite = s;
+            SetSprite(PlayerSpriteParts.FrontWeapon, weaponSlot.metaInfo);
         }
-        else
-        {
-            SpriteParts[7].sprite = null;
+        else {
+            ClearSprite(PlayerSpriteParts.FrontWeapon);
         }
     }
 
 
-    public void WeaponSprite()
+    public void HeadSprite()
     {
         if (headSlot != null)
         {
-            string src = headSlot.metaInfo.spriteSrc;
-            Sprite s = Resources.Load<Sprite>(src);
-
-
-            SpriteParts[9].sprite = s;
-            SpriteParts[14].color = Color.clear;
-            SpriteParts[15].color = Color.clear;
+            //string src = headSlot.metaInfo.spriteSrc;
+            //Sprite s = Resources.Load<Sprite>(src);
+            
+            SetSprite(PlayerSpriteParts.HeadOrnament, headSlot.metaInfo);
+            DisableSpritePart(PlayerSpriteParts.BackOrnament);
+            DisableSpritePart(PlayerSpriteParts.Tail);
+            //SpriteParts[9].sprite = s;
+            //SpriteParts[14].color = Color.clear;
+            //SpriteParts[15].color = Color.clear;
         }
         else
         {
-            SpriteParts[9].sprite = null;
-            SpriteParts[14].color = Color.white;
-            SpriteParts[15].color = Color.white;
+            ClearSprite(PlayerSpriteParts.HeadOrnament);
+            ClearSprite(PlayerSpriteParts.BackHair);
+            ClearSprite(PlayerSpriteParts.Tail);
+            //SpriteParts[9].sprite = null;
+            //SpriteParts[14].color = Color.white;
+            //SpriteParts[15].color = Color.white;
         }
     }
 
@@ -538,20 +607,97 @@ public class CharacterModel : MonoBehaviour {
         {
             if (util != null && util.metaInfo.tags.Contains("backpack"))
             {
-                string src = util.metaInfo.spriteSrc;
-                Sprite s = Resources.Load<Sprite>(src);
+                //string src = util.metaInfo.spriteSrc;
+                //Sprite s = Resources.Load<Sprite>(src);
 
 
-                SpriteParts[4].sprite = s;
+                //SpriteParts[4].sprite = s;
+                SetSprite(PlayerSpriteParts.BackOrnament, util.metaInfo);
 
             }
             else
             {
-                SpriteParts[4].sprite = null;
+                //SpriteParts[4].sprite = null;
+                //여기 백팩 체크과정 필요
+                ClearSprite(PlayerSpriteParts.BackOrnament);
 
             }
         }
 
 
+    }
+
+    /// <summary>
+    /// 색상 정보도 필요할 수 있음
+    /// </summary>
+    /// <param name="part"></param>
+    /// <param name="info"></param>
+    public void SetSprite(PlayerSpriteParts part, ItemTypeInfo info) {
+        Sprite sprite = Resources.Load<Sprite>(info.spriteSrc);
+        if (sprite == null)
+        {
+            ClearSprite(part);
+            return;
+        }
+        else {
+            SetSpritePart(part, sprite);
+        }
+    }
+
+    void ClearSprite(PlayerSpriteParts part) {
+        try {
+            var rend = SpriteParts[(int)part];
+            DefaultSpriteInfo def;
+            if (_defaultSpriteInfo.TryGetValue(part, out def))
+            {
+                rend.enabled = def.enabled;
+                rend.sprite = def.sprite;
+                rend.color = def.color;
+            }
+            else {
+                rend.enabled = false;
+            }
+        }
+        catch {
+
+        }
+    }
+
+    void DisableSpritePart(PlayerSpriteParts part) {
+        try
+        {
+            var rend = SpriteParts[(int)part];
+            rend.enabled = false;
+        }
+        catch { }
+    }
+
+    void SetSpritePart(PlayerSpriteParts part, Sprite s) {
+        try
+        {
+            var rend = SpriteParts[(int)part];
+            rend.enabled = true;
+            rend.sprite = s;
+            //color info?
+        }
+        catch (IndexOutOfRangeException ioe)
+        {
+            Debug.LogError("Could not find Player's sprite region " + part);
+            return;
+        }
+        catch (NullReferenceException ne) {
+            
+        }
+    }
+
+    void SetSpritePartColor(PlayerSpriteParts part, Color c) {
+        try
+        {
+            var rend = SpriteParts[(int)part];
+            rend.color = c;
+        }
+        catch {
+
+        }
     }
 }
