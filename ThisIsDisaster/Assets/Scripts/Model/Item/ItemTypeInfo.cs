@@ -12,21 +12,35 @@ public enum ItemType
     /// 무기
     /// </summary>
     Weapon = 0,
-
+    /// <summary>
+    /// 옷
+    /// </summary>
+    Clothes =1 ,
     /// <summary>
     /// 모자
     /// </summary>
-    Head,
-
+    Head = 2,
     /// <summary>
+    /// 가방
+    /// </summary>
+    Backpack=3,    
+    /// <summary>
+    /// 물병
+    /// </summary>
+    Bottle=4,
+    /// <summary>
+    /// 전등
+    /// </summary>
+    Flash=5,
+/*    /// <summary>
     /// 유틸리티
     /// </summary>
-    Util,
+    Util,*/
 
     /// <summary>
     /// 기타 소모품
     /// </summary>
-    Etc
+    Etc =6
 }
 
 public class ItemTypeInfo
@@ -62,8 +76,11 @@ public class ItemTypeInfo
     public static ItemType ParseType(string typeText) {
         switch (typeText.ToLower()) {
             case "head": return ItemType.Head;
+            case "clothes": return ItemType.Clothes;
             case "weapon": return ItemType.Weapon;
-            case "util": return ItemType.Util;
+            case "backpack": return ItemType.Backpack;
+            case "bottle": return ItemType.Bottle;
+            case "flash": return ItemType.Flash;
             case "etc":
             default: return ItemType.Etc;
         }
