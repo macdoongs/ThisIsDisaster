@@ -145,6 +145,7 @@ namespace NPC {
         }
 
         public void Update() {
+            MoveControl.Update();
             switch (_state) {
                 case NPCState.Generated:
                     OnGenerated();
@@ -176,6 +177,10 @@ namespace NPC {
         }
 
         public override void OnTakeDamage(UnitModel attacker, float damage) {
+            if (CurrentHp <= 0f) {
+                //already dead
+                return;
+            }
             Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
             CurrentHp -= damage;
             if (CurrentHp <= 0f) {
@@ -198,6 +203,26 @@ namespace NPC {
         public override float GetHpRate()
         {
             return Mathf.Clamp(CurrentHp / MaxHP, 0f, 1f);
+        }
+
+        public override float GetSpeed()
+        {
+            return MetaInfo.GetSpeed();
+        }
+
+        public override void OnArriedPath(TileUnit target)
+        {
+            Debug.Log(GetUnitName() + " arrived at" + target.ToString());
+        }
+
+        public override void UpdatePosition(Vector3 pos)
+        {
+            Unit.transform.position = pos;
+        }
+
+        public override Vector3 GetCurrentPos()
+        {
+            return Unit.transform.position;
         }
     }
     

@@ -48,6 +48,14 @@ public class EventManager : MonoBehaviour {
         Manager = this;
     }
 
+    public List<EventBase> GetAllEvents() {
+        List<EventBase> output = new List<EventBase>();
+        foreach (var kv in dictioary) {
+            output.Add(kv.Value);
+        }
+        return output;
+    }
+
     public void OnGenerate(EventType type) {
         EventBase e = null;
         if (dictioary.TryGetValue(type, out e)) {
@@ -109,7 +117,7 @@ public class EventManager : MonoBehaviour {
         foreach (var v in dictioary.Values) {
             if (v.IsStarted) {
                 v.OnExecute();
-                Debug.Log("Execute "+v.type);
+                //Debug.Log("Execute "+v.type);
             }
         }
     }

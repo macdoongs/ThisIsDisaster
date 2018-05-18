@@ -26,31 +26,31 @@ namespace NPC {
 
         public virtual void WanderExectue() {
 
-            if (_wanderTimer.started) {
-                if (_wanderTimer.RunTimer()) {
-                    _wanderDestInit = false;
-                }
-                else
-                    return;
-            }
-            if (!_wanderDestInit)
-            {
-                _wanderDestInit = true;
-                _wanderDest = Model.GetRandomMovement();
+            //if (_wanderTimer.started) {
+            //    if (_wanderTimer.RunTimer()) {
+            //        _wanderDestInit = false;
+            //    }
+            //    else
+            //        return;
+            //}
+            //if (!_wanderDestInit)
+            //{
+            //    _wanderDestInit = true;
+            //    _wanderDest = Model.GetRandomMovement();
 
-            }
+            //}
 
-            Vector3 current = Unit.transform.position;
-            if (_wanderDest == current)
-            {
-                _wanderTimer.StartTimer(UnityEngine.Random.Range(2f, 5f));
-            }
-            else {
-                //Vector3 direction = (_wanderDest - current).normalized;
+            //Vector3 current = Unit.transform.position;
+            //if (_wanderDest == current)
+            //{
+            //    _wanderTimer.StartTimer(UnityEngine.Random.Range(2f, 5f));
+            //}
+            //else {
+            //    //Vector3 direction = (_wanderDest - current).normalized;
 
-                //Unit.transform.Translate(direction * Model.MetaInfo.GetSpeed() * Time.deltaTime);
-                Unit.transform.position = Vector3.MoveTowards(current, _wanderDest, Model.MetaInfo.GetSpeed() * Time.deltaTime);
-            }
+            //    //Unit.transform.Translate(direction * Model.MetaInfo.GetSpeed() * Time.deltaTime);
+            //    //Unit.transform.position = Vector3.MoveTowards(current, _wanderDest, Model.MetaInfo.GetSpeed() * Time.deltaTime);
+            //}
         }
 
         public virtual void MoveExecute() { }

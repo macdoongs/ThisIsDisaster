@@ -129,6 +129,8 @@ public class ConsoleScript {
         public Action action = null;
         public List<object> paramTypes = new List<object>();
         public List<object> parameters = new List<object>();
+        public bool ignoreParameterLength = false;
+        
 
         public void SetParameters(params object[] param) {
             paramTypes.Clear();
@@ -193,6 +195,39 @@ public class ConsoleScript {
         makeNpcMany.SetParameters(typeof(int), typeof(int));
         makeNpcMany.SetAction(MakeNPCMany);
         commands.Add("npcmany", makeNpcMany);
+
+        Command invokeWeather = new Command()
+        {
+            name = "Invoke New Weather"
+        };
+        invokeWeather.SetAction(MakeWeathers);
+        commands.Add("invoke", invokeWeather);
+
+        Command startWeather = new Command()
+        {
+            name = "Start Current Weathers",
+        };
+        startWeather.ignoreParameterLength = true;
+        startWeather.SetAction(StartAllWeathers);
+        commands.Add("startweather", startWeather);
+
+
+        Command clearWeather = new Command()
+        {
+            name = "Clear Current Weathers",
+        };
+        clearWeather.ignoreParameterLength = true;
+        clearWeather.SetAction(StopAllWeathers);
+        commands.Add("stopweather", clearWeather);
+
+        Command astarDebug = new Command()
+        {
+            name = "Make A* Debug NPC"
+        };
+        astarDebug.ignoreParameterLength = true;
+        astarDebug.SetAction(AstarDebugNPC);
+        commands.Add("astar", astarDebug);
+
     }
 
     public void OnInput(string commandText) {
@@ -224,7 +259,6 @@ public class ConsoleScript {
     public void Execute(string commandType, params string[] param) {
         Command targetCommand = null;
 
-
         if (commands.TryGetValue(commandType, out targetCommand))
         {
             PrintConsole(targetCommand, param);
@@ -232,13 +266,28 @@ public class ConsoleScript {
 
             try
             {
-                for (int i = 0; i < targetCommand.paramTypes.Count; i++)
-                {
-                    object curType = targetCommand.paramTypes[i];
-                    if (curType == typeof(int))
+                if (!targetCommand.ignoreParameterLength) {
+
+                    if (targetCommand.paramTypes.Count != 0)
                     {
-                        int parse = Command.ParseInt(param[i]);
-                        c.parameters.Add(parse);
+
+                        for (int i = 0; i < targetCommand.paramTypes.Count; i++)
+                        {
+                            object curType = targetCommand.paramTypes[i];
+                            if (curType == typeof(int))
+                            {
+                                int parse = Command.ParseInt(param[i]);
+                                c.parameters.Add(parse);
+                            }
+                            else if (curType == typeof(string))
+                            {
+                                c.parameters.Add(param[i]);
+                            }
+
+                        }
+                    }
+                    else {
+                        c.parameters.AddRange(param);
                     }
                 }
             }
@@ -280,5 +329,60 @@ public class ConsoleScript {
             pos.y = tile.transform.position.y;
             model.Unit.transform.position = pos;
         }
+    }
+
+    /// <summary>
+    /// p -> weatehr (string)
+    /// </summary>
+    /// <param name="p"></param>
+    void MakeWeathers(params object[] p) {
+        foreach (object o in p) {
+            if (o is string) {
+                var type = ParseEventType((string)o);
+                if (type == EventType.None) continue;
+                EventManager.Manager.OnGenerate(type);
+                Debug.Log("Generated Weather : "+type);
+            }
+        }
+    }
+
+    void StartAllWeathers(params object[] p) {
+        var list = EventManager.Manager.GetAllEvents();
+        foreach (var e in list) {
+            if (e.IsStarted == false) {
+                EventManager.Manager.OnStart(e.type);
+            }
+        }
+    }
+
+    void StopAllWeathers(params object[] p) {
+        var list = EventManager.Manager.GetAllEvents();
+        foreach (var e in list) {
+            if (e.IsStarted) {
+                EventManager.Manager.OnEnd(e.type);
+            }
+        }
+    }
+
+    EventType ParseEventType(string eventString) {
+        EventType output = EventType.None;
+        switch (eventString.ToLower()) {
+            case "cyclone":     output = EventType.Cyclone; break;
+            case "flood":       output = EventType.Flood; break;
+            case "yellowdust":  output = EventType.Yellowdust; break;
+            case "drought":     output = EventType.Drought; break;
+            case "fire":        output = EventType.Fire; break;
+            case "earthquake":  output = EventType.Earthquake; break;
+            case "lightning":   output = EventType.Lightning; break;
+            case "landsliding": output = EventType.Landsliding; break;
+            case "heavysnow":   output = EventType.Heavysnow; break;
+        }
+        return output;
+    }
+
+    public void AstarDebugNPC(params object[] p) {
+        NPCModel model = NPCManager.Manager.MakeNPC(0);
+        model.UpdatePosition(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+        AstarDebugger.Debugger.DebugUnit = model.Unit;
     }
 }

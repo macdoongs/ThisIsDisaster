@@ -9,6 +9,7 @@ public enum TileType {
 }
 
 public class TileUnit : MonoBehaviour {
+    private const float _arrivalDiff = 0.2f;
     public const float _DEF_HEIGHT = -0.5f + 0.135f;
     public TileType type;
     public TempTileModel _model;
@@ -60,4 +61,14 @@ public class TileUnit : MonoBehaviour {
     }
 
     public int GetSpriteOrder() { return spriteRenderer.sortingOrder; }
+
+    public bool IsArrived(Vector3 pos)
+    {
+        return Vector2.Distance(pos, transform.position) <= _arrivalDiff;
+    }
+
+    public override string ToString()
+    {
+        return "Tile[" + x + " , " + y + "]";
+    }
 }

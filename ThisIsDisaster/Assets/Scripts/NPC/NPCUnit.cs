@@ -60,6 +60,7 @@ namespace NPC
         public AttackReceiver AttackReceiver;
         public RenderLayerChanger RenderLayerChanger;
         public NPCAttackController AttackControl;
+        public AutoTileMovementSetter TileSetter;
 
         [Header("UI")]
         public UnityEngine.UI.Slider hpSlider;
@@ -73,6 +74,7 @@ namespace NPC
 
             AttackSender.SetOwner(model);
             AttackReceiver.SetOwner(model);
+            TileSetter.SetChangeAction(model.SetCurrentTile);
         }
         
         // Use this for initialization

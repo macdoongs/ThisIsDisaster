@@ -21,6 +21,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     float _targetHeight = 0f;
     float _initialHeight = 0f;
+    public bool DisplayStandingTile = false;
 
     // Use this for initialization
     void Start () {
@@ -35,7 +36,17 @@ public class AutoTileMovementSetter : MonoBehaviour {
         //HeightChange(_currentTile);
 	}
 
-    public void ChangeTile(TileUnit tile) {
+    public void ChangeTile(TileUnit tile)
+    {
+        if (_changedAction != null)
+        {
+            _changedAction(tile);
+        }
+        if (DisplayStandingTile) {
+            _currentTile.spriteRenderer.color = Color.white;
+            tile.spriteRenderer.color = Color.blue;
+        }
+
         _currentTile = tile;
         RenderOrderChange(_currentTile);
         HeightChange(_currentTile);
@@ -46,9 +57,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
         var cur = _map.GetTile(transform.position);
         if (cur != _currentTile) {
             if (!cur) return;
-            if (_changedAction != null) {
-                _changedAction(cur);
-            }
+            
             ChangeTile(cur);
             //_currentTile = cur;
             //RenderOrderChange(_currentTile);
@@ -68,6 +77,8 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     public void SetChangeAction(OnTileChanged action) {
         _changedAction = action;
+        if (_currentTile != null)
+            _changedAction(_currentTile);
     }
 
     public void RenderOrderChange(TileUnit tile) {

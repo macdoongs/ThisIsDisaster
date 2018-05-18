@@ -420,6 +420,7 @@ MonoBehaviour:
     AttackDelay: 1
     isDebuggingEnabled: 1
     _debugRenderer: {fileID: 212347079856198588}
+  TileSetter: {fileID: 114076347428552872}
   hpSlider: {fileID: 114023125805501476}
 --- !u!114 &114023125805501476
 MonoBehaviour:

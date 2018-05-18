@@ -3,20 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AstarDebugger : MonoBehaviour {
+    public static AstarDebugger Debugger {
+        private set;
+        get;
+    }
+
     public GameObject Origin;
+    public NPC.NPCUnit DebugUnit;
+
     AstarCalculator.PathInfo path = null;
-	void Update () {
+    TileUnit prev = null;
+    private void Awake()
+    {
+        Debugger = this;
+    }
+
+    void Update () {
         if (Input.GetMouseButtonDown(0)) {
-            if (Origin == null) {
-                Origin = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+            //if (Origin == null) {
+            //    Origin = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+            //}
+
+            if (prev != null) {
+                prev.spriteRenderer.color = Color.white;
             }
             transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            TileUnit originTile = RandomMapGenerator.Instance.GetTile(Origin.transform.position);
+            //TileUnit originTile = RandomMapGenerator.Instance.GetTile(Origin.transform.position);
             TileUnit destTile = RandomMapGenerator.Instance.GetTile(transform.position);
 
-            path = AstarCalculator.Instance.GetDestinationPath(originTile, destTile);
+            //path = AstarCalculator.Instance.GetDestinationPath(originTile, destTile);
+            prev = destTile;
+            prev.spriteRenderer.color = Color.red;
+            if (DebugUnit != null) {
+                DebugUnit.Model.MoveToTile(destTile);
+                path = DebugUnit.Model.MoveControl._currentPath;
+            }
         }
+        
 	}
 
     private void OnDrawGizmos()
