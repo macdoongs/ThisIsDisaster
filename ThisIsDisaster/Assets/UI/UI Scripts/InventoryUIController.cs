@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUIController : MonoBehaviour {
-    
+
+    public GameObject InventoryUI;
+
     public GameObject Player;
     public CharacterModel PlayerCharacter;
 
@@ -550,11 +552,11 @@ public class InventoryUIController : MonoBehaviour {
         }
         else if (type.Equals(ItemType.Bottle))
         {
-            GetPrevPosition(5);
+            GetPrevPosition(4);
         }
         else
         {
-            GetPrevPosition(6);
+            GetPrevPosition(5);
         }
     }
 
@@ -779,4 +781,8 @@ public class InventoryUIController : MonoBehaviour {
 
 
 
+    public void Close()
+    {
+        InventoryUI.SetActive(false);
+    }
 }

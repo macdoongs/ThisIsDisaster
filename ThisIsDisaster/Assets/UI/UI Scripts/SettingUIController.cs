@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class SettingUIController : MonoBehaviour {
 
+    public GameObject SettingUI;
+
     public GameObject[] Panels;
     public GameObject InformationPanel;
     public GameObject GameSettingPanel;
@@ -95,5 +97,11 @@ public class SettingUIController : MonoBehaviour {
 
             ScrollBarFillAmount[i].fillAmount = fillAmount;
         }
+    }
+
+
+    public void Close()
+    {
+        SettingUI.SetActive(false);
     }
 }

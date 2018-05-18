@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class StatusUIController : MonoBehaviour {
 
+    public GameObject StatusUI;
+
     public Text PlayerLevel;
     public Text PlayerName;
 
@@ -51,5 +53,11 @@ public class StatusUIController : MonoBehaviour {
 
         PlayerLevel.text = PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel;
 
+    }
+
+
+    public void Close()
+    {
+        StatusUI.SetActive(false);
     }
 }
