@@ -337,7 +337,7 @@ public class ConsoleScript {
         foreach (object o in p) {
             if (o is string) {
                 var type = ParseEventType((string)o);
-                if (type == EventType.None) continue;
+                if (type == WeatherType.None) continue;
                 EventManager.Manager.OnGenerate(type);
                 Debug.Log("Generated Weather : "+type);
             }
@@ -362,18 +362,18 @@ public class ConsoleScript {
         }
     }
 
-    EventType ParseEventType(string eventString) {
-        EventType output = EventType.None;
+    WeatherType ParseEventType(string eventString) {
+        WeatherType output = WeatherType.None;
         switch (eventString.ToLower()) {
-            case "cyclone":     output = EventType.Cyclone; break;
-            case "flood":       output = EventType.Flood; break;
-            case "yellowdust":  output = EventType.Yellowdust; break;
-            case "drought":     output = EventType.Drought; break;
-            case "fire":        output = EventType.Fire; break;
-            case "earthquake":  output = EventType.Earthquake; break;
-            case "lightning":   output = EventType.Lightning; break;
-            case "landsliding": output = EventType.Landsliding; break;
-            case "heavysnow":   output = EventType.Heavysnow; break;
+            case "cyclone":     output = WeatherType.Cyclone; break;
+            case "flood":       output = WeatherType.Flood; break;
+            case "yellowdust":  output = WeatherType.Yellowdust; break;
+            case "drought":     output = WeatherType.Drought; break;
+            case "fire":        output = WeatherType.Fire; break;
+            case "earthquake":  output = WeatherType.Earthquake; break;
+            case "lightning":   output = WeatherType.Lightning; break;
+            case "landsliding": output = WeatherType.Landsliding; break;
+            case "heavysnow":   output = WeatherType.Heavysnow; break;
         }
         return output;
     }
