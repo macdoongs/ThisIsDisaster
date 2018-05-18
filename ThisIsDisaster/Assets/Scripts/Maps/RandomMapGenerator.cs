@@ -16,6 +16,10 @@ public class RandomMapGenerator : MonoBehaviour
 
     //x, list(y)
     Dictionary<int, List<TileUnit>> dic = new Dictionary<int, List<TileUnit>>();
+    /// <summary>
+    /// Key 값이 HeightLevel인 해쉬테이블
+    /// </summary>
+    Dictionary<int, List<TileUnit>> _levelDic = new Dictionary<int, List<TileUnit>>();
     [ReadOnly]
     public int Width = 0;
     [ReadOnly]
@@ -53,6 +57,7 @@ public class RandomMapGenerator : MonoBehaviour
             }
         }
         dic.Clear();
+        _levelDic.Clear();
 
         foreach (Transform t in transform) {
             if (t.gameObject == pivot.gameObject) continue;
@@ -85,6 +90,13 @@ public class RandomMapGenerator : MonoBehaviour
                 curTile.SetPosition(new Vector3(xPos, yPos, zPos));
                 curTile.SetCoord(xInd, yInd);
                 curTile.SetHeight(map[xInd, yInd]);
+
+                List<TileUnit> levelList = null;
+                if (!_levelDic.TryGetValue(curTile.HeightLevel, out levelList)) {
+                    levelList = new List<TileUnit>();
+                    _levelDic.Add(curTile.HeightLevel, levelList);
+                }
+                levelList.Add(curTile);
             }
             xInitial += _xDelta;
             yInitial += _yDelta;
@@ -206,6 +218,12 @@ public class RandomMapGenerator : MonoBehaviour
     private void Update()
     {
 
+    }
+
+    public TileUnit GetRandomTileByHeight(int height) {
+        if (!_levelDic.ContainsKey(height)) return null;
+        var list = _levelDic[height];
+        return list[UnityEngine.Random.Range(0, list.Count)];
     }
 }
 

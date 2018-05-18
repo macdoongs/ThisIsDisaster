@@ -99,5 +99,11 @@ public class AutoTileMovementSetter : MonoBehaviour {
         return _heightChangeTimer.started;
     }
 
+    public void SetCurrentTileForcely(TileUnit tile) {
 
+        ChangeTile(tile);
+    }
+
+
+    public TileUnit GetCurrentTile() { return _currentTile; }
 }

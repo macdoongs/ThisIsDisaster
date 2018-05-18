@@ -307,8 +307,11 @@ public class ConsoleScript {
         }
     }
 
-    void MakeNPC(params object[] p) {
-        NPCManager.Manager.MakeNPC((int)p[0]);
+    void MakeNPC(params object[] p)
+    {
+        var model = NPCManager.Manager.MakeNPC((int)p[0]);
+        TileUnit randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);
+        model.SetCurrentTileForcely(randTile);
     }
 
     void MakeNPCMany(params object[] p) {
@@ -320,14 +323,9 @@ public class ConsoleScript {
         int yRange = height / 2;
         for (int i = 0; i < count; i++) {
             var model = NPCManager.Manager.MakeNPC((int)p[0]);
-            int x = UnityEngine.Random.Range(xRange -10, xRange + 10);
-            int y = UnityEngine.Random.Range(yRange - 10, yRange + 10);
-            TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
 
-            Vector3 pos = model.Unit.transform.position;
-            pos.x = tile.transform.position.x;
-            pos.y = tile.transform.position.y;
-            model.Unit.transform.position = pos;
+            TileUnit randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);
+            model.SetCurrentTileForcely(randTile);
         }
     }
 

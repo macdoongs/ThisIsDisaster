@@ -13,25 +13,33 @@ namespace NPC
     {
         [System.Serializable]
         public class NPCAttackController {
+            public delegate void OnAttackEnd();
+
             public AttackSender Sender;
             public float AttackDelay;
 
             public bool isDebuggingEnabled = false;
+            
             public SpriteRenderer _debugRenderer;
-            Timer _attackDelayTimer = new Timer();
+            public OnAttackEnd AttackEnd;
+            Timer _attackDurationTimer = new Timer();
 
             public bool IsAttackable() {
-                return !_attackDelayTimer.started;
+                return !_attackDurationTimer.started;
             }
 
             public void StartAttack() {
                 Sender.OnAttack();
-                _attackDelayTimer.StartTimer(AttackDelay);
+                _attackDurationTimer.StartTimer(AttackDelay);
             }
 
             public void Update() {
-                if (_attackDelayTimer.started) {
-                    if (!_attackDelayTimer.RunTimer()) return;
+                if (_attackDurationTimer.started) {
+                    if (_attackDurationTimer.RunTimer()) {
+                        AttackEnd();
+                        return;
+                    }
+                    
                 }
                 if (isDebuggingEnabled && _debugRenderer) {
                     if (Sender.IsAttacking())
@@ -75,6 +83,7 @@ namespace NPC
             AttackSender.SetOwner(model);
             AttackReceiver.SetOwner(model);
             TileSetter.SetChangeAction(model.SetCurrentTile);
+            AttackControl.AttackEnd = model.OnAttackEnd;
         }
         
         // Use this for initialization
@@ -88,7 +97,6 @@ namespace NPC
         void Update()
         {
             AttackControl.Update();
-
         }
 
         public void OnStartAttack() {
@@ -153,6 +161,7 @@ namespace NPC
             Debug.Log(string.Format("{0} {1} Sensored {2}", Model.GetUnitName(), Model.instanceId, sensor.Owner.GetUnitName()));
             Model.OnDetectedTarget(sensor.Owner);
         }
+        
         
     }
 }

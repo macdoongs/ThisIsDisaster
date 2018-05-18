@@ -13,6 +13,7 @@ public class AstarDebugger : MonoBehaviour {
 
     AstarCalculator.PathInfo path = null;
     TileUnit prev = null;
+    public bool clickPointDebug = false;
     private void Awake()
     {
         Debugger = this;
@@ -24,7 +25,7 @@ public class AstarDebugger : MonoBehaviour {
             //    Origin = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
             //}
 
-            if (prev != null) {
+            if (prev != null && clickPointDebug) {
                 prev.spriteRenderer.color = Color.white;
             }
             transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -34,7 +35,8 @@ public class AstarDebugger : MonoBehaviour {
 
             //path = AstarCalculator.Instance.GetDestinationPath(originTile, destTile);
             prev = destTile;
-            prev.spriteRenderer.color = Color.red;
+            if (clickPointDebug)
+                prev.spriteRenderer.color = Color.red;
             if (DebugUnit != null) {
                 DebugUnit.Model.MoveToTile(destTile);
                 path = DebugUnit.Model.MoveControl._currentPath;

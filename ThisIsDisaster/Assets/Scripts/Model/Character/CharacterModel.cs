@@ -12,6 +12,8 @@ public class PlayerModel : UnitModel
 {
     public CharacterModel _character;
 
+    private AutoTileMovementSetter _tileSetter;
+
     public override float GetAttackDamage()
     {
         return _character.damage;
@@ -25,6 +27,20 @@ public class PlayerModel : UnitModel
     public override void OnTakeDamage(UnitModel attacker, float damage)
     {
         Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+    }
+
+    public void SetTileSetter(AutoTileMovementSetter tileSetter) {
+        _tileSetter = tileSetter;
+    }
+
+    public override TileUnit GetCurrentTile()
+    {
+        return _tileSetter.GetCurrentTile();
+    }
+
+    public override Vector3 GetCurrentPos()
+    {
+        return _character.transform.position;
     }
 }
 
@@ -120,6 +136,7 @@ public class CharacterModel : MonoBehaviour
     private PlayerModel _player;
     public AttackSender attackSender;
     public AttackReceiver attackReceiver;
+    public AutoTileMovementSetter tileSetter;
 
     private void Awake()
     {
@@ -132,6 +149,10 @@ public class CharacterModel : MonoBehaviour
             attackSender.SetOwner(_player);
         if (attackReceiver)
             attackReceiver.SetOwner(_player);
+        if (tileSetter) {
+            tileSetter.SetChangeAction(_player.SetCurrentTile);
+            _player.SetTileSetter(tileSetter);
+        }
 
         InitDefaultSprite();
     }

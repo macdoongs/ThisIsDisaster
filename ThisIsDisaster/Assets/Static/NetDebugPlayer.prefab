@@ -1201,6 +1201,7 @@ MonoBehaviour:
   HeightPivot: {fileID: 4266273020658952}
   _heightAscendTime: 0.1
   _heightDescendTime: 0.25
+  DisplayStandingTile: 0
 --- !u!114 &114519334667667194
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1249,11 +1250,14 @@ MonoBehaviour:
   - {fileID: 212002705333217094}
   - {fileID: 212707244152508438}
   - {fileID: 212242183960261686}
+  BackHair: {fileID: 0}
+  Tail: {fileID: 0}
   ItemNames: []
   ItemCounts: 
   cursor: 0
   attackSender: {fileID: 114822856419878296}
   attackReceiver: {fileID: 114572724242655588}
+  tileSetter: {fileID: 114497361334405528}
 --- !u!114 &114572724242655588
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1499,7 +1503,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1643413057
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9e2dd0fd084afc04cac94f6b45a44925, type: 3}
   m_Color: {r: 1, g: 0.4044118, b: 0.4044118, a: 0.259}

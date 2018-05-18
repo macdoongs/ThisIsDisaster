@@ -135,6 +135,7 @@ namespace NPC {
         public void OnDefeated() {
             Debug.Log(GetUnitName() + " died");
             Script.OnDefeated();
+            MoveControl.StopMovement();
             _state = NPCState.Destroied;
         }
 
@@ -179,6 +180,8 @@ namespace NPC {
         public override void OnTakeDamage(UnitModel attacker, float damage) {
             if (CurrentHp <= 0f) {
                 //already dead
+                if (_state != NPCState.Destroied)
+                    OnDefeated();
                 return;
             }
             Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
@@ -191,8 +194,12 @@ namespace NPC {
 
         public void OnDetectedTarget(UnitModel target) {
             Unit.SetSensing(false);
+            Script.StopWandering();
             _executeState = NPCExectueState.Movement;
             //move to target
+            MoveControl.StopMovement();
+            MoveControl.missedTarget = OnVictoried;
+            MoveControl.FollowUnit(target, 10f, 2f);
         }
 
         public override string GetUnitName()
@@ -213,6 +220,15 @@ namespace NPC {
         public override void OnArriedPath(TileUnit target)
         {
             Debug.Log(GetUnitName() + " arrived at" + target.ToString());
+            if (MoveControl.FollowModel != null)
+            {
+                MoveControl.StopMovement();
+                Script.OnStartAttack();
+                _executeState = NPCExectueState.Battle;
+            }
+            else {
+                Script.OnWanderDestArrived();
+            }
         }
 
         public override void UpdatePosition(Vector3 pos)
@@ -224,6 +240,46 @@ namespace NPC {
         {
             return Unit.transform.position;
         }
+
+        public TileUnit GetRandomMovementTile() {
+            int height = UnityEngine.Random.Range(1, 4);
+            TileUnit output = null;
+            TileUnit cur = GetCurrentTile();
+            int threshold = 0;
+            do {
+                if (threshold >= 10) break;
+                threshold++;
+                output = RandomMapGenerator.Instance.GetRandomTileByHeight(height);
+            }
+            while (output == cur);
+            return output;
+        }
+
+        public override void SetCurrentTileForcely(TileUnit tile)
+        {
+            Unit.TileSetter.SetCurrentTileForcely(tile);
+            var pos = Unit.transform.position;
+            pos.x = tile.transform.position.x;
+            pos.y = tile.transform.position.y;
+            Unit.transform.position = pos;
+        }
+
+        public override TileUnit GetCurrentTile()
+        {
+            return Unit.TileSetter.GetCurrentTile();
+        }
+
+        public void OnAttackEnd() {
+            Debug.Log(GetUnitName() + " AttackEnd");
+            if (_state == NPCState.Execute)
+            {
+                Unit.SetSensing(true);
+                _executeState = NPCExectueState.Wander;
+            }
+            
+            
+        }
+
     }
     
 }

@@ -60,6 +60,16 @@ public class TileUnit : MonoBehaviour {
         spriteRenderer.color = c;
     }
 
+    public bool IsPassable(UnitModel passTarget) {
+        if (passTarget is PlayerModel) {
+            return true;
+        }
+        if (passTarget is NPC.NPCModel) {
+            return HeightLevel > 0;
+        }
+        return false;
+    }
+
     public int GetSpriteOrder() { return spriteRenderer.sortingOrder; }
 
     public bool IsArrived(Vector3 pos)

@@ -69,23 +69,17 @@ public class AstarCalculator {
          O - 시작점에서 지금까지의 비용 (_currentCost)
          H - 현재 위치에서 도착점까지의 비용 (_destCost)
         */
-        int _totalCost = 0;
-        int _currentCost = 0;
-        int _destCost = 0;
-
-        void CalculateAstar2(TileUnit origin, TileUnit dest) {
-            Origin = origin;
-            Destination = dest;
-
-        }
-
         List<Node> _searchNodeList = new List<Node>();//tree
         List<TileUnit> selectedAsPath = new List<TileUnit>();
+        UnitModel _caller = null;
+
+        public Calculation(UnitModel caller)
+        {
+            _caller = caller;
+        }
 
         public List<TileUnit> CalculateAstar(TileUnit origin, TileUnit dest) {
-            if (dest.HeightLevel == 0) {
-                return new List<TileUnit>();
-            }
+            
             Origin = origin;
             Destination = dest;
 
@@ -207,7 +201,7 @@ public class AstarCalculator {
 
                 int tileHash = GetTileIndex(tile);
                 if (closed.ContainsKey(tileHash)) continue;
-                if (tile.HeightLevel <= MinimalHeight)
+                if (!tile.IsPassable(_caller))
                 {
                     closed.Add(tileHash, tile);
 
@@ -399,8 +393,11 @@ public class AstarCalculator {
         Height = height;
     }
 
-    public PathInfo GetDestinationPath(TileUnit origin, TileUnit dest) {
-        Calculation calculation = new Calculation();
+    public PathInfo GetDestinationPath(UnitModel model, TileUnit origin, TileUnit dest) {
+        if (dest.IsPassable(model) == false) {
+            model.MoveControl.StopMovement(); return null;
+        }
+        Calculation calculation = new Calculation(model);
         var list = calculation.CalculateAstar(origin, dest);
         PathInfo output = new PathInfo
         {

@@ -62,13 +62,31 @@ public class UnitModel {
     public virtual void OnArriedPath(TileUnit target) {
 
     }
+
+    public virtual void SetCurrentTileForcely(TileUnit tile) {
+
+    }
 }
 
-public class UnitMoveControl {
+public class UnitMoveControl
+{
+    public delegate void OnMissTarget();
+    const float _FOLLOW_PATH_UPDATE_FREQ = 1f;
     public UnitModel model;
     public TileUnit currentTile;
     public TileUnit currentDestTile;
     public AstarCalculator.PathInfo _currentPath;
+
+    public OnMissTarget missedTarget;
+    public UnitModel FollowModel {
+        private set;
+        get;
+    }
+    float _missingDistance = 0f;
+    Timer _missingTimer = new Timer();
+
+    Timer _pathUpdateTimer = new Timer();
+
     float Speed { get { return model.GetSpeed(); } }
 
     public bool IsMoving {
@@ -88,12 +106,12 @@ public class UnitMoveControl {
         IsMoving = true;
         currentDestTile = tile;
 
-        if (currentDestTile == currentTile) {
+        if (currentDestTile == currentTile && FollowModel == null) {
             StopMovement();
             return;
         }
 
-        _currentPath = AstarCalculator.Instance.GetDestinationPath(currentTile, currentDestTile);
+        _currentPath = AstarCalculator.Instance.GetDestinationPath(model, currentTile, currentDestTile);
     }
 
     public void StopMovement() {
@@ -129,8 +147,57 @@ public class UnitMoveControl {
         return PathEndPos() - PathStartPos();
     }
 
+    public void FollowUnit(UnitModel target, float missingDist, float missingTime = 1f) {
+        this.FollowModel = target;
+        _missingDistance = missingDist;
+        _missingTimer.StartTimer(missingTime);
+        _pathUpdateTimer.StartTimer(_FOLLOW_PATH_UPDATE_FREQ);
+
+        MoveToTile(target.GetCurrentTile());
+        
+    }
+
+    void FollowMissing() {
+        Debug.Log("Missing");
+        StopMovement();
+        if (missedTarget != null) {
+            missedTarget();
+        }
+        FollowModel = null;
+    }
+
+    bool CheckMissingTarget() {
+        return (FollowModel.GetCurrentPos() - model.GetCurrentPos()).sqrMagnitude > _missingDistance;
+    }
+
     public void Update() {
         if (!IsMoving) return;
+
+        if (FollowModel != null) {
+            if (CheckMissingTarget())
+            {
+                if (_missingTimer.started)
+                {
+                    if (_missingTimer.RunTimer())
+                    {
+                        FollowMissing(); return;
+                    }
+                }
+            }
+            else {
+                _missingTimer.ResetTimer();
+            }
+
+            if (_pathUpdateTimer.started)
+            {
+                if (_pathUpdateTimer.RunTimer())
+                {
+                    _pathUpdateTimer.StartTimer(_FOLLOW_PATH_UPDATE_FREQ);
+                    MoveToTile(FollowModel.GetCurrentTile());
+                }
+            }
+        }
+
         if (_currentPath != null) {
             float movementValue = Speed * Time.deltaTime;
             if (_currentPath.currentPathIndex < _currentPath.path.Count - 1)
@@ -158,13 +225,14 @@ public class UnitMoveControl {
                 //Vector3 pos = model.GetCurrentPos();
                 //pos = pos + dir * movementValue;
                 //model.UpdatePosition(pos);
-                model.UpdatePosition(Vector3.MoveTowards(model.GetCurrentPos(), PathEndPos(), movementValue));
+                model.UpdatePosition(Vector3.MoveTowards(model.GetCurrentPos(), GetPathTile(_currentPath.path.Count - 1).transform.position, movementValue));
 
 
                 if (end.IsArrived(model.GetCurrentPos()))
                 {
                     model.OnArriedPath(_currentPath.Destination);
-                    StopMovement();
+                    if (FollowModel == null)
+                        StopMovement();
                 }
             }
         }
