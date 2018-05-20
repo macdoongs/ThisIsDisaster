@@ -228,6 +228,13 @@ public class ConsoleScript {
         astarDebug.SetAction(AstarDebugNPC);
         commands.Add("astar", astarDebug);
 
+        Command makeTree = new Command()
+        {
+            name = "Make Tree"
+        };
+        makeTree.ignoreParameterLength = true;
+        makeTree.SetAction(MakeTreeEnv);
+        commands.Add("tree", makeTree);
     }
 
     public void OnInput(string commandText) {
@@ -382,5 +389,10 @@ public class ConsoleScript {
         NPCModel model = NPCManager.Manager.MakeNPC(0);
         model.UpdatePosition(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
         AstarDebugger.Debugger.DebugUnit = model.Unit;
+    }
+
+    public void MakeTreeEnv(params object[] p) {
+        Environment.EnvironmentModel model = EnvironmentManager.Manager.MakeEnvironment(0);
+        model.UpdatePosition(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
     }
 }
