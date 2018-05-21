@@ -43,6 +43,10 @@ public class ItemModel {
         return GetStat("damage");
     }
 
+    public virtual int GetAttackAnimType() {
+        return (int)GetStat("AttackAnim");
+    }
+
     public float GetStat(string statName) {
         float output = 0f;
         metaInfo.stats.TryGetValue(statName, out output);

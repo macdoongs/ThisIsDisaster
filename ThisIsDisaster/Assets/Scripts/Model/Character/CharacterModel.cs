@@ -49,6 +49,13 @@ public class PlayerModel : UnitModel
         _character.transform.position = tile.transform.position;
         _tileSetter.SetCurrentTileForcely(tile);
     }
+
+    public int GetAttackAnimType() {
+        if (_character.weaponSlot != null) {
+            return _character.weaponSlot.GetAttackAnimType();
+        }
+        return 0;
+    }
 }
 
 public class CharacterModel : MonoBehaviour

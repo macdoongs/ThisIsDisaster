@@ -9,6 +9,7 @@ public class PlayerAttackController : MonoBehaviour {
 
     public bool isDebuggEnabled = false;
     public SpriteRenderer _DebugRenderer;
+    public PlayerMoveController MoveController;
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +30,11 @@ public class PlayerAttackController : MonoBehaviour {
         if (IsAttackCommandInput()) {
             if (IsAttackable()) {
                 Sender.OnAttack();
+                if (MoveController) {
+                    AnimatorUtil.SetInteger(MoveController.PlayerMovementCTRL, "AttackType", 
+                        (Sender.Owner as PlayerModel).GetAttackAnimType());
+                    AnimatorUtil.SetTrigger(MoveController.PlayerMovementCTRL, "Attack");
+                }
                 _attackDelayTimer.StartTimer(NextAttackDelay);
             }
         }

@@ -222,8 +222,7 @@ public class PlayerMoveController : MonoBehaviour {
         int currentDepth = RandomMapGenerator.Instance.GetDepth(currentTile.x, currentTile.y);
         if (nextDepth - currentDepth - _jumpingLevel < 2)
         {
-            if (!autoTileMovementSetter.IsHeightChanging())
-                transform.Translate(pos);
+            transform.Translate(pos);
         }
     }
 

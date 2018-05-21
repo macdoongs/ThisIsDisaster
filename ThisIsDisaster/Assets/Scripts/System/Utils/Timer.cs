@@ -109,3 +109,31 @@ public class Timer
         elapsed = 0f;
     }
 }
+
+public class UnscaledTimer : Timer {
+    public override bool RunTimer()
+    {
+
+        if (!this.started)
+        {
+            return false;
+        }
+        elapsed += Time.unscaledDeltaTime;
+        if (elapsed >= maxTime)
+        {
+            if (autoStop)
+            {
+                elapsed = 0f;
+                started = false;
+
+                if (endCmd != null)
+                {
+                    endCmd();
+                    endCmd = null;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+}
