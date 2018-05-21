@@ -4,10 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemTestCharacter : MonoBehaviour {
-    
-    static long[] _etcs = { 70000 , 70001, 70002 };
-    static long[] _equip = { 10000, 20000, 30000, 40000, 50000, 60000};
-    static long[] _equip2 = { 10001, 20000, 30001,40000, 50000, 60000};
+    static long[] _weapons = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
+    static long[] _head = { 10001, 10002, 10003, 10004};
+    static long[] _clothes = { 20001, 20002, 20003, 20004, 20005, 20006, 20007, 20008};
+    static long[] _backpack = { 30001, 30002, 30003};
+    static long[] _bottle = { 30010, 30020};
+    static long[] _tool_equip = { 31001, 31002, 31003, 31004,31005, 31006, 31007, 31008};
+    static long[] _tool_use = { 33001, 33002};
+    static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003, 41004, 41005};
+    static long[] _norm = { 50001, 50002, 50003, 50004, 51001, 51002, 51003, 51004, 51005, 51006 };
+
     public GameObject PlayerCharacter;
 
     public CharacterModel CharacterUnit;
@@ -32,16 +38,21 @@ public class ItemTestCharacter : MonoBehaviour {
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1)){
-            WearAllEquipType();
+            GetEqip();
         }
 
-        if (Input.GetKeyDown(KeyCode.F2)) {
-            RemoveAllEquipType();
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            GetToolUse();
+        }
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            GetEtc();
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
         {
-            RemoveHead();
+            GetNorm();
         }
 
         if (Input.GetKeyDown(KeyCode.F5))
@@ -64,12 +75,12 @@ public class ItemTestCharacter : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.F9))
         {
-            EquipDefaultItems();
+
         }
         
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            GetEquip();
+
         }
         if (Input.GetKeyDown(KeyCode.F11))
         {
@@ -85,35 +96,17 @@ public class ItemTestCharacter : MonoBehaviour {
     {
         Canvas.SetActive(true);
     }
-
-    void WearAllEquipType()
-    {
-        foreach(var item in _equip)
-        {
-            ItemModel weapon = ItemManager.Manager.MakeItem(item);
-            CharacterUnit.WearEquipment(weapon);
-        }
-    }
-
     void RemoveAllEquipType()
     {
         CharacterUnit.RemoveEquipment("weapon");
         CharacterUnit.RemoveEquipment("head");
-        CharacterUnit.RemoveEquipment("util1");
-        CharacterUnit.RemoveEquipment("util2");
-        CharacterUnit.RemoveEquipment("util3");
+        CharacterUnit.RemoveEquipment("clothes");
+        CharacterUnit.RemoveEquipment("backpack");
+        CharacterUnit.RemoveEquipment("bottle");
+        CharacterUnit.RemoveEquipment("flash");
     }
 
 
-    void RemoveWeapon()
-    {
-        CharacterUnit.RemoveEquipment("weapon");
-    }
-
-    void RemoveHead()
-    {
-        CharacterUnit.RemoveEquipment("head");
-    }
 
     void EatFood()
     {
@@ -126,25 +119,81 @@ public class ItemTestCharacter : MonoBehaviour {
         ItemModel water = ItemManager.Manager.MakeItem(70001);
         CharacterUnit.UseExpendables(water);
     }
-
-    void EquipDefaultItems()
+    void GetEqip()
     {
-        foreach (long id in _etcs)
-        {
-            ItemManager.Manager.AddItem(CharacterUnit, id, 10);
-        }
- //       CharacterUnit.PrintItemsInItems();
+        GetHead();
+        GetWeapon();
+        GetBackpack();
+        GetBottle();
+        GetToolEquip();            
     }
 
-    void GetEquip()
+    void GetHead()
     {
-        foreach (long id in _equip2)
+        foreach (long id in _head)
         {
             ItemManager.Manager.AddItem(CharacterUnit, id, 1);
         }
-    //    CharacterUnit.PrintItemsInItems();
-        
     }
+
+    void GetWeapon()
+    {
+        foreach (long id in _weapons)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetClothes()
+    {
+        foreach (long id in _clothes)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetBackpack()
+    {
+        foreach (long id in _backpack)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetBottle()
+    {
+        foreach (long id in _bottle)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetToolEquip()
+    {
+        foreach (long id in _tool_equip)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetToolUse()
+    {
+        foreach (long id in _tool_use)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetEtc()
+    {
+        foreach (long id in _etc)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+    void GetNorm()
+    {
+        foreach (long id in _norm)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, id, 1);
+        }
+    }
+
+
 
     void RemoveFirstItem()
     {
@@ -152,19 +201,5 @@ public class ItemTestCharacter : MonoBehaviour {
     }
 
 
-    void MakeEquippedItems() {
-        var items = CharacterUnit.GetAllItems();
-        foreach (ItemModel item in items) {
-            //Make some Gameobject
-            string src = item.metaInfo.spriteSrc;
-            if (string.IsNullOrEmpty(src)) continue;
-            Sprite s = Resources.Load<Sprite>(src);
-
-            if (s != null) {
-                GameObject go = new GameObject(item.metaInfo.ToString());
-                go.AddComponent<SpriteRenderer>().sprite = s;
-            }
-        }
-    }
 
 }
