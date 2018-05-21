@@ -13,8 +13,8 @@ public class InGameUIScript : MonoBehaviour
     public GameObject InventoryManager;
 
     public GameObject StatusBarManager;
-
-
+    public GameObject SettingManager;
+    public GameObject StageClearManager;
     public void Start()
     {
         if (PlayerCharacter == null) {
@@ -43,6 +43,20 @@ public class InGameUIScript : MonoBehaviour
         StatusBarManager.GetComponent<StatusBarUIScript>().
             UpdateStatusBar(PlayerCharacter);
     }  
+
+    public void CloseAllUI()
+    {
+        StatusManager.GetComponent<StatusUIController>().Close();
+        InventoryManager.GetComponent<InventoryUIController>().Close();
+        SettingManager.GetComponent<SettingUIController>().Close();
+    }
+
+    public void StageClear()
+    {
+        CloseAllUI();
+        StageClearManager.GetComponent<StageClearUIContorller>().StageClearPanel.SetActive(true);
+    }
+
 }
 
 

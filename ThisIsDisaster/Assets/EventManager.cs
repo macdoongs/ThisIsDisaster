@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EventType {
+public enum WeatherType {
     Cyclone = 0,
     Flood,
     Yellowdust,
@@ -30,15 +30,16 @@ public class EventManager : MonoBehaviour {
         get;
     }
 
-    private Dictionary<EventType, EventBase> dictioary = new Dictionary<EventType, EventBase>();
+    private Dictionary<WeatherType, EventBase> dictioary = new Dictionary<WeatherType, EventBase>();
 
     public GameObject cycloneObject = null;
     public GameObject rainObject = null;
     public GameObject darkObject = null;
     public GameObject snowObject = null;
     public GameObject sandObject = null;
+    public GameObject cloudyObject = null;
 
-    public EventType currentTestType = EventType.None;
+    public WeatherType currentTestType = WeatherType.None;
     
     private void Awake()
     {
@@ -48,7 +49,15 @@ public class EventManager : MonoBehaviour {
         Manager = this;
     }
 
-    public void OnGenerate(EventType type) {
+    public List<EventBase> GetAllEvents() {
+        List<EventBase> output = new List<EventBase>();
+        foreach (var kv in dictioary) {
+            output.Add(kv.Value);
+        }
+        return output;
+    }
+
+    public void OnGenerate(WeatherType type) {
         EventBase e = null;
         if (dictioary.TryGetValue(type, out e)) {
             return;
@@ -62,32 +71,32 @@ public class EventManager : MonoBehaviour {
         Debug.Log("Generate " + evntBase.type);
     }
 
-    EventBase GenEvent(EventType type) {
+    EventBase GenEvent(WeatherType type) {
         switch (type) {
-            case EventType.Cyclone:
+            case WeatherType.Cyclone:
                 return new CycloneEvent();
-            case EventType.Flood:
+            case WeatherType.Flood:
                 return new FloodEvent();
-            case EventType.Yellowdust:
+            case WeatherType.Yellowdust:
                 return new YellowdustEvent();
-            case EventType.Drought:
+            case WeatherType.Drought:
                 return new DroughtEvent();
-            case EventType.Fire:
+            case WeatherType.Fire:
                 return new FireEvent();
-            case EventType.Earthquake:
+            case WeatherType.Earthquake:
                 return new EarthquakeEvent();
-            case EventType.Lightning:
+            case WeatherType.Lightning:
                 return new LightningEvent();
-            case EventType.Landsliding:
+            case WeatherType.Landsliding:
                 return new LandslidingEvent();
-            case EventType.Heavysnow:
+            case WeatherType.Heavysnow:
                 return new HeavysnowEvent();
             default:
                 return null;
         }
     }
 
-    EventBase GetEvent(EventType type) {
+    EventBase GetEvent(WeatherType type) {
         EventBase output = null;
         if (dictioary.TryGetValue(type, out output)) {
             return output;
@@ -95,7 +104,7 @@ public class EventManager : MonoBehaviour {
         return null;
     }
 
-    public void OnStart(EventType type) {
+    public void OnStart(WeatherType type) {
         var e = GetEvent(type);
         if (e == null) return;
         if (e.IsStarted) return;
@@ -109,12 +118,12 @@ public class EventManager : MonoBehaviour {
         foreach (var v in dictioary.Values) {
             if (v.IsStarted) {
                 v.OnExecute();
-                Debug.Log("Execute "+v.type);
+                //Debug.Log("Execute "+v.type);
             }
         }
     }
 
-    public void OnEnd(EventType type) {
+    public void OnEnd(WeatherType type) {
         var e = GetEvent(type);
         if (e == null) return;
         e.OnEnd();
@@ -122,7 +131,7 @@ public class EventManager : MonoBehaviour {
         Debug.Log("End " + e.type);
     }
 
-    public void OnDestroyEvent(EventType type)
+    public void OnDestroyEvent(WeatherType type)
     {
         var e = GetEvent(type);
         if (e == null) return;
@@ -131,7 +140,7 @@ public class EventManager : MonoBehaviour {
         Debug.Log("Destroy " + e.type);
     }
 
-    public void OnGiveDamage(EventType type, UnitModel target, float damageValue) {
+    public void OnGiveDamage(WeatherType type, UnitModel target, float damageValue) {
         var e = GetEvent(type);
         if (e == null) return;
         //
@@ -228,9 +237,9 @@ public class EventManager : MonoBehaviour {
             {
                 effectObject = Instantiate(effectObject);
                 effectObject.transform.SetParent(Camera.main.transform);
-                effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
+                effectObject.transform.localPosition = new Vector3(1f, 1f, 1f);    // 0  5 10
                 effectObject.transform.localScale = Vector3.one;
-                effectObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                effectObject.transform.localRotation = Quaternion.Euler(0f, 1f, 1f);
                 effectObject.SetActive(false);
 
             }
@@ -241,6 +250,28 @@ public class EventManager : MonoBehaviour {
 
         return snowObject.GetComponent<SnowEffect>();
     }
+
+   public CloudyEffect MakeWorldCloudy()
+    {                       
+        if (cloudyObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/Cloudy");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.transform.SetParent(Camera.main.transform);
+                effectObject.transform.localPosition = new Vector3(0f, 0f, 1f);
+                effectObject.transform.localScale = new Vector3(10f, 10f, 1f);
+                effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                effectObject.SetActive(false);
+
+            }
+            cloudyObject = effectObject;
+
+        }
+
+        return cloudyObject.GetComponent<CloudyEffect>();
+    }     // map을 하얗게하는 effect   
 
     public SandEffect MakeWorldSand()
     {
@@ -308,14 +339,14 @@ public class EventManager : MonoBehaviour {
 }
 
 public class EventBase {
-    public EventType type = EventType.None;
+    public WeatherType type = WeatherType.None;
 
     protected bool _isStarted = false;
     public bool IsStarted { get { return _isStarted; } set { _isStarted = value; } }
     public int Level = 0;
 
     public EventBase() {
-        type = EventType.None;
+        type = WeatherType.None;
     }
 
     public virtual void OnGenerated() { }
@@ -339,7 +370,7 @@ public class CycloneEvent : EventBase {
     GameObject darkObject = null;
     
     public CycloneEvent() {
-        type = EventType.Cyclone;
+        type = WeatherType.Cyclone;
     }
 
     public override void OnGenerated()
@@ -373,7 +404,7 @@ public class FloodEvent : EventBase {
     GameObject darkObject = null;
     GameObject fillObject = null;    // 맵에 물차오르는거
     public FloodEvent() {
-        type = EventType.Flood;
+        type = WeatherType.Flood;
     }
 
     public override void OnGenerated()
@@ -407,7 +438,7 @@ public class YellowdustEvent : EventBase
     GameObject YellowObject = null;          // 노란 화면
     public YellowdustEvent()
     {
-        type = EventType.Yellowdust;
+        type = WeatherType.Yellowdust;
     }
 
     public override void OnGenerated()
@@ -442,7 +473,7 @@ public class DroughtEvent : EventBase
 
     public DroughtEvent()
     {
-        type = EventType.Drought;
+        type = WeatherType.Drought;
     }
 
     public override void OnGenerated()
@@ -475,7 +506,7 @@ public class FireEvent : EventBase
 
     public FireEvent()
     {
-        type = EventType.Fire;
+        type = WeatherType.Fire;
     }
 
     public override void OnGenerated()
@@ -504,7 +535,7 @@ public class EarthquakeEvent : EventBase
     GameObject crackObject = null;          // 공통1 (갈라짐)
     public EarthquakeEvent()
     {
-        type = EventType.Earthquake;
+        type = WeatherType.Earthquake;
     }
 
     public override void OnGenerated()
@@ -540,7 +571,7 @@ public class LightningEvent : EventBase
     GameObject lightningObject = null;     // 낙뢰 효과
     public LightningEvent()
     {
-        type = EventType.Lightning;
+        type = WeatherType.Lightning;
     }
 
     public override void OnGenerated()
@@ -583,7 +614,7 @@ public class LandslidingEvent : EventBase
 
     public LandslidingEvent()
     {
-        type = EventType.Landsliding;
+        type = WeatherType.Landsliding;
     }
 
     public override void OnGenerated()
@@ -610,37 +641,37 @@ public class LandslidingEvent : EventBase
     }
 }  // 산사태 이벤트
 
-
 public class HeavysnowEvent : EventBase
 {
     int max = -1;//max level of this event
     SnowEffect snowObject = null;
-    GameObject cloudyObject = null;
+    CloudyEffect cloudyObject = null;  
 
     public HeavysnowEvent()
     {
-        type = EventType.Heavysnow;
+        type = WeatherType.Heavysnow;
     }
 
     public override void OnGenerated()
     {
         snowObject = EventManager.Manager.MakeWorldSnow();
 
-        cloudyObject = null;
+        cloudyObject = EventManager.Manager.MakeWorldCloudy();
     }
 
     public override void OnStart()
     {
         snowObject.SetActive(true);
         snowObject.SetLevel(5);
-        EventManager.Manager.SetWorldFilterColor(new Color(255f/255f, 1, 1, 0.4f));
+        EventManager.Manager.SetWorldFilterColor(new Color(71f/255f, 73f/255f, 73f/255f, 98f/255f));
+        cloudyObject.SetActive(true);
         
     }
 
     public override void OnEnd()
     {
         snowObject.SetActive(false);
-        cloudyObject = null;
+        cloudyObject.SetActive(false);
     }
 
     public override void OnDestroy()

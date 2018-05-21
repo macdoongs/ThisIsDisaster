@@ -9,6 +9,7 @@ public enum TileType {
 }
 
 public class TileUnit : MonoBehaviour {
+    private const float _arrivalDiff = 0.2f;
     public const float _DEF_HEIGHT = -0.5f + 0.135f;
     public TileType type;
     public TempTileModel _model;
@@ -21,15 +22,11 @@ public class TileUnit : MonoBehaviour {
 
     public int x = 0, y = 0;
 
+    public delegate void OnTileEnter(UnitModel target);
+    private OnTileEnter _enter = null;
+
     public void SetModel(TempTileModel model) {
         _model = model;
-        //spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-
-        //GameObject _text = new GameObject(_model.xPos + ", " + _model.yPos);
-        //_text.transform.SetParent(RandomMapGenerator.Instance.gameObject.GetComponentInChildren<RectTransform>());
-        //_text.transform.localScale = Vector3.one;
-        //_text.transform.localRotation = Quaternion.Euler(Vector3.zero);
-        //_text.transform.localPosition = 
     }
 
     public void SetPosition(Vector3 pos) {
@@ -59,5 +56,35 @@ public class TileUnit : MonoBehaviour {
         spriteRenderer.color = c;
     }
 
+    public bool IsPassable(UnitModel passTarget) {
+        if (passTarget is PlayerModel) {
+            return true;
+        }
+        if (passTarget is NPC.NPCModel) {
+            return HeightLevel > 0;
+        }
+        return false;
+    }
+
+    public void SetEnterAction(OnTileEnter enter) {
+        _enter = enter;
+    }
+
+    public void OnEnterTile(UnitModel target) {
+        if (_enter != null) {
+            _enter(target);
+        }
+    }
+
     public int GetSpriteOrder() { return spriteRenderer.sortingOrder; }
+
+    public bool IsArrived(Vector3 pos)
+    {
+        return Vector2.Distance(pos, transform.position) <= _arrivalDiff;
+    }
+
+    public override string ToString()
+    {
+        return "Tile[" + x + " , " + y + "]";
+    }
 }

@@ -59,6 +59,10 @@ public class GlobalGameManager : MonoBehaviour {
         GameStaticData.NPCDataLoader npcLoader = new GameStaticData.NPCDataLoader();
         npcLoader.Initialize(GameStaticData.NPCDataLoader._npcXmlFilePath);
         npcLoader.LoadData();
+
+        GameStaticData.EnvironmentDataLoader envLoader = new GameStaticData.EnvironmentDataLoader();
+        envLoader.Initialize(GameStaticData.EnvironmentDataLoader._envXmlFilePath);
+        envLoader.LoadData();
         
         //LocalizeTextDataModel.Instance.LogAllData();
 

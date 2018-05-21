@@ -129,6 +129,8 @@ public class ConsoleScript {
         public Action action = null;
         public List<object> paramTypes = new List<object>();
         public List<object> parameters = new List<object>();
+        public bool ignoreParameterLength = false;
+        
 
         public void SetParameters(params object[] param) {
             paramTypes.Clear();
@@ -193,6 +195,53 @@ public class ConsoleScript {
         makeNpcMany.SetParameters(typeof(int), typeof(int));
         makeNpcMany.SetAction(MakeNPCMany);
         commands.Add("npcmany", makeNpcMany);
+
+        Command invokeWeather = new Command()
+        {
+            name = "Invoke New Weather"
+        };
+        invokeWeather.SetAction(MakeWeathers);
+        commands.Add("invoke", invokeWeather);
+
+        Command startWeather = new Command()
+        {
+            name = "Start Current Weathers",
+        };
+        startWeather.ignoreParameterLength = true;
+        startWeather.SetAction(StartAllWeathers);
+        commands.Add("startweather", startWeather);
+
+
+        Command clearWeather = new Command()
+        {
+            name = "Clear Current Weathers",
+        };
+        clearWeather.ignoreParameterLength = true;
+        clearWeather.SetAction(StopAllWeathers);
+        commands.Add("stopweather", clearWeather);
+
+        Command astarDebug = new Command()
+        {
+            name = "Make A* Debug NPC"
+        };
+        astarDebug.ignoreParameterLength = true;
+        astarDebug.SetAction(AstarDebugNPC);
+        commands.Add("astar", astarDebug);
+
+        Command makeTree = new Command()
+        {
+            name = "Make Tree"
+        };
+        makeTree.ignoreParameterLength = true;
+        makeTree.SetAction(MakeTreeEnv);
+        commands.Add("tree", makeTree);
+
+        Command makeShelter = new Command() {
+            name = "Make Shelter"
+        };
+        makeShelter.ignoreParameterLength = true;
+        makeShelter.SetAction(MakeShelterDev);
+        commands.Add("shelter", makeShelter);
     }
 
     public void OnInput(string commandText) {
@@ -224,7 +273,6 @@ public class ConsoleScript {
     public void Execute(string commandType, params string[] param) {
         Command targetCommand = null;
 
-
         if (commands.TryGetValue(commandType, out targetCommand))
         {
             PrintConsole(targetCommand, param);
@@ -232,13 +280,28 @@ public class ConsoleScript {
 
             try
             {
-                for (int i = 0; i < targetCommand.paramTypes.Count; i++)
-                {
-                    object curType = targetCommand.paramTypes[i];
-                    if (curType == typeof(int))
+                if (!targetCommand.ignoreParameterLength) {
+
+                    if (targetCommand.paramTypes.Count != 0)
                     {
-                        int parse = Command.ParseInt(param[i]);
-                        c.parameters.Add(parse);
+
+                        for (int i = 0; i < targetCommand.paramTypes.Count; i++)
+                        {
+                            object curType = targetCommand.paramTypes[i];
+                            if (curType == typeof(int))
+                            {
+                                int parse = Command.ParseInt(param[i]);
+                                c.parameters.Add(parse);
+                            }
+                            else if (curType == typeof(string))
+                            {
+                                c.parameters.Add(param[i]);
+                            }
+
+                        }
+                    }
+                    else {
+                        c.parameters.AddRange(param);
                     }
                 }
             }
@@ -258,8 +321,11 @@ public class ConsoleScript {
         }
     }
 
-    void MakeNPC(params object[] p) {
-        NPCManager.Manager.MakeNPC((int)p[0]);
+    void MakeNPC(params object[] p)
+    {
+        var model = NPCManager.Manager.MakeNPC((int)p[0]);
+        TileUnit randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);
+        model.SetCurrentTileForcely(randTile);
     }
 
     void MakeNPCMany(params object[] p) {
@@ -271,14 +337,74 @@ public class ConsoleScript {
         int yRange = height / 2;
         for (int i = 0; i < count; i++) {
             var model = NPCManager.Manager.MakeNPC((int)p[0]);
-            int x = UnityEngine.Random.Range(xRange -10, xRange + 10);
-            int y = UnityEngine.Random.Range(yRange - 10, yRange + 10);
-            TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
 
-            Vector3 pos = model.Unit.transform.position;
-            pos.x = tile.transform.position.x;
-            pos.y = tile.transform.position.y;
-            model.Unit.transform.position = pos;
+            TileUnit randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);
+            model.SetCurrentTileForcely(randTile);
         }
+    }
+
+    /// <summary>
+    /// p -> weatehr (string)
+    /// </summary>
+    /// <param name="p"></param>
+    void MakeWeathers(params object[] p) {
+        foreach (object o in p) {
+            if (o is string) {
+                var type = ParseEventType((string)o);
+                if (type == WeatherType.None) continue;
+                EventManager.Manager.OnGenerate(type);
+                Debug.Log("Generated Weather : "+type);
+            }
+        }
+    }
+
+    void StartAllWeathers(params object[] p) {
+        var list = EventManager.Manager.GetAllEvents();
+        foreach (var e in list) {
+            if (e.IsStarted == false) {
+                EventManager.Manager.OnStart(e.type);
+            }
+        }
+    }
+
+    void StopAllWeathers(params object[] p) {
+        var list = EventManager.Manager.GetAllEvents();
+        foreach (var e in list) {
+            if (e.IsStarted) {
+                EventManager.Manager.OnEnd(e.type);
+            }
+        }
+    }
+
+    WeatherType ParseEventType(string eventString) {
+        WeatherType output = WeatherType.None;
+        switch (eventString.ToLower()) {
+            case "cyclone":     output = WeatherType.Cyclone; break;
+            case "flood":       output = WeatherType.Flood; break;
+            case "yellowdust":  output = WeatherType.Yellowdust; break;
+            case "drought":     output = WeatherType.Drought; break;
+            case "fire":        output = WeatherType.Fire; break;
+            case "earthquake":  output = WeatherType.Earthquake; break;
+            case "lightning":   output = WeatherType.Lightning; break;
+            case "landsliding": output = WeatherType.Landsliding; break;
+            case "heavysnow":   output = WeatherType.Heavysnow; break;
+        }
+        return output;
+    }
+
+    public void AstarDebugNPC(params object[] p) {
+        NPCModel model = NPCManager.Manager.MakeNPC(0);
+        model.UpdatePosition(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+        AstarDebugger.Debugger.DebugUnit = model.Unit;
+    }
+
+    public void MakeTreeEnv(params object[] p) {
+        Environment.EnvironmentModel model = EnvironmentManager.Manager.MakeEnvironment(0);
+        model.UpdatePosition(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+    }
+
+    public void MakeShelterDev(params object[] p) {
+        TileUnit current = RandomMapGenerator.Instance.GetTile(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+        Shelter.ShelterManager.Instance.MakeRandomShelter(current);
     }
 }

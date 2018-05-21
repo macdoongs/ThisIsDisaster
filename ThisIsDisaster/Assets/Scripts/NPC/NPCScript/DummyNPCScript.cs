@@ -11,5 +11,11 @@ namespace NPC
         {
             Debug.Log("Make Dummy NPC");
         }
+
+        public override void OnDefeated()
+        {
+            Debug.Log("Dummy dead");
+            Unit.animTarget.SetActive(false);
+        }
     }
 }

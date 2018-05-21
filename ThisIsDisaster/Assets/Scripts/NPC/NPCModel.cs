@@ -135,7 +135,12 @@ namespace NPC {
         public void OnDefeated() {
             Debug.Log(GetUnitName() + " died");
             Script.OnDefeated();
+            MoveControl.StopMovement();
+            Unit.hpSlider.gameObject.SetActive(false);
+
             _state = NPCState.Destroied;
+
+            ItemManager.Manager.MakeDropItem(70001, GetCurrentTile());
         }
 
         public void OnVictoried() {
@@ -145,6 +150,7 @@ namespace NPC {
         }
 
         public void Update() {
+            MoveControl.Update();
             switch (_state) {
                 case NPCState.Generated:
                     OnGenerated();
@@ -176,18 +182,32 @@ namespace NPC {
         }
 
         public override void OnTakeDamage(UnitModel attacker, float damage) {
+            if (CurrentHp <= 0f) {
+                //already dead
+                if (_state == NPCState.Execute)
+                    OnDefeated();
+                return;
+            }
             Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
             CurrentHp -= damage;
-            if (CurrentHp <= 0f) {
+            if (CurrentHp <= 0f)
+            {
                 CurrentHp = 0f;
                 OnDefeated();
+            }
+            else {
+                Unit.OnDamaged();
             }
         }
 
         public void OnDetectedTarget(UnitModel target) {
             Unit.SetSensing(false);
+            Script.StopWandering();
             _executeState = NPCExectueState.Movement;
             //move to target
+            MoveControl.StopMovement();
+            MoveControl.missedTarget = OnVictoried;
+            MoveControl.FollowUnit(target, 10f, 2f);
         }
 
         public override string GetUnitName()
@@ -199,6 +219,82 @@ namespace NPC {
         {
             return Mathf.Clamp(CurrentHp / MaxHP, 0f, 1f);
         }
+
+        public override float GetSpeed()
+        {
+            return MetaInfo.GetSpeed();
+        }
+
+        public override void OnArriedPath(TileUnit target)
+        {
+            Debug.Log(GetUnitName() + " arrived at" + target.ToString());
+            if (MoveControl.FollowModel != null)
+            {
+                MoveControl.StopMovement();
+                Script.OnStartAttack();
+                Unit.Attack();
+                _executeState = NPCExectueState.Battle;
+            }
+            else {
+                Script.OnWanderDestArrived();
+            }
+        }
+
+        public override void UpdatePosition(Vector3 pos)
+        {
+            Unit.transform.position = pos;
+        }
+
+        public override Vector3 GetCurrentPos()
+        {
+            return Unit.transform.position;
+        }
+
+        public TileUnit GetRandomMovementTile() {
+            int height = UnityEngine.Random.Range(1, 4);
+            TileUnit output = null;
+            TileUnit cur = GetCurrentTile();
+            int threshold = 0;
+            do {
+                if (threshold >= 10) break;
+                threshold++;
+                output = RandomMapGenerator.Instance.GetRandomTileByHeight(height);
+            }
+            while (output == cur);
+            return output;
+        }
+
+        public override void SetCurrentTileForcely(TileUnit tile)
+        {
+            Unit.TileSetter.SetCurrentTileForcely(tile);
+            var pos = Unit.transform.position;
+            pos.x = tile.transform.position.x;
+            pos.y = tile.transform.position.y;
+            Unit.transform.position = pos;
+        }
+
+        public override TileUnit GetCurrentTile()
+        {
+            return Unit.TileSetter.GetCurrentTile();
+        }
+
+        public void OnAttackEnd() {
+            Debug.Log(GetUnitName() + " AttackEnd");
+            if (_state == NPCState.Execute)
+            {
+                Unit.SetSensing(true);
+                _executeState = NPCExectueState.Wander;
+            }
+            
+            
+        }
+
+        public override void SetCurrentTile(TileUnit current)
+        {
+            base.SetCurrentTile(current);
+
+        }
+
     }
     
 }

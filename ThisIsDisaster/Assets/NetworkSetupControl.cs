@@ -244,6 +244,8 @@ public class NetworkSetupControl : MonoBehaviour
 
         if (packetSender == GlobalParameters.Param.accountId) return;
 
+        StageGenerator.Instance.SetSeed(sync.stageGenSeed);
+
         var remoteCharacter = GameManager.MakePlayerCharacter(sync.accountName, packetSender, false);
         remoteCharacter.SetUnitName(sync.accountName);
         //make remote char

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class SettingUIController : MonoBehaviour {
 
+    public GameObject SettingUI;
+
     public GameObject[] Panels;
     public GameObject InformationPanel;
     public GameObject GameSettingPanel;
@@ -20,16 +22,32 @@ public class SettingUIController : MonoBehaviour {
     public Color highlightColor;
     public Color defaultColor;
 
+    public Scrollbar[] GameSettingScrollBars;
+    public Scrollbar BackgroundVolume;
+    public Scrollbar EffectVolume;
+    public Scrollbar HPWarning;
+    public Scrollbar StaminaWarning;
+
+    public Image[] ScrollBarFillAmount;
+    public Image BackgroundVolumeFill;
+    public Image EffectVolumeFill;
+    public Image HPWarningFill;
+    public Image StaminaWarningFill;
+
     public void Start()
     {
         Panels = new GameObject[] { InformationPanel, GameSettingPanel, PushSettingPanel, AccountPanel };
         Category = new Button[] { InformationButton, GameSettingButton, PushSettingButton, AccountButton };
+        GameSettingScrollBars = new Scrollbar[] { BackgroundVolume, EffectVolume, HPWarning, StaminaWarning };
+        ScrollBarFillAmount = new Image[] { BackgroundVolumeFill , EffectVolumeFill , HPWarningFill
+            , StaminaWarningFill};
         DefaultMenu();
     }
 
     public void Update()
     {
         HighlightCategory();
+        FillScrollBar();
     }
 
     public void DefaultMenu()
@@ -64,4 +82,26 @@ public class SettingUIController : MonoBehaviour {
         
     }
 
+    public void MenuButtonClicked(GameObject menu)
+    {
+        CloseAllMenu();
+        menu.SetActive(true);
+        HighlightCategory();
+    }
+
+    public void FillScrollBar()
+    {
+        for(int i = 0; i < GameSettingScrollBars.Length; i++)
+        {
+            float fillAmount = GameSettingScrollBars[i].value;
+
+            ScrollBarFillAmount[i].fillAmount = fillAmount;
+        }
+    }
+
+
+    public void Close()
+    {
+        SettingUI.SetActive(false);
+    }
 }

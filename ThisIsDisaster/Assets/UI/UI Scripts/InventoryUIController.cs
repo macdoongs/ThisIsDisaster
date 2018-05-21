@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUIController : MonoBehaviour {
-    
+
+    public GameObject InventoryUI;
+
     public GameObject Player;
     public CharacterModel PlayerCharacter;
 
@@ -36,13 +38,13 @@ public class InventoryUIController : MonoBehaviour {
     public Button[] ItemButtons ;
 
     //인벤토리 착용장비 슬롯 이미지
-    public Image[] PreviewSlots = new Image[5];
-    public string[] PreviewSlotName = new string[5] { "head", "weapon", "util1", "util2", "util3" };
-    public ItemModel[] PreviewItems = new ItemModel[5];
+    public Image[] PreviewSlots = new Image[6];
+    public string[] PreviewSlotName;
+    public ItemModel[] PreviewItems = new ItemModel[6];
 
 
     //인벤토리 착용장비 기본 이미지셋 
-    public Sprite[] defaultSlotSprite = new Sprite[5];
+    public Sprite[] defaultSlotSprite = new Sprite[6];
 
     //스프라이트 소스
     string[] spriteSrcs;
@@ -148,8 +150,9 @@ public class InventoryUIController : MonoBehaviour {
             ItemButtons[i].onClick.AddListener(() => SlotItemClicked());
         }
 
-        PreviewItems = new ItemModel[5] { PlayerCharacter.headSlot , PlayerCharacter.weaponSlot , PlayerCharacter.utilSlot1
-                , PlayerCharacter.utilSlot2, PlayerCharacter.utilSlot3};
+        PreviewSlotName =
+            new string[6] { "head", "clothes", "weapon", "backpack", "bottle", "flash" };
+        getPreviewItems();
 
         PresetRegisterButton.onClick.AddListener(() => PresetEditOpen());
     }
@@ -172,7 +175,7 @@ public class InventoryUIController : MonoBehaviour {
                 HighlightsCategory(ItemType.Weapon);
                 break;
             case 3:
-                HighlightsCategory(ItemType.Util);
+                //HighlightsCategory(ItemType.Util);
                 break;
             case 4:
                 HighlightsCategory(ItemType.Etc);
@@ -397,7 +400,7 @@ public class InventoryUIController : MonoBehaviour {
         //착용중인 장비 슬롯
         getPreviewItems();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < PreviewSlots.Length; i++)
         {
 
             if (PreviewItems[i] != null)
@@ -424,8 +427,9 @@ public class InventoryUIController : MonoBehaviour {
 
     public void getPreviewItems()
     {
-        PreviewItems = new ItemModel[5] { PlayerCharacter.headSlot , PlayerCharacter.weaponSlot , PlayerCharacter.utilSlot1
-                , PlayerCharacter.utilSlot2, PlayerCharacter.utilSlot3};
+        PreviewItems = new ItemModel[6] { PlayerCharacter.headSlot , PlayerCharacter.clothesSlot ,
+            PlayerCharacter.weaponSlot , PlayerCharacter.backpackSlot ,
+            PlayerCharacter.bottleSlot, PlayerCharacter.flashSlot};
     }
 
     public void PreviewItemClicked()
@@ -488,10 +492,16 @@ public class InventoryUIController : MonoBehaviour {
 
         if (type.Equals(ItemType.Head))
             first = PlayerCharacter.headSlot;
+        else if (type.Equals(ItemType.Clothes))
+            first = PlayerCharacter.clothesSlot;
         else if (type.Equals(ItemType.Weapon))
             first = PlayerCharacter.weaponSlot;
+        else if (type.Equals(ItemType.Backpack))
+            first = PlayerCharacter.backpackSlot;
+        else if (type.Equals(ItemType.Bottle))
+            first = PlayerCharacter.bottleSlot;
         else
-            first = PlayerCharacter.utilSlot3; ;
+            first = PlayerCharacter.flashSlot;
     }
 
     //교체 아이템 정보 입력
@@ -528,13 +538,25 @@ public class InventoryUIController : MonoBehaviour {
         {
             GetPrevPosition(0);
         }
-        else if (type.Equals(ItemType.Weapon))
+        else if (type.Equals(ItemType.Clothes))
         {
             GetPrevPosition(1);
         }
-        else
+        else if (type.Equals(ItemType.Weapon))
+        {
+            GetPrevPosition(2);
+        }
+        else if (type.Equals(ItemType.Backpack))
+        {
+            GetPrevPosition(3);
+        }
+        else if (type.Equals(ItemType.Bottle))
         {
             GetPrevPosition(4);
+        }
+        else
+        {
+            GetPrevPosition(5);
         }
     }
 
@@ -759,4 +781,8 @@ public class InventoryUIController : MonoBehaviour {
 
 
 
+    public void Close()
+    {
+        InventoryUI.SetActive(false);
+    }
 }

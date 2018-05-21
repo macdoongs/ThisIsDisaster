@@ -5,13 +5,16 @@ using UnityEngine;
 public class AutoTileMovementSetter : MonoBehaviour {
     const float _heightDelta = 0.25f;
     public delegate void OnTileChanged(TileUnit current);
+    public delegate void OnHeightChanged();
     
     RandomMapGenerator _map;
 
     public RenderLayerChanger _changer = null;
     public Transform HeightPivot;
+    public UnitModel owner;
 
     OnTileChanged _changedAction = null;
+    OnHeightChanged _heightChangeAction = null;
 
     TileUnit _currentTile = null;
     Timer _heightChangeTimer = new Timer();
@@ -21,6 +24,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     float _targetHeight = 0f;
     float _initialHeight = 0f;
+    public bool DisplayStandingTile = false;
 
     // Use this for initialization
     void Start () {
@@ -35,7 +39,17 @@ public class AutoTileMovementSetter : MonoBehaviour {
         //HeightChange(_currentTile);
 	}
 
-    public void ChangeTile(TileUnit tile) {
+    public void ChangeTile(TileUnit tile)
+    {
+        if (_changedAction != null)
+        {
+            _changedAction(tile);
+        }
+        if (DisplayStandingTile) {
+            _currentTile.spriteRenderer.color = Color.white;
+            tile.spriteRenderer.color = Color.blue;
+        }
+
         _currentTile = tile;
         RenderOrderChange(_currentTile);
         HeightChange(_currentTile);
@@ -46,13 +60,11 @@ public class AutoTileMovementSetter : MonoBehaviour {
         var cur = _map.GetTile(transform.position);
         if (cur != _currentTile) {
             if (!cur) return;
-            if (_changedAction != null) {
-                _changedAction(cur);
-            }
+            
             ChangeTile(cur);
-            //_currentTile = cur;
-            //RenderOrderChange(_currentTile);
-            //HeightChange(_currentTile);
+            if (owner != null) {
+                cur.OnEnterTile(owner);
+            }
         }
 
         if (_heightChangeTimer.started) {
@@ -68,6 +80,8 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     public void SetChangeAction(OnTileChanged action) {
         _changedAction = action;
+        if (_currentTile != null)
+            _changedAction(_currentTile);
     }
 
     public void RenderOrderChange(TileUnit tile) {
@@ -82,11 +96,23 @@ public class AutoTileMovementSetter : MonoBehaviour {
             float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
             _heightChangeTimer.StartTimer(time);
         }
+
+        if (_heightChangeAction != null) {
+            _heightChangeAction();
+        }
     }
 
     public bool IsHeightChanging() {
         return _heightChangeTimer.started;
     }
 
+    public void SetCurrentTileForcely(TileUnit tile) {
+        ChangeTile(tile);
+    }
 
+    public void SetHeightChangeAction(OnHeightChanged height) {
+        _heightChangeAction = height;
+    }
+
+    public TileUnit GetCurrentTile() { return _currentTile; }
 }

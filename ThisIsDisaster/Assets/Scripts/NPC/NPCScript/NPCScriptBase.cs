@@ -8,7 +8,7 @@ namespace NPC {
         public NPCUnit Unit { get { return Model.Unit; } }
 
         protected bool _wanderDestInit = false;
-        protected Vector3 _wanderDest = Vector3.zero;
+        protected TileUnit _wanderDest = null;
         protected Timer _wanderTimer = new Timer();
 
         public void SetModel(NPCModel model) {
@@ -26,8 +26,10 @@ namespace NPC {
 
         public virtual void WanderExectue() {
 
-            if (_wanderTimer.started) {
-                if (_wanderTimer.RunTimer()) {
+            if (_wanderTimer.started)
+            {
+                if (_wanderTimer.RunTimer())
+                {
                     _wanderDestInit = false;
                 }
                 else
@@ -36,28 +38,34 @@ namespace NPC {
             if (!_wanderDestInit)
             {
                 _wanderDestInit = true;
-                _wanderDest = Model.GetRandomMovement();
+                _wanderDest = Model.GetRandomMovementTile();
 
+                Model.MoveToTile(_wanderDest);
             }
-
-            Vector3 current = Unit.transform.position;
-            if (_wanderDest == current)
-            {
-                _wanderTimer.StartTimer(UnityEngine.Random.Range(2f, 5f));
-            }
-            else {
-                //Vector3 direction = (_wanderDest - current).normalized;
-
-                //Unit.transform.Translate(direction * Model.MetaInfo.GetSpeed() * Time.deltaTime);
-                Unit.transform.position = Vector3.MoveTowards(current, _wanderDest, Model.MetaInfo.GetSpeed() * Time.deltaTime);
-            }
+            
         }
 
-        public virtual void MoveExecute() { }
+        public virtual void StopWandering() {
+            _wanderTimer.StopTimer();
+            _wanderDestInit = false;
+            _wanderDest = null;
+        }
+
+        public virtual void MoveExecute() {
+        }
+
         public virtual void BattleExectue() { }
         public virtual void DetectAtion() { }
         public virtual void ArriveAction() { }
         public virtual void OnDefeated() { }
         public virtual void OnVictoried() { }
+
+        public virtual void OnWanderDestArrived() {
+            _wanderTimer.StartTimer(UnityEngine.Random.Range(5f, 10f));
+        }
+
+        public virtual void OnStartAttack() {
+            Model.Unit.OnStartAttack();
+        }
     }
 }

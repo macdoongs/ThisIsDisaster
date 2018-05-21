@@ -13,25 +13,33 @@ namespace NPC
     {
         [System.Serializable]
         public class NPCAttackController {
+            public delegate void OnAttackEnd();
+
             public AttackSender Sender;
             public float AttackDelay;
 
             public bool isDebuggingEnabled = false;
+            
             public SpriteRenderer _debugRenderer;
-            Timer _attackDelayTimer = new Timer();
+            public OnAttackEnd AttackEnd;
+            Timer _attackDurationTimer = new Timer();
 
             public bool IsAttackable() {
-                return !_attackDelayTimer.started;
+                return !_attackDurationTimer.started;
             }
 
             public void StartAttack() {
                 Sender.OnAttack();
-                _attackDelayTimer.StartTimer(AttackDelay);
+                _attackDurationTimer.StartTimer(AttackDelay);
             }
 
             public void Update() {
-                if (_attackDelayTimer.started) {
-                    if (!_attackDelayTimer.RunTimer()) return;
+                if (_attackDurationTimer.started) {
+                    if (_attackDurationTimer.RunTimer()) {
+                        AttackEnd();
+                        return;
+                    }
+                    
                 }
                 if (isDebuggingEnabled && _debugRenderer) {
                     if (Sender.IsAttacking())
@@ -60,6 +68,7 @@ namespace NPC
         public AttackReceiver AttackReceiver;
         public RenderLayerChanger RenderLayerChanger;
         public NPCAttackController AttackControl;
+        public AutoTileMovementSetter TileSetter;
 
         [Header("UI")]
         public UnityEngine.UI.Slider hpSlider;
@@ -73,6 +82,9 @@ namespace NPC
 
             AttackSender.SetOwner(model);
             AttackReceiver.SetOwner(model);
+            TileSetter.SetChangeAction(model.SetCurrentTile);
+            TileSetter.SetHeightChangeAction(Jump);
+            AttackControl.AttackEnd = model.OnAttackEnd;
         }
         
         // Use this for initialization
@@ -86,7 +98,6 @@ namespace NPC
         void Update()
         {
             AttackControl.Update();
-
         }
 
         public void OnStartAttack() {
@@ -117,6 +128,7 @@ namespace NPC
 
         private void LateUpdate()
         {
+            if (Model.State == NPCState.Destroied) return;
             Vector3 currentPos = transform.position;
             
             if (currentPos.x > oldPos.x) {
@@ -127,6 +139,15 @@ namespace NPC
                 //set right
                 SetDirection(UnitDirection.RIGHT);
             }
+
+            if (currentPos != oldPos)
+            {
+                AnimatorUtil.SetBool(animator, "Move", true);
+            }
+            else {
+                AnimatorUtil.SetBool(animator, "Move", false);
+            }
+
             oldPos = currentPos;
 
 
@@ -134,6 +155,18 @@ namespace NPC
             {
                 hpSlider.value = Model.GetHpRate();
             }
+        }
+
+        public void Jump() {
+            AnimatorUtil.SetTrigger(animator, "Jump");
+        }
+
+        public void Attack() {
+            AnimatorUtil.SetTrigger(animator, "Attack");
+        }
+
+        public void OnDamaged() {
+            AnimatorUtil.SetTrigger(animator, "Damaged");
         }
 
         public void SetDirection(UnitDirection dir) {
@@ -151,6 +184,7 @@ namespace NPC
             Debug.Log(string.Format("{0} {1} Sensored {2}", Model.GetUnitName(), Model.instanceId, sensor.Owner.GetUnitName()));
             Model.OnDetectedTarget(sensor.Owner);
         }
+        
         
     }
 }

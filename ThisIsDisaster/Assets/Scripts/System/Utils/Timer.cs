@@ -104,4 +104,8 @@ public class Timer
             return 1f;
         }
     }
+
+    public virtual void ResetTimer() {
+        elapsed = 0f;
+    }
 }

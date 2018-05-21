@@ -30,23 +30,37 @@ public class RenderLayerChanger : MonoBehaviour
 
     public void UpdateLayerInfo(int order) {
         ReferenceRenderer.sortingOrder = order;
-        UpdateLayerInfo();
+        UpdateLayerInfo();  
     }
 
     void UpdateInfo(Transform tr)
     {
         foreach (Transform t in tr) {
-            var sr = t.GetComponent<SpriteRenderer>();
-            if (sr != null) {
-                sr.sortingLayerName = ReferenceRenderer.sortingLayerName;
-                sr.sortingOrder = ReferenceRenderer.sortingOrder;
+            var fixer = t.GetComponent<RenderLayerFixer>();
+
+            if (fixer != null)
+            {
+                if (fixer.IgnoreChilds)
+                {
+                    return;
+                }
             }
-            var ps = t.GetComponent<ParticleSystem>();
-            if (ps != null) {
-                var ps_Render = ps.GetComponent<ParticleSystemRenderer>();
-                ps_Render.sortingLayerName = ReferenceRenderer.sortingLayerName;
-                ps_Render.sortingOrder = ReferenceRenderer.sortingOrder;
+            else {
+                var sr = t.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.sortingLayerName = ReferenceRenderer.sortingLayerName;
+                    sr.sortingOrder = ReferenceRenderer.sortingOrder;
+                }
+                var ps = t.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    var ps_Render = ps.GetComponent<ParticleSystemRenderer>();
+                    ps_Render.sortingLayerName = ReferenceRenderer.sortingLayerName;
+                    ps_Render.sortingOrder = ReferenceRenderer.sortingOrder;
+                }
             }
+
             UpdateInfo(t);
         }
     }

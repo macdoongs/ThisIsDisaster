@@ -7,13 +7,14 @@ public class AstarCalculator {
         public TileUnit Origin = null;
         public TileUnit Destination = null;
         public List<TileUnit> path = null;
+        public int currentPathIndex = 0;
     }
 
     public class Calculation
     {
         public class Node {
             public TileUnit tile;
-            public TileUnit parent;
+            public Node parent;
 
             /// <summary>
             /// To Destination, Heuristic
@@ -30,11 +31,30 @@ public class AstarCalculator {
             /// </summary>
             public int Cost_F { get { return Cost_H + Cost_O; } }
         }
+        public struct Offset {
+            public int x;
+            public int y;
+            public Offset(int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+        }
         const int INDEX_MAX = 3;
         const int DIAGONALCOST = 14;
         const int NORMALCOST = 10;
 
-        static int[] _indexer = { -1, 0, 1 };
+        static readonly int[] _indexer = { -1, 0, 1 };
+        static readonly Offset[] offsets = new Offset[8] {
+            new Offset( -1,  0),
+            new Offset(  0,  1),
+            new Offset(  0, -1),
+            new Offset(  1,  0),
+            new Offset( -1,  1),
+            new Offset(  1,  1),
+            new Offset( -1, -1),
+            new Offset(  1, -1)
+        };
         public Dictionary<int, Node> opened = new Dictionary<int, Node>();
         public Dictionary<int, TileUnit> closed = new Dictionary<int, TileUnit>();
 
@@ -49,24 +69,35 @@ public class AstarCalculator {
          O - 시작점에서 지금까지의 비용 (_currentCost)
          H - 현재 위치에서 도착점까지의 비용 (_destCost)
         */
-        int _totalCost = 0;
-        int _currentCost = 0;
-        int _destCost = 0;
+        List<Node> _searchNodeList = new List<Node>();//tree
+        List<TileUnit> selectedAsPath = new List<TileUnit>();
+        UnitModel _caller = null;
 
-        void CalculateAstar2(TileUnit origin, TileUnit dest) {
-            Origin = origin;
-            Destination = dest;
-
+        public Calculation(UnitModel caller)
+        {
+            _caller = caller;
         }
 
-        List<TileUnit> selectedAsPath = new List<TileUnit>();
-
         public List<TileUnit> CalculateAstar(TileUnit origin, TileUnit dest) {
+            
             Origin = origin;
             Destination = dest;
 
-            //CalculateTile(origin, 0);
+            Node originNode = new Node() {
+                tile = origin,
+                Cost_H = GetHeuristicCost(origin),
+                Cost_O = 0,
+                parent = null
+            };
+            CalculateNode(originNode);
+            Node parent = _searchNodeList[_searchNodeList.Count - 1];
+            
+            while (parent != null) {
+                selectedAsPath.Add(parent.tile);
+                parent = parent.parent;
+            }
 
+            selectedAsPath.Reverse();
             //result is selectedAsPath
             return selectedAsPath;
         }
@@ -74,9 +105,8 @@ public class AstarCalculator {
         Node GetOpenTile(int hash) {
             return opened[hash];
         }
-        
-        void CalculateTile(TileUnit current, int oCost ) {
-            int currentX = current.x;
+        /*
+         int currentX = current.x;
             int currentY = current.y;
             int curIndex = GetTileIndex(current);
             
@@ -122,30 +152,105 @@ public class AstarCalculator {
             }
             Node open = opened[selectedIndex];
 
+             */
 
-
-            //opened.Remove(selectedIndex);
-            //closed.Add(selectedIndex, open.tile);
-
-            //selectedAsPath.Add(open.tile);
-            //CalculateTile(open.Cost_F, open.tile);
-
-            /*
+        void CalculateNode(Node selectedNode) {
+            _searchNodeList.Add(selectedNode);
+            TileUnit current = selectedNode.tile;
             int currentX = current.x;
             int currentY = current.y;
 
-            int curHash = GetTileIndex(current);
-            if (!closed.ContainsKey(curHash)) {
-                closed.Add(curHash, current);
+            int curIndex = GetTileIndex(current);
+            if (!closed.ContainsKey(curIndex)) {
+                closed.Add(curIndex, current);
             }
-            OpenTile currentOpen = null;
-            if (opened.ContainsKey(curHash)) {
-                currentOpen = opened[curHash];
-                opened.Remove(curHash);
+            if (opened.ContainsKey(curIndex)) {
+                opened.Remove(curIndex);
             }
 
-            selectedAsPath.Add(current);
+            //selectedAsPath.Add(current);
             List<TileUnit> near = new List<TileUnit>();
+            List<int> xIgnore = new List<int>();
+            List<int> yIgnore = new List<int>();
+            
+            for (int i = 0; i < offsets.Length; i++) {
+                Offset offset = offsets[i];
+
+                if (xIgnore.Contains(offset.x)) continue;
+                if (yIgnore.Contains(offset.y)) continue;
+
+                int x = currentX + offset.x;
+                int y = currentY + offset.y;
+
+                int cost = GetDistValue(offset.x, offset.y);
+                if (cost == 0) continue;
+                TileUnit tile = Instance.GetTile(x, y);
+                if (tile == null) continue;
+                if (tile == Destination)
+                {
+                    Node destNode = new Node()
+                    {
+                        tile = Destination,
+                        Cost_H = 0,
+                        Cost_O = 0,
+                        parent = selectedNode
+                    };
+                    _searchNodeList.Add(destNode);
+                    return;
+                }
+
+                int tileHash = GetTileIndex(tile);
+                if (closed.ContainsKey(tileHash)) continue;
+                if (!tile.IsPassable(_caller))
+                {
+                    closed.Add(tileHash, tile);
+
+                    if (i < 4) {
+                        if (offset.x != 0) {
+                            if (!xIgnore.Contains(offset.x)) {
+                                xIgnore.Add(offset.x);
+                            }
+                        }
+                        if (offset.y != 0) {
+                            if (!yIgnore.Contains(offset.y)) {
+                                yIgnore.Add(offset.y);
+                            }
+                        }
+                    }
+
+                    continue;
+                }
+                int current_O_cost = selectedNode.Cost_O + cost;
+                int current_H_cost = GetHeuristicCost(tile);
+
+                near.Add(tile);
+
+                if (opened.ContainsKey(tileHash))
+                {
+                    var node = opened[tileHash];
+                    if (node.Cost_O > current_O_cost)
+                    {
+                        node.Cost_O = current_O_cost;
+                    }
+                    node.parent = selectedNode;
+                    continue;
+                }
+
+                Node open = new Node()
+                {
+                    tile = tile,
+                    Cost_O = current_O_cost,
+                    Cost_H = current_H_cost,
+                    parent = selectedNode
+                };
+
+                if (!closed.ContainsKey(tileHash))
+                {
+                    closed.Add(tileHash, tile);
+                }
+                opened.Add(tileHash, open);
+            }
+            /*
             for (int i = 0; i < INDEX_MAX; i++)
             {
                 int index_x = _indexer[i];
@@ -163,7 +268,14 @@ public class AstarCalculator {
                     if (tile == null) continue;
                     if (tile == Destination) {
                         //arrived
-                        selectedAsPath.Add(Destination);
+                        //selectedAsPath.Add(Destination);
+                        Node destNode = new Node() {
+                            tile = Destination,
+                            Cost_H = 0,
+                            Cost_O = 0,
+                            parent = selectedNode
+                        };
+                        _searchNodeList.Add(destNode);
                         return;
                     }
 
@@ -173,22 +285,29 @@ public class AstarCalculator {
                         closed.Add(tileHash, tile);
                         continue;
                     }
-                    int current_F_cost = fCost + cost;
-                    int current_G_cost = GetHeuristicCost(tile);
-                    int total = current_F_cost + current_G_cost;
+                    int current_O_cost = selectedNode.Cost_O + cost;
+                    int current_H_cost = GetHeuristicCost(tile);
+                    //int total = current_O_cost + current_H_cost;
+
+                    near.Add(tile);
 
                     if (opened.ContainsKey(tileHash))
                     {
-
+                        var node = opened[tileHash];
+                        if (node.Cost_O > current_O_cost) {
+                            node.Cost_O = current_O_cost;
+                        }
+                        node.parent = selectedNode;
+                        continue;
                     }
-
-                    near.Add(tile);
-                    OpenTile open = new OpenTile() {
+                    
+                    Node open = new Node() {
                         tile = tile,
-                        Cost_F = current_F_cost,
-                        Cost_G = current_G_cost,
-                        parent = current
+                        Cost_O = current_O_cost,
+                        Cost_H = current_H_cost,
+                        parent = selectedNode
                     };
+
                     if (!closed.ContainsKey(tileHash)) {
                         closed.Add(tileHash, tile);
                     }
@@ -196,55 +315,28 @@ public class AstarCalculator {
                 }
             }
             //Debug.Log(opened.Count);
-
+            */
             int selected = 0;
             int minCost = int.MaxValue;
+            //현재 위치에서 대각선은 바로 갈 수 있는지 체크해야 할듯?
             foreach (var v in opened) {
-                int cost = v.Value.Total;
+                int cost = v.Value.Cost_F;
                 if (cost < minCost) {
                     selected = v.Key;
                     minCost = cost;
                 }
             }
 
-            OpenTile select = opened[selected];
+            Node select = opened[selected];
             if (!near.Contains(select.tile))
             {
                 //remove path recursivly
-                if (currentOpen != null) {
-                    //RemovePathRecursivly(currentOpen, select);
-                }
+                
             }
-            CalculateTile(select.Cost_F, select.tile);
-            */
-
+            CalculateNode(select);
         }
 
-        void RemovePathRecursivly(Node start, Node dest) {
-            selectedAsPath.Remove(start.tile);
-            TileUnit parent = start.parent;
-            while (parent != dest.tile) {
-                try
-                {
-                    int ind = GetTileIndex(parent);
-                    if (opened.ContainsKey(ind))
-                    {
-                        Node del = opened[ind];
-                        parent = del.parent;
-                        selectedAsPath.Remove(del.tile);
-                        opened.Remove(ind);
-                    }
-                    else {
-                        break;
-                    }
-                }
-                catch (System.Exception e) {
-                    Debug.LogError(e);
-                    break;
-                }
-            }
-        }
-
+        
         /// <summary>
         /// 특정 위치에서 해당 타일까지 인덱스 비교값, 거리를 의미하게 됨
         /// </summary>
@@ -301,8 +393,11 @@ public class AstarCalculator {
         Height = height;
     }
 
-    public PathInfo GetDestinationPath(TileUnit origin, TileUnit dest) {
-        Calculation calculation = new Calculation();
+    public PathInfo GetDestinationPath(UnitModel model, TileUnit origin, TileUnit dest) {
+        if (dest.IsPassable(model) == false) {
+            model.MoveControl.StopMovement(); return null;
+        }
+        Calculation calculation = new Calculation(model);
         var list = calculation.CalculateAstar(origin, dest);
         PathInfo output = new PathInfo
         {

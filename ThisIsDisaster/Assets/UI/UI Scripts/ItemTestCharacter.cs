@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemTestCharacter : MonoBehaviour {
-    //static long[] _defaultEquipments = { 10000, 20000, 30000, 30001, 30002, 40000, 40001, 40002 };
-    static long[] _etcs = { 40000 , 40001, 40002 };
-    static long[] _equip = { 10001, 20001, 30000, 29999, 30002};
-    static long[] _equip2 = { 10000, 20000, 30000, 30001, 30002 };
+    
+    static long[] _etcs = { 70000 , 70001, 70002 };
+    static long[] _equip = { 10000, 20000, 30000, 40000, 50000, 60000};
+    static long[] _equip2 = { 10001, 20000, 30001,40000, 50000, 60000};
     public GameObject PlayerCharacter;
 
     public CharacterModel CharacterUnit;
@@ -37,11 +37,6 @@ public class ItemTestCharacter : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.F2)) {
             RemoveAllEquipType();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            WearHead();
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
@@ -109,21 +104,10 @@ public class ItemTestCharacter : MonoBehaviour {
         CharacterUnit.RemoveEquipment("util3");
     }
 
-    void WearWeapon()
-    {
-        ItemModel weapon = ItemManager.Manager.MakeItem(20000);
-        CharacterUnit.WearEquipment(weapon);
-    }
 
     void RemoveWeapon()
     {
         CharacterUnit.RemoveEquipment("weapon");
-    }
-
-    void WearHead()
-    {
-        ItemModel head = ItemManager.Manager.MakeItem(10000);
-        CharacterUnit.WearEquipment(head);
     }
 
     void RemoveHead()
@@ -133,13 +117,13 @@ public class ItemTestCharacter : MonoBehaviour {
 
     void EatFood()
     {
-        ItemModel food = ItemManager.Manager.MakeItem(40000);
+        ItemModel food = ItemManager.Manager.MakeItem(70000);
         CharacterUnit.UseExpendables(food);
     }
   
     void EatWater()
     {
-        ItemModel water = ItemManager.Manager.MakeItem(40001);
+        ItemModel water = ItemManager.Manager.MakeItem(70001);
         CharacterUnit.UseExpendables(water);
     }
 
