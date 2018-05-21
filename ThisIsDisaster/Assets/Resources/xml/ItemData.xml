@@ -1,46 +1,201 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <root>
-  <item id="10000" type="head"    name="_dummy_head" sprite="Item/head" max="1" tag="dummy">
-    <defense>1</defense>
-    <health>10</health>
-  </item>
-
-  <item id="10001" type="head"    name="cap" sprite="Item/sample/cap" max="1" tag="dummy">
-    <defense>1</defense>
-    <health>10</health>
-  </item>
-
-  <item id="20000" type="clothes"  name="sample_clothes" sprite="Item/sample/clothes_sample"  max="1" tag="dummy">
-    <health>10</health>
-<defense>1</defense>
-  </item>
-  
-  <item id="30000" type="weapon"  name="_dummy_stick" sprite="Item/weapon"  max="1" tag="dummy">
-    <damage>1</damage>
-  </item>
-
-  <item id="30001" type="weapon"  name="swiss_army_knife" sprite="Item/sample/swiss_army_knife"  max="1" tag="dummy">
-    <damage>1</damage>
-  </item>
-
-  <item id="40000" type="backpack"    name="shopping_bag" sprite="Item/sample/shopping_bag"  max="1" tag="dummy"/>
-  <item id="40001" type="backpack"    name="_dummy_util_bag" sprite="Item/sample/backpack_sample"  max="1" tag="backpack"/>
-
-
-  <item id="50000" type="bottle"    name="sample_bottle" sprite="Item/sample/bottle_sample" max="1" tag="dummy"/>
-
-  <item id="60000" type="flash"    name="sample_flash" sprite="Item/sample/flash_sample"  max="1" tag="dummy"/>
-  
-  <item id="70000" type="etc"     name="_dummy_food" sprite="Item/sample/cake_sample"  max="10" tag="dummy">
-  <health>10</health>
+<item id="1" type="weapon" name="장검" sprite="Item/test/weapon01" description="아이템 설명">
+<damage>20</damage>
+<range_x>10</range_x>
+<range_y>20</range_y>
+<Effect>특수효과</Effect>
 </item>
-
-  <item id="70001" type="etc"     name="_dummy_water" sprite="Item/sample/drink_sample"  max="10" tag="dummy">
-  <stamina>10</stamina>
+<item id="2" type="weapon" name="도끼" sprite="Item/test/weapon02" description="아이템 설명">
+<damage>23</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+<Effect>나무 공격 가능</Effect>
 </item>
-
-  <item id="70002" type="etc"     name="_dummy_kit" sprite="Item/sample/bandage_sample" max="10" tag="dummy">
-  <health>10</health>
+<item id="3" type="weapon" name="작은 망치" sprite="Item/test/weapon03" description="아이템 설명">
+<damage>23</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
 </item>
-
+<item id="4" type="weapon" name="지팡이" sprite="Item/test/weapon04" description="아이템 설명">
+<damage>10</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="5" type="weapon" name="목검" sprite="Item/test/weapon05" description="아이템 설명">
+<damage>10</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="6" type="weapon" name="단검" sprite="Item/test/weapon06" description="아이템 설명">
+<damage>12</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="7" type="weapon" name="큰 망치" sprite="Item/test/weapon07" description="아이템 설명">
+<damage>50</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="8" type="weapon" name="대부" sprite="Item/test/weapon08" description="아이템 설명">
+<damage>50</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="9" type="weapon" name="도검" sprite="Item/test/weapon09" description="아이템 설명">
+<damage>50</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="10" type="weapon" name="보검" sprite="Item/test/weapon10" description="아이템 설명">
+<damage>40</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="11" type="weapon" name="창" sprite="Item/test/weapon11" description="아이템 설명">
+<damage>60</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="12" type="weapon" name="미늘창" sprite="Item/test/weapon12" description="아이템 설명">
+<damage>55</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+</item>
+<item id="13" type="weapon" name="소화기" sprite="Item/test/weapon13" description="아이템 설명">
+<damage>10</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+<Effect>불속성 몬스터 데미지 +50</Effect>
+ Grade= "레어"
+</item>
+<item id="14" type="weapon" name="식칼" sprite="Item/test/weapon14" description="아이템 설명">
+<damage>10</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+<Effect>고기 손질 가능</Effect>
+</item>
+<item id="15" type="weapon" name="톱" sprite="Item/test/weapon15" description="아이템 설명">
+<damage>10</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+<Effect>나무 공격 가능</Effect>
+</item>
+<item id="16" type="weapon" name="전기충격기" sprite="Item/test/weapon16" description="아이템 설명">
+<damage>100</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+<Effect>전기 충격</Effect>
+ Grade= "레어"
+</item>
+<item id="17" type="weapon" name="우산" sprite="Item/test/weapon17" description="아이템 설명">
+<damage>100</damage>
+<range_x>5</range_x>
+<range_y>5</range_y>
+<Effect>비 막음</Effect>
+ Grade= "레어"
+</item>
+<item id="10001" type="head" name="캡모자" sprite="" description :"아이템 설명">
+<defense>3</defense>
+</item>
+<item id="10002" type="head" name="챙모자" sprite="비, 폭설 상태이상 저항" description :"아이템 설명">
+<defense>3</defense>
+<Effect>비, 폭설 상태이상 저항</Effect>
+</item>
+<item id="10003" type="head" name="안전모" sprite="" description :"아이템 설명">
+<defense>5</defense>
+</item>
+<item id="10004" type="head" name="군용 헬멧" sprite="" description :"아이템 설명">
+<defense>5</defense>
+</item>
+<item id="20001" type="clothes" name="일상복" sprite="Item/test/clothes01" description="아이템설명">
+<stamina>10</stamina>
+</item>
+<item id="20002" type="clothes" name="츄리닝" sprite="Item/test/clothes02" description="아이템설명">
+<stamina>20</stamina>
+</item>
+<item id="20003" type="clothes" name="등산복" sprite="Item/test/clothes03" description="아이템설명">
+<Effect>체온 유지 가능 / 평지, 고산지대 이동 속도 증가</Effect>
+</item>
+<item id="20004" type="clothes" name="비옷" sprite="Item/test/clothes04" description="아이템설명">
+</item>
+<item id="20005" type="clothes" name="군복" sprite="Item/test/clothes05" description="아이템설명">
+<Effect>체온 유지 가능 / 평지, 고산지대 이동 속도 증가</Effect>
+</item>
+<item id="20006" type="clothes" name="공장 점퍼" sprite="Item/test/clothes06" description="아이템설명">
+</item>
+<item id="20007" type="clothes" name="간호복" sprite="Item/test/clothes07" description="아이템설명">
+</item>
+<item id="20008" type="clothes" name="의사 가운" sprite="Item/test/clothes08" description="아이템설명">
+</item>
+<item id="30001" type="backpack" name="기본 배낭"" sprite="Item/test/backpack01" description :"가장 기본적인 가방">
+<size>10</size>
+</item>
+<item id="30002" type="backpack" name="중급 배낭"" sprite="Item/test/backpack02" description :"일반적인 가방">
+<size>20</size>
+</item>
+<item id="30003" type="backpack" name="고급 배낭"" sprite="Item/test/backpack03" description :"등산용 가방">
+<size>30</size>
+</item>
+<item id="30010" type="bottle" name="물통" sprite="Item/test/bottle01" desciption="아이템 설명>
+<size>10</size>
+</item>
+<item id="30020" type="bottle" name="대용량 물통" sprite="Item/test/bottle02" desciption="아이템 설명>
+<size>20</size>
+</item>
+<item id="31001" type="tool_equip" name="손전등" sprite="Item/test/light01" description="아이템 설명">
+<Effect1>야간 시야 확보</Effect1>
+<Effect2>전방 시야(대)</Effect2>
+</item>
+<item id="31002" type="tool_equip" name="횃불" sprite="Item/test/light02" description="아이템 설명">
+<Effect1>야간 시야 확보</Effect1>
+<Effect2>원형 시야(중)</Effect2>
+</item>
+<item id="31003" type="tool_equip" name="라이터" sprite="Item/test/light03" description="아이템 설명">
+<Effect1>야간 시야 확보</Effect1>
+<Effect2>원형 시야(소)</Effect2>
+</item>
+<item id="31004" type="tool_equip" name="양초" sprite="Item/test/light04" description="아이템 설명">
+<Effect1>야간 시야 확보</Effect1>
+<Effect2>원형 시야(소)</Effect2>
+</item>
+<item id="31005" type="tool_equip" name="안경" sprite="Item/test/glasses01" description="아이템 설명">
+<Effect1>시야 증가</Effect1>
+</item>
+<item id="31006" type="tool_equip" name="선글라스" sprite="Item/test/glasses02" description="아이템 설명">
+<Effect1>모래 바람, 눈부심 방지</Effect1>
+</item>
+<item id="31007" type="tool_equip" name="담요" sprite="Item/test/blanket01" description="아이템 설명">
+<Effect1>기력회복+15</Effect1>
+<Effect2>체온 유지</Effect2>
+</item>
+<item id="31008" type="tool_equip" name="침낭" sprite="Item/test/blanket02" description="아이템 설명">
+<Effect1>기력회복+20</Effect1>
+<Effect2>체온 유지</Effect2>
+</item>
+<item id="33001" type="tool_use" name="텐트" sprite="Item/test/tent01" description="아이템 설명">
+<Effect1>텅 빈 대피소 생성</Effect1>
+</item>
+<item id="33002" type="tool_use" name="모닥불" sprite="Item/test/campfire01" description="아이템 설명">
+<Effect1>체력,기력 회복+10</Effect1>
+<Effect2>체온 유지</Effect2>
+</item>
+<item id="40001" type="etc" name="눈덩이" description="아이템 설명">
+<item id="40002" type="etc" name="물" description="아이템 설명">
+<item id="40003" type="etc" name="생고기" description="아이템 설명">
+<item id="41001" type="etc" name="약" sprite="Item/test/medicine01" description="아이템 설명">
+<item id="41002" type="etc" name="구급 상자" sprite="Item/test/medicine02" description="아이템 설명">
+<item id="41003" type="etc" name="음식" sprite="Item/test/food01" description="아이템 설명">
+<item id="41004" type="etc" name="핫팩" sprite="Item/test/hotpack01" description="아이템 설명">
+<item id="41005" type="etc" name="필기구" sprite="Item/test/pencil01" description="아이템 설명">
+<item id="50001 type="normal" name="끈" sprite="Item/test/normal01" description="아이템 설명"</item>
+<item id="50002 type="normal" name="나뭇가지" sprite="Item/test/normal02" description="아이템 설명"</item>
+<item id="50003 type="normal" name="부싯돌" sprite="Item/test/normal03" description="아이템 설명"</item>
+<item id="50004 type="normal" name="가죽" sprite="Item/test/normal04" description="아이템 설명"</item>
+<item id="51001 type="normal" name="강철" sprite="Item/test/normal05" description="아이템 설명"</item>
+<item id="51002 type="normal" name="깔때기" sprite="Item/test/normal06" description="아이템 설명"</item>
+<item id="51003 type="normal" name="방수 시트" sprite="Item/test/normal07" description="아이템 설명"</item>
+<item id="51004 type="normal" name="종이" sprite="Item/test/normal08" description="아이템 설명"</item>
+<item id="51005 type="normal" name="접착제" sprite="Item/test/normal09" description="아이템 설명"</item>
+<item id="51006 type="normal" name="밧줄" sprite="Item/test/normal10" description="아이템 설명"</item>
 </root>
