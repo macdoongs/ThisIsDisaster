@@ -254,8 +254,8 @@ public class ConsoleScript {
             name = "Make Tree"
         };
         makeTreeMany.SetParameters(typeof(int));
-        makeTree.SetAction(MakeTreeManyEnv);
-        commands.Add("treeMany", makeTreeMany);
+        makeTreeMany.SetAction(MakeTreeManyEnv);
+        commands.Add("treemany", makeTreeMany);
 
         Command makeShelter = new Command() {
             name = "Make Shelter"
@@ -430,12 +430,12 @@ public class ConsoleScript {
     public void MakeTreeManyEnv(params object[] p)
     {
         int num = (int)p[0];
-        Environment.EnvironmentModel model = EnvironmentManager.Manager.MakeEnvironment(0);
         List<CellularAutomata.Coord> randomCoord = new List<CellularAutomata.Coord>();
 
         randomCoord = CellularAutomata.Instance.GetRoomsCoord(3, num);
         for (int i = 0; i < num; i++)
         {
+            Environment.EnvironmentModel model = EnvironmentManager.Manager.MakeEnvironment(0);
             TileUnit randomTile = RandomMapGenerator.Instance.GetTile(randomCoord[i].tileX, randomCoord[i].tileY);
             model.UpdatePosition(randomTile.transform.position);
         }

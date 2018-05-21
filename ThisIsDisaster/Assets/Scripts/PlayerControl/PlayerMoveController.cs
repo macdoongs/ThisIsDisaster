@@ -116,6 +116,29 @@ public class PlayerMoveController : MonoBehaviour {
 
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
+
+
+#if UNITY_ANDROID
+        
+        float hor = Input.GetAxis("Horizontal");
+        float ver = Input.GetAxis("Vertical");
+        if (hor < 0f)
+        {
+            MoveLeft(ref movePos);
+        }
+        else if (hor > 0f) {
+            MoveRight(ref movePos);
+        }
+
+        if (ver < 0f)
+        {
+            MoveDown(ref movePos);
+        }
+        else if (ver >0f){
+            MoveUp(ref movePos);
+        }
+
+#else
         if (Input.GetKey(KeyCode.W))
         {
             MoveUp(ref movePos);
@@ -135,6 +158,7 @@ public class PlayerMoveController : MonoBehaviour {
         {
             MoveRight(ref movePos);
         }
+#endif
 
         //Vector3 newPos = currentPos;
         //newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
