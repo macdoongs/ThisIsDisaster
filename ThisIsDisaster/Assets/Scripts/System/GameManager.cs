@@ -36,11 +36,17 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        Init();
+    }
+
+    public void Init() {
+
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
+
     }
 
     // Use this for initialization

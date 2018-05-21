@@ -18,6 +18,8 @@ public class DevelopmentConsole : MonoBehaviour
     StringBuilder fullLog = new StringBuilder();
     StringBuilder extractedLog = new StringBuilder();
 
+    public GameObject ActiveControl;
+
     public bool ShowFullLog = true;
 
     public void OnEndEdit() {
@@ -53,6 +55,7 @@ public class DevelopmentConsole : MonoBehaviour
     private void Start()
     {
         input.placeholder.enabled = false;
+        Close();
     }
 
     private void OnEnable()
@@ -67,6 +70,16 @@ public class DevelopmentConsole : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Tab)) {
+            if (ActiveControl.activeInHierarchy)
+            {
+                Close();
+            }
+            else {
+                Open();
+            }
+        }
+
         if (ShowFullLog)
         {
             if (!FullLogParent.gameObject.activeInHierarchy) {
@@ -91,12 +104,12 @@ public class DevelopmentConsole : MonoBehaviour
 
     public void Close() {
         input.text = "";
-        gameObject.SetActive(false);
+        ActiveControl.SetActive(false);
     }
 
     public void Open() {
         input.text = "";
-        gameObject.SetActive(true);
+        ActiveControl.SetActive(true);
     }
     
     public void HandleLog(string logString, string stackTrace, LogType logType) {

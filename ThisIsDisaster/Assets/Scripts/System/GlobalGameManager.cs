@@ -23,11 +23,17 @@ public class GlobalParameters {
     public void Init() { }
 }
 
-public class GlobalGameManager : MonoBehaviour {
+public class GlobalGameManager {
 
+    private static GlobalGameManager _instance = null;
     public static GlobalGameManager Instance {
-        private set;
-        get;
+        get {
+            if (_instance == null) {
+                _instance = new GlobalGameManager();
+                _instance.Init();
+            }
+            return _instance;
+        }
     }
 
     public static GlobalParameters Param {
@@ -40,13 +46,13 @@ public class GlobalGameManager : MonoBehaviour {
     [ReadOnly]
     public GameState GameState = GameState.Lobby;
 
-    private void Awake()
+    private void Init()
     {
-        if (Instance != null) {
-            Destroy(gameObject); return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //if (Instance != null) {
+        //    //Destroy(gameObject); return;
+        //}
+        //Instance = this;
+        //DontDestroyOnLoad(gameObject);
 
         param = new GlobalParameters();
         param.Init();
@@ -73,26 +79,27 @@ public class GlobalGameManager : MonoBehaviour {
                 
             }
         }
+
     }
     // Use this for initialization
     void Start () {
-        developmentConsole.gameObject.SetActive(false);
+        //developmentConsole.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (developmentConsole.gameObject.activeInHierarchy)
-            {
-                developmentConsole.Close();
-            }
-            else
-            {
-                developmentConsole.Open();
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.Tab))
+        //{
+        //    if (developmentConsole.gameObject.activeInHierarchy)
+        //    {
+        //        developmentConsole.Close();
+        //    }
+        //    else
+        //    {
+        //        developmentConsole.Open();
+        //    }
+        //}
     }
 
     public void SetGameState(GameState state) {
