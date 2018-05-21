@@ -10,6 +10,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     public RenderLayerChanger _changer = null;
     public Transform HeightPivot;
+    public UnitModel owner;
 
     OnTileChanged _changedAction = null;
 
@@ -59,9 +60,9 @@ public class AutoTileMovementSetter : MonoBehaviour {
             if (!cur) return;
             
             ChangeTile(cur);
-            //_currentTile = cur;
-            //RenderOrderChange(_currentTile);
-            //HeightChange(_currentTile);
+            if (owner != null) {
+                cur.OnEnterTile(owner);
+            }
         }
 
         if (_heightChangeTimer.started) {
@@ -100,7 +101,6 @@ public class AutoTileMovementSetter : MonoBehaviour {
     }
 
     public void SetCurrentTileForcely(TileUnit tile) {
-
         ChangeTile(tile);
     }
 

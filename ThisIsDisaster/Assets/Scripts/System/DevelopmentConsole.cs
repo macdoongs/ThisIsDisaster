@@ -235,6 +235,13 @@ public class ConsoleScript {
         makeTree.ignoreParameterLength = true;
         makeTree.SetAction(MakeTreeEnv);
         commands.Add("tree", makeTree);
+
+        Command makeShelter = new Command() {
+            name = "Make Shelter"
+        };
+        makeShelter.ignoreParameterLength = true;
+        makeShelter.SetAction(MakeShelterDev);
+        commands.Add("shelter", makeShelter);
     }
 
     public void OnInput(string commandText) {
@@ -394,5 +401,10 @@ public class ConsoleScript {
     public void MakeTreeEnv(params object[] p) {
         Environment.EnvironmentModel model = EnvironmentManager.Manager.MakeEnvironment(0);
         model.UpdatePosition(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+    }
+
+    public void MakeShelterDev(params object[] p) {
+        TileUnit current = RandomMapGenerator.Instance.GetTile(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+        Shelter.ShelterManager.Instance.MakeRandomShelter(current);
     }
 }

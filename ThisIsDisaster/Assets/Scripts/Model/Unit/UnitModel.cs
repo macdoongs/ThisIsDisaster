@@ -11,6 +11,11 @@ public class UnitModel {
         get;
     }
 
+    public Shelter.ShelterModel CurrentShelter {
+        private set;
+        get;
+    }
+
     public UnitModel() {
         MoveControl = new UnitMoveControl(this);
     }
@@ -66,6 +71,14 @@ public class UnitModel {
     public virtual void SetCurrentTileForcely(TileUnit tile) {
 
     }
+
+    public virtual bool IsInShelter() {
+        return CurrentShelter != null;
+    }
+
+    public virtual void SetShelter(Shelter.ShelterModel shelter) {
+        CurrentShelter = shelter;
+    }
 }
 
 public class UnitMoveControl
@@ -100,6 +113,7 @@ public class UnitMoveControl
 
     public void SetCurrentTile(TileUnit current) {
         this.currentTile = current;
+        //current.OnEnterTile(model);
     }
 
     public void MoveToTile(TileUnit tile) {

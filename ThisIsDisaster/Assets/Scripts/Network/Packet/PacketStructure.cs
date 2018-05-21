@@ -25,6 +25,7 @@ namespace NetworkComponents
         public int serverVersion;
         public string accountName;
         public int accountId;
+        public int stageGenSeed;
 
         public const int MAX_ACCOUNT_LENGTH = 128;
     }

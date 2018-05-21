@@ -11,6 +11,7 @@ namespace NetworkComponents {
                 Serialize(packet.serverVersion);
                 Serialize(packet.accountName, GameSyncData.MAX_ACCOUNT_LENGTH);
                 Serialize(packet.accountId);
+                Serialize(packet.stageGenSeed);
                 return true;
             }
 
@@ -19,6 +20,7 @@ namespace NetworkComponents {
                 Deserialize(ref data.serverVersion);
                 Deserialize(ref data.accountName, GameSyncData.MAX_ACCOUNT_LENGTH);
                 Deserialize(ref data.accountId);
+                Deserialize(ref data.stageGenSeed);
                 return true;
             }
         }

@@ -14,6 +14,9 @@ public class RandomMapGenerator : MonoBehaviour
     public const int SPRITE_ORDER_INTERVAL = 3;//타일 높이 카운트 개수
     public static RandomMapGenerator Instance { get; private set; }
 
+    public const float _xDelta = 0.5f;
+    public const float _yDelta = 0.25f;
+    public const float _zDelta = 0.1f;
     //x, list(y)
     Dictionary<int, List<TileUnit>> dic = new Dictionary<int, List<TileUnit>>();
     /// <summary>
@@ -33,9 +36,6 @@ public class RandomMapGenerator : MonoBehaviour
     public bool useRandomSeed;
     public bool debugTest;
     const char sepMatch = '|';
-    const float _xDelta = 0.5f;
-    const float _yDelta = 0.25f;
-    public float _zDelta = 0.1f;
     public float _zCastDist = 0f;
 
     public float _zPos = 10f;

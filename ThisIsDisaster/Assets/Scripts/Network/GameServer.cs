@@ -84,6 +84,8 @@ namespace NetworkComponents {
             data.serverVersion = SERVER_VERSION;
             data.accountName = GlobalGameManager.Param.accountName;
             data.accountId = GlobalGameManager.Param.accountId;
+            data.stageGenSeed = UnityEngine.Random.Range(0, 10000);
+            StageGenerator.Instance.SetSeed(data.stageGenSeed);
 
             GameSyncPacket packet = new GameSyncPacket(data);
             Network.SendReliable(packet);
