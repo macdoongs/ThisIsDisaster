@@ -23,7 +23,7 @@ public static class AnimatorUtil
         }
         else
         {
-#if UNITY_EDITOR
+#if false
             string log = string.Format("Animator of [{0}] Doesn't has Parameter [{1}]", animator.gameObject.name, paramName);
             Debug.LogError(log);
 #endif
@@ -39,7 +39,7 @@ public static class AnimatorUtil
         }
         else
         {
-#if UNITY_EDITOR
+#if false
             string log = string.Format("Animator of [{0}] Doesn't has Parameter [{1}]", animator.gameObject.name, paramName);
             Debug.LogError(log);
 #endif
@@ -55,7 +55,7 @@ public static class AnimatorUtil
         }
         else
         {
-#if UNITY_EDITOR
+#if false
             string log = string.Format("Animator of [{0}] Doesn't has Parameter [{1}]", animator.gameObject.name, paramName);
             Debug.LogError(log);
 #endif

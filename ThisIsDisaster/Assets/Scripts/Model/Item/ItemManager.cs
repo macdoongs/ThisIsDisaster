@@ -123,4 +123,22 @@ public class ItemManager {
             item.OnItemRemoved(owner);
         }
     }
+
+    public bool OnTryAcquireItem(DropItem item, PlayerModel player) {
+        UnityEngine.Debug.Log("player try to acquire item " + item.ItemModel.metaInfo.Name);
+        if (player._character.AddItem(item.ItemModel, 1)) {
+            return true;
+        }
+        return false;
+    }
+
+    public DropItem MakeDropItem(int metaId, TileUnit curTile) {
+        var item = MakeItem(metaId);
+        if (item == null) return null;
+        else {
+            DropItem output = ItemLayer.CurrentLayer.MakeDropItem(item);
+            output.SetTile(curTile);
+            return output;
+        }
+    }
 }

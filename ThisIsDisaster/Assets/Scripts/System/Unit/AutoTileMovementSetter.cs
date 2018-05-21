@@ -5,6 +5,7 @@ using UnityEngine;
 public class AutoTileMovementSetter : MonoBehaviour {
     const float _heightDelta = 0.25f;
     public delegate void OnTileChanged(TileUnit current);
+    public delegate void OnHeightChanged();
     
     RandomMapGenerator _map;
 
@@ -13,6 +14,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
     public UnitModel owner;
 
     OnTileChanged _changedAction = null;
+    OnHeightChanged _heightChangeAction = null;
 
     TileUnit _currentTile = null;
     Timer _heightChangeTimer = new Timer();
@@ -94,6 +96,10 @@ public class AutoTileMovementSetter : MonoBehaviour {
             float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
             _heightChangeTimer.StartTimer(time);
         }
+
+        if (_heightChangeAction != null) {
+            _heightChangeAction();
+        }
     }
 
     public bool IsHeightChanging() {
@@ -104,6 +110,9 @@ public class AutoTileMovementSetter : MonoBehaviour {
         ChangeTile(tile);
     }
 
+    public void SetHeightChangeAction(OnHeightChanged height) {
+        _heightChangeAction = height;
+    }
 
     public TileUnit GetCurrentTile() { return _currentTile; }
 }

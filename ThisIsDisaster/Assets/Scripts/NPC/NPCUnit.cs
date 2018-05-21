@@ -83,6 +83,7 @@ namespace NPC
             AttackSender.SetOwner(model);
             AttackReceiver.SetOwner(model);
             TileSetter.SetChangeAction(model.SetCurrentTile);
+            TileSetter.SetHeightChangeAction(Jump);
             AttackControl.AttackEnd = model.OnAttackEnd;
         }
         
@@ -127,6 +128,7 @@ namespace NPC
 
         private void LateUpdate()
         {
+            if (Model.State == NPCState.Destroied) return;
             Vector3 currentPos = transform.position;
             
             if (currentPos.x > oldPos.x) {
@@ -137,6 +139,15 @@ namespace NPC
                 //set right
                 SetDirection(UnitDirection.RIGHT);
             }
+
+            if (currentPos != oldPos)
+            {
+                AnimatorUtil.SetBool(animator, "Move", true);
+            }
+            else {
+                AnimatorUtil.SetBool(animator, "Move", false);
+            }
+
             oldPos = currentPos;
 
 
@@ -144,6 +155,18 @@ namespace NPC
             {
                 hpSlider.value = Model.GetHpRate();
             }
+        }
+
+        public void Jump() {
+            AnimatorUtil.SetTrigger(animator, "Jump");
+        }
+
+        public void Attack() {
+            AnimatorUtil.SetTrigger(animator, "Attack");
+        }
+
+        public void OnDamaged() {
+            AnimatorUtil.SetTrigger(animator, "Damaged");
         }
 
         public void SetDirection(UnitDirection dir) {
