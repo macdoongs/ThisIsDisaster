@@ -31,6 +31,7 @@ public class PlayerModel : UnitModel
 
     public void SetTileSetter(AutoTileMovementSetter tileSetter) {
         _tileSetter = tileSetter;
+        _tileSetter.owner = this;
     }
 
     public override TileUnit GetCurrentTile()
@@ -41,6 +42,12 @@ public class PlayerModel : UnitModel
     public override Vector3 GetCurrentPos()
     {
         return _character.transform.position;
+    }
+
+    public override void SetCurrentTileForcely(TileUnit tile)
+    {
+        _character.transform.position = tile.transform.position;
+        _tileSetter.SetCurrentTileForcely(tile);
     }
 }
 
