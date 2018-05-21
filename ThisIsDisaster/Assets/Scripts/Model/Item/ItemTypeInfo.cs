@@ -31,16 +31,18 @@ public enum ItemType
     /// <summary>
     /// 전등
     /// </summary>
-    Flash=5,
-/*    /// <summary>
-    /// 유틸리티
-    /// </summary>
-    Util,*/
+    Tool_Equip=5,
+
+    Tool_Use=6,
+
 
     /// <summary>
     /// 기타 소모품
     /// </summary>
-    Etc =6
+    Etc =7,
+
+    Normal=8
+
 }
 
 public class ItemTypeInfo
@@ -68,6 +70,9 @@ public class ItemTypeInfo
     public ItemType itemType = ItemType.Weapon;
 
     public string spriteSrc = "";
+
+    public string description = "";
+
     public Dictionary<string, float> stats = new Dictionary<string, float>();
 
 
@@ -80,23 +85,23 @@ public class ItemTypeInfo
             case "weapon": return ItemType.Weapon;
             case "backpack": return ItemType.Backpack;
             case "bottle": return ItemType.Bottle;
-            case "flash": return ItemType.Flash;
-            case "etc":
-            default: return ItemType.Etc;
+            case "tool_equip": return ItemType.Tool_Equip;
+            case "tool_use": return ItemType.Tool_Use;
+            case "etc": return ItemType.Etc;
+            default: return ItemType.Normal;
         }
     }
 
-    public ItemTypeInfo(long metaId, string name, int maxCount, ItemType type, string[] tags) {
+    public ItemTypeInfo(long metaId, string name, int maxCount, ItemType type, string description, string[] tags) {
         this.metaId = metaId;
         this.Name = name;
         this._defaultMaxCount = maxCount;
         this.itemType = type;
+        this.description = description;
+
         if (tags.Length > 0)
             this.tags.AddRange(tags);
     }
-
-    //smth else info
-
 
     public override string ToString()
     {

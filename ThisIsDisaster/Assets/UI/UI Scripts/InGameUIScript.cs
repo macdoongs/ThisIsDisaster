@@ -44,6 +44,22 @@ public class InGameUIScript : MonoBehaviour
             UpdateStatusBar(PlayerCharacter);
     }  
 
+
+    public void MenuClicked(GameObject menu)
+    {
+
+        if (menu.activeInHierarchy)
+        {
+            CloseAllUI();
+        }
+        else
+        {
+            CloseAllUI();
+            menu.SetActive(true);
+        }
+
+    }
+
     public void CloseAllUI()
     {
         StatusManager.GetComponent<StatusUIController>().Close();

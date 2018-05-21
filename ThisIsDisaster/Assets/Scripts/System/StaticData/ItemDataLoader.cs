@@ -40,6 +40,7 @@ namespace GameStaticData {
             string name = "";
             string typeText = "";
             int maxCount = 0;
+            string description = "";
             List<string> tags = new List<string>();
             ItemType type = ItemType.Etc;
             Dictionary<string, float> statDic = new Dictionary<string, float>();
@@ -66,6 +67,8 @@ namespace GameStaticData {
                 maxCount = int.Parse(countNode.InnerText.Trim());
             }
 
+
+            ///태그를 안쓸것 같음       
             XmlNode tagNode = itemNode.Attributes.GetNamedItem("tag");
             if (tagNode != null) {
                 string tagOriginText = tagNode.InnerText.Trim();
@@ -76,6 +79,13 @@ namespace GameStaticData {
                     tags.Add(tagUnit);
                 }
             }
+
+            XmlNode descNode = itemNode.Attributes.GetNamedItem("description");
+            if(descNode != null)
+            {
+                description = descNode.InnerText.Trim();
+            }
+
 
             foreach (XmlNode statNode in itemNode.ChildNodes) {
                 string statName = "";
@@ -88,7 +98,7 @@ namespace GameStaticData {
                 statDic.Add(statName, statValue);
             }
 
-            ItemTypeInfo newInfo = new ItemTypeInfo(id, name, maxCount, type, tags.ToArray());
+            ItemTypeInfo newInfo = new ItemTypeInfo(id, name, maxCount, type, description , tags.ToArray());
             newInfo.stats = statDic;
 
 

@@ -61,7 +61,7 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F6))
         {
-            EatFood();
+
         }
 
         if (Input.GetKeyDown(KeyCode.F7))
@@ -70,7 +70,7 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F8))
         {
-            EatWater();
+
         }
 
         if (Input.GetKeyDown(KeyCode.F9))
@@ -108,17 +108,6 @@ public class ItemTestCharacter : MonoBehaviour {
 
 
 
-    void EatFood()
-    {
-        ItemModel food = ItemManager.Manager.MakeItem(70000);
-        CharacterUnit.UseExpendables(food);
-    }
-  
-    void EatWater()
-    {
-        ItemModel water = ItemManager.Manager.MakeItem(70001);
-        CharacterUnit.UseExpendables(water);
-    }
     void GetEqip()
     {
         GetHead();

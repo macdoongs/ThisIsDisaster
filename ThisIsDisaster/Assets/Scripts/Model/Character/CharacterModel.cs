@@ -126,7 +126,7 @@ public class CharacterModel : MonoBehaviour
     public ItemModel weaponSlot = null;
     public ItemModel backpackSlot = null;
     public ItemModel bottleSlot = null;
-    public ItemModel flashSlot = null;
+    public ItemModel toolSlot = null;
 
 
     public SpriteRenderer Body;
@@ -388,17 +388,17 @@ public class CharacterModel : MonoBehaviour
                 Debug.Log("Bottle Slot is full");
             }
         }
-        else if (equipType.Equals(ItemType.Flash))
+        else if (equipType.Equals(ItemType.Tool_Equip))
         {
-            if (flashSlot == null)
+            if (toolSlot == null)
             {
-                flashSlot = equipment;
-                AddStats(flashSlot);
+                toolSlot = equipment;
+                AddStats(toolSlot);
                 result = true;
             }
             else
             {
-                Debug.Log("Flash Slot is full");
+                Debug.Log("Tool Slot is full");
             }
         }
 
@@ -480,14 +480,14 @@ public class CharacterModel : MonoBehaviour
         }
         else if (SlotName.Equals("flash"))
         {
-            if (flashSlot == null)
+            if (toolSlot == null)
             {
                 Debug.Log("Slot is Empty");
                 return;
             }
 
-            SubtractStats(flashSlot);
-            flashSlot = null;
+            SubtractStats(toolSlot);
+            toolSlot = null;
         }
 
         UpdateStat();

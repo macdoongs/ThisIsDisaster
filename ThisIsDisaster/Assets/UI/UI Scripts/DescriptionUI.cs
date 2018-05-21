@@ -66,10 +66,16 @@ public class DescriptionUI : MonoBehaviour {
 
         if(DescriptionItemRegisterButton != null)
         {
-            if (type.Equals(ItemType.Etc))
+            if (type.Equals(ItemType.Etc) || type.Equals(ItemType.Tool_Use))
             {
                 DescriptionItemRegisterButton.SetActive(true);
                 DescriptionItemRightButton.text = "사용";
+            }
+            else if(type.Equals(ItemType.Normal))
+            {
+                if (DescriptionItemRegisterButton != null)
+                    DescriptionItemRegisterButton.SetActive(false);
+                DescriptionItemRightButton.text = "조합";
             }
             else
             {
@@ -90,10 +96,11 @@ public class DescriptionUI : MonoBehaviour {
 
         DescriptionItemName.text = item.metaInfo.Name;
 
-        if (DescriptionItemDescription != null)
+        if(item.metaInfo.description != null && DescriptionItemDescription !=null)
         {
-            //
+            DescriptionItemDescription.text = item.metaInfo.description;
         }
+        
 
         Dictionary<string, float> stats = GetItemStats(item);
 

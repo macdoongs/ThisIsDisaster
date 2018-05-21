@@ -429,7 +429,7 @@ public class InventoryUIController : MonoBehaviour {
     {
         PreviewItems = new ItemModel[6] { PlayerCharacter.headSlot , PlayerCharacter.clothesSlot ,
             PlayerCharacter.weaponSlot , PlayerCharacter.backpackSlot ,
-            PlayerCharacter.bottleSlot, PlayerCharacter.flashSlot};
+            PlayerCharacter.bottleSlot, PlayerCharacter.toolSlot};
     }
 
     public void PreviewItemClicked()
@@ -501,7 +501,7 @@ public class InventoryUIController : MonoBehaviour {
         else if (type.Equals(ItemType.Bottle))
             first = PlayerCharacter.bottleSlot;
         else
-            first = PlayerCharacter.flashSlot;
+            first = PlayerCharacter.toolSlot;
     }
 
     //교체 아이템 정보 입력
