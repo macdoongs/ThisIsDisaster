@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4154312372254820}
+  - component: {fileID: 95969912648667628}
   m_Layer: 0
   m_Name: DummyMonster
   m_TagString: Untagged
@@ -100,6 +101,23 @@ Transform:
   m_Father: {fileID: 4154312372254820}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &95969912648667628
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1199012722109138}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 65347d2ef675cac4fb400050de03de88, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!198 &198728385090323006
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -160,7 +178,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 570161595
+  randomSeed: -1158974718
   InitialModule:
     serializedVersion: 3
     enabled: 1

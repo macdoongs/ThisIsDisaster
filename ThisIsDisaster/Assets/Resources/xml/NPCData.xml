@@ -1,4 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <npc id="0" name="_dummy_npc" maxHp="100" speed="1" defense="1" damage="10" prefab="DummyMonster" script="DummyNPCScript"/>
+  <npc id="1" name="_alpaca" maxHp="100" speed="1" defense="1" damage="10" prefab="Alpaca" script="DummyNPCScript"/>
+  <npc id="2" name="_boar" maxHp="100" speed="1" defense="1" damage="10" prefab="Boar" script="DummyNPCScript"/>
+  <npc id="3" name="_pig" maxHp="100" speed="1" defense="1" damage="10" prefab="Pink Pig" script="DummyNPCScript"/>
+  <npc id="4" name="_sheep" maxHp="100" speed="1" defense="1" damage="10" prefab="Sheep" script="DummyNPCScript"/>
+  <npc id="5" name="_goat" maxHp="100" speed="1" defense="1" damage="10" prefab="Goat" script="DummyNPCScript"/>
+  
 </root>

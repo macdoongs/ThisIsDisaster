@@ -136,7 +136,11 @@ namespace NPC {
             Debug.Log(GetUnitName() + " died");
             Script.OnDefeated();
             MoveControl.StopMovement();
+            Unit.hpSlider.gameObject.SetActive(false);
+
             _state = NPCState.Destroied;
+
+            ItemManager.Manager.MakeDropItem(70001, GetCurrentTile());
         }
 
         public void OnVictoried() {
@@ -180,15 +184,19 @@ namespace NPC {
         public override void OnTakeDamage(UnitModel attacker, float damage) {
             if (CurrentHp <= 0f) {
                 //already dead
-                if (_state != NPCState.Destroied)
+                if (_state == NPCState.Execute)
                     OnDefeated();
                 return;
             }
             Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
             CurrentHp -= damage;
-            if (CurrentHp <= 0f) {
+            if (CurrentHp <= 0f)
+            {
                 CurrentHp = 0f;
                 OnDefeated();
+            }
+            else {
+                Unit.OnDamaged();
             }
         }
 
@@ -224,6 +232,7 @@ namespace NPC {
             {
                 MoveControl.StopMovement();
                 Script.OnStartAttack();
+                Unit.Attack();
                 _executeState = NPCExectueState.Battle;
             }
             else {
@@ -278,6 +287,12 @@ namespace NPC {
             }
             
             
+        }
+
+        public override void SetCurrentTile(TileUnit current)
+        {
+            base.SetCurrentTile(current);
+
         }
 
     }
