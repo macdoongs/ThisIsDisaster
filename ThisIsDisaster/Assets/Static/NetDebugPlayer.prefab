@@ -1186,6 +1186,7 @@ MonoBehaviour:
   NextAttackDelay: 1
   isDebuggEnabled: 1
   _DebugRenderer: {fileID: 212054318605826038}
+  MoveController: {fileID: 114598321412525876}
 --- !u!114 &114497361334405528
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1503,7 +1504,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1643413057
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9e2dd0fd084afc04cac94f6b45a44925, type: 3}
   m_Color: {r: 1, g: 0.4044118, b: 0.4044118, a: 0.259}
