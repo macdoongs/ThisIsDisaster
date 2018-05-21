@@ -17,12 +17,20 @@ public class CellularAutomata : MonoBehaviour {
 
 	int[,] map; //생성된 2차원 배열맵 저장할 변수
     int[,] worldMap;
+    List<Room> survivingRooms = new List<Room>();
 
-	void Start() {
+    public static CellularAutomata Instance { get; private set; }
+
+    void Start() {
 		GenerateMap();
 	}
-    
-	void Update() {
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    void Update() {
         //테스트용 코드. 왼쪽클릭시 맵 다시 생성
 		//if (Input.GetMouseButtonDown(0)) {
 		//	GenerateMap();
@@ -50,7 +58,8 @@ public class CellularAutomata : MonoBehaviour {
         {
             RandomMapGenerator.Instance.GenerateMapByAlgorithm(worldMap, width, height);
         }
-        
+
+        //test
     }
 
     void ProcessMap()
@@ -78,7 +87,6 @@ public class CellularAutomata : MonoBehaviour {
 
         //최소 룸사이즈보다 작으면 버림
         List<List<Coord>> roomRegions = GetRegions(0);
-        List<Room> survivingRooms = new List<Room>();
 
         foreach (List<Coord> roomRegion in roomRegions)
         {
@@ -98,6 +106,51 @@ public class CellularAutomata : MonoBehaviour {
         survivingRooms[0].isMainRoom = true; // 가장 큰 방 메인룸
         survivingRooms[0].isAccessibleFromMainRoom = true;
         ConnectClosestRooms(survivingRooms);
+    }
+
+    void ProcessMapByDepth()
+    {
+        RandomFillMap();
+
+        for (int i = 0; i < 5; i++)
+        {
+            SmoothMap();
+        }
+
+        List<List<Coord>> wallRegions = GetRegions(1);
+        int wallThresholdSize = 50;
+
+        foreach (List<Coord> wallRegion in wallRegions)
+        {
+            if (wallRegion.Count < wallThresholdSize)
+            {
+                foreach (Coord tile in wallRegion)
+                {
+                    map[tile.tileX, tile.tileY] = 0;
+                }
+            }
+        }
+        
+        List<List<Coord>> roomRegions = GetRegions(0);
+        List<Room> survivingRoomsByDepth = new List<Room>();
+        foreach (List<Coord> roomRegion in roomRegions)
+        {
+            if (roomRegion.Count < RandomMapGenerator.Instance.roomThresholdSize)
+            {
+                foreach (Coord tile in roomRegion)
+                {
+                    map[tile.tileX, tile.tileY] = 1;
+                }
+            }
+            else
+            {
+                survivingRoomsByDepth.Add(new Room(roomRegion, map));
+            }
+        }
+        survivingRoomsByDepth.Sort();
+        survivingRoomsByDepth[0].isMainRoom = true; 
+        survivingRoomsByDepth[0].isAccessibleFromMainRoom = true;
+        ConnectClosestRooms(survivingRoomsByDepth);
     }
 
     void ConnectClosestRooms(List<Room> allRooms, bool forceAccessibilityFromMainRoom = false)
@@ -312,6 +365,31 @@ public class CellularAutomata : MonoBehaviour {
         return regions;
     }
 
+    List<List<Coord>> GetRegionsInWorldMap(int tileType)
+    {
+        List<List<Coord>> regions = new List<List<Coord>>();
+        int[,] mapFlags = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (mapFlags[x, y] == 0 && worldMap[x, y] == tileType)
+                {
+                    List<Coord> newRegion = GetRegionTiles(x, y);
+                    regions.Add(newRegion);
+
+                    foreach (Coord tile in newRegion)
+                    {
+                        mapFlags[tile.tileX, tile.tileY] = 1;
+                    }
+                }
+            }
+        }
+
+        return regions;
+    }
+
     List<Coord> GetRegionTiles(int startX, int startY)
     {
         List<Coord> tiles = new List<Coord>();
@@ -361,7 +439,6 @@ public class CellularAutomata : MonoBehaviour {
             newSeed = UnityEngine.Random.Range(0,100);
         } while (seed == newSeed);
         seed = newSeed;
-        UnityEngine.Debug.Log("seed :" + seed);
 
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 
@@ -409,22 +486,179 @@ public class CellularAutomata : MonoBehaviour {
 		return wallCount;
 	}
 
-    void makeDepth(int depth)
+    void makeDepth(int height)
     {
-        ProcessMap();
-        for (int x = 0; x < width; x++)
+        ProcessMapByDepth();
+        /*for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (map[x,y] == 1 && worldMap[x,y] == 1)
+                if (map[x,y] + worldMap[x,y] == depth)
                 {
                     worldMap[x, y] = depth;
+                    
                 }
             }
+        }*/
+
+        foreach (Room room in survivingRooms)
+        {
+            List<Coord> tilesDepth1 = new List<Coord>();
+            List<Coord> tilesDepth2 = new List<Coord>();
+            List<Coord> tilesDepth3 = new List<Coord>();
+
+            for (int i = 0; i < room.roomSize; i++)
+            {
+                if (map[room.tiles[i].tileX, room.tiles[i].tileY] + worldMap[room.tiles[i].tileX, room.tiles[i].tileY] == height)
+                {
+                    worldMap[room.tiles[i].tileX, room.tiles[i].tileY] = height;
+                    if (height == 2)
+                    {
+                        tilesDepth2.Add(room.tiles[i]);
+                    }
+                    if (height == 3)
+                    {
+                        room.tilesDepth2.Remove(room.tiles[i]);
+                        tilesDepth3.Add(room.tiles[i]);
+                    }
+                } else
+                {
+                    if (height == 2)
+                        tilesDepth1.Add(room.tiles[i]);
+                }
+            }
+
+            if (height == 2)
+            {
+                room.tilesDepth1 = tilesDepth1;
+                room.tilesDepth2 = tilesDepth2;
+            }
+
+            if (height == 3)
+            {
+                room.tilesDepth3 = tilesDepth3;
+            }
+
+
         }
+
     }
 
-	void OnDrawGizmos() {
+    public List<Coord> GetRoomsCoord(int height, int num)
+    {
+        List<Coord> RoomsCoords = new List<Coord>();
+        Room currentRoom;
+        int currentPoint = 0;
+        int MaxPoint = survivingRooms.Count;
+        int randomTile = 0;
+        
+
+        for(int i=0; i< num; i++)
+        {
+            currentRoom = survivingRooms[currentPoint];
+            switch (height)
+            {
+                case 1:
+                    if (currentRoom.tilesDepth1.Count > 0)
+                    {
+                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth1.Count);
+                        //Debug.Log("tiles1depth :" + currentRoom.tilesDepth1.Count);
+                        //Debug.Log("randomTile :" + randomTile);
+                        RoomsCoords.Add(currentRoom.tilesDepth1[randomTile]);
+
+                        //Debug.Log("heightf :" + height);
+                        //Debug.Log("tile :" + worldMap[currentRoom.tilesDepth1[randomTile].tileX, currentRoom.tilesDepth1[randomTile].tileY]);
+                    }
+                    else i--;
+
+                    break;
+                case 2:
+                    if (currentRoom.tilesDepth2.Count > 0)
+                    {
+                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth2.Count);
+                        //Debug.Log("tiles2depth :" + currentRoom.tilesDepth2.Count);
+                        //Debug.Log("randomTile :" + randomTile);
+                        RoomsCoords.Add(currentRoom.tilesDepth2[randomTile]);
+
+                        //Debug.Log("heightf :" + height);
+                        //Debug.Log("tile :" + worldMap[currentRoom.tilesDepth2[randomTile].tileX, currentRoom.tilesDepth2[randomTile].tileY]);
+
+                    }
+                    else i--;
+                    break;
+                case 3:
+                    if (currentRoom.tilesDepth3.Count > 0)
+                    {
+                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth3.Count);
+                        //Debug.Log("tiles3depth :" + currentRoom.tilesDepth3.Count);
+                        //Debug.Log("randomTile :" + randomTile);
+                        RoomsCoords.Add(currentRoom.tilesDepth3[randomTile]);
+
+                        //Debug.Log("heightf :" + height);
+                        //Debug.Log("tile :" + worldMap[currentRoom.tilesDepth3[randomTile].tileX, currentRoom.tilesDepth3[randomTile].tileY]);
+                    }
+                    else i--;
+                    
+                    break;
+            }//.tileX, currentRoom.tiles[randomTile].tileY);
+            //Debug.Log("randomTile :" + randomTile);
+            currentPoint = currentPoint < MaxPoint - 1 ? currentPoint + 1 : 0;
+        }
+
+        return RoomsCoords;
+    }
+
+    public List<Coord> GetEnvironCoord(int height, int num)
+    {
+        List<Coord> RoomsCoords = new List<Coord>();
+        Room currentRoom;
+        int currentPoint = 0;
+        int MaxPoint = survivingRooms.Count;
+        int randomTile = 0;
+
+
+        for (int i = 0; i < num; i++)
+        {
+            currentRoom = survivingRooms[currentPoint];
+            switch (height)
+            {
+                case 1:
+                    if (currentRoom.tilesDepth1.Count > 0)
+                    {
+                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth1.Count);
+                        RoomsCoords.Add(currentRoom.tilesDepth1[randomTile]);
+                        survivingRooms[currentPoint].tilesDepth1.Remove(currentRoom.tilesDepth1[randomTile]);
+                    }
+                    else i--;
+
+                    break;
+                case 2:
+                    if (currentRoom.tilesDepth2.Count > 0)
+                    {
+                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth2.Count);
+                        RoomsCoords.Add(currentRoom.tilesDepth2[randomTile]);
+                        survivingRooms[currentPoint].tilesDepth1.Remove(currentRoom.tilesDepth2[randomTile]);
+                    }
+                    else i--;
+                    break;
+                case 3:
+                    if (currentRoom.tilesDepth3.Count > 0)
+                    {
+                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth3.Count);
+                        RoomsCoords.Add(currentRoom.tilesDepth3[randomTile]);
+                        survivingRooms[currentPoint].tilesDepth1.Remove(currentRoom.tilesDepth1[randomTile]);
+                    }
+                    else i--;
+
+                    break;
+            }
+            currentPoint = currentPoint < MaxPoint - 1 ? currentPoint + 1 : 0;
+        }
+
+        return RoomsCoords;
+    }
+
+    void OnDrawGizmos() {
         try
         {
             debugTest = RandomMapGenerator.Instance.debugTest;
@@ -448,7 +682,7 @@ public class CellularAutomata : MonoBehaviour {
 
     }
 
-    struct Coord
+    public struct Coord
     {
         public int tileX;
         public int tileY;
@@ -458,11 +692,21 @@ public class CellularAutomata : MonoBehaviour {
             tileX = x;
             tileY = y;
         }
+
+        public bool equalCoord(Coord coordA, Coord coordB)
+        {
+            if (coordA.tileX == coordB.tileX && coordA.tileY == coordB.tileY)
+                return true;
+            else return false;
+        }
     }
 
     class Room : IComparable<Room>
     {
         public List<Coord> tiles;
+        public List<Coord> tilesDepth1;
+        public List<Coord> tilesDepth2;
+        public List<Coord> tilesDepth3;
         public List<Coord> edgeTiles;
         public List<Room> connectedRooms;
         public int roomSize;
@@ -476,6 +720,9 @@ public class CellularAutomata : MonoBehaviour {
         public Room(List<Coord> roomTiles, int[,] map)
         {
             tiles = roomTiles;
+            tilesDepth1 = null;
+            tilesDepth2 = null;
+            tilesDepth3 = null;
             roomSize = tiles.Count;
             connectedRooms = new List<Room>();
 
