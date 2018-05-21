@@ -1283,7 +1283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714b1bdabdeb33d4881f63801e33d814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 2
   jumpDelay: 0.5
   PlayerMovementCTRL: {fileID: 95400447252878834}
   FlipPivot: {fileID: 4266273020658952}
