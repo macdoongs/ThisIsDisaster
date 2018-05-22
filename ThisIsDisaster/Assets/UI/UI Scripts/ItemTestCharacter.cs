@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemTestCharacter : MonoBehaviour {
-    static long[] _weapons = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
-    static long[] _head = { 10001, 10002, 10003, 10004};
-    static long[] _clothes = { 20001, 20002, 20003, 20004, 20005, 20006, 20007, 20008};
+    static long[] _weapons = { 1,2};
+    static long[] _head = { 10001, 10002};
+    static long[] _clothes = { 20001, 20002};
     static long[] _backpack = { 30001, 30002, 30003};
     static long[] _bottle = { 30010, 30020};
-    static long[] _tool_equip = { 31001, 31002, 31003, 31004,31005, 31006, 31007, 31008};
+    static long[] _tool_equip = { 31001, 31002};
     static long[] _tool_use = { 33001, 33002};
     static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003, 41004, 41005};
     static long[] _norm = { 50001, 50002, 50003, 50004, 51001, 51002, 51003, 51004, 51005, 51006 };
@@ -103,7 +103,7 @@ public class ItemTestCharacter : MonoBehaviour {
         CharacterUnit.RemoveEquipment("clothes");
         CharacterUnit.RemoveEquipment("backpack");
         CharacterUnit.RemoveEquipment("bottle");
-        CharacterUnit.RemoveEquipment("flash");
+        CharacterUnit.RemoveEquipment("tool");
     }
 
 

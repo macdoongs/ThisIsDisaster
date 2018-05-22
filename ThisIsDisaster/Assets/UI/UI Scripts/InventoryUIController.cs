@@ -10,7 +10,8 @@ public class InventoryUIController : MonoBehaviour {
     public GameObject Player;
     public CharacterModel PlayerCharacter;
 
-    public int bagSize = 30;
+    
+    public int bagSize = 0;
 
     public int typePosition = 0;
     public int itemPosition = 0;
@@ -27,7 +28,7 @@ public class InventoryUIController : MonoBehaviour {
     public Color typeColor;
 
     public GameObject Content;
-    
+    public Sprite Slot_restricted;
     //인벤토리 아이템 슬롯 이미지
     public Image[] ItemSlots ;
     //인벤토리 아이템 개수 텍스트
@@ -122,24 +123,26 @@ public class InventoryUIController : MonoBehaviour {
         FirstItemDescription = new DescriptionUI(FirstItemImage, FirstItemName, FirstItemStats, FirstItemStatAmount);
         SecondItemDescription = new DescriptionUI(SecondItemImage, SecondItemName, SecondItemStats, SecondItemStatAmount);
 
+        bagSize = PlayerCharacter.bagSize;
+
 
         Image[] temp = Content.transform.GetComponentsInChildren<Image>();
         Image[] items = new Image[30];
 
         for(int i =0; i < temp.Length; i++)
         {
-            if(i%4 == 0)
+            if(i%4 == 1)
             {
                 items[i / 4] = temp[i];
             }
         }
 
-        ItemSlots = new Image[bagSize];
-        ItemCounts = new Text[bagSize];
-        ItemBorders = new Image[bagSize];
-        ItemButtons = new Button[bagSize];
+        ItemSlots = new Image[30];
+        ItemCounts = new Text[30];
+        ItemBorders = new Image[30];
+        ItemButtons = new Button[30];
 
-        for (int i =0; i < bagSize; i++)
+        for (int i =0; i < 30; i++)
         {
             ItemSlots[i] = items[i].transform.GetComponentsInChildren<Image>()[1];
             ItemCounts[i] = items[i].transform.GetComponentInChildren<Text>();
@@ -192,10 +195,19 @@ public class InventoryUIController : MonoBehaviour {
     //인벤토리 슬롯 스프라이트 초기화
     public void initialSprite()
     {
-        for (int i = 0; i < 30; i++)
+        bagSize = PlayerCharacter.bagSize;
+
+        for (int i = 0; i < bagSize; i++)
         {
             ItemSlots[i].sprite = null;
             ItemSlots[i].color = Color.clear;
+            ItemCounts[i].text = "";
+            int index = i;
+        }
+        for (int i = bagSize; i < 30; i++)
+        {
+            ItemSlots[i].sprite = Slot_restricted;
+            ItemSlots[i].color = defaultItemTypeColor;
             ItemCounts[i].text = "";
         }
     }
@@ -222,6 +234,12 @@ public class InventoryUIController : MonoBehaviour {
                 ItemSlots[index].preserveAspect = true;
                 ItemCounts[index].text = counts[index].ToString();
             }           
+        }
+
+        for(index = PlayerCharacter.bagSize; index < 30; index++)
+        {
+            ItemSlots[index].sprite = Slot_restricted;
+            ItemSlots[index].color = defaultItemTypeColor;
         }
     }
  
