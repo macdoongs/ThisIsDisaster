@@ -12,6 +12,9 @@ public class InGameUIScript : MonoBehaviour
     // 인벤토리 컨트롤러가 저장되는 게임 오브젝트
     public GameObject InventoryManager;
 
+    public GameObject WarningPanel;
+    public Text WarningDescription;
+
     public GameObject StatusBarManager;
     public GameObject SettingManager;
     public GameObject StageClearManager;
@@ -65,12 +68,24 @@ public class InGameUIScript : MonoBehaviour
         StatusManager.GetComponent<StatusUIController>().Close();
         InventoryManager.GetComponent<InventoryUIController>().Close();
         SettingManager.GetComponent<SettingUIController>().Close();
+        WarningPanel.SetActive(false);
     }
 
     public void StageClear()
     {
         CloseAllUI();
         StageClearManager.GetComponent<StageClearUIContorller>().StageClearPanel.SetActive(true);
+    }
+
+    public void AttackClicked()
+    {
+        GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<PlayerAttackController>().OnAttackClicked();        
+    }
+
+    public void Warning(string desc)
+    {
+        WarningDescription.text = desc;
+        WarningPanel.SetActive(true);
     }
 
 }

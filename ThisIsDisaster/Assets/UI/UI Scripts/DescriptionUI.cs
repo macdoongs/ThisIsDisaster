@@ -140,21 +140,27 @@ public class DescriptionUI : MonoBehaviour {
 
         if (item.GetHealth() != 0f)
         {
-            result.Add("health", item.GetHealth());
+            result.Add("HP", item.GetHealth());
         }
 
         if (item.GetStamina() != 0f)
         {
-            result.Add("stamina", item.GetStamina());
+            result.Add("Stamina", item.GetStamina());
         }
         if (item.GetDamage() != 0f)
         {
-            result.Add("damage", item.GetDamage());
+            result.Add("Damage", item.GetDamage());
         }
         if (item.GetDefense() != 0f)
         {
-            result.Add("defense", item.GetDefense());
+            result.Add("Defense", item.GetDefense());
         }
+        if (item.GetSize() != 0)
+        {
+            result.Add("Bag Size", item.GetSize());
+        }
+
+
         return result;
     }
 }

@@ -57,11 +57,10 @@ public class ItemModel {
         return (int)GetStat("range_y");
     }
 
-    public virtual int GetBagSize()
+    public virtual int GetSize()
     {
         return (int)GetStat("size");
     }
-
 
     public float GetStat(string statName) {
         float output = 0f;

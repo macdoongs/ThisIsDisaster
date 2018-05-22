@@ -94,8 +94,9 @@ public class CharacterModel : MonoBehaviour
 
     //가방(인벤토리) 사이즈. 
     //util 아이템에 따라 사이즈 증가 가능하게 구현할 예정
-    private int defaultBagSize = 10;
-    
+    private int defaultBagSize = 5;
+    private int defaultWaterMax = 5;
+
     //캐릭터 기본 스텟
     public float defaultHealth = 100.0f;
     public float defaultStamina = 100.0f;
@@ -118,14 +119,14 @@ public class CharacterModel : MonoBehaviour
     public int attack_range_x = 0;
     public int attack_range_y = 0;
     public int bagSize = 0;
-
+    public int waterMax = 0;
     //아이템으로 증가하는 스텟
     public float itemHealth = 0.0f;
     public float itemStamina = 0.0f;
     public float itemDefense = 0.0f;
     public float itemDamage =0.0f;
 
-
+    
 
 
     //아이템 착용 슬롯
@@ -189,6 +190,7 @@ public class CharacterModel : MonoBehaviour
         attack_range_x = default_attack_range_x;
         attack_range_y = default_attack_range_y;
         bagSize = defaultBagSize;
+        waterMax = defaultWaterMax;
 
     }
 
@@ -224,6 +226,13 @@ public class CharacterModel : MonoBehaviour
             {
                 int index = ItemNames.IndexOf(item.metaInfo.Name);
                 ItemCounts[index] += amount;
+                if (item.metaInfo.Name.Equals("물"))
+                {
+                    if(ItemCounts[index] > waterMax)
+                    {
+                        ItemCounts[index] = waterMax;
+                    }    
+                }                
             }
             else
             {
@@ -235,7 +244,14 @@ public class CharacterModel : MonoBehaviour
 
                 ItemLists.Add(item);
                 ItemNames.Add(item.metaInfo.Name);
-                ItemCounts.Add(amount);
+                if(amount > waterMax)
+                {
+                    ItemCounts.Add(waterMax);
+                }
+                else
+                {
+                    ItemCounts.Add(amount);
+                }             
             }
         }
 
@@ -388,7 +404,8 @@ public class CharacterModel : MonoBehaviour
             if (backpackSlot == null)
             {
                 backpackSlot = equipment;
-                AddStats(backpackSlot);
+                int backpackSize = equipment.GetSize();
+                bagSize = backpackSize;
                 result = true;
             }
             else
@@ -401,7 +418,7 @@ public class CharacterModel : MonoBehaviour
             if (bottleSlot == null)
             {
                 bottleSlot = equipment;
-                AddStats(bottleSlot);
+                waterMax = equipment.GetSize();
                 result = true;
             }
             else
@@ -487,11 +504,15 @@ public class CharacterModel : MonoBehaviour
                 Debug.Log("Slot is Empty");
                 return;
             }
-            SubtractStats(backpackSlot);
-            if(ItemLists.Count > defaultBagSize)
+
+            if (ItemLists.Count > defaultBagSize)
             {
                 Debug.Log("아이템이 너무 많습니다.");
+                return;
             }
+
+            SubtractStats(backpackSlot);
+
             bagSize = defaultBagSize;
             backpackSlot = null;
         }
@@ -526,6 +547,11 @@ public class CharacterModel : MonoBehaviour
             stamina = maxStamina;
 
         SpriteUpdate();
+    }
+
+    public void DefaultBagSize()
+    {
+        bagSize = defaultBagSize;
     }
 
     //장비 착용시 스텟 업데이트

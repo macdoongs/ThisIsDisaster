@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUIController : MonoBehaviour {
-
+    public GameObject UIController;
     public GameObject InventoryUI;
 
     public GameObject Player;
@@ -184,6 +184,7 @@ public class InventoryUIController : MonoBehaviour {
                 HighlightsCategory(ItemType.Etc);
                 break;
         }
+        SlotSprite();
         PresetUpdate();
         PlayerCharacter.SpriteUpdate();
         PreviewCharacterSprite();
@@ -471,6 +472,13 @@ public class InventoryUIController : MonoBehaviour {
     public void RemovePreviewItem()
     {
         getPreviewItems();
+        if(prevPosition == 3)
+        {
+            RemoveBackpack();
+            PrevDescription.ClearDescription();
+            return;
+        }
+        
         ItemModel PrevItem = PreviewItems[prevPosition];
         long metaID = PrevItem.metaInfo.metaId;
         ItemManager.Manager.AddItem(PlayerCharacter, metaID, 1);
@@ -480,7 +488,20 @@ public class InventoryUIController : MonoBehaviour {
 
         PrevDescription.ClearDescription();
     }
-    
+    public void RemoveBackpack()
+    {
+        ItemModel SlotBackpack = PlayerCharacter.backpackSlot;
+        if (PlayerCharacter.ItemLists.Count > 4)
+        {
+            UIController.GetComponent<InGameUIScript>().Warning("아이템이 너무 많습니다.\n먼저 가방을 비워주세요.");
+        }
+        else
+        {
+            PlayerCharacter.backpackSlot = null;
+            PlayerCharacter.DefaultBagSize();
+            PlayerCharacter.AddItem(SlotBackpack, 1);
+        }
+    }
     //프리뷰 아이템 슬롯 클릭 시 해당 슬롯의 포지션 반환
     public void GetPrevPosition(int position)
     {
@@ -535,12 +556,39 @@ public class InventoryUIController : MonoBehaviour {
     public void ChangeItem()
     {
         ItemType type = PlayerCharacter.ItemLists[itemPosition].metaInfo.itemType;
+        if (type.Equals(ItemType.Backpack))
+        {
+            ChangeBackpack();
+            defaultDescriptions();
+            return;
+        }
         getPrevPositionByType(type);
         RemovePreviewItem();
         WearEquip();
         defaultDescriptions();
     }
 
+    public void ChangeBackpack()
+    {
+        ItemModel PrevBackpack = PlayerCharacter.backpackSlot;
+        ItemModel NextBackpack = PlayerCharacter.ItemLists[itemPosition];
+
+        if(PrevBackpack.GetSize() < NextBackpack.GetSize())
+        {
+            PlayerCharacter.RemoveEquipment("backpack");
+            PlayerCharacter.WearEquipment(NextBackpack);          
+            PlayerCharacter.AddItem(PrevBackpack, 1);
+            RemoveSlotItem();
+            defaultDescriptions();
+        }
+        else
+        {
+            UIController.GetComponent<InGameUIScript>().Warning("작은 사이즈의 가방으로 교체할 수 없습니다.");
+            defaultDescriptions();
+        }
+
+        SlotSprite();
+    }
 
     public void defaultDescriptions()
     {

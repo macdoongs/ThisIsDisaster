@@ -70,12 +70,12 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F8))
         {
-
+            GetBackpack();
         }
 
         if (Input.GetKeyDown(KeyCode.F9))
         {
-
+            GetBottle();
         }
         
         if (Input.GetKeyDown(KeyCode.F10))
