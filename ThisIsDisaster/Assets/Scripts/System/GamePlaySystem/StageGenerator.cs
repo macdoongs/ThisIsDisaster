@@ -2,7 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ClimateType {
+    Island,
+    Forest,
+    Desert,
+    Polar
+}
+
 public class StageGenerator {
+    public enum ZeroTileType {
+        Slow,
+        Dead,
+        None
+    }
+
+    public class ClimateInfo {
+        public List<WeatherType> weatherList = new List<WeatherType>();
+        public ZeroTileType zeroTileType = ZeroTileType.None;
+
+        public int MaxHeightLevel = 3;
+        public List<Sprite> tileSprites = new List<Sprite>();
+        public List<int> uniqueGenItemList = new List<int>();
+        public Dictionary<int, int> environmentDic = new Dictionary<int, int>();
+        public List<int> generateNpcList = new List<int>();
+
+    }
+
     private static StageGenerator _instance = null;
     public static StageGenerator Instance {
         get {
