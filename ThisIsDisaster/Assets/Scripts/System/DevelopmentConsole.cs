@@ -263,6 +263,14 @@ public class ConsoleScript {
         makeShelter.ignoreParameterLength = true;
         makeShelter.SetAction(MakeShelterDev);
         commands.Add("shelter", makeShelter);
+
+        Command makeDropItem = new Command() {
+            name = "Make Drop Item"
+        };
+
+        makeDropItem.SetParameters(typeof(int));
+        makeDropItem.SetAction(MakeItem);
+        commands.Add("drop", makeDropItem);
     }
 
     public void OnInput(string commandText) {
@@ -444,5 +452,10 @@ public class ConsoleScript {
     public void MakeShelterDev(params object[] p) {
         TileUnit current = RandomMapGenerator.Instance.GetTile(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
         Shelter.ShelterManager.Instance.MakeRandomShelter(current);
+    }
+
+    public void MakeItem(params object[] p) {
+        TileUnit current = RandomMapGenerator.Instance.GetTile(GameManager.CurrentGameManager.GetLocalPlayer().transform.position);
+        var item = ItemManager.Manager.MakeDropItem((int)p[0], current);
     }
 }
