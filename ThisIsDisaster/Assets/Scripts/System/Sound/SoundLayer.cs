@@ -19,7 +19,7 @@ public class SoundLayer : MonoBehaviour {
     private void Awake()
     {
         CurrentLayer = this;
-
+        Initialize();
     }
 
     void Initialize() {

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <common>
+    <item></item>
+  </common>
+  
+  <climate type="island">
+    <events>
+      <event>flood</event>
+      <event>cyclone</event>
+    </events>
+    
+    <map height="3">
+      <zero>slow</zero>
+      
+      <tile level="0">sprite Src</tile>
+      <tile level="1">sprite Src</tile>
+      <tile level="2">sprite Src</tile>
+      <tile level="3">sprite Src</tile>
+    </map>
+
+    <item>
+      
+    </item>
+
+    <environment>
+      
+    </environment>
+
+    <npc>
+      
+    </npc>
+  </climate>
+  
+  <climate type="forest"></climate>
+  <climate type="icey"></climate>
+  <climate type="desert"></climate>
+</root>
