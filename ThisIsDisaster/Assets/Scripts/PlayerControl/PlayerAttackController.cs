@@ -27,17 +27,17 @@ public class PlayerAttackController : MonoBehaviour {
             }
         }
 
-        if (IsAttackCommandInput()) {
-            if (IsAttackable()) {
-                Sender.OnAttack();
-                if (MoveController) {
-                    AnimatorUtil.SetInteger(MoveController.PlayerMovementCTRL, "AttackType", 
-                        (Sender.Owner as PlayerModel).GetAttackAnimType());
-                    AnimatorUtil.SetTrigger(MoveController.PlayerMovementCTRL, "Attack");
-                }
-                _attackDelayTimer.StartTimer(NextAttackDelay);
-            }
-        }
+        //if (IsAttackCommandInput()) {
+        //    if (IsAttackable()) {
+        //        Sender.OnAttack();
+        //        if (MoveController) {
+        //            AnimatorUtil.SetInteger(MoveController.PlayerMovementCTRL, "AttackType", 
+        //                (Sender.Owner as PlayerModel).GetAttackAnimType());
+        //            AnimatorUtil.SetTrigger(MoveController.PlayerMovementCTRL, "Attack");
+        //        }
+        //        _attackDelayTimer.StartTimer(NextAttackDelay);
+        //    }
+        //}
 
         if (isDebuggEnabled && _DebugRenderer) {
             if (Sender.IsAttacking())
@@ -54,7 +54,21 @@ public class PlayerAttackController : MonoBehaviour {
         }
 	}
 
-    public bool IsAttackCommandInput() {
+    public void OnAttackClicked() {
+        if (IsAttackable())
+        {
+            Sender.OnAttack();
+            if (MoveController)
+            {
+                AnimatorUtil.SetInteger(MoveController.PlayerMovementCTRL, "AttackType",
+                    (Sender.Owner as PlayerModel).GetAttackAnimType());
+                AnimatorUtil.SetTrigger(MoveController.PlayerMovementCTRL, "Attack");
+            }
+            _attackDelayTimer.StartTimer(NextAttackDelay);
+        }
+    }
+
+        public bool IsAttackCommandInput() {
         //일단은 좌클릭으로 입력체크
         if (Input.GetMouseButtonDown(0))
         {
