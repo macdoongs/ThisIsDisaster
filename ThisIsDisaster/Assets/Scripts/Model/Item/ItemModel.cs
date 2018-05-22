@@ -47,6 +47,22 @@ public class ItemModel {
         return (int)GetStat("AttackAnim");
     }
 
+    public virtual int GetAttacRangeX()
+    {
+        return (int)GetStat("range_x");
+    }
+
+    public virtual int GetAttacRangeY()
+    {
+        return (int)GetStat("range_y");
+    }
+
+    public virtual int GetBagSize()
+    {
+        return (int)GetStat("size");
+    }
+
+
     public float GetStat(string statName) {
         float output = 0f;
         metaInfo.stats.TryGetValue(statName, out output);
