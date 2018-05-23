@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUIController : MonoBehaviour {
+public class InventoryUIController : MonoBehaviour, IObserver {
     public GameObject UIController;
     public GameObject InventoryUI;
 
@@ -107,14 +108,15 @@ public class InventoryUIController : MonoBehaviour {
 
     public ItemModel[] ItemSlot ;
 
+    private void OnDestroy()
+    {
+        RemoveNotices();
+    }
+
     public void Start()
     {
-        
-        if (Player == null) {
-            Player = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
-        }
-        PlayerCharacter = Player.GetComponent<CharacterModel>();
-        bagSize = PlayerCharacter.bagSize;
+        ObserveNotices();
+
 
         SlotDescription = new DescriptionUI(DescriptionPanel , SlotDescriptionItemImage, SlotDescriptionItemName, SlotDescriptionItemDescription, 
         SlotDescriptionItemStats, SlotDescriptionItemStatAmount,  SlotDescriptionLeftButton, SlotDescriptionRightButton, SlotDescriptionRegisterButton);
@@ -124,9 +126,7 @@ public class InventoryUIController : MonoBehaviour {
 
         FirstItemDescription = new DescriptionUI(FirstItemImage, FirstItemName, FirstItemStats, FirstItemStatAmount);
         SecondItemDescription = new DescriptionUI(SecondItemImage, SecondItemName, SecondItemStats, SecondItemStatAmount);
-
-
-
+        
         Image[] temp = Content.transform.GetComponentsInChildren<Image>();
         Image[] items = new Image[30];
 
@@ -156,7 +156,6 @@ public class InventoryUIController : MonoBehaviour {
 
         PreviewSlotName =
             new string[6] { "head", "clothes", "weapon", "backpack", "bottle", "flash" };
-        getPreviewItems();
 
         PresetRegisterButton.onClick.AddListener(() => PresetEditOpen());
     }
@@ -851,5 +850,28 @@ public class InventoryUIController : MonoBehaviour {
     public void Close()
     {
         InventoryUI.SetActive(false);
+    }
+
+    public void OnNotice(string notice, params object[] param)
+    {
+        if (notice == NoticeName.LocalPlayerGenerated) {
+            if (Player == null)
+            {
+                Player = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+            }
+            PlayerCharacter = Player.GetComponent<CharacterModel>();
+            bagSize = PlayerCharacter.bagSize;
+            getPreviewItems();
+        }
+    }
+
+    public void ObserveNotices()
+    {
+        Notice.Instance.Observe(NoticeName.LocalPlayerGenerated, this);
+    }
+
+    public void RemoveNotices()
+    {
+        Notice.Instance.Remove(NoticeName.LocalPlayerGenerated, this);
     }
 }

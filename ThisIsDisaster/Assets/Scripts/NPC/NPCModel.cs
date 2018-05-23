@@ -94,7 +94,7 @@ namespace NPC {
             switch (_executeState) {
                 case NPCExectueState.None:
                     _executeState = NPCExectueState.Wander;
-                    //Unit.SetSensing(true);
+                    Unit.SetSensing(true);
                     break;
                 case NPCExectueState.Wander:
                     WanderExectue();

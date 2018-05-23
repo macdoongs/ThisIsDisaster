@@ -546,6 +546,10 @@ public class CellularAutomata : MonoBehaviour {
 
     }
 
+    int GetRandomValue(int max) {
+        return StageGenerator.Instance.ReadNextValue(max);
+    }
+
     public List<Coord> GetRoomsCoord(int height, int num)
     {
         List<Coord> RoomsCoords = new List<Coord>();
@@ -563,7 +567,7 @@ public class CellularAutomata : MonoBehaviour {
                 case 1:
                     if (currentRoom.tilesDepth1.Count > 0)
                     {
-                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth1.Count);
+                        randomTile = GetRandomValue(currentRoom.tilesDepth1.Count);
                         //Debug.Log("tiles1depth :" + currentRoom.tilesDepth1.Count);
                         //Debug.Log("randomTile :" + randomTile);
                         RoomsCoords.Add(currentRoom.tilesDepth1[randomTile]);
@@ -577,7 +581,7 @@ public class CellularAutomata : MonoBehaviour {
                 case 2:
                     if (currentRoom.tilesDepth2.Count > 0)
                     {
-                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth2.Count);
+                        randomTile = GetRandomValue(currentRoom.tilesDepth2.Count);
                         //Debug.Log("tiles2depth :" + currentRoom.tilesDepth2.Count);
                         //Debug.Log("randomTile :" + randomTile);
                         RoomsCoords.Add(currentRoom.tilesDepth2[randomTile]);
@@ -591,7 +595,7 @@ public class CellularAutomata : MonoBehaviour {
                 case 3:
                     if (currentRoom.tilesDepth3.Count > 0)
                     {
-                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth3.Count);
+                        randomTile = GetRandomValue(currentRoom.tilesDepth3.Count);
                         //Debug.Log("tiles3depth :" + currentRoom.tilesDepth3.Count);
                         //Debug.Log("randomTile :" + randomTile);
                         RoomsCoords.Add(currentRoom.tilesDepth3[randomTile]);
@@ -627,7 +631,7 @@ public class CellularAutomata : MonoBehaviour {
                 case 1:
                     if (currentRoom.tilesDepth1.Count > 0)
                     {
-                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth1.Count);
+                        randomTile = GetRandomValue(currentRoom.tilesDepth1.Count);
                         RoomsCoords.Add(currentRoom.tilesDepth1[randomTile]);
                         survivingRooms[currentPoint].tilesDepth1.Remove(currentRoom.tilesDepth1[randomTile]);
                     }
@@ -637,7 +641,7 @@ public class CellularAutomata : MonoBehaviour {
                 case 2:
                     if (currentRoom.tilesDepth2.Count > 0)
                     {
-                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth2.Count);
+                        randomTile = GetRandomValue(currentRoom.tilesDepth2.Count);
                         RoomsCoords.Add(currentRoom.tilesDepth2[randomTile]);
                         survivingRooms[currentPoint].tilesDepth1.Remove(currentRoom.tilesDepth2[randomTile]);
                     }
@@ -646,7 +650,7 @@ public class CellularAutomata : MonoBehaviour {
                 case 3:
                     if (currentRoom.tilesDepth3.Count > 0)
                     {
-                        randomTile = UnityEngine.Random.Range(0, currentRoom.tilesDepth3.Count);
+                        randomTile = GetRandomValue(currentRoom.tilesDepth3.Count);
                         RoomsCoords.Add(currentRoom.tilesDepth3[randomTile]);
                         survivingRooms[currentPoint].tilesDepth1.Remove(currentRoom.tilesDepth1[randomTile]);
                     }

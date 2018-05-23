@@ -153,6 +153,7 @@ public class GameManager : MonoBehaviour {
         {
             output.behaviour.IsRemoteCharacter = false;
             CurrentGameManager._localPlayer = output;
+            Notice.Instance.Send(NoticeName.LocalPlayerGenerated);
             //attach chase
             CurrentGameManager.MakeCameraMoveScript(output.gameObject);
         }
