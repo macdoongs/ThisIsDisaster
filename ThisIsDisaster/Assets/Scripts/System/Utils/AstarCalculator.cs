@@ -394,7 +394,14 @@ public class AstarCalculator {
     }
 
     public PathInfo GetDestinationPath(UnitModel model, TileUnit origin, TileUnit dest) {
+        if (dest == null) {
+            Debug.Log("Dest is null");
+            model.MoveControl.StopMovement();
+            return null;
+        }
         if (dest.IsPassable(model) == false) {
+
+            Debug.Log("Dest cannot passed by " + model.GetUnitName());
             model.MoveControl.StopMovement(); return null;
         }
         Calculation calculation = new Calculation(model);

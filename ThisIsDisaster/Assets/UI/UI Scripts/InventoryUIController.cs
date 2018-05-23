@@ -109,10 +109,12 @@ public class InventoryUIController : MonoBehaviour {
 
     public void Start()
     {
+        
         if (Player == null) {
             Player = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
         }
         PlayerCharacter = Player.GetComponent<CharacterModel>();
+        bagSize = PlayerCharacter.bagSize;
 
         SlotDescription = new DescriptionUI(DescriptionPanel , SlotDescriptionItemImage, SlotDescriptionItemName, SlotDescriptionItemDescription, 
         SlotDescriptionItemStats, SlotDescriptionItemStatAmount,  SlotDescriptionLeftButton, SlotDescriptionRightButton, SlotDescriptionRegisterButton);
@@ -123,7 +125,6 @@ public class InventoryUIController : MonoBehaviour {
         FirstItemDescription = new DescriptionUI(FirstItemImage, FirstItemName, FirstItemStats, FirstItemStatAmount);
         SecondItemDescription = new DescriptionUI(SecondItemImage, SecondItemName, SecondItemStats, SecondItemStatAmount);
 
-        bagSize = PlayerCharacter.bagSize;
 
 
         Image[] temp = Content.transform.GetComponentsInChildren<Image>();

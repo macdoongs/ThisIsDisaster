@@ -379,7 +379,7 @@ public class ConsoleScript {
     void MakeWeathers(params object[] p) {
         foreach (object o in p) {
             if (o is string) {
-                var type = ParseEventType((string)o);
+                var type = GameStaticData.StageInfoDataLoader.ParseEventType((string)o);
                 if (type == WeatherType.None) continue;
                 EventManager.Manager.OnGenerate(type);
                 Debug.Log("Generated Weather : "+type);
@@ -405,21 +405,6 @@ public class ConsoleScript {
         }
     }
 
-    WeatherType ParseEventType(string eventString) {
-        WeatherType output = WeatherType.None;
-        switch (eventString.ToLower()) {
-            case "cyclone":     output = WeatherType.Cyclone; break;
-            case "flood":       output = WeatherType.Flood; break;
-            case "yellowdust":  output = WeatherType.Yellowdust; break;
-            case "drought":     output = WeatherType.Drought; break;
-            case "fire":        output = WeatherType.Fire; break;
-            case "earthquake":  output = WeatherType.Earthquake; break;
-            case "lightning":   output = WeatherType.Lightning; break;
-            case "landsliding": output = WeatherType.Landsliding; break;
-            case "heavysnow":   output = WeatherType.Heavysnow; break;
-        }
-        return output;
-    }
 
     public void AstarDebugNPC(params object[] p) {
         NPCModel model = NPCManager.Manager.MakeNPC(0);

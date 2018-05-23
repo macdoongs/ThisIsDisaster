@@ -24,6 +24,8 @@ public class NPCManager : IObserver
     private List<NPCModel> _npcs = new List<NPCModel>();
     private long _instIdIndex = 0;
 
+    private List<StageGenerator.ClimateInfo.NpcInfo> _npcGenInfo = null;
+
     NPCManager()
     {
         ObserveNotices();
@@ -38,6 +40,33 @@ public class NPCManager : IObserver
         _infoDic.Clear();
         foreach (var v in list) {
             _infoDic.Add(v.Id, v);
+        }
+    }
+
+    public void SetNpcGenInfo(List<StageGenerator.ClimateInfo.NpcInfo> infos) {
+        this._npcGenInfo = infos;
+    }
+
+    /// <summary>
+    /// called by host
+    /// </summary>
+    public void CheckGeneration() {
+        //check count
+        foreach (var info in _npcGenInfo) {
+            try
+            {
+                int genCount = info.max - GetAliveCount(info.id);//0 will be current alive npc
+                var coords = CellularAutomata.Instance.GetRoomsCoord(1, genCount);
+                for (int i = 0; i < genCount; i++)
+                {
+                    var model = MakeNPC(info.id);
+                    var tile = RandomMapGenerator.Instance.GetTile(coords[i].tileX, coords[i].tileY);
+                    model.UpdatePosition(tile.transform.position);
+                }
+            }
+            catch {
+                Debug.LogError("Monster gen error");
+            }
         }
     }
 
@@ -72,6 +101,11 @@ public class NPCManager : IObserver
         model.Init();
 
         return model;
+    }
+
+    int GetAliveCount(int metaId) {
+        int count = _npcs.FindAll((x) => (x.MetaInfo.Id == metaId) && x.State == NPCState.Execute).Count;
+        return count;
     }
 
     void Update() {

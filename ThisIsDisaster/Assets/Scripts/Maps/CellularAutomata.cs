@@ -21,8 +21,11 @@ public class CellularAutomata : MonoBehaviour {
 
     public static CellularAutomata Instance { get; private set; }
 
+    const int _startHeightLevel = 2;
+    public int MaxHeightLevel = 3;
+
     void Start() {
-		GenerateMap();
+		//GenerateMap();
 	}
 
     private void Awake()
@@ -37,7 +40,7 @@ public class CellularAutomata : MonoBehaviour {
 		//}
 	}
 
-	void GenerateMap() {
+	public void GenerateMap() {
 		map = new int[width,height];
         worldMap = new int[width, height];
         ProcessMap();
@@ -49,11 +52,10 @@ public class CellularAutomata : MonoBehaviour {
             }
         }
         
-        makeDepth(2);
-        makeDepth(3);
-        
-        
-    
+        for(int i = _startHeightLevel; i <= MaxHeightLevel; i++) { 
+            makeDepth(i);
+        }
+
         if (RandomMapGenerator.Instance)
         {
             RandomMapGenerator.Instance.GenerateMapByAlgorithm(worldMap, width, height);

@@ -33,7 +33,7 @@ public class EnvironmentManager : IObserver
 
         }
     }
-    
+
     public void InitInfoList(List<EnvironmentTypeInfo> infos) {
         _infos.Clear();
         foreach (var info in infos) {
@@ -43,7 +43,7 @@ public class EnvironmentManager : IObserver
 
     public EnvironmentTypeInfo GetEnvInfo(int id) {
         EnvironmentTypeInfo info = null;
-        if (_infos.TryGetValue(id, out info)) {
+        if (!_infos.TryGetValue(id, out info)) {
 
 #if UNITY_EDITOR
             UnityEngine.Debug.LogError("Could not find EnvInfo : " + id);
@@ -70,7 +70,7 @@ public class EnvironmentManager : IObserver
 
     void Update() {
         foreach (var env in _envs) {
-            
+
         }
     }
 
@@ -97,5 +97,9 @@ public class EnvironmentManager : IObserver
     {
         Notice.Instance.Remove(NoticeName.Update, this);
         Notice.Instance.Remove(NoticeName.FixedUpdate, this);
+    }
+
+    public bool IsValidateId(int metaId) {
+        return _infos.ContainsKey(metaId);
     }
 }

@@ -13,26 +13,33 @@
     <map height="3">
       <zero>slow</zero>
       
-      <tile level="0">sprite Src</tile>
-      <tile level="1">sprite Src</tile>
-      <tile level="2">sprite Src</tile>
-      <tile level="3">sprite Src</tile>
+      <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Water/ISO_Tile_Water_01</tile>
+      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Sand/ISO_Tile_Sand_01</tile>
+      <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_Grass_01</tile>
+      <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_GrassPatch_02</tile>
     </map>
 
-    <item>
-      
-    </item>
+    <items>
+      <item>1</item>
+      <item>2</item>
+      <item>3</item>
+      <item>4</item>
+    </items>
 
-    <environment>
-      
-    </environment>
+    <environments>
+      <environment height="3" min="30" max="50">0</environment><!--tree-->
+      <environment height="2" min="50" max="70">1</environment>
+      <!--tree-->
+    </environments>
 
-    <npc>
-      
-    </npc>
+    <npcs>
+      <npc max="10">0</npc>
+      <npc max="5">1</npc>
+      <npc max="6">2</npc>
+    </npcs>
   </climate>
-  
+  <!--
   <climate type="forest"></climate>
   <climate type="icey"></climate>
-  <climate type="desert"></climate>
+  <climate type="desert"></climate>-->
 </root>

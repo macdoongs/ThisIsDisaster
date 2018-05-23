@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <environment id="0" name="_tree_grass" prefab="TreeGrass" script=""/>
+  <environment id="1" name="_grass" prefab="Grass" script=""/>
 </root>

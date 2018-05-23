@@ -9,7 +9,8 @@ public class ServerRequest : MonoBehaviour{
 	}
 
 	IEnumerator GetText() {
-		UnityWebRequest www = UnityWebRequest.Get("http://localhost:9000/user");
+		UnityWebRequest www = UnityWebRequest.Get("http://api.thisisdisaster.com/user/lobby");
+        
 		yield return www.Send();
 
 		if(www.isNetworkError) {
