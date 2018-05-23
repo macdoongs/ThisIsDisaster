@@ -14,39 +14,57 @@ public class EarthquakeEffect : MonoBehaviour
     private const float _speedMin = 10f;
     private const float _speedMax = 40f;
 
+    private const int _sinfreq = 3;
+    private const float _waveHeight = 0.4f;
+
     public const int MaxLevel = 8;
     [Range(0, MaxLevel)]
     public int level = 0;
 
+    EarthquakeFilter Filter {
+        get {
+            if (_filter == null)
+            {
+                _filter = Camera.main.gameObject.AddComponent<EarthquakeFilter>();
+            }
+            return _filter;
+        }
+    }
     EarthquakeFilter _filter = null;
 
     public bool _debug = false;
     Timer _lifeTimeTimer = new Timer();
+    Timer _waveTimer = new Timer();
+    int _waveCount = 0;
+    float _waveFreq = 0.1f;
+
+
+    TileUnit _originTile = null;
 
     public void SetLevel(int level) {
         this.level = level;
         float f = level / (float)MaxLevel;
         float _xy = Mathf.Lerp(_xyMin, _xyMax, f);
         float _speed = Mathf.Lerp(_speedMin, _speedMax, f);
-        _filter.Speed = _speed;
-        _filter.x = _filter.y = _xy;
+        Filter.Speed = _speed;
+        Filter.x = Filter.y = _xy;
     }
 
     public void SetLevel(float factor) {
         factor = Mathf.Clamp(factor, 0f, 1f);
         float _xy = Mathf.Lerp(_xyMin, _xyMax, factor);
         float _speed = Mathf.Lerp(_speedMin, _speedMax, factor);
-        _filter.Speed = _speed;
-        _filter.x = _filter.y = _xy;
+        Filter.Speed = _speed;
+        Filter.x = Filter.y = _xy;
     }
 
     public void SetEarthquakeType(EarthquakeType type, int Level) {
         if (level == 0)
         {
-            SetActive(false);
+            //SetActive(false);
         }
         else {
-            SetActive(true);
+            //SetActive(true);
         }
         switch (type) {
             case EarthquakeType.Prev:
@@ -64,24 +82,37 @@ public class EarthquakeEffect : MonoBehaviour
     }
 
     public void SetActive(bool state) {
-        _filter.enabled = state;
+        gameObject.SetActive(state);
+        Filter.enabled = state;
     }
 
     private void Start()
     {
-        if (_filter == null) {
-            _filter = Camera.main.gameObject.AddComponent<EarthquakeFilter>();
-        }
-        SetActive(false);
+        //SetActive(false);
+    }
+
+    public void StartWave() {
+        SetOriginTile();
+        SetWaveParams(50);
+
+        _waveCount = 0;
+        _waveTimer.StartTimer(_waveFreq);
     }
 
     private void Update()
     {
+        if (_waveTimer.started) {
+            if (_waveTimer.RunTimer()) {
+                MakeWaveEffect();
+                _waveCount++;
+                _waveTimer.StartTimer(_waveFreq);
+            }
+        }
         if (_debug) {
             if (_lifeTimeTimer.started == false)
             {
                 _lifeTimeTimer.StartTimer(15f);
-                SetActive(true);
+                //SetActive(true);
             }
             else {
                 float rate = _lifeTimeTimer.Rate;
@@ -89,9 +120,69 @@ public class EarthquakeEffect : MonoBehaviour
 
                 if (_lifeTimeTimer.RunTimer()) {
                     _debug = false;
-                    SetActive(false);
+                    //SetActive(false);
                 }
             }
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (_originTile != null) {
+
+        }
+    }
+
+    public void SetOriginTile() {
+        _originTile = RandomMapGenerator.Instance.GetRandomTileByHeight(0);
+
+    }
+
+    private int _maxDistance;
+    public void SetWaveParams(int maxDist) {
+        _maxDistance = maxDist;
+    }
+
+    public void MakeWaveEffect() {
+        for (int i = -_maxDistance; i <= _maxDistance; i++) {
+            int x = _originTile.x + i;
+
+            for (int j = -_maxDistance; j <= _maxDistance; j++) {
+                int y = _originTile.y + j;
+                TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                if (tile == null) continue;
+
+                int dist = Mathf.Max(Mathf.Abs(i), Mathf.Abs(j));
+
+                float sin = CalcSin(dist + _waveCount* _sinfreq);
+                tile.AddHeight(sin * _waveHeight);
+            }
+        }
+    }
+
+    public void ReturnTiles()
+    {
+        for (int i = -_maxDistance; i <= _maxDistance; i++)
+        {
+            int x = _originTile.x + i;
+
+            for (int j = -_maxDistance; j <= _maxDistance; j++)
+            {
+                int y = _originTile.y + j;
+                TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                if (tile == null) continue;
+                tile.SetHeight(tile.HeightLevel);
+            }
+        }
+        _originTile = null;
+    }
+
+    /// <summary>
+    /// Dist will be normal
+    /// </summary>
+    /// <param name="dist"></param>
+    /// <returns></returns>
+    float CalcSin(int dist) {
+        return Mathf.Sin(dist * 30 * Mathf.Deg2Rad);
     }
 }

@@ -50,6 +50,11 @@ public class TileUnit : MonoBehaviour {
         //_text.text = GetSpriteOrder().ToString();
     }
 
+    public void AddHeight(float height) {
+        spriteRenderer.transform.localPosition = new Vector3(0, 0.25f * this.HeightLevel + _DEF_HEIGHT + height, 0f);
+
+    }
+
     public void SetRendererAlpha(float alpha) {
         Color c = spriteRenderer.color;
         c.a = alpha;

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Prefab {
+    /// <summary>
+    /// Find Gameobject in Prefabs/
+    /// </summary>
+    /// <param name="prefabSrc"></param>
+    /// <returns></returns>
     public static GameObject LoadPrefab(string prefabSrc) {
         GameObject load = Resources.Load<GameObject>("Prefabs/" + prefabSrc);
         if (load == null) {
