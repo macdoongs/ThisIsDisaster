@@ -15,7 +15,6 @@ public enum WeatherType {
 
 
 
-
     None,//dummy for end
     /*
      and so on
@@ -38,6 +37,10 @@ public class EventManager : MonoBehaviour {
     public GameObject snowObject = null;
     public GameObject sandObject = null;
     public GameObject cloudyObject = null;
+    private EarthquakeEffect earthquakeEffect = null;
+    
+	public GameObject tsunamiObject = null;
+	public GameObject landslideObject = null;
 
     public WeatherType currentTestType = WeatherType.None;
     
@@ -155,26 +158,48 @@ public class EventManager : MonoBehaviour {
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.F5))
+		if (Input.GetKeyDown(KeyCode.O))
         {
             EventManager.Manager.OnGenerate(currentTestType);
         }
 
-        if (Input.GetKeyDown(KeyCode.F6))
+		if (Input.GetKeyDown(KeyCode.P))
         {
             EventManager.Manager.OnStart(currentTestType);
         }
 
-        if (Input.GetKeyDown(KeyCode.F7))
+		if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
             EventManager.Manager.OnEnd(currentTestType);
         }
 
-        if (Input.GetKeyDown(KeyCode.F8))
+		if (Input.GetKeyDown(KeyCode.RightBracket))
         {
             EventManager.Manager.OnDestroyEvent(currentTestType);
         }
     }         // 메뉴 실행 키
+
+	public GameObject MakeWorldThunderstorm() {                       // 공통 비
+		if (rainObject == null)
+		{
+			GameObject effectObject = Resources.Load<GameObject>("Prefabs/Thunderstorm");
+			if (effectObject)
+			{
+				effectObject = Instantiate(effectObject);
+				effectObject.transform.SetParent(Camera.main.transform);
+				effectObject.transform.localPosition = new Vector3(1f, 1f, 1f);
+				effectObject.transform.localScale = Vector3.one;
+				effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+				effectObject.SetActive(false);
+
+			}
+
+			rainObject = effectObject;
+
+		}
+
+		return rainObject;
+	}
 
     public GameObject MakeWorldRain() {                       // 공통 비
         if (rainObject == null)
@@ -186,7 +211,7 @@ public class EventManager : MonoBehaviour {
                 effectObject.transform.SetParent(Camera.main.transform);
                 effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
                 effectObject.transform.localScale = Vector3.one;
-                effectObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+				effectObject.transform.localRotation = Quaternion.Euler(0f, 1f, 1f);
                 effectObject.SetActive(false);
 
             }
@@ -220,12 +245,13 @@ public class EventManager : MonoBehaviour {
     }     // map을 어둡게하는 effect
 
     public void SetWorldFilterColor(Color color) {
-
-        SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
-        if (renderer != null)
-        {
-            renderer.color = color;
-        }
+		if (darkObject = null) {
+			SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
+			if (renderer != null)
+			{
+				renderer.color = color;
+			}
+		}
     }
 
     public SnowEffect MakeWorldSnow()
@@ -307,7 +333,7 @@ public class EventManager : MonoBehaviour {
                 effectObject.transform.SetParent(Camera.main.transform);
                 effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
                 effectObject.transform.localScale = new Vector3(3f,1f,1f);
-                effectObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
                 effectObject.SetActive(false);
 
             }
@@ -319,6 +345,39 @@ public class EventManager : MonoBehaviour {
         return cycloneObject.GetComponent<CycloneEffect>();
     }
 
+	public GameObject MakeWorldLandslide()
+	{
+		GameObject effectObject = Resources.Load<GameObject>("Prefabs/Landslide");
+		if (effectObject)
+		{
+			effectObject = Instantiate(effectObject);
+			effectObject.transform.SetParent(Camera.main.transform);
+			effectObject.transform.localPosition = new Vector3(15f, 2f, 10f);
+			effectObject.transform.localScale = new Vector3(1f,1f,1f);
+			effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+			effectObject.SetActive(false);
+
+		}
+
+		return effectObject;
+	}
+
+	public GameObject MakeWorldTsunami()
+	{
+		GameObject effectObject = Resources.Load<GameObject>("Prefabs/Tsunami");
+		if (effectObject)
+		{
+			effectObject = Instantiate(effectObject);
+			effectObject.transform.SetParent(Camera.main.transform);
+			effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
+			effectObject.transform.localScale = new Vector3(3f,1f,1f);
+			effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+			effectObject.SetActive(false);
+
+		}
+
+		return effectObject;
+	}
 
     public GameObject MakeFire(Vector3 position)
     {
@@ -335,6 +394,20 @@ public class EventManager : MonoBehaviour {
         }
 
         return effectObject;
+    }
+
+    public EarthquakeEffect GetEarthquakeEffect() {
+        if (this.earthquakeEffect != null) return earthquakeEffect;
+        GameObject effectObject = Prefab.LoadPrefab("Events/EarthquakeEffect");
+        EarthquakeEffect output = null;
+        if (effectObject) {
+            effectObject.transform.SetParent(transform);
+            effectObject.transform.localPosition = Vector3.zero;
+            effectObject.SetActive(false);
+            output = effectObject.GetComponent<EarthquakeEffect>();
+            earthquakeEffect = output;
+        }
+        return output;
     }
 }
 
@@ -402,7 +475,9 @@ public class CycloneEvent : EventBase {
 public class FloodEvent : EventBase {
     GameObject rainObject = null;
     GameObject darkObject = null;
+	GameObject tsunamiObject = null;
     GameObject fillObject = null;    // 맵에 물차오르는거
+
     public FloodEvent() {
         type = WeatherType.Flood;
     }
@@ -411,19 +486,25 @@ public class FloodEvent : EventBase {
     {
         rainObject = EventManager.Manager.MakeWorldRain();
         darkObject = EventManager.Manager.MakeWorldDark();
-
+		tsunamiObject = EventManager.Manager.MakeWorldTsunami();
     }
 
     public override void OnStart()
     {
         rainObject.SetActive(true);
         darkObject.SetActive(true);
+		tsunamiObject.SetActive(true);
     }
 
     public override void OnEnd()
     {
         rainObject.SetActive(false);
         darkObject.SetActive(false);
+		tsunamiObject.SetActive(false);
+
+		rainObject = null;
+		darkObject = null;
+		tsunamiObject = null;
     }
 
     public override void OnDestroy()
@@ -533,6 +614,9 @@ public class EarthquakeEvent : EventBase
 {
     GameObject quakeObject = null;          // 공통2  (맵흔들림)
     GameObject crackObject = null;          // 공통1 (갈라짐)
+
+    EarthquakeEffect _effect = null;
+
     public EarthquakeEvent()
     {
         type = WeatherType.Earthquake;
@@ -542,19 +626,26 @@ public class EarthquakeEvent : EventBase
     {
         quakeObject = null;
         crackObject = null;
-        
+
+        _effect = EventManager.Manager.GetEarthquakeEffect();
     }
 
     public override void OnStart()
     {
         quakeObject = null;
         crackObject = null;
+
+        _effect.SetActive(true);
+        _effect.SetEarthquakeType(EarthquakeEffect.EarthquakeType.Main, 3);
+        _effect.StartWave();
     }
 
     public override void OnEnd()
     {
         quakeObject = null;
         crackObject = null;
+        _effect.ReturnTiles();
+        _effect.SetActive(false);
     }
 
     public override void OnDestroy()
@@ -576,7 +667,7 @@ public class LightningEvent : EventBase
 
     public override void OnGenerated()
     {
-        rainObject = EventManager.Manager.MakeWorldRain();
+		rainObject = EventManager.Manager.MakeWorldThunderstorm();
         darkObject = EventManager.Manager.MakeWorldDark();
 
         blinkObject = null;
@@ -609,6 +700,7 @@ public class LightningEvent : EventBase
 
 public class LandslidingEvent : EventBase
 {
+	GameObject landslideObject = null;
     GameObject quackObject = null;    // 공통2  (맵 흔들림)
     GameObject collapseObject = null;      // 맵 이벤트
 
@@ -619,18 +711,22 @@ public class LandslidingEvent : EventBase
 
     public override void OnGenerated()
     {
+		landslideObject = EventManager.Manager.MakeWorldLandslide();
         quackObject = null;
-        collapseObject = null;
+		collapseObject = null;
     }
 
     public override void OnStart()
     {
+		landslideObject.SetActive(true);
         quackObject = null;
         collapseObject = null;
     }
 
     public override void OnEnd()
     {
+		landslideObject.SetActive(false);
+		landslideObject = null;
         quackObject = null;
         collapseObject = null;
     }
@@ -664,6 +760,11 @@ public class HeavysnowEvent : EventBase
         snowObject.SetActive(true);
         snowObject.SetLevel(5);
         EventManager.Manager.SetWorldFilterColor(new Color(71f/255f, 73f/255f, 73f/255f, 98f/255f));
+		for (int i = 0; i < 10; i++) {
+			NPCManager.Manager.MakeNPC (0);
+		}
+
+		Debug.Log(RandomMapGenerator.Instance.GetRandomTileByHeight (1));
         cloudyObject.SetActive(true);
         
     }

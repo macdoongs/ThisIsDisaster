@@ -11,7 +11,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     public RenderLayerChanger _changer = null;
     public Transform HeightPivot;
-    public UnitModel owner;
+    public UnitModel Owner { get; private set; }
 
     OnTileChanged _changedAction = null;
     OnHeightChanged _heightChangeAction = null;
@@ -54,16 +54,25 @@ public class AutoTileMovementSetter : MonoBehaviour {
         RenderOrderChange(_currentTile);
         HeightChange(_currentTile);
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    public void SetOwner(UnitModel owner) {
+        Owner = owner;
+    }
+
+    // Update is called once per frame
+    void Update () {
         var cur = _map.GetTile(transform.position);
         if (cur != _currentTile) {
             if (!cur) return;
-            
+
+            if (Owner != null) {
+                _currentTile.OnExitTile(Owner);
+            }
+
             ChangeTile(cur);
-            if (owner != null) {
-                cur.OnEnterTile(owner);
+
+            if (Owner != null) {
+                cur.OnEnterTile(Owner);
             }
         }
 
@@ -100,6 +109,13 @@ public class AutoTileMovementSetter : MonoBehaviour {
         if (_heightChangeAction != null) {
             _heightChangeAction();
         }
+    }
+
+    public void UpdateHeightFromTile(float height)
+    {
+        var lp = HeightPivot.transform.localPosition;
+        lp.y = height;
+        HeightPivot.transform.localPosition = lp;
     }
 
     public bool IsHeightChanging() {

@@ -233,8 +233,8 @@ public class PlayerMoveController : MonoBehaviour {
 
     //공용 이동처리
     void Move(Vector3 pos) {
-        if (autoTileMovementSetter.owner != null) {
-            if (autoTileMovementSetter.owner.IsInShelter())
+        if (autoTileMovementSetter.Owner != null) {
+            if (autoTileMovementSetter.Owner.IsInShelter())
             {
                 transform.Translate(pos);
                 return;

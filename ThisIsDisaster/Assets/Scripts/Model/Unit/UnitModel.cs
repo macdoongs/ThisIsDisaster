@@ -79,6 +79,10 @@ public class UnitModel {
     public virtual void SetShelter(Shelter.ShelterModel shelter) {
         CurrentShelter = shelter;
     }
+
+    public virtual AutoTileMovementSetter GetTileSetter() {
+        return null;
+    }
 }
 
 public class UnitMoveControl
