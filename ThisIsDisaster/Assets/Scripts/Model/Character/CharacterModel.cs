@@ -110,6 +110,10 @@ public class CharacterModel : MonoBehaviour
     public int default_attack_range_x = 5;
     public int default_attack_range_y = 5;
 
+
+    public int defaultHealtRegen = 5;
+    public int defaultStaminaRegen = 5;
+
     //캐릭터 맥스 스텟. 
     //맥스스텟 = 기본 스텟 + 아이템으로 증가하는 스텟
     public float maxHealth = 0.0f;
@@ -123,14 +127,18 @@ public class CharacterModel : MonoBehaviour
     //공격 범위는 default 에서 더하는게 아니라 무기의 값으로 변경하는 것
     public int attack_range_x = 0;
     public int attack_range_y = 0;
+    public int healthRegen = 0;
+    public int staminaRegen = 0;
     public int bagSize = 0;
     public int waterMax = 0;
+
     //아이템으로 증가하는 스텟
     public float itemHealth = 0.0f;
     public float itemStamina = 0.0f;
     public float itemDefense = 0.0f;
     public float itemDamage =0.0f;
-
+    public int itemHealthRegen = 0;
+    public int itemStaminaRegen = 0;
     
 
 
@@ -167,6 +175,11 @@ public class CharacterModel : MonoBehaviour
     public AttackReceiver attackReceiver;
     public AutoTileMovementSetter tileSetter;
 
+
+    private float TimeLeft = 1.0f;
+    private float nextTime = 0.0f;
+
+
     private void Awake()
     {
         _player = new PlayerModel
@@ -186,6 +199,15 @@ public class CharacterModel : MonoBehaviour
         InitDefaultSprite();
     }
 
+    private void Update()
+    {
+        if (Time.time > nextTime)
+        {
+            nextTime = Time.time + TimeLeft;
+            StatRegeneration();
+        }
+    }
+
     private void initialCharacterSetting()
     {
         health = defaultHealth;
@@ -196,7 +218,8 @@ public class CharacterModel : MonoBehaviour
         attack_range_y = default_attack_range_y;
         bagSize = defaultBagSize;
         waterMax = defaultWaterMax;
-
+        healthRegen = defaultHealtRegen;
+        staminaRegen = defaultStaminaRegen;
     }
 
     void InitDefaultSprite() {
@@ -595,6 +618,22 @@ public class CharacterModel : MonoBehaviour
         defense = defaultDefense + itemDefense;
         damage = defaultDamage + itemDamage;
     }
+
+    private void StatRegeneration()
+    {
+        health += healthRegen;
+        stamina += staminaRegen;
+
+        if(health > maxHealth)
+        {
+            health = maxHealth;
+        }
+        if(stamina > maxStamina)
+        {
+            stamina = maxStamina;
+        }
+    }
+
 
     //소모품 사용. HP회복, Stamina회복
     public bool UseExpendables(ItemModel etc)

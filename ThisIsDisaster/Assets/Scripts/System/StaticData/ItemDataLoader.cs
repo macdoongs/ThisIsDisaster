@@ -29,7 +29,7 @@ namespace GameStaticData {
 
             }
             catch (Exception e) {
-                Debug.LogError(e);
+    
                 return false;
             }
             return true;
