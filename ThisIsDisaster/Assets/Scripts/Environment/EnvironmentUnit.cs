@@ -22,6 +22,7 @@ namespace Environment
         public void SetModel(EnvironmentModel model) {
             Model = model;
 
+            TileSetter.SetOwner(model);
             TileSetter.SetChangeAction(model.SetCurrentTile);
         }
 
@@ -38,6 +39,7 @@ namespace Environment
             loaded.transform.localRotation = Quaternion.Euler(Vector3.zero);
             return loaded;
         }
+        
         
     }
 }

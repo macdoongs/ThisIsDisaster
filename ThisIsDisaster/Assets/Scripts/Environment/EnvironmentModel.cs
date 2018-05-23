@@ -55,5 +55,10 @@ namespace Environment
         {
             return MetaInfo.Name;
         }
+
+        public override AutoTileMovementSetter GetTileSetter()
+        {
+            return Unit.TileSetter;
+        }
     }
 }

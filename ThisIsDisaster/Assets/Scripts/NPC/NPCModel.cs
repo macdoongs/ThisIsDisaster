@@ -295,6 +295,11 @@ namespace NPC {
 
         }
 
+        public override AutoTileMovementSetter GetTileSetter()
+        {
+            return Unit.TileSetter;
+        }
+
     }
     
 }

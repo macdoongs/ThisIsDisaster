@@ -38,6 +38,8 @@ public class EventManager : MonoBehaviour {
     public GameObject snowObject = null;
     public GameObject sandObject = null;
     public GameObject cloudyObject = null;
+    private EarthquakeEffect earthquakeEffect = null;
+
 
     public WeatherType currentTestType = WeatherType.None;
     
@@ -336,6 +338,20 @@ public class EventManager : MonoBehaviour {
 
         return effectObject;
     }
+
+    public EarthquakeEffect GetEarthquakeEffect() {
+        if (this.earthquakeEffect != null) return earthquakeEffect;
+        GameObject effectObject = Prefab.LoadPrefab("Events/EarthquakeEffect");
+        EarthquakeEffect output = null;
+        if (effectObject) {
+            effectObject.transform.SetParent(transform);
+            effectObject.transform.localPosition = Vector3.zero;
+            effectObject.SetActive(false);
+            output = effectObject.GetComponent<EarthquakeEffect>();
+            earthquakeEffect = output;
+        }
+        return output;
+    }
 }
 
 public class EventBase {
@@ -533,6 +549,9 @@ public class EarthquakeEvent : EventBase
 {
     GameObject quakeObject = null;          // 공통2  (맵흔들림)
     GameObject crackObject = null;          // 공통1 (갈라짐)
+
+    EarthquakeEffect _effect = null;
+
     public EarthquakeEvent()
     {
         type = WeatherType.Earthquake;
@@ -542,19 +561,26 @@ public class EarthquakeEvent : EventBase
     {
         quakeObject = null;
         crackObject = null;
-        
+
+        _effect = EventManager.Manager.GetEarthquakeEffect();
     }
 
     public override void OnStart()
     {
         quakeObject = null;
         crackObject = null;
+
+        _effect.SetActive(true);
+        _effect.SetEarthquakeType(EarthquakeEffect.EarthquakeType.Main, 3);
+        _effect.StartWave();
     }
 
     public override void OnEnd()
     {
         quakeObject = null;
         crackObject = null;
+        _effect.ReturnTiles();
+        _effect.SetActive(false);
     }
 
     public override void OnDestroy()

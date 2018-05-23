@@ -31,7 +31,7 @@ public class PlayerModel : UnitModel
 
     public void SetTileSetter(AutoTileMovementSetter tileSetter) {
         _tileSetter = tileSetter;
-        _tileSetter.owner = this;
+        _tileSetter.SetOwner(this);
     }
 
     public override TileUnit GetCurrentTile()
@@ -55,6 +55,11 @@ public class PlayerModel : UnitModel
             return _character.weaponSlot.GetAttackAnimType();
         }
         return 0;
+    }
+
+    public override AutoTileMovementSetter GetTileSetter()
+    {
+        return _tileSetter;
     }
 }
 

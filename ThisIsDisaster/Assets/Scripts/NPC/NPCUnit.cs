@@ -82,6 +82,7 @@ namespace NPC
 
             AttackSender.SetOwner(model);
             AttackReceiver.SetOwner(model);
+            TileSetter.SetOwner(model);
             TileSetter.SetChangeAction(model.SetCurrentTile);
             TileSetter.SetHeightChangeAction(Jump);
             AttackControl.AttackEnd = model.OnAttackEnd;

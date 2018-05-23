@@ -171,7 +171,7 @@ public class EarthquakeEffect : MonoBehaviour
                 int y = _originTile.y + j;
                 TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
                 if (tile == null) continue;
-                tile.SetHeight(tile.HeightLevel);
+                tile.AddHeight(0f);
             }
         }
         _originTile = null;

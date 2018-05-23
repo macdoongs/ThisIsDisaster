@@ -25,6 +25,8 @@ public class TileUnit : MonoBehaviour {
     public delegate void OnTileEnter(UnitModel target);
     private OnTileEnter _enter = null;
 
+    public List<UnitModel> _currentEnteredUnits = new List<UnitModel>();
+
     public void SetModel(TempTileModel model) {
         _model = model;
     }
@@ -51,8 +53,15 @@ public class TileUnit : MonoBehaviour {
     }
 
     public void AddHeight(float height) {
-        spriteRenderer.transform.localPosition = new Vector3(0, 0.25f * this.HeightLevel + _DEF_HEIGHT + height, 0f);
+        float _tileHeight = 0.25f * HeightLevel + _DEF_HEIGHT + height;
+        spriteRenderer.transform.localPosition = new Vector3(0, _tileHeight, 0f);
 
+        foreach (var unit in _currentEnteredUnits) {
+            var setter = unit.GetTileSetter();
+            if (setter != null) {
+                setter.UpdateHeightFromTile(_tileHeight);
+            }
+        }
     }
 
     public void SetRendererAlpha(float alpha) {
@@ -76,8 +85,24 @@ public class TileUnit : MonoBehaviour {
     }
 
     public void OnEnterTile(UnitModel target) {
-        if (_enter != null) {
-            _enter(target);
+        if (target != null)
+        {
+            if (!_currentEnteredUnits.Contains(target)) {
+                _currentEnteredUnits.Add(target);
+            }
+
+            if (_enter != null)
+            {
+                _enter(target);
+            }
+        }
+    }
+
+    public void OnExitTile(UnitModel target) {
+        if (target != null) {
+            if (_currentEnteredUnits.Contains(target)) {
+                _currentEnteredUnits.Remove(target);
+            }
         }
     }
 
@@ -92,4 +117,5 @@ public class TileUnit : MonoBehaviour {
     {
         return "Tile[" + x + " , " + y + "]";
     }
+    
 }
