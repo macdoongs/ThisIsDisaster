@@ -400,7 +400,7 @@ public class ConsoleScript {
         var list = EventManager.Manager.GetAllEvents();
         foreach (var e in list) {
             if (e.IsStarted) {
-                EventManager.Manager.OnEnd(e.type);
+                EventManager.Manager.EndEvent(e.type);
             }
         }
     }

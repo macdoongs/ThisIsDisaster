@@ -128,7 +128,7 @@ public class EventManager : MonoBehaviour {
         }
     }
 
-    public void OnEnd(WeatherType type) {
+    public void EndEvent(WeatherType type) {
         var e = GetEvent(type);
         if (e == null) return;
         e.OnEnd();
@@ -172,7 +172,7 @@ public class EventManager : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
-            EventManager.Manager.OnEnd(currentTestType);
+            EventManager.Manager.EndEvent(currentTestType);
         }
 
 		if (Input.GetKeyDown(KeyCode.RightBracket))
