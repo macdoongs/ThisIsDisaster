@@ -17,15 +17,38 @@ public class StageGenerator {
     }
 
     public class ClimateInfo {
+        public struct EnvInfo {
+            public int height;
+            public int min;
+            public int max;
+            public int id;
+
+            public EnvInfo(int height, int min, int max, int id) {
+                this.height = height;
+                this.min = min;
+                this.max = max;
+                this.id = id;
+            }
+        }
+
+        public struct NpcInfo {
+            public int max;
+            public int id;
+
+            public NpcInfo( int max, int id) {
+                this.max = max;
+                this.id = id;
+            }
+        }
+        public ClimateType climateType = ClimateType.Island;
         public List<WeatherType> weatherList = new List<WeatherType>();
         public ZeroTileType zeroTileType = ZeroTileType.None;
 
         public int MaxHeightLevel = 3;
-        public List<Sprite> tileSprites = new List<Sprite>();
+        public Dictionary<int, string> tileSpriteSrc = new Dictionary<int, string>();
         public List<int> uniqueGenItemList = new List<int>();
-        public Dictionary<int, int> environmentDic = new Dictionary<int, int>();
-        public List<int> generateNpcList = new List<int>();
-
+        public List<EnvInfo> envInfoList = new List<EnvInfo>();
+        public List<NpcInfo> npcInfoList = new List<NpcInfo>();
     }
 
     private static StageGenerator _instance = null;
@@ -42,9 +65,35 @@ public class StageGenerator {
     const int _randomMax = 100000;
 
     System.Random _stageGenRandom = null;
+    private Dictionary<ClimateType, ClimateInfo> _climateDic = new Dictionary<ClimateType, ClimateInfo>();
 
     public StageGenerator() {
         //SetSeed(3);
+    }
+
+    public void InitClimateType(List<ClimateInfo> infos) {
+        _climateDic.Clear();
+        foreach (var info in infos) {
+            _climateDic.Add(info.climateType, info);
+        }
+    }
+
+    public ClimateInfo GetClimateInfo(ClimateType type) {
+        if (_climateDic.ContainsKey(type)) return _climateDic[type];
+        return null;
+    }
+
+    /// <summary>
+    /// 호스트측에서 한 번 호출해야하는 함수이기 때문에 시드값을 동기화하지는 않도록
+    /// </summary>
+    /// <returns></returns>
+    public ClimateType GetRandomClimateType() {
+        int selected = UnityEngine.Random.Range(0, 4);
+        
+        //test code
+        return ClimateType.Island;
+
+        return (ClimateType)selected;
     }
 
     public void SetSeed(int seed) {
@@ -52,11 +101,42 @@ public class StageGenerator {
         _stageGenRandom = new System.Random(seed);
     }
 
-    public int ReadNextSeed() {
+    public int ReadNextValue() {
         if (_stageGenRandom == null)
         {
             _stageGenRandom = new System.Random(UnityEngine.Random.Range(_randomMin, _randomMax));
         }
         return _stageGenRandom.Next(_randomMin, _randomMax);
+    }
+
+    /// <summary>
+    /// 0 ~ max 사잇값
+    /// </summary>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    public int ReadNextValue(int max) {
+        if (max <= 0) max = 1;
+        int read = ReadNextValue();
+        return read % max;
+    }
+
+    /// <summary>
+    /// Min 에서 Max 사잇값
+    /// </summary>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    public int ReadNextValue(int min, int max) {
+        if (min >= max) {
+            int temp = max;
+            max = min;
+            min = max;
+            if (min == max) {
+                max++;
+            }
+        }
+
+        int diff = max - min;
+        return ReadNextValue(diff) + min;
     }
 }

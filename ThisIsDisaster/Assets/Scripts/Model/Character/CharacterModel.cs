@@ -207,6 +207,10 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
+    public PlayerModel GetPlayerModel() {
+        return _player;
+    }
+
     private void initialCharacterSetting()
     {
         health = defaultHealth;

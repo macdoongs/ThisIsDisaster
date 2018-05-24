@@ -69,6 +69,10 @@ public class GlobalGameManager {
         GameStaticData.EnvironmentDataLoader envLoader = new GameStaticData.EnvironmentDataLoader();
         envLoader.Initialize(GameStaticData.EnvironmentDataLoader._envXmlFilePath);
         envLoader.LoadData();
+
+        GameStaticData.StageInfoDataLoader stageLoader = new GameStaticData.StageInfoDataLoader();
+        stageLoader.Initialize(GameStaticData.StageInfoDataLoader._xmlPath);
+        stageLoader.LoadData();
         
         //LocalizeTextDataModel.Instance.LogAllData();
 

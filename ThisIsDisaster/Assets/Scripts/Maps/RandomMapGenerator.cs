@@ -117,12 +117,25 @@ public class RandomMapGenerator : MonoBehaviour
         return output;
     }
 
+    public void SetTileSprite(List<string> srcs)
+    {
+        _randomTileSprites.Clear();
+        foreach (var src in srcs)
+        {
+            Sprite sprite = Resources.Load<Sprite>(src);
+            if (sprite != null)
+            {
+                _randomTileSprites.Add(sprite);
+            }
+        }
+    }
+
     Sprite GetRandomSprite() {
         return _randomTileSprites[UnityEngine.Random.Range(0, _randomTileSprites.Count)];
     }
 
-    Sprite GetSprite(int isMovable) {
-        return _randomTileSprites[isMovable];
+    Sprite GetSprite(int heightLevel) {
+        return _randomTileSprites[heightLevel];
         //return isMovable ? _randomTileSprites[0] : _randomTileSprites[1];
     }
 

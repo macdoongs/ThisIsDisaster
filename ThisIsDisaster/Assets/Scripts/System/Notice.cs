@@ -7,6 +7,7 @@ public static class NoticeName {
     public static string Log = "Log";
     public static string Update = "Update";
     public static string FixedUpdate = "FixedUpdate";
+    public static string LocalPlayerGenerated = "LocalPlayerGenerated";
 }
 
 public class Notice {

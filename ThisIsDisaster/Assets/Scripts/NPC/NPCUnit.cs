@@ -181,9 +181,9 @@ namespace NPC
 
         }
 
-        public void OnSensePlayer(PlayerSensor sensor) {
-            Debug.Log(string.Format("{0} {1} Sensored {2}", Model.GetUnitName(), Model.instanceId, sensor.Owner.GetUnitName()));
-            Model.OnDetectedTarget(sensor.Owner);
+        public void OnSensePlayer(UnitModel sensor) {
+            Debug.Log(string.Format("{0} {1} Sensored {2}", Model.GetUnitName(), Model.instanceId, sensor.GetUnitName()));
+            Model.OnDetectedTarget(sensor);
         }
         
         

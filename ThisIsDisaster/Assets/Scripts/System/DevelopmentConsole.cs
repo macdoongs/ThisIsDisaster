@@ -379,7 +379,7 @@ public class ConsoleScript {
     void MakeWeathers(params object[] p) {
         foreach (object o in p) {
             if (o is string) {
-                var type = ParseEventType((string)o);
+                var type = GameStaticData.StageInfoDataLoader.ParseEventType((string)o);
                 if (type == WeatherType.None) continue;
                 EventManager.Manager.OnGenerate(type);
                 Debug.Log("Generated Weather : "+type);
@@ -414,8 +414,8 @@ public class ConsoleScript {
             case "drought":     output = WeatherType.Drought; break;
             case "fire":        output = WeatherType.Fire; break;
             case "earthquake":  output = WeatherType.Earthquake; break;
-            case "lightning":   output = WeatherType.Lightning; break;
-            case "landsliding": output = WeatherType.Landsliding; break;
+			case "thunderstorm":   output = WeatherType.Thunderstorm; break;
+            case "landslide": output = WeatherType.Landslide; break;
             case "heavysnow":   output = WeatherType.Heavysnow; break;
         }
         return output;

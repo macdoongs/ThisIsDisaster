@@ -39,19 +39,60 @@ public class GameManager : MonoBehaviour {
 
     public UnitControllerBase CommonPlayerObject;
 
+    public ClimateType CurrentStageClimateTpye = ClimateType.Island;
+
     private void Awake()
     {
-        Init();
+        //Init();
     }
-
+    
+    /// <summary>
+    //  
+    /// </summary>
     public void Init() {
 
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
+        //generate world by input
+        CurrentStageClimateTpye = StageGenerator.Instance.GetRandomClimateType();
+
+        StageGenerator.ClimateInfo info = StageGenerator.Instance.GetClimateInfo(CurrentStageClimateTpye);
+        CellularAutomata.Instance.MaxHeightLevel = info.MaxHeightLevel;
+        List<string> tileSrc = new List<string>(info.tileSpriteSrc.Values);
+        RandomMapGenerator.Instance.SetTileSprite(tileSrc);
+
+        CellularAutomata.Instance.GenerateMap();
+        try
+        {
+            foreach (var env in info.envInfoList)
+            {
+                if (!EnvironmentManager.Manager.IsValidateId(env.id)) continue;
+                int count = StageGenerator.Instance.ReadNextValue(env.min, env.max);
+                var coords = CellularAutomata.Instance.GetRoomsCoord(env.height, count);
+
+                for (int i = 0; i < count; i++)
+                {
+                    var model = EnvironmentManager.Manager.MakeEnvironment(env.id);
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(coords[i].tileX, coords[i].tileY);
+                    model.UpdatePosition(tile.transform.position);
+                }
+            }
+        }
+        catch (System.Exception e) {
+#if UNITY_EDITOR
+            Debug.LogError(e);
+#endif
+        }
+
+        NPCManager.Manager.SetNpcGenInfo(info.npcInfoList);
+        NPCManager.Manager.CheckGeneration();
+
+        //make other
+
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
-
+        
     }
 
     // Use this for initialization
@@ -64,6 +105,8 @@ public class GameManager : MonoBehaviour {
         }
 
         GlobalGameManager.Instance.SetGameState(GameState.Stage);
+
+        Init();
     }
 	
 	// Update is called once per frame
@@ -110,6 +153,7 @@ public class GameManager : MonoBehaviour {
         {
             output.behaviour.IsRemoteCharacter = false;
             CurrentGameManager._localPlayer = output;
+            Notice.Instance.Send(NoticeName.LocalPlayerGenerated);
             //attach chase
             CurrentGameManager.MakeCameraMoveScript(output.gameObject);
         }
