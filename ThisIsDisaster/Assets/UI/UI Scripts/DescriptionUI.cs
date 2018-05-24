@@ -157,9 +157,20 @@ public class DescriptionUI : MonoBehaviour {
         }
         if (item.GetSize() != 0)
         {
-            result.Add("Bag Size", item.GetSize());
+            if (item.metaInfo.itemType.Equals(ItemType.Backpack))
+                result.Add("Bag Size", item.GetSize());
+            else
+                result.Add("Bottle Size", item.GetSize());
         }
-
+        if(item.GetStaminaRegen() != 0)
+        {
+            result.Add("Stamina Regen", item.GetStaminaRegen());
+        }
+        if(item.GetHealthRegen() != 0)
+        {
+            result.Add("Health Regen", item.GetHealthRegen());
+        }
+        
 
         return result;
     }

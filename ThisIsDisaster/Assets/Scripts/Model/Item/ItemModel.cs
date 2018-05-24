@@ -62,6 +62,16 @@ public class ItemModel {
         return (int)GetStat("size");
     }
 
+    public virtual int GetHealthRegen()
+    {
+        return (int)GetStat("health_regen");
+    }
+
+    public virtual int GetStaminaRegen()
+    {
+        return (int)GetStat("stamina_regen");
+    }
+
     public float GetStat(string statName) {
         float output = 0f;
         metaInfo.stats.TryGetValue(statName, out output);

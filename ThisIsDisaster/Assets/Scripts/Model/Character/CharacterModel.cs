@@ -98,8 +98,8 @@ public class CharacterModel : MonoBehaviour
     public string PlayerLevel = "123";
 
     //가방(인벤토리) 사이즈. 
-    //util 아이템에 따라 사이즈 증가 가능하게 구현할 예정
     private int defaultBagSize = 5;
+    //최대 물 보관 개수.
     private int defaultWaterMax = 5;
 
     //캐릭터 기본 스텟
@@ -109,8 +109,6 @@ public class CharacterModel : MonoBehaviour
     public float defaultDamage = 10.0f;
     public int default_attack_range_x = 5;
     public int default_attack_range_y = 5;
-
-
     public int defaultHealtRegen = 5;
     public int defaultStaminaRegen = 5;
 
@@ -201,6 +199,7 @@ public class CharacterModel : MonoBehaviour
 
     private void Update()
     {
+        //일정 시간마다 HP, Stamina 회복
         if (Time.time > nextTime)
         {
             nextTime = Time.time + TimeLeft;
@@ -246,9 +245,9 @@ public class CharacterModel : MonoBehaviour
 
     public virtual bool AddItem(ItemModel item, int amount)
     {
-        //   ItemModel oldData = null;
-
-        if (item.metaInfo.itemType.Equals(ItemType.Etc))//소모품은 이미 인벤토리에 있으면 개수만 늘어나야함
+        if (item.metaInfo.itemType.Equals(ItemType.Etc) || 
+            item.metaInfo.itemType.Equals(ItemType.Normal))
+            //소모품과 일반 아이템은 같은 아이템이 인벤토리에 있으면 개수만 늘어남
         {
             if (ItemNames.Contains<string>(item.metaInfo.Name))//이미 인벤토리에 들어가 있으면
             {
@@ -295,7 +294,6 @@ public class CharacterModel : MonoBehaviour
             ItemNames.Add(item.metaInfo.Name);
             ItemCounts.Add(amount);
         }
-
         return true;
     }
 
@@ -367,7 +365,7 @@ public class CharacterModel : MonoBehaviour
         return output;
     }
 
-    //초기화 
+    //??? 왜 있는건지 모르겠음
     public virtual void initialState()
     {
 
@@ -458,8 +456,8 @@ public class CharacterModel : MonoBehaviour
         {
             if (toolSlot == null)
             {
-                toolSlot = equipment;
-                AddStats(toolSlot);
+                toolSlot = equipment;      
+                ///특수 효과
                 result = true;
             }
             else
@@ -470,20 +468,6 @@ public class CharacterModel : MonoBehaviour
 
         SpriteUpdate();
         return result;
-    }
-    
-    //장비 착용. 착용할 슬롯과 아이템 모델을 변수로 
-    public virtual void WearSlot(ItemModel Slot, ItemModel equipment)
-    {
-        if(Slot == null)
-        {
-            Slot = equipment;
-            AddStats(Slot);
-        }
-        else
-        {
-            UnityEngine.Debug.Log("Slot is already full");
-        }
     }
 
     //장비 제거 
@@ -538,9 +522,6 @@ public class CharacterModel : MonoBehaviour
                 Debug.Log("아이템이 너무 많습니다.");
                 return;
             }
-
-            SubtractStats(backpackSlot);
-
             bagSize = defaultBagSize;
             backpackSlot = null;
         }
@@ -551,8 +532,6 @@ public class CharacterModel : MonoBehaviour
                 Debug.Log("Slot is Empty");
                 return;
             }
-
-            SubtractStats(bottleSlot);
             bottleSlot = null;
         }
         else if (SlotName.Equals("tool"))
@@ -563,7 +542,7 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
 
-            SubtractStats(toolSlot);
+            //특수효과 제거
             toolSlot = null;
         }
 
@@ -594,7 +573,9 @@ public class CharacterModel : MonoBehaviour
 
         attack_range_x = equip.GetAttacRangeX();
         attack_range_y = equip.GetAttacRangeY();
-        
+
+        itemHealthRegen += equip.GetHealthRegen();
+        itemStaminaRegen += equip.GetStaminaRegen();
 
         UpdateStat();
     }
@@ -606,7 +587,19 @@ public class CharacterModel : MonoBehaviour
         itemStamina -= equip.GetStamina();
         itemDefense -= equip.GetDefense();
         itemDamage -= equip.GetDamage();
+        
+        if(equip.GetAttacRangeX() != 0)
+        {
+            attack_range_x = default_attack_range_x;
+        }
 
+        if(equip.GetAttacRangeY() != 0)
+        {
+            attack_range_y = default_attack_range_y;
+        }
+
+        itemHealth -= equip.GetHealthRegen();
+        itemStaminaRegen -= equip.GetStaminaRegen();
         UpdateStat();
     }
     
@@ -617,6 +610,8 @@ public class CharacterModel : MonoBehaviour
         maxStamina = defaultStamina + itemStamina;
         defense = defaultDefense + itemDefense;
         damage = defaultDamage + itemDamage;
+        healthRegen = defaultHealtRegen + itemHealthRegen;
+        staminaRegen = defaultStaminaRegen + itemStaminaRegen;
     }
 
     private void StatRegeneration()

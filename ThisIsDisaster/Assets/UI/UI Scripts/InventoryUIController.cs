@@ -26,9 +26,10 @@ public class InventoryUIController : MonoBehaviour {
     public Color defaultItemTypeColor;
     public Color focusedItemTypeColor;
     public Color typeColor;
-
+    public Color defaultSlotColor;
     public GameObject Content;
-    public Sprite Slot_restricted;
+    public Color RestrictedSlotClolr;
+    public Image[] ItemSlotBackground;
     //인벤토리 아이템 슬롯 이미지
     public Image[] ItemSlots ;
     //인벤토리 아이템 개수 텍스트
@@ -137,6 +138,7 @@ public class InventoryUIController : MonoBehaviour {
             }
         }
 
+        ItemSlotBackground = new Image[30];
         ItemSlots = new Image[30];
         ItemCounts = new Text[30];
         ItemBorders = new Image[30];
@@ -144,6 +146,7 @@ public class InventoryUIController : MonoBehaviour {
 
         for (int i =0; i < 30; i++)
         {
+            ItemSlotBackground[i] = items[i].transform.GetComponentsInChildren<Image>()[0];
             ItemSlots[i] = items[i].transform.GetComponentsInChildren<Image>()[1];
             ItemCounts[i] = items[i].transform.GetComponentInChildren<Text>();
             ItemBorders[i] = items[i].transform.GetComponentsInChildren<Image>()[2];
@@ -200,15 +203,19 @@ public class InventoryUIController : MonoBehaviour {
 
         for (int i = 0; i < bagSize; i++)
         {
+            ItemSlotBackground[i].color = defaultSlotColor;
             ItemSlots[i].sprite = null;
             ItemSlots[i].color = Color.clear;
+            ItemBorders[i].color = RestrictedSlotClolr;
             ItemCounts[i].text = "";
             int index = i;
         }
         for (int i = bagSize; i < 30; i++)
         {
-            ItemSlots[i].sprite = Slot_restricted;
-            ItemSlots[i].color = defaultItemTypeColor;
+            ItemSlotBackground[i].color = RestrictedSlotClolr;
+            ItemSlots[i].sprite = null;
+            ItemSlots[i].color = Color.clear;
+            ItemBorders[i].color = RestrictedSlotClolr;
             ItemCounts[i].text = "";
         }
     }
@@ -230,6 +237,7 @@ public class InventoryUIController : MonoBehaviour {
 
             if (s != null)
             {
+                ItemSlotBackground[index].color = defaultSlotColor;
                 ItemSlots[index].sprite = s;
                 ItemSlots[index].color = Color.white;
                 ItemSlots[index].preserveAspect = true;
@@ -239,8 +247,10 @@ public class InventoryUIController : MonoBehaviour {
 
         for(index = PlayerCharacter.bagSize; index < 30; index++)
         {
-            ItemSlots[index].sprite = Slot_restricted;
-            ItemSlots[index].color = defaultItemTypeColor;
+            ItemSlotBackground[index].color = RestrictedSlotClolr;
+            ItemSlots[index].sprite = null;
+            ItemSlots[index].color = Color.clear;
+            ItemBorders[index].color = RestrictedSlotClolr;
         }
     }
  
