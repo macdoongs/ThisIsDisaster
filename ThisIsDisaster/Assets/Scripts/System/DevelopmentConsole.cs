@@ -405,6 +405,21 @@ public class ConsoleScript {
         }
     }
 
+    WeatherType ParseEventType(string eventString) {
+        WeatherType output = WeatherType.None;
+        switch (eventString.ToLower()) {
+            case "cyclone":     output = WeatherType.Cyclone; break;
+            case "flood":       output = WeatherType.Flood; break;
+            case "yellowdust":  output = WeatherType.Yellowdust; break;
+            case "drought":     output = WeatherType.Drought; break;
+            case "fire":        output = WeatherType.Fire; break;
+            case "earthquake":  output = WeatherType.Earthquake; break;
+			case "thunderstorm":   output = WeatherType.Thunderstorm; break;
+            case "landslide": output = WeatherType.Landslide; break;
+            case "heavysnow":   output = WeatherType.Heavysnow; break;
+        }
+        return output;
+    }
 
     public void AstarDebugNPC(params object[] p) {
         NPCModel model = NPCManager.Manager.MakeNPC(0);

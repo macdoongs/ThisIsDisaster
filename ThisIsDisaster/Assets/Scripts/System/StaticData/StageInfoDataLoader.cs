@@ -152,8 +152,8 @@ namespace GameStaticData
                 case "drought": output = WeatherType.Drought; break;
                 case "fire": output = WeatherType.Fire; break;
                 case "earthquake": output = WeatherType.Earthquake; break;
-                case "lightning": output = WeatherType.Lightning; break;
-                case "landsliding": output = WeatherType.Landsliding; break;
+				case "thunderstorm": output = WeatherType.Thunderstorm; break;
+				case "landslide": output = WeatherType.Landslide; break;
                 case "heavysnow": output = WeatherType.Heavysnow; break;
             }
             return output;
