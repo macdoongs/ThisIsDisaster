@@ -21,6 +21,12 @@ public class EarthquakeEffect : MonoBehaviour
     [Range(0, MaxLevel)]
     public int level = 0;
 
+    public AnimationCurve EarthquakeForceCurve;
+
+    public delegate void EndEvent();
+
+    EndEvent _endEvent = null;
+
     EarthquakeFilter Filter {
         get {
             if (_filter == null)
@@ -41,6 +47,10 @@ public class EarthquakeEffect : MonoBehaviour
 
     TileUnit _originTile = null;
 
+    public void SetEndEvent(EndEvent e) {
+        this._endEvent = e;
+    }
+
     public void SetLevel(int level) {
         this.level = level;
         float f = level / (float)MaxLevel;
@@ -58,28 +68,37 @@ public class EarthquakeEffect : MonoBehaviour
         Filter.x = Filter.y = _xy;
     }
 
-    public void SetEarthquakeType(EarthquakeType type, int Level) {
-        if (level == 0)
-        {
-            //SetActive(false);
-        }
-        else {
-            //SetActive(true);
-        }
-        switch (type) {
-            case EarthquakeType.Prev:
-                SetLevel(1);
-                break;
-            case EarthquakeType.Main:
-                //본 지진은 최소 3레벨에서 시작
-                int lv = Mathf.Max(3, Level);
-                SetLevel(lv);
-                break;
-            case EarthquakeType.After:
-                SetLevel(2);
-                break;
-        }
+    public float GetEarthquakeForce(float rate) {
+        return EarthquakeForceCurve.Evaluate(rate);
     }
+
+    public void StartEarthquakeEffect(float lifetime) {
+        _lifeTimeTimer.StartTimer(lifetime);
+        StartWave();
+    }
+
+    //public void SetEarthquakeType(EarthquakeType type, int Level) {
+    //    if (level == 0)
+    //    {
+    //        //SetActive(false);
+    //    }
+    //    else {
+    //        //SetActive(true);
+    //    }
+    //    switch (type) {
+    //        case EarthquakeType.Prev:
+    //            SetLevel(1);
+    //            break;
+    //        case EarthquakeType.Main:
+    //            //본 지진은 최소 3레벨에서 시작
+    //            int lv = Mathf.Max(3, Level);
+    //            SetLevel(lv);
+    //            break;
+    //        case EarthquakeType.After:
+    //            SetLevel(2);
+    //            break;
+    //    }
+    //}
 
     public void SetActive(bool state) {
         gameObject.SetActive(state);
@@ -92,7 +111,7 @@ public class EarthquakeEffect : MonoBehaviour
     }
 
     public void StartWave() {
-        SetOriginTile();
+        //SetOriginTile();
         SetWaveParams(50);
 
         _waveCount = 0;
@@ -101,29 +120,44 @@ public class EarthquakeEffect : MonoBehaviour
 
     private void Update()
     {
-        if (_waveTimer.started) {
-            if (_waveTimer.RunTimer()) {
-                MakeWaveEffect();
-                _waveCount++;
-                _waveTimer.StartTimer(_waveFreq);
-            }
-        }
-        if (_debug) {
-            if (_lifeTimeTimer.started == false)
+        if (_lifeTimeTimer.started)
+        {
+            float rate = _lifeTimeTimer.Rate;
+            if (_waveTimer.started)
             {
-                _lifeTimeTimer.StartTimer(15f);
-                //SetActive(true);
+                if (_waveTimer.RunTimer())
+                {
+                    MakeWaveEffect(rate);
+                    _waveCount++;
+                    _waveTimer.StartTimer(_waveFreq);
+                }
             }
-            else {
-                float rate = _lifeTimeTimer.Rate;
-                SetLevel(rate);
 
-                if (_lifeTimeTimer.RunTimer()) {
-                    _debug = false;
-                    //SetActive(false);
+            SetLevel(rate);
+
+            if (_lifeTimeTimer.RunTimer()) {
+                if (_endEvent != null) {
+                    _endEvent();
+                    _endEvent = null;
                 }
             }
         }
+        //if (_debug) {
+        //    if (_lifeTimeTimer.started == false)
+        //    {
+        //        _lifeTimeTimer.StartTimer(15f);
+        //        //SetActive(true);
+        //    }
+        //    else {
+        //        float rate = _lifeTimeTimer.Rate;
+        //        SetLevel(rate);
+
+        //        if (_lifeTimeTimer.RunTimer()) {
+        //            _debug = false;
+        //            //SetActive(false);
+        //        }
+        //    }
+        //}
     }
 
     private void LateUpdate()
@@ -133,8 +167,8 @@ public class EarthquakeEffect : MonoBehaviour
         }
     }
 
-    public void SetOriginTile() {
-        _originTile = RandomMapGenerator.Instance.GetRandomTileByHeight(0);
+    public void SetOriginTile(TileUnit tile) {
+        _originTile = tile;
 
     }
 
@@ -143,7 +177,7 @@ public class EarthquakeEffect : MonoBehaviour
         _maxDistance = maxDist;
     }
 
-    public void MakeWaveEffect() {
+    public void MakeWaveEffect(float factor) {
         for (int i = -_maxDistance; i <= _maxDistance; i++) {
             int x = _originTile.x + i;
 
@@ -155,7 +189,7 @@ public class EarthquakeEffect : MonoBehaviour
                 int dist = Mathf.Max(Mathf.Abs(i), Mathf.Abs(j));
 
                 float sin = CalcSin(dist + _waveCount* _sinfreq);
-                tile.AddHeight(sin * _waveHeight);
+                tile.AddHeight(sin * _waveHeight * factor);
             }
         }
     }
