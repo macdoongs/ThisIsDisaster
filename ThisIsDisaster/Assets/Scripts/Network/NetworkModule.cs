@@ -443,12 +443,14 @@ namespace NetworkComponents
         public bool StartGameServer(int playerNum)
         {
             //find gameserver
-            GameServer.Instance.StartServer();//
+            //GameServer.Instance.StartServer();//
+            Gameserver.Instance.StartServer(playerNum);
             return true;
         }
 
         public void StopGameServer() {
-            GameServer.Instance.StopServer();
+            //GameServer.Instance.StopServer();
+            Gameserver.Instance.StopServer();
         }
 
         public void SetServerNode(int node) {

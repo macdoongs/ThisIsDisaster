@@ -60,27 +60,27 @@ public class UnitControllerBase : MonoBehaviour
     }
 
     public void SendCharacterCoordinate(int index, List<CharacterCoordinates> coords) {
-        if (Network) {
-            if (!Network.IsConnected()) return;
-            CharacterData data = new CharacterData()
-            {
-                index = index,
-                dataNum = coords.Count,
-                coordinates = new CharacterCoordinates[coords.Count]
-            };
+        //if (Network) {
+        //    if (!Network.IsConnected()) return;
+        //    CharacterData data = new CharacterData()
+        //    {
+        //        index = index,
+        //        dataNum = coords.Count,
+        //        coordinates = new CharacterCoordinates[coords.Count]
+        //    };
 
-            for (int i = 0; i < coords.Count; i++) {
-                data.coordinates[i] = coords[i];
-            }
+        //    for (int i = 0; i < coords.Count; i++) {
+        //        data.coordinates[i] = coords[i];
+        //    }
 
-            CharacterMovingPacket packet = new CharacterMovingPacket(data);
-            int sendSize = Network.SendUnreliable<CharacterData>(packet);
+        //    CharacterMovingPacket packet = new CharacterMovingPacket(data);
+        //    int sendSize = Network.SendUnreliable<CharacterData>(packet);
 
-            if (sendSize > 0) {
-                //success
-            }
+        //    if (sendSize > 0) {
+        //        //success
+        //    }
 
-        }   
+        //}   
     }
 
     public void OnReceiveCharacterCoordinate(CharacterData data) {
