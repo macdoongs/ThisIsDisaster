@@ -13,7 +13,7 @@ public class JsonTest : MonoBehaviour {
         {
             result_code = "200",
             result_msg = "testing2",
-
+            response_type = typeof(UserResponse).ToString(),
             result_data = new User() {
                 nickname = "testChar",
                 score = "10",
@@ -24,7 +24,7 @@ public class JsonTest : MonoBehaviour {
 
         var json = JsonUtility.ToJson(data);
 
-        //WebCommunicationManager.Manager.OnReceiveGETMessage(json);
+        WebCommunicationManager.Manager.OnReceiveGETMessage(json);
 
         var failData = new UserResponse()
         {
@@ -42,7 +42,7 @@ public class JsonTest : MonoBehaviour {
 
         var failJson = JsonUtility.ToJson(failData);
 
-        //WebCommunicationManager.Manager.OnReceiveGETMessage(failJson);
+        WebCommunicationManager.Manager.OnReceiveGETMessage(failJson);
         string jsonBody = @"{
      “email”: “test@test.com”,
     “password”: “assdfa”
