@@ -9,7 +9,7 @@ namespace NPC
 
         public override void Initialize()
         {
-            Debug.Log("Make Dummy NPC");
+            //Debug.Log("Make Dummy NPC");
         }
 
         public override void OnDefeated()
