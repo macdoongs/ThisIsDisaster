@@ -31,12 +31,19 @@ public class GameManager : MonoBehaviour {
     }
 
     public class StageClockInfo {
+        /*
         public const float STAGE_READY_TIME = 60f;
         public const float EVENT_GENERATE_TIME = 60f;
         public const float EVENT_RUN_TIME = 120f;
         public const float EVENT_END_TIME = 60f;
         public const float STAGE_CLOSE_TIME = 10f;
+        */
 
+        public const float STAGE_READY_TIME = 10f;
+        public const float EVENT_GENERATE_TIME = 10f;
+        public const float EVENT_RUN_TIME = 20f;
+        public const float EVENT_END_TIME = 10f;
+        public const float STAGE_CLOSE_TIME = 5f;
         public Timer stageTimer = new Timer();
         public StageEventType currentEventType = StageEventType.Init;
         public StageEventType nextEventType = StageEventType.Ready;
@@ -47,6 +54,7 @@ public class GameManager : MonoBehaviour {
             currentEventType = StageEventType.Init;
             nextEventType = StageEventType.Ready;
             SetNextEventTime(nextEventType);
+            
         }
 
         public void SetNextEventTime(float time) {
@@ -86,6 +94,7 @@ public class GameManager : MonoBehaviour {
 
         void ExecuteNextStep()
         {
+            Debug.LogError(currentEventType + " Expired");
             switch (nextEventType)
             {
                 case StageEventType.Ready:
