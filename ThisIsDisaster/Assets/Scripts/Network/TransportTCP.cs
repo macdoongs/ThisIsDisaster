@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace NetworkComponents
+namespace NetworkComponents.Legacy
 {
     public class TransportTCP
     {
@@ -114,7 +114,7 @@ namespace NetworkComponents
                         type = NetEventType.Disconnect,
                         result = NetEventResult.Success
                     };
-                    _handler(state);
+                   // _handler(state);
                 }
             }
 
@@ -193,7 +193,7 @@ namespace NetworkComponents
                         result = NetEventResult.Success
                     };
 
-                    _handler(state);
+                    //_handler(state);
                 }
 
             }
@@ -234,7 +234,7 @@ namespace NetworkComponents
                         type = NetEventType.SendError,
                         result = NetEventResult.Failure
                     };
-                    _handler(state);
+                   // _handler(state);
                 }
             }
         }
@@ -273,9 +273,215 @@ namespace NetworkComponents
                         type = NetEventType.RecvError,
                         result = NetEventResult.Failure
                     };
-                    _handler(state);
+                    //_handler(state);
                 }
             }
         }
     }
+}
+
+namespace NetworkComponents {
+    public class TransportTCP : ITransport
+    {
+        private int _nodeId = -1;
+        private Socket _socket = null;
+        private bool _isConnected = false;
+        private PacketQueue _sendQueue = new PacketQueue();
+        private PacketQueue _recvQueue = new PacketQueue();
+        private EventHandler _handler;
+        private const int _packetSize = NetConfig.PACKET_SIZE;
+        public string transportName = "";
+
+        public TransportTCP() { }
+
+        public TransportTCP(Socket socket, string name)
+        {
+            _socket = socket;
+            transportName = name;
+        }
+
+        public bool Initialize(Socket socket)
+        {
+            _socket = socket;
+            _isConnected = true;
+            return true;
+        }
+
+        public bool IsConnected()
+        {
+            return _isConnected;
+        }
+
+        public int GetNodeId()
+        {
+            return _nodeId;
+        }
+
+        public void SetNodeId(int node)
+        {
+            _nodeId = node;
+        }
+
+        public bool Terminate()
+        {
+            _socket = null;
+            return true;
+        }
+
+        public bool Connect(string ipAddress, int port)
+        {
+            NetDebug.Log("Transport connect called");
+            if (_socket != null) return false;
+            try
+            {
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                _socket.Connect(ipAddress, port);
+                _socket.NoDelay = true;
+
+                _isConnected = true;
+                NetDebug.Log("connection success");
+            }
+            catch (SocketException e)
+            {
+                _socket = null;
+                _isConnected = false;
+                NetDebug.LogError(e.ToString());
+            }
+
+            NetDebug.Log("TransportTCP Connected: " + _isConnected.ToString());
+            if (_handler != null)
+            {
+                NetEventState state = new NetEventState(NetEventType.Connect,
+                    _isConnected ? NetEventResult.Success : NetEventResult.Failure);
+                _handler(this, state);
+
+            }
+            return _isConnected;
+        }
+
+        public void Disconnect()
+        {
+            _isConnected = false;
+            if (_socket != null)
+            {
+                _socket.Shutdown(SocketShutdown.Both);
+                _socket.Close();
+                _socket = null;
+            }
+            if (_handler != null)
+            {
+                NetEventState state = new NetEventState(NetEventType.Disconnect, NetEventResult.Success);
+                _handler(this, state);
+            }
+        }
+
+        public void Dispatch()
+        {
+            if (_isConnected && _socket != null)
+            {
+                DispatchSend();
+                DispatchReceive();
+            }
+        }
+
+        void DispatchSend()
+        {
+            if (_socket == null) return;
+            try
+            {
+                if (_socket.Poll(0, SelectMode.SelectWrite))
+                {
+                    byte[] buffer = new byte[_packetSize];
+                    int sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                    while (sendSize > 0)
+                    {
+                        try
+                        {
+                            int sendResult = _socket.Send(buffer, sendSize, SocketFlags.None);
+                            if (sendResult < 0)
+                            {
+                                NetDebug.Log("Transport send error : " + sendResult);
+                            }
+                        }
+                        catch (SocketException e)
+                        {
+                            NetDebug.LogError("transport send error " + e.Message);
+                            if (_handler != null)
+                            {
+                                NetEventState state = new NetEventState(NetEventType.SendError, NetEventResult.Failure)
+                                {
+                                    node = _nodeId,
+                                };
+                                _handler(this, state);
+                            }
+                        }
+                        sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                    }
+                }
+            }
+            catch { return; }
+        }
+
+        void DispatchReceive()
+        {
+            if (_socket == null) return;
+            try
+            {
+                while (_socket.Poll(0, SelectMode.SelectRead))
+                {
+                    byte[] buffer = new byte[_packetSize];
+                    int recvSize = _socket.Receive(buffer, buffer.Length, SocketFlags.None);
+                    if (recvSize == 0)
+                    {
+                        NetDebug.Log("TCP Disconnect recv from other");
+                        Disconnect();
+                    }
+                    else if (recvSize > 0)
+                    {
+                        _recvQueue.Enqueue(buffer, recvSize);
+                    }
+                }
+            }
+            catch { return; }
+        }
+
+        public IPEndPoint GetLocalEndPoint()
+        {
+            if (_socket == null) return default(IPEndPoint);
+            return _socket.LocalEndPoint as IPEndPoint;
+        }
+
+
+        public IPEndPoint GetRemoteEndPoint()
+        {
+            if (_socket == null) return default(IPEndPoint);
+            return _socket.RemoteEndPoint as IPEndPoint;
+        }
+
+        public int Receive(ref byte[] buffer, int size)
+        {
+            return _recvQueue.Dequeue(ref buffer, size);
+        }
+
+        public int Send(byte[] data, int size)
+        {
+            return _sendQueue.Enqueue(data, size);
+        }
+
+        public void SetServerPort(int port)
+        {
+        }
+
+        public void RegisterEventHandler(EventHandler handler)
+        {
+            _handler += handler;
+        }
+
+
+        public void UnregisterEventHandler(EventHandler handler)
+        {
+            _handler -= handler;
+        }
+    }
+
 }

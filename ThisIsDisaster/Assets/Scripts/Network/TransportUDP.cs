@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace NetworkComponents
+namespace NetworkComponents.Legacy
 {
     public class TransportUDP
     {
@@ -81,7 +81,7 @@ namespace NetworkComponents
                         type = NetEventType.Disconnect,
                         result = NetEventResult.Success
                     };
-                    _handler(state);
+                    //_handler(state);
                 }
             }
 
@@ -146,7 +146,7 @@ namespace NetworkComponents
                         result = NetEventResult.Success
                     };
 
-                    _handler(state);
+                   // _handler(state);
                 }
             }
         }
@@ -206,6 +206,232 @@ namespace NetworkComponents
                 Debug.Log("Timeout Discconect udp");
                 Disconnect();
             }
+        }
+    }
+}
+
+namespace NetworkComponents {
+    public class TransportUDP : ITransport
+    {
+        private int _nodeId = -1;
+        private Socket _socket = null;
+        private bool _isConnected = false;
+        private IPEndPoint _localEndPoint = null;
+        private IPEndPoint _remoteEndPoint = null;
+        private PacketQueue _sendQueue = new PacketQueue();
+        private PacketQueue _recvQueue = new PacketQueue();
+        private EventHandler _handler;
+        private const int _packetSize = NetConfig.PACKET_SIZE;
+        private bool _isRequested = false;
+        private const int _timeOutSec = 10;
+        private DateTime _timeOutTicker;
+        private const int _keepAliveInter = 1;
+        private DateTime _keepAliveTicker;
+        private bool _isFirst = false;
+        public const string _requestData = "KeepAlive.";
+        private int _serverPort = -1;
+
+        public TransportUDP() { }
+
+        public TransportUDP(Socket socket) { _socket = socket; }
+
+        public bool Initialize(Socket socket)
+        {
+            _socket = socket;
+            _isRequested = true;
+            return true;
+        }
+
+        public bool Terminate()
+        {
+            _socket = null;
+            return true;
+        }
+
+        public int GetNodeId()
+        {
+            return _nodeId;
+        }
+
+        public void SetNodeId(int node)
+        {
+            _nodeId = node;
+        }
+
+        public IPEndPoint GetLocalEndPoint()
+        {
+            return _localEndPoint;
+        }
+
+        public IPEndPoint GetRemoteEndPoint()
+        {
+            return _remoteEndPoint;
+        }
+
+        public int Send(byte[] data, int size)
+        {
+            if (_sendQueue == null) return 0;
+            return _sendQueue.Enqueue(data, size);
+        }
+
+        public int Receive(ref byte[] buffer, int size)
+        {
+            if (_recvQueue == null) return 0;
+            return _recvQueue.Dequeue(ref buffer, size);
+        }
+
+        public bool Connect(string ipAddress, int port)
+        {
+            if (_socket == null)
+            {
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                NetDebug.Log("Create new UDP Socket");
+
+                try
+                {
+                    string hostName = Dns.GetHostName();
+                    IPAddress[] adrList = Dns.GetHostAddresses(hostName);
+                    foreach (var addr in adrList)
+                    {
+                        if (addr.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            _localEndPoint = new IPEndPoint(addr, _serverPort);
+                            break;
+                        }
+                    }
+
+                    _remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+                    _isRequested = true;
+                    NetDebug.Log("UDP SetUp success");
+                    NetDebug.Log("Local: " + _localEndPoint.Address.ToString());
+                    NetDebug.Log("Remote: " + _remoteEndPoint.Address.ToString() + " : " + _remoteEndPoint.Port);
+                }
+                catch
+                {
+                    _isRequested = false;
+                    NetDebug.LogError("UDP Connect Failed");
+                }
+
+                NetDebug.Log("Transport UDP Connection : " + _isRequested);
+                if (_handler != null)
+                {
+                    NetEventState state = new NetEventState(NetEventType.Connect, _isRequested ? NetEventResult.Success : NetEventResult.Failure);
+                    _handler(this, state);
+                    NetDebug.Log("Event Handler Called");
+                }
+                _keepAliveTicker = DateTime.Now;
+                _isFirst = true;
+            }
+            return _isRequested;
+        }
+
+        public void Disconnect()
+        {
+            _isRequested = false;
+            if (_socket != null)
+            {
+                _socket.Shutdown(SocketShutdown.Both);
+                _socket.Close();
+                _socket = null;
+            }
+            if (_handler != null)
+            {
+                NetEventState state = new NetEventState(NetEventType.Disconnect, NetEventResult.Success);
+                _handler(this, state);
+            }
+        }
+
+        public void Dispatch()
+        {
+            DispatchSend();
+            CheckTimeout();
+            if (_socket != null)
+            {
+                TimeSpan ts = DateTime.Now - _keepAliveTicker;
+                if (ts.Seconds > _keepAliveInter || _isFirst)
+                {
+                    string message = _localEndPoint.Address.ToString() + ":" + _serverPort + ":" + _requestData;
+                    byte[] request = System.Text.Encoding.UTF8.GetBytes(message);
+                    _socket.SendTo(request, request.Length, SocketFlags.None, _remoteEndPoint);
+                    _keepAliveTicker = DateTime.Now;
+                    _isFirst = false;
+                }
+            }
+        }
+
+        void DispatchSend()
+        {
+            if (_socket == null) return;
+            try
+            {
+                if (_socket.Poll(0, SelectMode.SelectWrite))
+                {
+                    byte[] buffer = new byte[_packetSize];
+                    int sendSie = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                    while (sendSie > 0)
+                    {
+                        _socket.SendTo(buffer, sendSie, SocketFlags.None, _remoteEndPoint);
+                        sendSie = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                    }
+                }
+            }
+            catch { return; }
+        }
+
+        public void SetReceiveData(byte[] data, int size, IPEndPoint endPoint)
+        {
+            string str = System.Text.Encoding.UTF8.GetString(data).Trim('\0');
+            if (str.Contains(_requestData))
+            {
+                if (_isConnected == false && _handler != null)
+                {
+                    NetEventState state = new NetEventState(NetEventType.Connect, NetEventResult.Success);
+                    _handler(this, state);
+                    IPEndPoint ep = _localEndPoint;
+                    NetDebug.Log("UDP connected from client. " + ep.Address.ToString() + " : " + ep.Port);
+                }
+                _isConnected = true;
+                _timeOutTicker = DateTime.Now;
+            }
+            else if (size > 0)
+            {
+                _recvQueue.Enqueue(data, size);
+            }
+        }
+
+        void CheckTimeout()
+        {
+            TimeSpan ts = DateTime.Now - _timeOutTicker;
+            if (_isRequested && _isConnected && ts.Seconds > _timeOutSec)
+            {
+                NetDebug.Log("Dissconnect by timeout");
+                Disconnect();
+            }
+        }
+
+        public bool IsConnected()
+        {
+            return _isConnected;
+        }
+
+        public bool IsRequested()
+        {
+            return _isRequested;
+        }
+
+        public void RegisterEventHandler(EventHandler handler)
+        {
+            _handler += handler;
+        }
+
+        public void UnregisterEventHandler(EventHandler handler)
+        {
+            _handler -= handler;
+        }
+
+        public void SetServerPort(int port)
+        {
+            _serverPort = port;
         }
     }
 }

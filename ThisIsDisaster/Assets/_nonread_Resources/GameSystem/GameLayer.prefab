@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4304639819494674}
-  - component: {fileID: 114586550562616950}
+  - component: {fileID: 114511047643464770}
   m_Layer: 0
   m_Name: EventManager
   m_TagString: Untagged
@@ -382,6 +382,26 @@ MonoBehaviour:
   useRandomSeed: 1
   randomFillPercent: 50
   MaxHeightLevel: 3
+--- !u!114 &114511047643464770
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1649069327629838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c1172c2fb58445692924182d97db97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cycloneObject: {fileID: 0}
+  rainObject: {fileID: 0}
+  darkObject: {fileID: 0}
+  snowObject: {fileID: 0}
+  sandObject: {fileID: 0}
+  cloudObject: {fileID: 0}
+  tsunamiObject: {fileID: 0}
+  landslideObject: {fileID: 0}
+  currentTestType: 9
 --- !u!114 &114548555807811430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -398,26 +418,6 @@ MonoBehaviour:
   ShelterTile: {fileID: 1498860092583490, guid: 6dc8f847908a9e3479c6d5cfa1cc9356,
     type: 2}
   shelterTileSprite: {fileID: 21300000, guid: a416a1a7d55496a47950196a3edecb91, type: 3}
---- !u!114 &114586550562616950
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1649069327629838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 791aadf36a5f30e4c832f92d5b24c03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cycloneObject: {fileID: 0}
-  rainObject: {fileID: 0}
-  darkObject: {fileID: 0}
-  snowObject: {fileID: 0}
-  sandObject: {fileID: 0}
-  cloudyObject: {fileID: 0}
-  tsunamiObject: {fileID: 0}
-  landslideObject: {fileID: 0}
-  currentTestType: 9
 --- !u!114 &114592194035487798
 MonoBehaviour:
   m_ObjectHideFlags: 1

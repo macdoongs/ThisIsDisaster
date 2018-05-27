@@ -7,14 +7,17 @@ using UnityEngine;
 
 namespace NetworkComponents
 {
-    public delegate void EventHandler(NetEventState state);
+    public delegate void EventHandler_Old(NetEventState state);
     public class NetConfig
     {
-        public static int PLAYER_MAX = 4;
-        public static int SERVER_PORT = 50764;
-        public static int GAME_PORT = 50765;
+        public const int PLAYER_MAX = 4;
+
+        public const int MATCHING_SERVER_PORT = 50763;
+        public const int SERVER_PORT = 50764;
+        public const int GAME_PORT = 50765;
 
         public const int PACKET_SIZE = 1400;
+        public const int SERVER_VERSION = 1;
     }
 
     public enum NetEventType
@@ -33,6 +36,8 @@ namespace NetworkComponents
 
     public class NetEventState
     {
+        public int node;
+
         public NetEventType type;
         public NetEventResult result;
         public IPEndPoint endPoint;

@@ -22,9 +22,7 @@ namespace GameStaticData {
                 List<ItemTypeInfo> itemInfos = new List<ItemTypeInfo>();
                 foreach (XmlNode itemNode in nodeList) {
                     LoadItemData(itemNode, itemInfos);
-                }
-
-                   
+                }                 
                 ItemManager.Manager.InitTypeInfoList(itemInfos);
 
             }

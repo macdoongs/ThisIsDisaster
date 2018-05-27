@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour {
     {
         //Init();
     }
-    
+
     /// <summary>
     //  
     /// </summary>
@@ -54,7 +54,24 @@ public class GameManager : MonoBehaviour {
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
-        //generate world by input
+        GenerateWorld(UnityEngine.Random.Range(0, 1000));
+        //if (NetworkComponents.NetworkModule.Instance != null)
+        //{
+
+        //}
+        //else {
+        //    //GenerateWorld(UnityEngine.Random.Range(0, 10000));
+        //}
+       
+        //make other
+
+        var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
+            GlobalParameters.Param.accountId, true);
+        
+    }
+
+    public void GenerateWorld(int seed)
+    {
         CurrentStageClimateTpye = StageGenerator.Instance.GetRandomClimateType();
 
         StageGenerator.ClimateInfo info = StageGenerator.Instance.GetClimateInfo(CurrentStageClimateTpye);
@@ -62,7 +79,11 @@ public class GameManager : MonoBehaviour {
         List<string> tileSrc = new List<string>(info.tileSpriteSrc.Values);
         RandomMapGenerator.Instance.SetTileSprite(tileSrc);
 
+        CellularAutomata.Instance.SetSeed(seed);
+
         CellularAutomata.Instance.GenerateMap();
+
+        //generate world by input
         try
         {
             foreach (var env in info.envInfoList)
@@ -79,7 +100,8 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
-        catch (System.Exception e) {
+        catch (System.Exception e)
+        {
 #if UNITY_EDITOR
             Debug.LogError(e);
 #endif
@@ -88,11 +110,6 @@ public class GameManager : MonoBehaviour {
         NPCManager.Manager.SetNpcGenInfo(info.npcInfoList);
         NPCManager.Manager.CheckGeneration();
 
-        //make other
-
-        var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
-            GlobalParameters.Param.accountId, true);
-        
     }
 
     // Use this for initialization
@@ -100,8 +117,8 @@ public class GameManager : MonoBehaviour {
 
         if (NetworkComponents.NetworkModule.Instance != null)
         {
-            NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
-                NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
+            //NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
+            //    NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
 
         GlobalGameManager.Instance.SetGameState(GameState.Stage);

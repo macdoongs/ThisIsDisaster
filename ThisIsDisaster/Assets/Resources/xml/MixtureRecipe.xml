@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <recipe resultID="31002">
+    <material id="50003" num="1"/>
+    <material id="50002" num="3"/>
+  </recipe>
+  <recipe resultID="4">
+    <material id="50002" num="5"/>
+  </recipe>
+</root>

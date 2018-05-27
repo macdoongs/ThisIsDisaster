@@ -32,7 +32,6 @@ public class ItemTestCharacter : MonoBehaviour {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
         }
         CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
-        CharacterUnit.initialState();
     }
 
     public void Update()
@@ -61,7 +60,11 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F6))
         {
-
+            CharacterUnit.GetDisorder(Disorder.DisorderType.poisoning);           
+            CharacterUnit.GetDisorder(Disorder.DisorderType.injury);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.mirage);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.hunger);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.thirst);
         }
 
         if (Input.GetKeyDown(KeyCode.F7))
@@ -80,7 +83,8 @@ public class ItemTestCharacter : MonoBehaviour {
         
         if (Input.GetKeyDown(KeyCode.F10))
         {
-
+            CharacterUnit.RecoverDisoreder(Disorder.DisorderType.poisoning);
+            
         }
         if (Input.GetKeyDown(KeyCode.F11))
         {
