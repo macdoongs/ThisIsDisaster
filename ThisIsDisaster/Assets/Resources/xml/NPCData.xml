@@ -6,5 +6,6 @@
   <npc id="3" name="_pig" maxHp="100" speed="1" defense="1" damage="10" prefab="Pink Pig" script="DummyNPCScript"/>
   <npc id="4" name="_sheep" maxHp="100" speed="1" defense="1" damage="10" prefab="Sheep" script="DummyNPCScript"/>
   <npc id="5" name="_goat" maxHp="100" speed="1" defense="1" damage="10" prefab="Goat" script="DummyNPCScript"/>
-  
+  <npc id="6" name="_chicken" maxHp="100" speed="1" defense="1" damage="10" prefab="Chicken" script="DummyNPCScript"/>
+
 </root>
