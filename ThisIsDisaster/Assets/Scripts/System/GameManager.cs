@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour {
         Event_Ended,
         Close
     }
-    WeatherType generatedEvent = new WeatherType();
 
 
     public class StageClockInfo {
@@ -44,6 +43,8 @@ public class GameManager : MonoBehaviour {
         public StageEventType currentEventType = StageEventType.Init;
         public StageEventType nextEventType = StageEventType.Ready;
         public Timer eventHandleTimer = new Timer();
+        
+        WeatherType generatedEvent = new WeatherType();
 
         public void StartStage() {
             stageTimer.StartTimer();
@@ -99,11 +100,13 @@ public class GameManager : MonoBehaviour {
                     break;
                 case StageEventType.Event_Generated:
                     //start current generated event
+                    StartCurrentEvent();
                     SetNextEventTime(nextEventType);
                     nextEventType = StageEventType.Event_Started;
                     break;
                 case StageEventType.Event_Started:
                     //end current event
+                    EndCurrentEvent();
                     SetNextEventTime(nextEventType);
                     nextEventType = StageEventType.Event_Ended;
                     break;
@@ -127,11 +130,22 @@ public class GameManager : MonoBehaviour {
             currentEventType = nextEventType;
         }
 
-        private void GenerateEvent()
+        void EndCurrentEvent()
         {
-            EventManager.Manager.OnGenerate(Fire);
-            EventManager.Manager.OnStart(Fire);
+            EventManager.Manager.EndEvent(generatedEvent);
+        }
 
+        void StartCurrentEvent()
+        {
+            EventManager.Manager.OnStart(generatedEvent);
+
+        }
+
+        void GenerateEvent()
+        {
+            generatedEvent = GameManager.CurrentGameManager.GetWeatherType();
+            EventManager.Manager.OnGenerate(generatedEvent);
+            EventManager.Manager.OnStart(generatedEvent);
         }
 
         void EndStage() {
@@ -160,6 +174,7 @@ public class GameManager : MonoBehaviour {
     public ClimateType CurrentStageClimateTpye = ClimateType.Island;
 
     private StageClockInfo _stageClock = new StageClockInfo();
+    private StageGenerator.ClimateInfo _currentClimateInfo = null;
 
     private void Awake()
     {
@@ -229,7 +244,12 @@ public class GameManager : MonoBehaviour {
 
         NPCManager.Manager.SetNpcGenInfo(info.npcInfoList);
         NPCManager.Manager.CheckGeneration();
+        this._currentClimateInfo = info;
 
+    }
+
+    public WeatherType GetWeatherType() {
+        return _currentClimateInfo.GetNextWeather();
     }
 
     // Use this for initialization
