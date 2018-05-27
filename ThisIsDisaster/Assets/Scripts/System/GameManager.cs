@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +30,8 @@ public class GameManager : MonoBehaviour {
         Event_Ended,
         Close
     }
+    WeatherType generatedEvent = new WeatherType();
+
 
     public class StageClockInfo {
         public const float STAGE_READY_TIME = 60f;
@@ -90,6 +93,7 @@ public class GameManager : MonoBehaviour {
             {
                 case StageEventType.Ready:
                     //generate next event
+                    GenerateEvent();
                     SetNextEventTime(nextEventType);
                     nextEventType = StageEventType.Event_Generated;
                     break;
@@ -121,6 +125,13 @@ public class GameManager : MonoBehaviour {
             }
 
             currentEventType = nextEventType;
+        }
+
+        private void GenerateEvent()
+        {
+            EventManager.Manager.OnGenerate(Fire);
+            EventManager.Manager.OnStart(Fire);
+
         }
 
         void EndStage() {
