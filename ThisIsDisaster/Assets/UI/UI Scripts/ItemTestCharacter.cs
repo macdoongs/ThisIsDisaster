@@ -88,7 +88,7 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F11))
         {
-            RemoveFirstItem();
+            InGameUIScript.Instance.EventNotice("지진", 1);
         }
         if (Input.GetKeyDown(KeyCode.F12))
         {

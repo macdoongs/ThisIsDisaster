@@ -178,6 +178,7 @@ public class GameManager : MonoBehaviour {
 
         void EndStage() {
             CurrentGameManager.EndStage();
+            
         }
     }
 
@@ -311,6 +312,7 @@ public class GameManager : MonoBehaviour {
     public void EndStage() {
         //do smth
         Debug.LogError("Stage Ended");
+        InGameUIScript.Instance.StageClear();
     }
 
     public UnitControllerBase GetLocalPlayer() {

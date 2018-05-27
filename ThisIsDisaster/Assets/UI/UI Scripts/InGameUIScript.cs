@@ -18,6 +18,29 @@ public class InGameUIScript : MonoBehaviour
     public GameObject StatusBarManager;
     public GameObject SettingManager;
     public GameObject StageClearManager;
+
+    public GameObject EventNoticePanel;
+    public Text EventNoticeText;
+
+    public bool NoticeToken = false;
+    private float TimeLeft = 5.0f;
+    private float nextTime = 0.0f;
+
+    public static InGameUIScript Instance
+    {
+        private set;
+        get;
+    }
+
+    private void Awake()
+    {
+       if(Instance != null && Instance.gameObject != null) {
+            GameObject.Destroy(gameObject);
+            return;
+                }
+        Instance = this;
+    }
+
     public void Start()
     {
         if (PlayerCharacter == null) {
@@ -45,6 +68,15 @@ public class InGameUIScript : MonoBehaviour
 
         StatusBarManager.GetComponent<StatusBarUIScript>().
             UpdateStatusBar(PlayerCharacter);
+
+
+        if (NoticeToken) {
+            if (Time.time > nextTime)
+            {
+                DefaultEventNoticePanel();
+                NoticeToken = false;
+            }
+        }
     }  
 
 
@@ -65,6 +97,7 @@ public class InGameUIScript : MonoBehaviour
 
     public void CloseAllUI()
     {
+        DefaultEventNoticePanel();
         StatusManager.GetComponent<StatusUIController>().Close();
         InventoryManager.GetComponent<InventoryUIController>().Close();
         SettingManager.GetComponent<SettingUIController>().Close();
@@ -88,6 +121,34 @@ public class InGameUIScript : MonoBehaviour
         WarningPanel.SetActive(true);
     }
 
+    public void EventNotice(string eventName, int type)
+    {
+        DefaultEventNoticePanel();
+
+        if(type == 0)
+        {
+            EventNoticeText.text = eventName + " 이벤트가 발생하였습니다.";
+        }
+        else if(type == 1)
+        {
+            EventNoticeText.text = eventName + " 이벤트가 시작되었습니다.";
+        }
+        else
+        {
+            EventNoticeText.text = eventName + " 이벤트가 종료되었습니다.";
+        }
+
+        EventNoticePanel.SetActive(true);
+
+        NoticeToken = true;
+        nextTime = Time.time + TimeLeft;
+    }
+
+    public void DefaultEventNoticePanel()
+    {
+        EventNoticeText.text = "";
+        EventNoticePanel.SetActive(false);
+    }
 }
 
 
