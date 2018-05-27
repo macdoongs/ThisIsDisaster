@@ -34,8 +34,8 @@ public class DroughtEvent : EventBase
         if (_timer.started) {
             if (_timer.RunTimer()) {
                 //timer expired
-                Debug.Log("End Drought Event");
-                EventManager.Manager.EndEvent(this.type);
+                //Debug.Log("End Drought Event");
+                //EventManager.Manager.EndEvent(this.type);
             }
         }
     }
