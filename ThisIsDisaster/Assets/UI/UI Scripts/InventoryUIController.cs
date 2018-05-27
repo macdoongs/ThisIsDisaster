@@ -348,16 +348,18 @@ public class InventoryUIController : MonoBehaviour, IObserver {
 
         ItemModel item = PlayerCharacter.ItemLists[itemPosition];
         ItemType type = item.metaInfo.itemType;
-        if (type.Equals(ItemType.Etc)){
+        if (type.Equals(ItemType.Etc) || type.Equals(ItemType.Tool_Use))
+        {
             UseEtc();
         }
-        else if(type.Equals(ItemType.Weapon))
+        else if(type.Equals(ItemType.Normal))
         {
-            WearEquip();
+            Recipe();
+            
         }
         else
         {
-            Recipe();
+            WearEquip();
         }
 
     }
