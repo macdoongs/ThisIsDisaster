@@ -62,8 +62,16 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     public Text SlotDescriptionRightButton;
     public Text SlotDescriptionLeftButton;
     public GameObject SlotDescriptionRegisterButton;
-    
-    
+
+    public GameObject RecipePanel;
+    public GameObject RecipeListPanel;
+    public GameObject RecipePrefeb;
+
+    public GameObject RecipeDescPanel;
+    public GameObject RecipeDescRequiredPanel;
+    public GameObject RecipeDescReservedPanel;
+    public Text RecipeDescNameText;
+
     public GameObject PrevDescriptionPanel;
 
     public Image PrevDescriptionItemImage;
@@ -208,7 +216,6 @@ public class InventoryUIController : MonoBehaviour, IObserver {
             ItemSlots[i].color = Color.clear;
             ItemBorders[i].color = RestrictedSlotClolr;
             ItemCounts[i].text = "";
-            int index = i;
         }
         for (int i = bagSize; i < 30; i++)
         {
@@ -312,6 +319,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     //인벤토리 아이템 슬롯 클릭시
     public void SlotItemClicked()
     {
+        DefaultRecipePanel();
         defaultDescriptions();
 
         ItemModel item = null;
@@ -339,12 +347,19 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     {
 
         ItemModel item = PlayerCharacter.ItemLists[itemPosition];
-        if (item.metaInfo.itemType.Equals(ItemType.Etc)){
+        ItemType type = item.metaInfo.itemType;
+        if (type.Equals(ItemType.Etc)){
             UseEtc();
         }
-        else{
+        else if(type.Equals(ItemType.Weapon))
+        {
             WearEquip();
         }
+        else
+        {
+            Recipe();
+        }
+
     }
 
     public void UseEtc()
@@ -367,6 +382,149 @@ public class InventoryUIController : MonoBehaviour, IObserver {
         else{
             ChangeUIOpen();
         }
+    }
+
+    public void Recipe()
+    {
+        DefaultRecipeDescription();
+        DefaultRecipePanel();
+
+        ItemModel norm = PlayerCharacter.ItemLists[itemPosition];
+        List<MixtureRecipe> recipeList = ItemManager.Manager.ContainRecipe(norm);
+
+        if(recipeList.Count != 0)
+        {
+            int index = 0;
+            foreach(var recipe in recipeList)
+            {
+                
+
+                ItemModel result = ItemManager.Manager.MakeItem(recipe.resultID);
+                ItemModel mat1 = ItemManager.Manager.MakeItem(recipe.MaterialID[0]);
+                long mat1_num = recipe.MaterialNum[0];
+
+
+                GameObject recipePrefeb = Instantiate(RecipePrefeb);
+
+
+                Image resultImage = recipePrefeb.GetComponentsInChildren<Image>()[1];
+                Image Material1Image = recipePrefeb.GetComponentsInChildren<Image>()[2];
+                Image Material2Image = recipePrefeb.GetComponentsInChildren<Image>()[3];
+                Text Material1Num = recipePrefeb.GetComponentsInChildren<Text>()[2];
+                Text Material2Num = recipePrefeb.GetComponentsInChildren<Text>()[4];
+
+                if (recipe.MaterialID.Count == 2)
+                {
+                    ItemModel mat2 = ItemManager.Manager.MakeItem(recipe.MaterialID[1]);
+                    long mat2_num = recipe.MaterialNum[1];
+                    Material2Image.sprite = Resources.Load<Sprite>(mat2.metaInfo.spriteSrc);
+                    Material2Num.text = mat2_num.ToString();
+                }
+                else{
+                    Material2Image.sprite = null;
+                    Material2Image.color = Color.clear;
+                    recipePrefeb.GetComponentsInChildren<Text>()[3].text = "";
+                    Material2Num.text = "";
+                }
+
+                resultImage.sprite = Resources.Load<Sprite>(result.metaInfo.spriteSrc);
+                Material1Image.sprite = Resources.Load<Sprite>(mat1.metaInfo.spriteSrc);
+
+                Material1Num.text = mat1_num.ToString();
+                int i = index;
+                recipePrefeb.GetComponentInChildren<Button>().onClick.AddListener(() => 
+                        RecipeDescription(i));
+
+
+                recipePrefeb.transform.parent = RecipeListPanel.transform;
+                recipePrefeb.transform.localScale = new Vector3(1, 1, 1);
+                recipePrefeb.SetActive(true);
+                index++;
+            }
+
+            RecipePanel.SetActive(true);
+        }
+
+    }
+
+    public void DefaultRecipePanel()
+    {
+        for(int i = 0; i < RecipeListPanel.transform.childCount; i++)
+        {
+            
+            DestroyObject(RecipeListPanel.transform.GetChild(i).gameObject);
+        }
+
+        RecipePanel.SetActive(false);
+    }
+
+    public void RecipeDescription(int index)
+    {
+        DefaultRecipeDescription();
+
+        ItemModel item = PlayerCharacter.ItemLists[itemPosition];
+        List<MixtureRecipe> recipeList = ItemManager.Manager.ContainRecipe(item);
+        MixtureRecipe recipe = recipeList[index];
+
+        ItemModel ResultItem = ItemManager.Manager.MakeItem(recipe.resultID);
+        ItemModel Material1 = ItemManager.Manager.MakeItem(recipe.MaterialID[0]);
+        int Material1Num = recipe.MaterialNum[0];
+       
+
+        RecipeDescNameText.text = ResultItem.metaInfo.Name.ToString();
+
+        RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[1].sprite = 
+            Resources.Load<Sprite>(Material1.metaInfo.spriteSrc); ;
+        RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[1].color = Color.white;
+        RecipeDescRequiredPanel.GetComponentsInChildren<Text>()[1].text = 
+            Material1Num.ToString() + " 개";
+        RecipeDescReservedPanel.GetComponentsInChildren<Image>()[1].sprite =
+           Resources.Load<Sprite>(Material1.metaInfo.spriteSrc); ;
+        RecipeDescReservedPanel.GetComponentsInChildren<Image>()[1].color = Color.white;
+        int reservedMat1Num = PlayerCharacter.GetReservedItemCount(Material1);
+        RecipeDescReservedPanel.GetComponentsInChildren<Text>()[1].text = reservedMat1Num.ToString() + " 개";
+
+        if (recipe.MaterialID.Count == 2)
+        {
+            ItemModel Material2 = ItemManager.Manager.MakeItem(recipe.MaterialID[1]);
+            int Material2Num = recipe.MaterialNum[1];
+            RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[2].sprite =
+                Resources.Load<Sprite>(Material2.metaInfo.spriteSrc); ;
+            RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[2].color = Color.white;
+            RecipeDescRequiredPanel.GetComponentsInChildren<Text>()[2].text = 
+                Material2Num.ToString() + " 개";
+
+            RecipeDescReservedPanel.GetComponentsInChildren<Image>()[2].sprite =
+                Resources.Load<Sprite>(Material2.metaInfo.spriteSrc); ;
+            RecipeDescReservedPanel.GetComponentsInChildren<Image>()[2].color = Color.white;
+
+            int reservedMat2Num = PlayerCharacter.GetReservedItemCount(Material2);
+            RecipeDescReservedPanel.GetComponentsInChildren<Text>()[2].text = reservedMat2Num.ToString() + " 개";
+        }
+       RecipeDescPanel.SetActive(true);
+
+    }
+
+    public void DefaultRecipeDescription()
+    {
+        RecipeDescNameText.text = "";
+        RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[1].sprite = null;
+        RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[1].color = Color.clear;
+        RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[2].sprite = null;
+        RecipeDescRequiredPanel.GetComponentsInChildren<Image>()[2].color = Color.clear;
+
+        RecipeDescRequiredPanel.GetComponentsInChildren<Text>()[1].text = "";
+        RecipeDescRequiredPanel.GetComponentsInChildren<Text>()[2].text = "";
+
+        RecipeDescReservedPanel.GetComponentsInChildren<Image>()[1].sprite = null;
+        RecipeDescReservedPanel.GetComponentsInChildren<Image>()[1].color = Color.clear;
+        RecipeDescReservedPanel.GetComponentsInChildren<Image>()[2].sprite = null;
+        RecipeDescReservedPanel.GetComponentsInChildren<Image>()[2].color = Color.clear;
+
+        RecipeDescReservedPanel.GetComponentsInChildren<Text>()[1].text = "";
+        RecipeDescReservedPanel.GetComponentsInChildren<Text>()[2].text = "";
+
+        RecipeDescPanel.SetActive(false);
     }
 
     public void RemoveSlotItem()
@@ -848,8 +1006,6 @@ public class InventoryUIController : MonoBehaviour, IObserver {
                     presetItem.itemPosition--;
                 }
             }
-
-
         }
 
         PresetUpdate();
@@ -884,4 +1040,5 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     {
         Notice.Instance.Remove(NoticeName.LocalPlayerGenerated, this);
     }
+
 }

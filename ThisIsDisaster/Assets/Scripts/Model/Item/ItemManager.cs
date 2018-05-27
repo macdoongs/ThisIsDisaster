@@ -40,6 +40,8 @@ public class ItemManager {
     /// </summary>
     private Dictionary<long, ItemTypeInfo> _typeInfoDic = new Dictionary<long, ItemTypeInfo>();
 
+    private Dictionary<long, MixtureRecipe> _recipeDic = new Dictionary<long, MixtureRecipe>();
+
     ItemManager() {
         //Load Static Info
         
@@ -53,6 +55,17 @@ public class ItemManager {
         _typeInfoDic.Clear();
         foreach (var info in infos) {
             _typeInfoDic.Add(info.metaId, info);
+        }
+
+        //LogExistItems();
+    }
+
+    public void InitRecipeList(List<MixtureRecipe> infos)
+    {
+        _recipeDic.Clear();
+        foreach (var info in infos)
+        {
+            _recipeDic.Add(info.resultID, info);
         }
 
         //LogExistItems();
@@ -141,4 +154,25 @@ public class ItemManager {
             return output;
         }
     }
+
+    public List<MixtureRecipe> ContainRecipe(ItemModel item)
+    {
+        long itemId = item.metaInfo.metaId;
+        List<MixtureRecipe> recipeList = new List<MixtureRecipe>();
+        foreach(var _recipe in _recipeDic)
+        {
+            MixtureRecipe recipe = _recipe.Value;
+            foreach(var matID in recipe.MaterialID)
+            {
+                if (matID == itemId)
+                {
+                    recipeList.Add(recipe);
+                    break;
+                }
+            }
+        }
+
+        return recipeList;
+    }
+
 }

@@ -62,6 +62,10 @@ public class GlobalGameManager {
         itemLoader.Initialize(GameStaticData.ItemDataLoader._itemXmlFilePath);
         itemLoader.LoadData();
 
+        GameStaticData.RecipeDataLoader recipeLoater = new GameStaticData.RecipeDataLoader();
+        recipeLoater.Initialize(GameStaticData.RecipeDataLoader._recipeXmlFilePath);
+        recipeLoater.LoadData();
+
         GameStaticData.NPCDataLoader npcLoader = new GameStaticData.NPCDataLoader();
         npcLoader.Initialize(GameStaticData.NPCDataLoader._npcXmlFilePath);
         npcLoader.LoadData();

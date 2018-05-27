@@ -16,7 +16,7 @@ public class PlayerModel : UnitModel
 
     public override float GetAttackDamage()
     {
-        return _character.damage;
+        return _character.CurrentStats.Damage;
     }
 
     public override string GetUnitName()
@@ -97,48 +97,28 @@ public class CharacterModel : MonoBehaviour
     public string PlayerName = "TestID";
     public string PlayerLevel = "123";
 
+
+    public Stats DefaultStats = new Stats();
+    public int default_attack_range_x = 5;
+    public int default_attack_range_y = 5;
     //가방(인벤토리) 사이즈. 
     private int defaultBagSize = 5;
     //최대 물 보관 개수.
     private int defaultWaterMax = 5;
 
-    //캐릭터 기본 스텟
-    public float defaultHealth = 100.0f;
-    public float defaultStamina = 100.0f;
-    public float defaultDefense = 10.0f;
-    public float defaultDamage = 10.0f;
-    public int default_attack_range_x = 5;
-    public int default_attack_range_y = 5;
-    public int defaultHealtRegen = 5;
-    public int defaultStaminaRegen = 5;
+    public Stats CurrentStats = new Stats();
 
-    //캐릭터 맥스 스텟. 
-    //맥스스텟 = 기본 스텟 + 아이템으로 증가하는 스텟
-    public float maxHealth = 0.0f;
-    public float maxStamina = 0.0f;
-
-    //캐릭터 현재 스텟
-    public float health = 0.0f;
-    public float stamina = 0.0f;
-    public float defense = 0.0f;
-    public float damage = 0.0f;
-    //공격 범위는 default 에서 더하는게 아니라 무기의 값으로 변경하는 것
     public int attack_range_x = 0;
     public int attack_range_y = 0;
-    public int healthRegen = 0;
-    public int staminaRegen = 0;
     public int bagSize = 0;
     public int waterMax = 0;
 
-    //아이템으로 증가하는 스텟
-    public float itemHealth = 0.0f;
-    public float itemStamina = 0.0f;
-    public float itemDefense = 0.0f;
-    public float itemDamage =0.0f;
-    public int itemHealthRegen = 0;
-    public int itemStaminaRegen = 0;
-    
 
+    public Stats ItemStats = new Stats();
+    
+    public Stats DisorderStats = new Stats();
+    
+    public Disorder[] disorders = new Disorder[5];
 
     //아이템 착용 슬롯
     public ItemModel[] EquipSlots;
@@ -211,19 +191,72 @@ public class CharacterModel : MonoBehaviour
         return _player;
     }
 
+    public void InitDefaultStats()
+    {
+        DefaultStats.Health = 100.0f;
+        DefaultStats.Stamina = 100.0f;
+        DefaultStats.Defense = 10.0f;
+        DefaultStats.Damage = 10.0f;
+        DefaultStats.HealthRegen = 5.0f;
+        DefaultStats.StaminaRegen = 5.0f;
+        DefaultStats.MoveSpeed = 10;
+
+
+        default_attack_range_x = 5;
+        default_attack_range_y = 5;
+
+        //가방(인벤토리) 사이즈. 
+        defaultBagSize = 5;
+        //최대 물 보관 개수.
+        defaultWaterMax = 5;
+    }
+
     private void initialCharacterSetting()
     {
-        health = defaultHealth;
-        stamina = defaultStamina;
-        defense = defaultDefense;
-        damage = defaultDamage;
+        InitDefaultStats();
+
         attack_range_x = default_attack_range_x;
         attack_range_y = default_attack_range_y;
         bagSize = defaultBagSize;
         waterMax = defaultWaterMax;
-        healthRegen = defaultHealtRegen;
-        staminaRegen = defaultStaminaRegen;
+
+        CurrentStats.Health = DefaultStats.Health;
+        CurrentStats.Stamina = DefaultStats.Stamina;
+        CurrentStats.MaxHealth = DefaultStats.MaxHealth;
+        CurrentStats.MaxStamina = DefaultStats.MaxStamina;
+        CurrentStats.HealthRegen = DefaultStats.HealthRegen;
+        CurrentStats.StaminaRegen = DefaultStats.StaminaRegen;
+        CurrentStats.Defense = DefaultStats.Defense;
+        CurrentStats.Damage = DefaultStats.Damage;
+        CurrentStats.MoveSpeed = DefaultStats.MoveSpeed;
+
+        for (int i = 0; i < 5; i++) {
+            disorders[i] = null;
+        }
+        DisorderStatSetting();
+        UpdateStat();
     }
+
+    public void DisorderStatSetting()
+    {
+        DisorderStats.ClearStats();
+        foreach(var disorder in disorders)
+        {
+            if(disorder != null)
+            {
+                DisorderStats.Health += disorder.Health;
+                DisorderStats.Stamina += disorder.Stamina;
+                DisorderStats.MaxHealth += disorder.MaxHealth;
+                DisorderStats.MaxStamina += disorder.MaxStamina;
+                DisorderStats.HealthRegen += disorder.HealthRegen;
+                DisorderStats.StaminaRegen += disorder.StaminaRegen;
+                DisorderStats.Damage += disorder.Damage;
+                DisorderStats.Defense += disorder.Defense;
+                DisorderStats.MoveSpeed += disorder.MoveSpeed;
+            }
+        }
+    }
+
 
     void InitDefaultSprite() {
         _defaultSpriteInfo.Clear();
@@ -368,20 +401,6 @@ public class CharacterModel : MonoBehaviour
         List<int> output = new List<int>(ItemCounts);
         return output;
     }
-
-    //??? 왜 있는건지 모르겠음
-    public virtual void initialState()
-    {
-
-        UpdateStat();
-
-        health = maxHealth;
-        stamina = maxStamina;
-        bagSize = defaultBagSize;
-        BackHair = SpriteParts[14].sprite;
-        Tail = SpriteParts[15].sprite;
-    }
-
 
     //장비 착용.
     public virtual bool WearEquipment(ItemModel equipment)
@@ -552,10 +571,10 @@ public class CharacterModel : MonoBehaviour
 
         UpdateStat();
 
-        if (health > maxHealth)
-            health = maxHealth;
-        if (stamina > maxStamina)
-            stamina = maxStamina;
+        if (CurrentStats.Health > CurrentStats.MaxHealth)
+            CurrentStats.Health = CurrentStats.MaxHealth;
+        if (CurrentStats.Stamina > CurrentStats.MaxStamina)
+            CurrentStats.Stamina = CurrentStats.MaxStamina;
 
         SpriteUpdate();
     }
@@ -568,18 +587,17 @@ public class CharacterModel : MonoBehaviour
     //장비 착용시 스텟 업데이트
     public void AddStats(ItemModel equip)
     {
-        itemHealth += equip.GetHealth();
-        health += equip.GetHealth();
-        itemStamina += equip.GetStamina();
-        stamina += equip.GetStamina();
-        itemDefense += equip.GetDefense();
-        itemDamage += equip.GetDamage();
+        ItemStats.Health += equip.GetHealth();
+        CurrentStats.Health += equip.GetHealth();
+        ItemStats.Stamina += equip.GetStamina();
+        CurrentStats.Stamina += equip.GetStamina();
+        ItemStats.Defense  += equip.GetDefense();
+        ItemStats.Damage += equip.GetDamage();
 
         attack_range_x = equip.GetAttacRangeX();
         attack_range_y = equip.GetAttacRangeY();
-
-        itemHealthRegen += equip.GetHealthRegen();
-        itemStaminaRegen += equip.GetStaminaRegen();
+        ItemStats.HealthRegen += equip.GetHealthRegen();
+        ItemStats.StaminaRegen += equip.GetStaminaRegen();
 
         UpdateStat();
     }
@@ -587,10 +605,11 @@ public class CharacterModel : MonoBehaviour
     //장비 제거시 스텟 업데이트
     private void SubtractStats(ItemModel equip)
     {
-        itemHealth -= equip.GetHealth();
-        itemStamina -= equip.GetStamina();
-        itemDefense -= equip.GetDefense();
-        itemDamage -= equip.GetDamage();
+
+        ItemStats.Health -= equip.GetHealth();
+        ItemStats.Stamina -= equip.GetStamina();
+        ItemStats.Defense -= equip.GetDefense();
+        ItemStats.Damage -= equip.GetDamage();
         
         if(equip.GetAttacRangeX() != 0)
         {
@@ -602,34 +621,97 @@ public class CharacterModel : MonoBehaviour
             attack_range_y = default_attack_range_y;
         }
 
-        itemHealth -= equip.GetHealthRegen();
-        itemStaminaRegen -= equip.GetStaminaRegen();
+        ItemStats.HealthRegen -= equip.GetHealthRegen();
+        ItemStats.StaminaRegen -= equip.GetStaminaRegen();
         UpdateStat();
     }
-    
+
+    //상태이상 효과 추가
+    public void GetDisorder(Disorder.DisorderType type)
+    {
+        if (ContainDisorder(type))
+        {
+            Disorder disorder = new Disorder(type);
+            
+            for(int i = 0; i < disorders.Length; i++)
+            {
+                if(disorders[i] == null)
+                {
+                    disorders[i] = disorder;
+                    break;
+                }
+            }
+            UpdateStat();
+        }
+    }
+
+    public void RecoverDisoreder(Disorder.DisorderType type)
+    {
+        if (!ContainDisorder(type))
+        {
+            for(int i = 0; i < disorders.Length; i++)
+            {
+                if (disorders[i].disorderType.Equals(type))
+                {
+                    disorders[i] = null;
+                    for(int j = i; j <disorders.Length-1; j++)
+                    {
+                        disorders[j] = disorders[j + 1];
+                    }
+
+                    disorders[disorders.Length-1] = null;
+                }
+            }
+        }
+
+        UpdateStat();
+    }
+
+    //true 면 상태이상을 갖지 않은 것
+    public bool ContainDisorder(Disorder.DisorderType type)
+    {
+        bool result = true ;
+
+        for(int i = 0; i < disorders.Length; i++)
+        {
+            if (disorders[i] != null && disorders[i].disorderType.Equals(type))
+            {
+                result = false;
+                break;
+            }
+        }
+
+
+        return result;
+    }
+
+
     //장비 착용시 Max Stat을 업데이트
     private void UpdateStat()
     {
-        maxHealth = defaultHealth + itemHealth;
-        maxStamina = defaultStamina + itemStamina;
-        defense = defaultDefense + itemDefense;
-        damage = defaultDamage + itemDamage;
-        healthRegen = defaultHealtRegen + itemHealthRegen;
-        staminaRegen = defaultStaminaRegen + itemStaminaRegen;
+        DisorderStatSetting();
+        CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth;
+        CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina;
+        CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense;
+        CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage;
+        CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen;
+        CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen;
+        CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed;
     }
 
     private void StatRegeneration()
     {
-        health += healthRegen;
-        stamina += staminaRegen;
+        if(CurrentStats.Stamina == CurrentStats.MaxStamina)
+            CurrentStats.Health += CurrentStats.HealthRegen;
+        CurrentStats.Stamina += CurrentStats.StaminaRegen;
 
-        if(health > maxHealth)
+        if(CurrentStats.Health > CurrentStats.MaxHealth)
         {
-            health = maxHealth;
+            CurrentStats.Health = CurrentStats.MaxHealth;
         }
-        if(stamina > maxStamina)
+        if(CurrentStats.Stamina > CurrentStats.MaxStamina)
         {
-            stamina = maxStamina;
+            CurrentStats.Stamina = CurrentStats.MaxStamina;
         }
     }
 
@@ -663,11 +745,11 @@ public class CharacterModel : MonoBehaviour
     //HP 감소
     public void SubtractHealth(float weight)
     {
-        health -= weight;
+        CurrentStats.Health -= weight;
 
-        if(health <= 0f)
+        if(CurrentStats.Health <= 0f)
         {
-            health = 0f;
+            CurrentStats.Health = 0f;
             Debug.Log("Player Died");
         }
     }
@@ -676,18 +758,14 @@ public class CharacterModel : MonoBehaviour
     public bool PlusHealth(float weight)
     {
         bool result = false;
-        if(health < maxHealth)
+        if(CurrentStats.Health < CurrentStats.MaxHealth)
         {
-            health += weight;
-            if(health >= maxHealth)
+            CurrentStats.Health += weight;
+            if(CurrentStats.Health >= CurrentStats.MaxHealth)
             {
-                health = maxHealth;
+                CurrentStats.Health = CurrentStats.MaxHealth;
             }
             result = true;
-        }
-        else
-        {
-            Debug.Log("HP is Full");
         }
 
         return result;
@@ -696,12 +774,11 @@ public class CharacterModel : MonoBehaviour
     //Stamina 감소
     public void SubtractStamina(float weight)
     {
-        stamina -= weight;
+        CurrentStats.Stamina -= weight;
 
-        if (stamina <= 0f)
+        if (CurrentStats.Stamina <= 0f)
         {
-            stamina = 0f;
-            Debug.Log("Stamina is 0");
+            CurrentStats.Stamina = 0f;
         }
     }
 
@@ -709,20 +786,15 @@ public class CharacterModel : MonoBehaviour
     public bool PlusStamina(float weight)
     {
         bool result = false;
-        if (stamina < maxStamina)
+        if (CurrentStats.Stamina < CurrentStats.MaxStamina)
         {
-            stamina += weight;
-            if (stamina >= maxStamina)
+            CurrentStats.Stamina += weight;
+            if (CurrentStats.Stamina >= CurrentStats.MaxStamina)
             {
-                stamina = maxStamina;
+                CurrentStats.Stamina = CurrentStats.MaxStamina;
             }
             result = true;
         }
-        else
-        {
-            Debug.Log("Stamina is Full");
-        }
-
         return result;
     }
 
@@ -873,6 +945,61 @@ public class CharacterModel : MonoBehaviour
         }
         catch {
 
+        }
+    }       
+
+    public int GetReservedItemCount(ItemModel item)
+    {
+        for(int i = 0; i < ItemLists.Count; i++)
+        {
+            if(ItemLists[i] != null)
+            {
+                ItemModel _item = ItemLists[i];
+                if (_item.metaInfo.Name == item.metaInfo.Name)
+                    return ItemCounts[i];
+            }
+        }
+
+        return 0;
+    }
+
+
+    public class Stats
+    {
+        public float MaxHealth = 0.0f;
+        public float MaxStamina = 0.0f;
+        public float Health = 0.0f;
+        public float Stamina = 0.0f;
+        public float Defense = 0.0f;
+        public float Damage = 0.0f;
+        public float HealthRegen = 0;
+        public float StaminaRegen = 0;
+        public float MoveSpeed = 0;
+
+        public Stats()
+        {
+            MaxHealth = 0.0f;
+            MaxStamina = 0.0f;
+            Health = 0.0f;
+            Stamina = 0.0f;
+            Defense = 0.0f;
+            Damage = 0.0f;
+            HealthRegen = 0.0f;
+            StaminaRegen = 0.0f;
+            MoveSpeed = 0.0f;
+        }
+
+        public void ClearStats()
+        {
+            MaxHealth = 0.0f;
+            MaxStamina = 0.0f;
+            Health = 0.0f;
+            Stamina = 0.0f;
+            Defense = 0.0f;
+            Damage = 0.0f;
+            HealthRegen = 0.0f;
+            StaminaRegen = 0.0f;
+            MoveSpeed = 0.0f;
         }
     }
 }
