@@ -34,6 +34,7 @@ public class EventManager : MonoBehaviour {
     public GameObject cycloneObject = null;
     public GameObject rainObject = null;
     public GameObject darkObject = null;
+    public GameObject fireObject = null;
     public GameObject snowObject = null;
     public GameObject sandObject = null;
     public GameObject cloudObject = null;
@@ -254,6 +255,25 @@ public class EventManager : MonoBehaviour {
 				renderer.color = color;
 			}
 		}
+    }
+
+    public FireEffect GetFireEffect()
+    {
+        if (fireObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/FireEffect");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.SetActive(false);
+
+            }
+
+            fireObject = effectObject;
+
+        }
+
+        return fireObject.GetComponent<FireEffect>();
     }
 
     public SnowEffect GetSnowEffect()
