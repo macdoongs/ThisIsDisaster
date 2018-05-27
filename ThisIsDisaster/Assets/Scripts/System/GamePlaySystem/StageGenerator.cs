@@ -49,6 +49,14 @@ public class StageGenerator {
         public List<int> uniqueGenItemList = new List<int>();
         public List<EnvInfo> envInfoList = new List<EnvInfo>();
         public List<NpcInfo> npcInfoList = new List<NpcInfo>();
+
+        public WeatherType GetNextWeather() {
+            int randIndexMax = weatherList.Count;
+            int index = StageGenerator.Instance.ReadNextValue(randIndexMax);
+            WeatherType selected = weatherList[index];
+            weatherList.Remove(selected);
+            return selected;
+        }
     }
 
     private static StageGenerator _instance = null;
@@ -91,7 +99,7 @@ public class StageGenerator {
         int selected = UnityEngine.Random.Range(0, 4);
         
         //test code
-        return ClimateType.Polar;
+        return ClimateType.Island;
 
         return (ClimateType)selected;
     }
