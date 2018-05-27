@@ -21,6 +21,113 @@ public class Prefab {
 }
 
 public class GameManager : MonoBehaviour {
+    public enum StageEventType {
+        Init,
+        Ready,
+        Event_Generated,
+        Event_Started,
+        Event_Ended,
+        Close
+    }
+
+    public class StageClockInfo {
+        public const float STAGE_READY_TIME = 60f;
+        public const float EVENT_GENERATE_TIME = 60f;
+        public const float EVENT_RUN_TIME = 120f;
+        public const float EVENT_END_TIME = 60f;
+        public const float STAGE_CLOSE_TIME = 10f;
+
+        public Timer stageTimer = new Timer();
+        public StageEventType currentEventType = StageEventType.Init;
+        public StageEventType nextEventType = StageEventType.Ready;
+        public Timer eventHandleTimer = new Timer();
+
+        public void StartStage() {
+            stageTimer.StartTimer();
+            currentEventType = StageEventType.Init;
+            nextEventType = StageEventType.Ready;
+            SetNextEventTime(nextEventType);
+        }
+
+        public void SetNextEventTime(float time) {
+            eventHandleTimer.StartTimer(time);
+        }
+
+        public void SetNextEventTime(StageEventType type, bool isClose = false) {
+            switch (type) {
+                case StageEventType.Ready:
+                    eventHandleTimer.StartTimer(STAGE_READY_TIME);
+                    break;
+                case StageEventType.Event_Generated:
+                    eventHandleTimer.StartTimer(EVENT_GENERATE_TIME);
+                    break;
+                case StageEventType.Event_Started:
+                    eventHandleTimer.StartTimer(EVENT_RUN_TIME);
+                    break;
+                case StageEventType.Event_Ended:
+                    if (isClose)
+                    {
+                        eventHandleTimer.StartTimer(STAGE_CLOSE_TIME);
+                    }
+                    else {
+                        eventHandleTimer.StartTimer(EVENT_END_TIME);
+                    }
+                    break;
+            }
+        }
+
+        public void Update() {
+            stageTimer.RunTimer();
+
+            if (eventHandleTimer.RunTimer()) {
+                ExecuteNextStep();
+            }
+        }
+
+        void ExecuteNextStep()
+        {
+            switch (nextEventType)
+            {
+                case StageEventType.Ready:
+                    //generate next event
+                    SetNextEventTime(nextEventType);
+                    nextEventType = StageEventType.Event_Generated;
+                    break;
+                case StageEventType.Event_Generated:
+                    //start current generated event
+                    SetNextEventTime(nextEventType);
+                    nextEventType = StageEventType.Event_Started;
+                    break;
+                case StageEventType.Event_Started:
+                    //end current event
+                    SetNextEventTime(nextEventType);
+                    nextEventType = StageEventType.Event_Ended;
+                    break;
+                case StageEventType.Event_Ended:
+                    //generate next event or close stage
+                    /*
+                     if MAKE_NEXT_EVENT
+            SetNextEventTime(nextEventType);
+                        nextEventType = StageEventType.Event_Generated;
+                     else
+            SetNextEventTime(nextEventType, true);
+                        nextEventType = StageEventType.Close;
+                     */
+                    break;
+                case StageEventType.Close:
+                    //close game
+                    EndStage();
+                    break;
+            }
+
+            currentEventType = nextEventType;
+        }
+
+        void EndStage() {
+            CurrentGameManager.EndStage();
+        }
+    }
+
     public static GameManager CurrentGameManager {
         private set;
         get;
@@ -40,6 +147,8 @@ public class GameManager : MonoBehaviour {
     public UnitControllerBase CommonPlayerObject;
 
     public ClimateType CurrentStageClimateTpye = ClimateType.Island;
+
+    private StageClockInfo _stageClock = new StageClockInfo();
 
     private void Awake()
     {
@@ -124,12 +233,26 @@ public class GameManager : MonoBehaviour {
         GlobalGameManager.Instance.SetGameState(GameState.Stage);
 
         Init();
+
+        Debug.LogError("Stage Started");
+        StartStage();
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        _stageClock.Update();
         Notice.Instance.Send(NoticeName.Update);
 	}
+
+    public void StartStage() {
+        _stageClock.StartStage();
+    }
+
+    public void EndStage() {
+        //do smth
+        Debug.LogError("Stage Ended");
+    }
 
     public UnitControllerBase GetLocalPlayer() {
         return _localPlayer;
