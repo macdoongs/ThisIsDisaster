@@ -34,9 +34,9 @@ namespace NetworkComponents
             }
         }
 
-        ~Session() {
-            Disconnect();
-        }
+        //~Session() {
+        //    Disconnect();
+        //}
 
         public bool StartServer(int port, int connectionMax) {
             bool ret = CreateListener(port, connectionMax);

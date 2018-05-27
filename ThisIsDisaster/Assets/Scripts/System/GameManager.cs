@@ -55,19 +55,19 @@ public class GameManager : MonoBehaviour {
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
         GenerateWorld(UnityEngine.Random.Range(0, 1000));
-        //if (NetworkComponents.NetworkModule.Instance != null)
-        //{
+        if (NetworkComponents.NetworkModule.Instance != null)
+        {
 
-        //}
-        //else {
-        //    //GenerateWorld(UnityEngine.Random.Range(0, 10000));
-        //}
-       
-        //make other
+        }
+        else
+        {
+            //GenerateWorld(UnityEngine.Random.Range(0, 10000));
+        }
+        
 
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
-        
+
     }
 
     public void GenerateWorld(int seed)

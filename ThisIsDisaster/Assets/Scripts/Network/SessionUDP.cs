@@ -99,7 +99,8 @@ namespace NetworkComponents
                 TransportUDP transport = _transports[node];
                 IPEndPoint transportEp = transport.GetRemoteEndPoint();
                 if (transportEp != null) {
-                    Debug.Log("NodeFromEP recv[node:" + node + "] " + ((IPEndPoint)endPoint).Address.ToString() + ":" + endPoint.Port + " transport:" + transportEp.Address.ToString() + ":" + transportEp.Port);
+                    Debug.Log("NodeFromEP recv[node:" + node + "] " + ((IPEndPoint)endPoint).Address.ToString() + ":" + endPoint.Port 
+                            + " transport:" + transportEp.Address.ToString() + ":" + transportEp.Port);
                     if (
                         transportEp.Port == endPoint.Port &&
                         transportEp.Address.ToString() == endPoint.Address.ToString()
