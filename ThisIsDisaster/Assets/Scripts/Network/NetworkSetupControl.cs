@@ -39,7 +39,7 @@ public class NetworkSetupControl : MonoBehaviour
     {
         Initialize();
         UpdateAccountId();
-        NetworkModule.Instance.RegisterReceiveNotification(PacketId.GameSyncInfo, OnReceiveGameSyncPacket);
+        //NetworkModule.Instance.RegisterReceiveNotification(PacketId.GameSyncInfo, OnReceiveGameSyncPacket);
     }
 
     public void Initialize()
@@ -134,7 +134,7 @@ public class NetworkSetupControl : MonoBehaviour
         //port += GlobalParameters.Param.AdditionalPortNum;
         bool state = StartServer(port, NetworkModule.ConnectionType.UDP);
         if (_isHost) {
-            state &= NetworkModule.Instance.StartGameServer();
+            //state &= NetworkModule.Instance.StartGameServer();
         }
         LogStepState(state, Step.ServerStart);
         if (!state) {
@@ -178,11 +178,13 @@ public class NetworkSetupControl : MonoBehaviour
     }
 
     bool StartServer(int port, NetworkModule.ConnectionType connectType) {
-        return NetworkModule.Instance.StartServer(port, connectType);
+        return false;
+        //return NetworkModule.Instance.StartServer(port, connectType);
     }
 
     bool Connect(string addr, int port, NetworkModule.ConnectionType type) {
-        return NetworkModule.Instance.Connect(addr, port, type);
+        return false;
+        //return NetworkModule.Instance.Connect(addr, port, type);
     }
 
     string GetHostAddress() {

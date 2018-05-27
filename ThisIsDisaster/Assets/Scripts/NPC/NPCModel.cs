@@ -140,7 +140,7 @@ namespace NPC {
 
             _state = NPCState.Destroied;
 
-            ItemManager.Manager.MakeDropItem(70001, GetCurrentTile());
+            ItemManager.Manager.MakeDropItem(41003, GetCurrentTile());
         }
 
         public void OnVictoried() {

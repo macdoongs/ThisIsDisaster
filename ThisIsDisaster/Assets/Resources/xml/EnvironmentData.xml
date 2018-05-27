@@ -2,4 +2,5 @@
 <root>
   <environment id="0" name="_tree_grass" prefab="TreeGrass" script=""/>
   <environment id="1" name="_grass" prefab="Grass" script=""/>
+  <environment id="2" name="_tree_grass" prefab="TreeGrass_Polar" script=""/>
 </root>

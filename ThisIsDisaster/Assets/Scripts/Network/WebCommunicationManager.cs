@@ -240,7 +240,7 @@ namespace Json
 
         #endregion
 
-        #region Receive
+        #region Response
         public void OnReceiveGETMessage(string message)
         {
             var response = JsonUtility.FromJson<Response>(message);

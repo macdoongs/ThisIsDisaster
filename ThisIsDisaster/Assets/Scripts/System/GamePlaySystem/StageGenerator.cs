@@ -91,7 +91,7 @@ public class StageGenerator {
         int selected = UnityEngine.Random.Range(0, 4);
         
         //test code
-        return ClimateType.Island;
+        return ClimateType.Polar;
 
         return (ClimateType)selected;
     }
@@ -102,7 +102,7 @@ public class StageGenerator {
     }
 
     public int ReadNextValue() {
-        if (_stageGenRandom == null)
+        if (_stageGenRandom == null)    
         {
             _stageGenRandom = new System.Random(UnityEngine.Random.Range(_randomMin, _randomMax));
         }

@@ -432,13 +432,16 @@ public class CellularAutomata : MonoBehaviour {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    public void SetSeed(int seed) {
+        this.seed = seed;
+    }
 
     void RandomFillMap() {
         int newSeed;
         useRandomSeed = RandomMapGenerator.Instance.useRandomSeed;
         do
         {
-            newSeed = UnityEngine.Random.Range(0,100);
+            newSeed = UnityEngine.Random.Range(0, 100);
         } while (seed == newSeed);
         seed = newSeed;
 

@@ -28,7 +28,7 @@
 
     <environments>
       <environment height="3" min="30" max="50">0</environment><!--tree-->
-      <environment height="2" min="50" max="70">1</environment>
+      <environment height="2" min="150" max="160">1</environment>
       <!--tree-->
     </environments>
 
@@ -38,8 +38,44 @@
       <npc max="6">2</npc>
     </npcs>
   </climate>
+  
+  <climate type="polar">
+    <events>
+      <event>flood</event>
+      <event>cyclone</event>
+    </events>
+
+    <map height="3">
+      <zero>slow</zero>
+
+      <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Water/ISO_Tile_Water_Shore_4S_04</tile>
+      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_01_ToStone_02</tile>
+      <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_02</tile>
+      <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_01</tile>
+    </map>
+
+    <items>
+      <item>1</item>
+      <item>2</item>
+      <item>3</item>
+      <item>4</item>
+    </items>
+
+    <environments>
+      <environment height="2" min="30" max="50">0</environment>
+      <!--tree-->
+      <environment height="3" min="40" max="50">2</environment>
+      <!--tree-->
+    </environments>
+
+    <npcs>
+      <npc max="5">4</npc>
+      <npc max="6">1</npc>
+    </npcs>
+  </climate>
   <!--
   <climate type="forest"></climate>
   <climate type="icey"></climate>
-  <climate type="desert"></climate>-->
+  <climate type="desert"></climate>
+  -->
 </root>
