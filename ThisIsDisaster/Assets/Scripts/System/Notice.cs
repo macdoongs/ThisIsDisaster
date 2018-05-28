@@ -12,6 +12,7 @@ public static class NoticeName {
     //network message
     public static string OnPlayerConnected = "OnPlayerConnected";
     public static string OnPlayerDisconnected = "OnPlayerDisconnected";
+    public static string OnStartSession = "OnStartSession";
 }
 
 public class Notice {

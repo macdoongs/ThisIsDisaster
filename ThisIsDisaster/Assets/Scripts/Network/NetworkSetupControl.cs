@@ -35,6 +35,12 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
 
     Timer _waitTimer = new Timer();
     bool _updateText = false;
+    private int _udpServerPort = 0;
+
+    delegate void DelayEvent();
+
+    private DelayEvent _delayEvent = null;
+    private Timer _delayEventTrigger = new Timer();
     
     // Use this for initialization
     void Start()
@@ -68,6 +74,14 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     // Update is called once per frame
     void Update()
     {
+        if (_delayEventTrigger.started) {
+            if (_delayEventTrigger.RunTimer()) {
+                if (_delayEvent != null) {
+                    _delayEvent();
+                    _delayEvent = null;
+                }
+            }
+        }
         if (_updateText) {
             _updateText = false;
             SetupPlayerTexts();
@@ -177,8 +191,10 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     public void ServerStart()
     {
         NetworkModule.Instance.ClearReceiveNotification();
+        GameServer.Instance.InitializeNetworkModule();
         int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;
         Debug.LogError("Starting Server : " + port);
+        _udpServerPort = port;
         //UDP Server
         bool ret = NetworkModule.Instance.StartServer(port, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.UDP);
         if (_isHost) {
@@ -245,10 +261,37 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
         //_nextStep = Step.ServerStart;
         ServerConnect();
         ServerStart();
+
+        _delayEvent = new DelayEvent(SendSessionSyncInfo);
+        //SendSessionSyncInfo();
+        _delayEventTrigger.StartTimer(1f);
+    }
+
+    public void SendSessionSyncInfo() {
+        var net = NetworkModule.Instance;
+        if (net != null) {
+            SessionSyncInfo info = new SessionSyncInfo() {
+                accountId = GlobalGameManager.Param.accountId,
+                serverPort = _udpServerPort,
+                ipLength = GetLocalHost().Length,
+                ip = GetLocalHost()
+            };
+
+            SessionSyncInfoPacket packet = new SessionSyncInfoPacket(info);
+            int sendSize = net.SendReliable(net.GetServerNode(), packet);
+            if (sendSize > 0) {
+                NetDebug.Log("Sending Session Sync Info");
+            }
+        }
     }
 
     public void OnClickSync() {
+        SendSessionSyncInfo();
+    }
 
+    public void OnClickGameStart() {
+        GlobalGameManager.Instance.OnGameStart();
+        SetControl(false);
     }
 
     bool StartServer(int port, int connectionMax, NetworkModule.ConnectionType connectType) {
@@ -302,7 +345,8 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     public void OnSetAccount(string account) {
         GlobalGameManager.Param.accountName = account;
         if (GameManager.CurrentGameManager != null) {
-            GameManager.CurrentGameManager.GetLocalPlayer().SetUnitName(GlobalParameters.Param.accountName);
+            if (GameManager.CurrentGameManager.GetLocalPlayer() != null)
+                GameManager.CurrentGameManager.GetLocalPlayer().SetUnitName(GlobalParameters.Param.accountName);
         }
     }
 
@@ -344,17 +388,23 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
             _updateText = true;
             //SetupPlayerTexts();
         }
+
+        if (notice == NoticeName.OnStartSession) {
+            SetControl(false);
+        }
     }
 
     public void ObserveNotices()
     {
         Notice.Instance.Observe(NoticeName.OnPlayerConnected, this);
         Notice.Instance.Observe(NoticeName.OnPlayerDisconnected, this);
+        Notice.Instance.Observe(NoticeName.OnStartSession, this);
     }
 
     public void RemoveNotices()
     {
         Notice.Instance.Remove(NoticeName.OnPlayerConnected, this);
         Notice.Instance.Remove(NoticeName.OnPlayerDisconnected, this);
+        Notice.Instance.Remove(NoticeName.OnStartSession, this);
     }
 }

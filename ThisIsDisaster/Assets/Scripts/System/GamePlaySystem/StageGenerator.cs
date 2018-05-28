@@ -72,6 +72,8 @@ public class StageGenerator {
     const int _randomMin = 0;
     const int _randomMax = 100000;
 
+    private int _seed = 0;
+
     System.Random _stageGenRandom = null;
     private Dictionary<ClimateType, ClimateInfo> _climateDic = new Dictionary<ClimateType, ClimateInfo>();
 
@@ -106,7 +108,12 @@ public class StageGenerator {
 
     public void SetSeed(int seed) {
         //네트워크 연결이 없다면 null일 것이다
+        _seed = seed;
         _stageGenRandom = new System.Random(seed);
+    }
+
+    public int GetSeed() {
+        return _seed;
     }
 
     public int ReadNextValue() {

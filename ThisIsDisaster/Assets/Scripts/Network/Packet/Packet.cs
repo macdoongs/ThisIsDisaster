@@ -244,4 +244,50 @@ namespace NetworkComponents
             return PacketId.SessionInfoSyncReflection;
         }
     }
+
+    public class StartSessionNoticePacket : IPacket<StartSessionNotice>
+    {
+        public class StartSessionNoticePacketSerializer : Serializer {
+            public bool Serialize(StartSessionNotice packet) {
+                Serialize(packet.sessionId);
+                Serialize(packet.stageRandomSeed);
+                return true;
+            }
+
+            public bool Deserialize(ref StartSessionNotice data) {
+                Deserialize(ref data.sessionId);
+                Deserialize(ref data.stageRandomSeed);
+                return true;
+            }
+        }
+
+        StartSessionNotice _packet;
+
+        public StartSessionNoticePacket(StartSessionNotice data) {
+            _packet = data;
+        }
+
+        public StartSessionNoticePacket(byte[] data) {
+            StartSessionNoticePacketSerializer serializer = new StartSessionNoticePacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref _packet);
+        }
+        
+        public byte[] GetData()
+        {
+            StartSessionNoticePacketSerializer serializer = new StartSessionNoticePacketSerializer();
+            serializer.Serialize(_packet);
+            return serializer.GetSerializedData();
+        }
+
+        public StartSessionNotice GetPacket()
+        {
+            return _packet;
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.StartSessionNotify;
+        }
+    }
 }

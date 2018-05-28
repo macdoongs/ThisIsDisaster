@@ -15,7 +15,7 @@ namespace NetworkComponents {
         Dropped
     }
 
-    public class GameServer : MonoBehaviour {
+    public class GameServer : MonoBehaviour, IObserver {
         public static GameServer Instance {
             private set;
             get;
@@ -32,6 +32,8 @@ namespace NetworkComponents {
             }
         }
         Dictionary<int, int> _nodes = new Dictionary<int, int>();
+
+        Dictionary<int, SessionSyncInfoReflection> _reflectionDics = new Dictionary<int, SessionSyncInfoReflection>();
 
         private const int KEY_MASK = NetConfig.PLAYER_MAX;
 
@@ -51,10 +53,19 @@ namespace NetworkComponents {
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            ObserveNotices();   
         }
 
-        void InitializeNetworkModule() {
+        private void Start()
+        {
+            InitializeNetworkModule();
+        }
 
+        public void InitializeNetworkModule() {
+            Network.RegisterReceiveNotification(PacketId.SessionInfoSync, OnReceiveSessionInfoSyncPacket);
+            Network.RegisterReceiveNotification(
+                PacketId.SessionInfoSyncReflection, OnReceiveSessionInfoSyncReflectionPacket);
+            Network.RegisterReceiveNotification(PacketId.StartSessionNotify, OnReceiveSessionStartNotice);
         }
 
         private void Update()
@@ -101,6 +112,103 @@ namespace NetworkComponents {
                 }
             }
 
+        }
+
+        public void OnReceiveSessionInfoSyncPacket(int node, PacketId id, byte[] data) {
+            NetDebug.LogError("Received");
+            SessionSyncInfoPacket packet = new SessionSyncInfoPacket(data);
+            var info = packet.GetPacket();
+            string log = string.Format("Session Sync Info From [{0}]\r\n{1}:{2}", info.accountId, info.ip, info.serverPort);
+            NetDebug.LogError(log);
+
+            SendConnectionReflection(node, info, true);
+
+            //send reliable all
+        }
+
+        void SendConnectionReflection(int node, SessionSyncInfo info, bool isConnection) {
+
+            SessionSyncInfoReflection reflection = new SessionSyncInfoReflection()
+            {
+                nodeIndex = node,
+                isConnection = isConnection,
+                nodeAccountId = info.accountId,
+                nodeServerPort = info.serverPort,
+                ipLength = info.ipLength,
+                nodeIp = info.ip
+            };
+
+            SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(reflection);
+            Network.SendReliableToAll(packet);
+        }
+
+        public void SendDisconnectReflection(int node) {
+            string dis = "disconnect";
+            SessionSyncInfoReflection reflection = new SessionSyncInfoReflection() {
+                nodeIndex = node,
+                isConnection = false,
+                nodeAccountId = 0,
+                nodeServerPort = 0,
+                ipLength = dis.Length,
+                nodeIp = dis
+            };
+
+            SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(reflection);
+            Network.SendReliableToAll(packet);
+        }
+
+        public void OnReceiveSessionInfoSyncReflectionPacket(int node, PacketId id, byte[] data) {
+            SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(data);
+            var info = packet.GetPacket();
+            if (GlobalParameters.Param.accountId == info.nodeAccountId) {
+                NetDebug.LogError("Get Reflection by own");
+                return;
+            }
+            string log = string.Format("Session Sync Info \"{4}\" From [{0}:{3}]\r\n{1}:{2}", info.nodeIndex, info.nodeIp, info.nodeServerPort, info.nodeAccountId, info.isConnection);
+            NetDebug.LogError(log);
+
+            if (info.isConnection)
+            {
+                if (_reflectionDics.ContainsKey(info.nodeIndex))
+                {
+                    _reflectionDics[info.nodeIndex] = info;
+                }
+                else
+                {
+                    _reflectionDics.Add(info.nodeIndex, info);
+                }
+            }
+            else {
+                _reflectionDics.Remove(info.nodeIndex);
+            }
+        }
+
+        public void OnReceiveSessionStartNotice(int node, PacketId id, byte[] data)
+        {
+            StartSessionNoticePacket packet = new StartSessionNoticePacket(data);
+            var notice = packet.GetPacket();
+            NetDebug.LogError("Start Session, Seed : " + notice.stageRandomSeed);
+            StageGenerator.Instance.SetSeed(notice.stageRandomSeed);
+            Notice.Instance.Send(NoticeName.OnStartSession);
+            //connect all guests for mesh topology
+            GlobalGameManager.Instance.GenerateWorld();
+        }
+
+        public void OnNotice(string notice, params object[] param)
+        {
+            if (notice == NoticeName.OnPlayerDisconnected) {
+                
+            }
+        }
+
+        public void ObserveNotices()
+        {
+            Notice.Instance.Observe(NoticeName.OnPlayerDisconnected, this);
+        }
+
+        public void RemoveNotices()
+        {
+            Notice.Instance.Remove(NoticeName.OnPlayerDisconnected, this);
         }
     }
 

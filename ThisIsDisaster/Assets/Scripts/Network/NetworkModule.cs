@@ -82,7 +82,9 @@ namespace NetworkComponents
                 if (_reliableNode[id] != null) {
                     int node = _reliableNode[id].node;
                     if (IsConnected(node)) {
-                        while (_sessionTCP.Receive(node, ref packet) > 0) {
+                        int recvSize = -1;
+                        while ((recvSize = _sessionTCP.Receive(node, ref packet)) > 0) {
+                            NetDebug.Log("RecvSize : " + recvSize.ToString());
                             Receive(node, packet);
                         }
                     }
@@ -353,7 +355,6 @@ namespace NetworkComponents
         private void Receive(int node, byte[] data) {
             PacketHeader header = new PacketHeader();
             PacketHeaderSerializer serializer = new PacketHeaderSerializer();
-            //serializer.SetDesrializedData(data);
             
             bool ret = serializer.Deserialize(data, ref header);
             if (!ret) {
@@ -362,6 +363,7 @@ namespace NetworkComponents
             }
 
             int packetId = (int)header.packetId;
+            NetDebug.Log("Receive : " + node + " " + header.packetId);
             if (_notifier.ContainsKey(packetId) && _notifier[packetId] != null) {
                 int headerSize = Marshal.SizeOf(typeof(PacketHeader));
                 byte[] packetData = new byte[data.Length - headerSize];
@@ -393,6 +395,8 @@ namespace NetworkComponents
                     for (int i = 0; i < _reliableNode.Length; i++) {
                         if (_reliableNode[i] != null && _reliableNode[i].node == node) {
                             Notice.Instance.Send(NoticeName.OnPlayerDisconnected, node);
+                            //send
+                            GameServer.Instance.SendDisconnectReflection(node);
                             _reliableNode[i].node = -1;
                             break;
                         }

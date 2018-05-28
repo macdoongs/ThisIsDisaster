@@ -268,7 +268,7 @@ namespace NetworkComponents
             }
             catch { return -1; }
 
-            return -1;
+            return recvSize;
         }
 
         public virtual void Dispatch() {

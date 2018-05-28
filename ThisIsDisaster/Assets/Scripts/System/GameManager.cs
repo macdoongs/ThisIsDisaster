@@ -207,6 +207,7 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        CurrentGameManager = this;
         //Init();
     }
 
@@ -214,20 +215,9 @@ public class GameManager : MonoBehaviour {
     //  
     /// </summary>
     public void Init() {
-
-        CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
-        GenerateWorld(UnityEngine.Random.Range(0, 1000));
-        if (NetworkComponents.NetworkModule.Instance != null)
-        {
-
-        }
-        else
-        {
-            //GenerateWorld(UnityEngine.Random.Range(0, 10000));
-        }
-        
+        GenerateWorld(StageGenerator.Instance.ReadNextValue());
 
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
@@ -292,10 +282,9 @@ public class GameManager : MonoBehaviour {
 
         GlobalGameManager.Instance.SetGameState(GameState.Stage);
 
-        Init();
-
-        Debug.LogError("Stage Started");
-        StartStage();
+        //Init();
+        //Debug.LogError("Stage Started");
+        //StartStage();
     }
 	
 	// Update is called once per frame

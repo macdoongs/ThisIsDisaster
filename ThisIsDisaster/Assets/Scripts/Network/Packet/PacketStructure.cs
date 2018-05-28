@@ -95,4 +95,9 @@ namespace NetworkComponents
         public int ipLength;
         public string nodeIp;
     }
+
+    public struct StartSessionNotice {
+        public int sessionId;
+        public int stageRandomSeed;
+    }
 }
