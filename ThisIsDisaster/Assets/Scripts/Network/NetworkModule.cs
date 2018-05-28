@@ -444,13 +444,13 @@ namespace NetworkComponents
         {
             //find gameserver
             //GameServer.Instance.StartServer();//
-            Gameserver.Instance.StartServer(playerNum);
+            GameServer.Instance.StartServer(playerNum);
             return true;
         }
 
         public void StopGameServer() {
             //GameServer.Instance.StopServer();
-            Gameserver.Instance.StopServer();
+            GameServer.Instance.StopServer();
         }
 
         public void SetServerNode(int node) {

@@ -10,6 +10,12 @@ public enum GameState
     None
 }
 
+public enum GameNetworkType {
+Single,
+Multi,
+None//Lobby etc
+}
+
 public class GlobalParameters {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
@@ -45,6 +51,11 @@ public class GlobalGameManager {
     
     [ReadOnly]
     public GameState GameState = GameState.Lobby;
+
+    public GameNetworkType GameNetworkType {
+        private set;
+        get;
+    }
 
     private void Init()
     {

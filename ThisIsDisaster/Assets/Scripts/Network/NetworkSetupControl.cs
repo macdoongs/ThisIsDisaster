@@ -132,9 +132,10 @@ public class NetworkSetupControl : MonoBehaviour
     {
         int port = _isHost ? NetConfig.GAME_PORT : NetConfig.GAME_PORT + 1;
         //port += GlobalParameters.Param.AdditionalPortNum;
-        bool state = StartServer(port, NetworkModule.ConnectionType.UDP);
+        bool state = StartServer(port, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.UDP);
+        NetDebug.Log("UDP Setup"+state);
         if (_isHost) {
-            //state &= NetworkModule.Instance.StartGameServer();
+            state &= NetworkModule.Instance.StartGameServer(NetConfig.PLAYER_MAX);
         }
         LogStepState(state, Step.ServerStart);
         if (!state) {
@@ -177,14 +178,13 @@ public class NetworkSetupControl : MonoBehaviour
         _nextStep = Step.ServerStart;
     }
 
-    bool StartServer(int port, NetworkModule.ConnectionType connectType) {
-        return false;
-        //return NetworkModule.Instance.StartServer(port, connectType);
+    bool StartServer(int port, int connectionMax, NetworkModule.ConnectionType connectType) {
+        return NetworkModule.Instance.StartServer(port, connectionMax, connectType);
     }
 
     bool Connect(string addr, int port, NetworkModule.ConnectionType type) {
-        return false;
-        //return NetworkModule.Instance.Connect(addr, port, type);
+
+        return NetworkModule.Instance.Connect(addr, port, type) > -1;
     }
 
     string GetHostAddress() {

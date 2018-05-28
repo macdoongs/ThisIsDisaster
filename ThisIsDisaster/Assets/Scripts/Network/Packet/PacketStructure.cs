@@ -13,6 +13,12 @@ namespace NetworkComponents
         ItemData,
         Coordinates,
 
+        //Maching Relate
+        MatchingRequest,
+        MatchingResponse,
+        SessionInfoSync,
+        StartSessionNotify,
+
         Max//dummy End
     }
 
