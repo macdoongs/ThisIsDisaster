@@ -34,6 +34,21 @@ public class SettingUIController : MonoBehaviour {
     public Image HPWarningFill;
     public Image StaminaWarningFill;
 
+    public static SettingUIController Instance
+    {
+        private set;
+        get;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance.gameObject != null)
+        {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     public void Start()
     {
         Panels = new GameObject[] { InformationPanel, GameSettingPanel, PushSettingPanel, AccountPanel };

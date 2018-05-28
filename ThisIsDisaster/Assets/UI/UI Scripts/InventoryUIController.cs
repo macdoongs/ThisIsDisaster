@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUIController : MonoBehaviour, IObserver {
-    public GameObject UIController;
+
     public GameObject InventoryUI;
 
     public GameObject Player;
@@ -116,6 +116,23 @@ public class InventoryUIController : MonoBehaviour, IObserver {
 
 
     public ItemModel[] ItemSlot ;
+
+
+    public static InventoryUIController Instance
+    {
+        private set;
+        get;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance.gameObject != null)
+        {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     private void OnDestroy()
     {
@@ -437,6 +454,10 @@ public class InventoryUIController : MonoBehaviour, IObserver {
                 recipePrefeb.GetComponentInChildren<Button>().onClick.AddListener(() => 
                         RecipeDescription(i));
 
+                if(index % 2 == 0)
+                    recipePrefeb.GetComponentInChildren<Image>().color = Color.white;
+                else
+                    recipePrefeb.GetComponentInChildren<Image>().color = defaultSlotColor;
 
                 recipePrefeb.transform.parent = RecipeListPanel.transform;
                 recipePrefeb.transform.localScale = new Vector3(1, 1, 1);
@@ -452,8 +473,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     public void DefaultRecipePanel()
     {
         for(int i = 0; i < RecipeListPanel.transform.childCount; i++)
-        {
-            
+        {            
             DestroyObject(RecipeListPanel.transform.GetChild(i).gameObject);
         }
 
@@ -503,7 +523,12 @@ public class InventoryUIController : MonoBehaviour, IObserver {
             int reservedMat2Num = PlayerCharacter.GetReservedItemCount(Material2);
             RecipeDescReservedPanel.GetComponentsInChildren<Text>()[2].text = reservedMat2Num.ToString() + " 개";
         }
-       RecipeDescPanel.SetActive(true);
+
+        MixtureRecipe ParamRecipe = recipe;
+        RecipeDescPanel.GetComponentsInChildren<Button>()[1].onClick.AddListener(() =>
+                        MakeRecipe(recipe));
+
+        RecipeDescPanel.SetActive(true);
 
     }
 
@@ -525,8 +550,94 @@ public class InventoryUIController : MonoBehaviour, IObserver {
 
         RecipeDescReservedPanel.GetComponentsInChildren<Text>()[1].text = "";
         RecipeDescReservedPanel.GetComponentsInChildren<Text>()[2].text = "";
-
+        RecipeDescPanel.GetComponentsInChildren<Button>()[1].onClick.RemoveAllListeners();
         RecipeDescPanel.SetActive(false);
+    }
+
+    public void MakeRecipe(MixtureRecipe recipe)
+    {
+        if(PlayerCharacter.ItemLists.Count == PlayerCharacter.bagSize)
+        {
+            InGameUIScript.Instance.Notice("Warning", "가방 공간이 부족합니다.\n 가방을 비워주세요.");
+            return;
+        }
+
+        string ResultItemName = ItemManager.Manager.MakeItem(recipe.resultID).metaInfo.Name;
+        ItemModel Material1 = ItemManager.Manager.MakeItem(recipe.MaterialID[0]);
+        int Material1Num = recipe.MaterialNum[0];
+        int reservedMat1Num = PlayerCharacter.GetReservedItemCount(Material1);
+
+        if (recipe.MaterialID.Count == 2)
+        {
+            ItemModel Material2 = ItemManager.Manager.MakeItem(recipe.MaterialID[1]);
+            int Material2Num = recipe.MaterialNum[1];
+            int reservedMat2Num = PlayerCharacter.GetReservedItemCount(Material2);
+
+            if (reservedMat1Num >= Material1Num && reservedMat2Num >= Material2Num)
+            {
+                PlayerCharacter.AddItem(ItemManager.Manager.MakeItem(recipe.resultID), 1);
+
+                for (int i = 0; i < PlayerCharacter.ItemLists.Count; i++)
+                {
+                    if (PlayerCharacter.ItemLists[i] != null)
+                    {
+                        if (PlayerCharacter.ItemLists[i].metaInfo.Name == Material1.metaInfo.Name)
+                        {
+                            PlayerCharacter.ItemCounts[i] -= Material1Num;
+                            if (PlayerCharacter.ItemCounts[i] <= 0)
+                            {
+                                PlayerCharacter.RemoveItemAtIndex(i);
+                                continue;
+                            }
+                        }
+
+                        if (PlayerCharacter.ItemLists[i].metaInfo.Name == Material2.metaInfo.Name)
+                        {
+                            PlayerCharacter.ItemCounts[i] -= Material2Num;
+                            if (PlayerCharacter.ItemCounts[i] <= 0)
+                            {
+                                PlayerCharacter.RemoveItemAtIndex(i);
+                            }
+                        }
+                    }
+                }
+
+                DefaultRecipePanel();
+                InGameUIScript.Instance.Notice(ResultItemName, "조합 성공");
+                return;
+            }
+        }
+        else
+        {
+            if (reservedMat1Num >= Material1Num)
+            {
+                PlayerCharacter.AddItem(ItemManager.Manager.MakeItem(recipe.resultID), 1);
+
+                for (int i = 0; i < PlayerCharacter.ItemLists.Count; i++)
+                {
+                    if (PlayerCharacter.ItemLists[i] != null)
+                    {
+                        if (PlayerCharacter.ItemLists[i].metaInfo.Name == Material1.metaInfo.Name)
+                        {
+                            PlayerCharacter.ItemCounts[i] -= Material1Num;
+                            if (PlayerCharacter.ItemCounts[i] <= 0)
+                            {
+                                PlayerCharacter.RemoveItemAtIndex(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                DefaultRecipePanel();
+                InGameUIScript.Instance.Notice(ResultItemName, "조합 성공");
+                return;
+            }
+        }
+        DefaultRecipePanel();
+        InGameUIScript.Instance.Notice(ResultItemName, "재료가 부족합니다.");
+
+        InventoryUpdate();
     }
 
     public void RemoveSlotItem()
@@ -663,7 +774,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
         ItemModel SlotBackpack = PlayerCharacter.backpackSlot;
         if (PlayerCharacter.ItemLists.Count > 4)
         {
-            UIController.GetComponent<InGameUIScript>().Warning("아이템이 너무 많습니다.\n먼저 가방을 비워주세요.");
+            InGameUIScript.Instance.Notice("Warning","아이템이 너무 많습니다.\n먼저 가방을 비워주세요.");
         }
         else
         {
@@ -753,7 +864,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
         }
         else
         {
-            UIController.GetComponent<InGameUIScript>().Warning("작은 사이즈의 가방으로 교체할 수 없습니다.");
+            InGameUIScript.Instance.Notice("Warning","작은 사이즈의 가방으로 교체할 수 없습니다.");
             defaultDescriptions();
         }
 
