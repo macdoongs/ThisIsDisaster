@@ -31,7 +31,7 @@ public class HeavysnowEvent : EventBase
 		}
 
 		Debug.Log(RandomMapGenerator.Instance.GetRandomTileByHeight (1));
-		cloudEffect.SetActive(true);
+		//cloudEffect.SetActive(true);
 
 	}
 

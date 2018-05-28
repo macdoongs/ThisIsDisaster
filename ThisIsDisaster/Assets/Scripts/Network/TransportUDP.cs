@@ -289,16 +289,19 @@ namespace NetworkComponents {
 
                 try
                 {
-                    string hostName = Dns.GetHostName();
-                    IPAddress[] adrList = Dns.GetHostAddresses(hostName);
-                    foreach (var addr in adrList)
-                    {
-                        if (addr.AddressFamily == AddressFamily.InterNetwork)
-                        {
-                            _localEndPoint = new IPEndPoint(addr, _serverPort);
-                            break;
-                        }
-                    }
+                    //string hostName = Dns.GetHostName();
+                    //IPAddress[] adrList = Dns.GetHostAddresses(hostName);
+                    //foreach (var addr in adrList)
+                    //{
+                    //    if (addr.AddressFamily == AddressFamily.InterNetwork)
+                    //    {
+                    //        _localEndPoint = new IPEndPoint(addr, _serverPort);
+                    //        break;
+                    //    }
+                    //}
+
+                    _localEndPoint = new IPEndPoint(IPAddress.Parse(Network.player.ipAddress),
+                                    _serverPort);
 
                     _remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
                     _isRequested = true;

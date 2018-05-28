@@ -18,10 +18,6 @@ public class ItemTestCharacter : MonoBehaviour {
 
     public CharacterModel CharacterUnit;
 
-    public GameObject UIController;
-
-    public GameObject Canvas;
-
     public void Awake()
     {
     }
@@ -88,18 +84,13 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F11))
         {
-            RemoveFirstItem();
+            InGameUIScript.Instance.EventNotice("지진", 1);
         }
         if (Input.GetKeyDown(KeyCode.F12))
         {
-            OpenCanvas();
         }
     }
 
-    void OpenCanvas()
-    {
-        Canvas.SetActive(true);
-    }
     void RemoveAllEquipType()
     {
         CharacterUnit.RemoveEquipment("weapon");

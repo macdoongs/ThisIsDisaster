@@ -14,8 +14,9 @@ namespace NetworkComponents {
         Dropping,
         Dropped
     }
-    public class Gameserver : MonoBehaviour {
-        public static Gameserver Instance {
+
+    public class GameServer : MonoBehaviour, IObserver {
+        public static GameServer Instance {
             private set;
             get;
         }
@@ -32,7 +33,9 @@ namespace NetworkComponents {
         }
         Dictionary<int, int> _nodes = new Dictionary<int, int>();
 
-        private static int KEY_MASK = NetConfig.PLAYER_MAX;
+        Dictionary<int, SessionSyncInfoReflection> _reflectionDics = new Dictionary<int, SessionSyncInfoReflection>();
+
+        private const int KEY_MASK = NetConfig.PLAYER_MAX;
 
         private int _playerNum = 0;
         private int _currentPartMask = 0;
@@ -50,10 +53,19 @@ namespace NetworkComponents {
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            ObserveNotices();   
         }
 
-        void InitializeNetworkModule() {
+        private void Start()
+        {
+            InitializeNetworkModule();
+        }
 
+        public void InitializeNetworkModule() {
+            Network.RegisterReceiveNotification(PacketId.SessionInfoSync, OnReceiveSessionInfoSyncPacket);
+            Network.RegisterReceiveNotification(
+                PacketId.SessionInfoSyncReflection, OnReceiveSessionInfoSyncReflectionPacket);
+            Network.RegisterReceiveNotification(PacketId.StartSessionNotify, OnReceiveSessionStartNotice);
         }
 
         private void Update()
@@ -63,11 +75,12 @@ namespace NetworkComponents {
 
         public bool StartServer(int playerNum) {
             _playerNum = playerNum;
-            return true;
+
+            return Network.StartServer(NetConfig.SERVER_PORT, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.TCP);
         }
 
         public void StopServer() {
-
+            Network.StopServer();
         }
 
         public void OnReceiveReflectionPacket(int node, PacketId id, byte[] data) {
@@ -100,97 +113,103 @@ namespace NetworkComponents {
             }
 
         }
-    }
 
-#if false
-    public class GameServer : MonoBehaviour {
-        private struct ItemState {
-            public string itemId;
-            public PickupState state;
-            public string ownerId;
+        public void OnReceiveSessionInfoSyncPacket(int node, PacketId id, byte[] data) {
+            NetDebug.LogError("Received");
+            SessionSyncInfoPacket packet = new SessionSyncInfoPacket(data);
+            var info = packet.GetPacket();
+            string log = string.Format("Session Sync Info From [{0}]\r\n{1}:{2}", info.accountId, info.ip, info.serverPort);
+            NetDebug.LogError(log);
+
+            SendConnectionReflection(node, info, true);
+
+            //send reliable all
         }
 
-        public static GameServer Instance {
-            private set;
-            get;
+        void SendConnectionReflection(int node, SessionSyncInfo info, bool isConnection) {
+
+            SessionSyncInfoReflection reflection = new SessionSyncInfoReflection()
+            {
+                nodeIndex = node,
+                isConnection = isConnection,
+                nodeAccountId = info.accountId,
+                nodeServerPort = info.serverPort,
+                ipLength = info.ipLength,
+                nodeIp = info.ip
+            };
+
+            SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(reflection);
+            Network.SendReliableToAll(packet);
         }
 
-        const string ITEM_OWNER_NONE = "";
-        static int _serverPort = NetConfig.SERVER_PORT;
-        const int SERVER_VERSION = NetConfig.SERVER_VERSION;
-        private bool _sendGameSync = false;
+        public void SendDisconnectReflection(int node) {
+            string dis = "disconnect";
+            SessionSyncInfoReflection reflection = new SessionSyncInfoReflection() {
+                nodeIndex = node,
+                isConnection = false,
+                nodeAccountId = 0,
+                nodeServerPort = 0,
+                ipLength = dis.Length,
+                nodeIp = dis
+            };
 
-        NetworkModule _network = null;
-        NetworkModule Network {
-            get {
-                if (_network == null) {
-                    _network = NetworkComponents.NetworkModule.Instance;
-                }
-                return _network;
-            }
+            SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(reflection);
+            Network.SendReliableToAll(packet);
         }
 
-        private void Awake()
-        {
-            if (Instance != null && Instance.gameObject != null) {
-                Destroy(gameObject);
+        public void OnReceiveSessionInfoSyncReflectionPacket(int node, PacketId id, byte[] data) {
+            SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(data);
+            var info = packet.GetPacket();
+            if (GlobalParameters.Param.accountId == info.nodeAccountId) {
+                NetDebug.LogError("Get Reflection by own");
                 return;
             }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+            string log = string.Format("Session Sync Info \"{4}\" From [{0}:{3}]\r\n{1}:{2}", info.nodeIndex, info.nodeIp, info.nodeServerPort, info.nodeAccountId, info.isConnection);
+            NetDebug.LogError(log);
 
-        private void Start()
-        {
-            //Network.RegisterReceiveNotification(PacketId.GameSyncInfo, )
-            //Network.RegisterEventHandler(OnEventHandling);
-        }
-
-        private void LateUpdate()
-        {
-            if (_sendGameSync) {
-                //SendGameSyncInfo();
-                //_sendGameSync = false;
+            if (info.isConnection)
+            {
+                if (_reflectionDics.ContainsKey(info.nodeIndex))
+                {
+                    _reflectionDics[info.nodeIndex] = info;
+                }
+                else
+                {
+                    _reflectionDics.Add(info.nodeIndex, info);
+                }
+            }
+            else {
+                _reflectionDics.Remove(info.nodeIndex);
             }
         }
 
-        public bool StartServer() {
-            return Network.StartServer(_serverPort, NetworkModule.ConnectionType.TCP);
+        public void OnReceiveSessionStartNotice(int node, PacketId id, byte[] data)
+        {
+            StartSessionNoticePacket packet = new StartSessionNoticePacket(data);
+            var notice = packet.GetPacket();
+            NetDebug.LogError("Start Session, Seed : " + notice.stageRandomSeed);
+            StageGenerator.Instance.SetSeed(notice.stageRandomSeed);
+            Notice.Instance.Send(NoticeName.OnStartSession);
+            //connect all guests for mesh topology
+            GlobalGameManager.Instance.GenerateWorld();
         }
 
-        public void StopServer() {
-            Network.StopServer();
-        }
-
-        public void DisconnectClient() {
-            Network.Disconnect();
-        }
-
-        public void SendGameSyncInfo() {
-            Debug.LogError("Send Sync Info");
-            GameSyncData data = new GameSyncData();
-            data.serverVersion = SERVER_VERSION;
-            data.accountName = GlobalGameManager.Param.accountName;
-            data.accountId = GlobalGameManager.Param.accountId;
-            
-            data.stageGenSeed = StageGenerator.Instance.ReadNextValue();
-            StageGenerator.Instance.SetSeed(data.stageGenSeed);
-
-            GameSyncPacket packet = new GameSyncPacket(data);
-            Network.SendReliable(packet);
-        }
-
-        public void OnEventHandling(NetEventState state) {
-            switch (state.type) {
-                case NetEventType.Connect:
-                    SendGameSyncInfo();
-                    //_sendGameSync = true;
-                    break;
-                case NetEventType.Disconnect:
-                    DisconnectClient();
-                    break;
+        public void OnNotice(string notice, params object[] param)
+        {
+            if (notice == NoticeName.OnPlayerDisconnected) {
+                
             }
+        }
+
+        public void ObserveNotices()
+        {
+            Notice.Instance.Observe(NoticeName.OnPlayerDisconnected, this);
+        }
+
+        public void RemoveNotices()
+        {
+            Notice.Instance.Remove(NoticeName.OnPlayerDisconnected, this);
         }
     }
-#endif
+
 }

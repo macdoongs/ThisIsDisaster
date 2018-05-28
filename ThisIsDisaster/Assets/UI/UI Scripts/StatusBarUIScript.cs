@@ -39,8 +39,21 @@ public class StatusBarUIScript : MonoBehaviour {
     public Text DisorderDescName;
     public Text DisorderDesc;
 
+    public static StatusBarUIScript Instance
+    {
+        private set;
+        get;
+    }
+
     public void Awake()
     {
+        if (Instance != null && Instance.gameObject != null)
+        {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         Image[] temp = DisorderBar.transform.GetComponentsInChildren<Image>();
 
         int index1 = 0;

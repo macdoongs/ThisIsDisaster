@@ -437,13 +437,14 @@ public class CellularAutomata : MonoBehaviour {
     }
 
     void RandomFillMap() {
-        int newSeed;
-        useRandomSeed = RandomMapGenerator.Instance.useRandomSeed;
-        do
-        {
-            newSeed = UnityEngine.Random.Range(0, 100);
-        } while (seed == newSeed);
-        seed = newSeed;
+        //int newSeed;
+        //useRandomSeed = RandomMapGenerator.Instance.useRandomSeed;
+        //do
+        //{
+        //    newSeed = UnityEngine.Random.Range(0, 100);
+        //} while (seed == newSeed);
+        //seed = newSeed;
+        seed = StageGenerator.Instance.ReadNextValue();
 
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 

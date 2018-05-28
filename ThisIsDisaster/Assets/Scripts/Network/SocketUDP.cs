@@ -34,10 +34,9 @@ namespace NetworkComponents {
         {
             m_state = State.SELECT_HOST;
 
-            IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-            System.Net.IPAddress hostAddress = hostEntry.AddressList[0];
-            Log(hostEntry.HostName);
-            m_address = hostAddress.ToString();
+            //IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+            
+            m_address = Network.player.ipAddress.ToString();
         }
 
         private void Update()

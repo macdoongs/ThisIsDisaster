@@ -65,6 +65,7 @@ namespace NetworkComponents
                 {
                     string[] strAry = str.Split(':');
                     IPEndPoint ep = new IPEndPoint(IPAddress.Parse(strAry[0]), int.Parse(strAry[1]));
+                    NetDebug.LogError("UDP Connection : " + ep.ToString());
 
                     if (_nodeAddress.ContainsKey(nodeAddr))
                     {
@@ -99,7 +100,8 @@ namespace NetworkComponents
                 TransportUDP transport = _transports[node];
                 IPEndPoint transportEp = transport.GetRemoteEndPoint();
                 if (transportEp != null) {
-                    Debug.Log("NodeFromEP recv[node:" + node + "] " + ((IPEndPoint)endPoint).Address.ToString() + ":" + endPoint.Port + " transport:" + transportEp.Address.ToString() + ":" + transportEp.Port);
+                    Debug.Log("NodeFromEP recv[node:" + node + "] " + ((IPEndPoint)endPoint).Address.ToString() + ":" + endPoint.Port 
+                            + " transport:" + transportEp.Address.ToString() + ":" + transportEp.Port);
                     if (
                         transportEp.Port == endPoint.Port &&
                         transportEp.Address.ToString() == endPoint.Address.ToString()
@@ -107,6 +109,7 @@ namespace NetworkComponents
                     {
                         return node;
                     }
+                    NetDebug.LogError("Not match ep");
                 }
             }
             return -1;

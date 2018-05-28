@@ -33,17 +33,26 @@ public class GameManager : MonoBehaviour {
 
 
     public class StageClockInfo {
+        /*
         public const float STAGE_READY_TIME = 60f;
         public const float EVENT_GENERATE_TIME = 60f;
         public const float EVENT_RUN_TIME = 120f;
         public const float EVENT_END_TIME = 60f;
         public const float STAGE_CLOSE_TIME = 10f;
-
+        */
+        
+        public const float STAGE_READY_TIME = 10f;
+        public const float EVENT_GENERATE_TIME = 10f;
+        public const float EVENT_RUN_TIME = 20f;
+        public const float EVENT_END_TIME = 10f;
+        public const float STAGE_CLOSE_TIME = 5f;
         public Timer stageTimer = new Timer();
         public StageEventType currentEventType = StageEventType.Init;
         public StageEventType nextEventType = StageEventType.Ready;
         public Timer eventHandleTimer = new Timer();
-        
+
+        public int EventGenerateCount = 2;
+
         WeatherType generatedEvent = new WeatherType();
 
         public void StartStage() {
@@ -51,6 +60,11 @@ public class GameManager : MonoBehaviour {
             currentEventType = StageEventType.Init;
             nextEventType = StageEventType.Ready;
             SetNextEventTime(nextEventType);
+            
+        }
+
+        public void SetEventGenerateCount(int count) {
+            EventGenerateCount = count;
         }
 
         public void SetNextEventTime(float time) {
@@ -90,6 +104,7 @@ public class GameManager : MonoBehaviour {
 
         void ExecuteNextStep()
         {
+            Debug.LogError(currentEventType + " Expired");
             switch (nextEventType)
             {
                 case StageEventType.Ready:
@@ -112,6 +127,18 @@ public class GameManager : MonoBehaviour {
                     break;
                 case StageEventType.Event_Ended:
                     //generate next event or close stage
+                    if (EventGenerateCount > 0)
+                    {
+                        GenerateEvent();
+                        SetNextEventTime(nextEventType);
+                        nextEventType = StageEventType.Event_Generated;
+                    }
+                    else
+                    {
+                        SetNextEventTime(nextEventType, true);
+                        nextEventType = StageEventType.Close;
+                    }
+
                     /*
                      if MAKE_NEXT_EVENT
             SetNextEventTime(nextEventType);
@@ -143,13 +170,15 @@ public class GameManager : MonoBehaviour {
 
         void GenerateEvent()
         {
+            EventGenerateCount--;
             generatedEvent = GameManager.CurrentGameManager.GetWeatherType();
             EventManager.Manager.OnGenerate(generatedEvent);
-            EventManager.Manager.OnStart(generatedEvent);
+            //EventManager.Manager.OnStart(generatedEvent);
         }
 
         void EndStage() {
             CurrentGameManager.EndStage();
+            
         }
     }
 
@@ -178,6 +207,7 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        CurrentGameManager = this;
         //Init();
     }
 
@@ -185,24 +215,13 @@ public class GameManager : MonoBehaviour {
     //  
     /// </summary>
     public void Init() {
-
-        CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
-        GenerateWorld(UnityEngine.Random.Range(0, 1000));
-        //if (NetworkComponents.NetworkModule.Instance != null)
-        //{
-
-        //}
-        //else {
-        //    //GenerateWorld(UnityEngine.Random.Range(0, 10000));
-        //}
-       
-        //make other
+        GenerateWorld(StageGenerator.Instance.ReadNextValue());
 
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
-        
+
     }
 
     public void GenerateWorld(int seed)
@@ -263,10 +282,9 @@ public class GameManager : MonoBehaviour {
 
         GlobalGameManager.Instance.SetGameState(GameState.Stage);
 
-        Init();
-
-        Debug.LogError("Stage Started");
-        StartStage();
+        //Init();
+        //Debug.LogError("Stage Started");
+        //StartStage();
     }
 	
 	// Update is called once per frame
@@ -283,6 +301,7 @@ public class GameManager : MonoBehaviour {
     public void EndStage() {
         //do smth
         Debug.LogError("Stage Ended");
+        InGameUIScript.Instance.StageClear();
     }
 
     public UnitControllerBase GetLocalPlayer() {

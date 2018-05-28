@@ -227,7 +227,7 @@ namespace NPC {
 
         public override void OnArriedPath(TileUnit target)
         {
-            Debug.Log(GetUnitName() + " arrived at" + target.ToString());
+            //Debug.Log(GetUnitName() + " arrived at" + target.ToString());
             if (MoveControl.FollowModel != null)
             {
                 MoveControl.StopMovement();

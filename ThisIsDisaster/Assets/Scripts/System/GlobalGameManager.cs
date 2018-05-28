@@ -10,6 +10,12 @@ public enum GameState
     None
 }
 
+public enum GameNetworkType {
+Single,
+Multi,
+None//Lobby etc
+}
+
 public class GlobalParameters {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
@@ -45,6 +51,11 @@ public class GlobalGameManager {
     
     [ReadOnly]
     public GameState GameState = GameState.Lobby;
+
+    public GameNetworkType GameNetworkType {
+        private set;
+        get;
+    }
 
     private void Init()
     {
@@ -113,5 +124,36 @@ public class GlobalGameManager {
     public void SetGameState(GameState state) {
         Debug.Log("Set State: " + state);
         GameState = state;
+    }
+
+    public void OnGameStart()
+    {
+        //syncrhonize game info
+        //set game seed
+        int randValue = UnityEngine.Random.Range(0, int.MaxValue);
+        StageGenerator.Instance.SetSeed(randValue);
+        //check game state is Mulitplay or singlePlay
+        //in this case, assume that game state is Multiplay
+        if (NetworkModule.Instance != null) {
+            if (GameServer.Instance != null) {
+                SendSessionStartNotice();
+                GenerateWorld();
+            }
+        }
+    }
+
+    void SendSessionStartNotice() {
+        StartSessionNotice notice = new StartSessionNotice() {
+            sessionId = 0,//by aws server
+            stageRandomSeed = StageGenerator.Instance.GetSeed()
+        };
+        StartSessionNoticePacket packet = new StartSessionNoticePacket(notice);
+        NetworkModule.Instance.SendReliableToAll(packet);
+    }
+
+    public void GenerateWorld() {
+        if (GameManager.CurrentGameManager != null) {
+            GameManager.CurrentGameManager.Init();
+        }
     }
 }
