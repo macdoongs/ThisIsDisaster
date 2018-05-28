@@ -222,6 +222,11 @@ public class GameManager : MonoBehaviour {
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
 
+        if (NetworkComponents.NetworkModule.Instance != null)
+        {
+            NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
+                NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
+        }
     }
 
     public void GenerateWorld(int seed)
@@ -310,6 +315,7 @@ public class GameManager : MonoBehaviour {
 
     public static UnitControllerBase MakePlayerCharacter(string name, int id, bool isLocal) {
         UnitControllerBase output = null;
+        Debug.LogError("Make Chararcter " + isLocal + " " + name);
         if (!isLocal)
         {
             if (CurrentGameManager.RemotePlayer.TryGetValue(id, out output))
@@ -366,6 +372,18 @@ public class GameManager : MonoBehaviour {
     public void OnReceiveCharacterCoordinate(NetworkComponents.PacketId packetId, int packetSender, byte[] data) {
         UnitControllerBase controller = null;
         if (RemotePlayer.TryGetValue(packetSender, out controller))
+        {
+            NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
+            NetworkComponents.CharacterData charData = packet.GetPacket();
+
+            //Debug.LogError("Position Info " + packetSender);
+            controller.OnReceiveCharacterCoordinate(charData);
+        }
+    }
+
+    public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
+        UnitControllerBase controller = null;
+        if (RemotePlayer.TryGetValue(node, out controller))
         {
             NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
             NetworkComponents.CharacterData charData = packet.GetPacket();

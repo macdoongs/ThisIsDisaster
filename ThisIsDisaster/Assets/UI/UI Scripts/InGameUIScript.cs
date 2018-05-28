@@ -36,6 +36,7 @@ public class InGameUIScript : MonoBehaviour
 
     public void Start()
     {
+        GameManager.CurrentGameManager.Init();
         if (PlayerCharacter == null) {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
         }
