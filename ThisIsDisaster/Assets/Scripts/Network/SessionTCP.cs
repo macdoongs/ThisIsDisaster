@@ -34,7 +34,7 @@ namespace NetworkComponents
                     _handler(node, state);
                 }
 
-                NetDebug.Log("TCP Connected from client : " + _port);
+                NetDebug.Log(string.Format("TCP Connected from client : port[{0}], node[{1}]" , _port, node));
             }
         }
 

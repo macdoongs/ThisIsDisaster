@@ -8,6 +8,10 @@ public static class NoticeName {
     public static string Update = "Update";
     public static string FixedUpdate = "FixedUpdate";
     public static string LocalPlayerGenerated = "LocalPlayerGenerated";
+
+    //network message
+    public static string OnPlayerConnected = "OnPlayerConnected";
+    public static string OnPlayerDisconnected = "OnPlayerDisconnected";
 }
 
 public class Notice {

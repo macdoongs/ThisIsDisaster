@@ -106,7 +106,10 @@ namespace NetworkComponents
                     _transports.Add(node, transport);
                 }
             }
-            catch { return -1; }
+            catch(System.Exception e){
+                NetDebug.LogError(e.ToString());
+                return -1;
+            }
             return node;
         }
 

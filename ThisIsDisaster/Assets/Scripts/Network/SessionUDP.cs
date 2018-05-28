@@ -65,6 +65,7 @@ namespace NetworkComponents
                 {
                     string[] strAry = str.Split(':');
                     IPEndPoint ep = new IPEndPoint(IPAddress.Parse(strAry[0]), int.Parse(strAry[1]));
+                    NetDebug.LogError("UDP Connection : " + ep.ToString());
 
                     if (_nodeAddress.ContainsKey(nodeAddr))
                     {
@@ -108,6 +109,7 @@ namespace NetworkComponents
                     {
                         return node;
                     }
+                    NetDebug.LogError("Not match ep");
                 }
             }
             return -1;

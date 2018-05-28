@@ -7,7 +7,7 @@ using System.Collections;
 
 using NetworkComponents;
 
-public class NetworkSetupControl : MonoBehaviour
+public class NetworkSetupControl : MonoBehaviour, IObserver
 {
     public enum Step {
         None = -1,
@@ -26,6 +26,7 @@ public class NetworkSetupControl : MonoBehaviour
     public CanvasGroup ControlGroup;
     public InputField AddressField;
     public InputField AccountField;
+    public Text[] PlayerText;
     private bool _isHost = false;
 
     private Step _currentStep = Step.None;
@@ -33,12 +34,17 @@ public class NetworkSetupControl : MonoBehaviour
     private float _waitTime = 1f;
 
     Timer _waitTimer = new Timer();
+    bool _updateText = false;
     
     // Use this for initialization
     void Start()
     {
         Initialize();
         UpdateAccountId();
+        SetupPlayerTexts();
+        Debug.Log(GetLocalHost());
+        Debug.Log(GetHostAddress());
+        ObserveNotices();
         //NetworkModule.Instance.RegisterReceiveNotification(PacketId.GameSyncInfo, OnReceiveGameSyncPacket);
     }
 
@@ -62,6 +68,13 @@ public class NetworkSetupControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_updateText) {
+            _updateText = false;
+            SetupPlayerTexts();
+        }
+        if (Input.GetKeyDown(KeyCode.F5)) {
+            NetworkModule.Instance.PrintNodeInfo();
+        }
         if (_waitTimer.started)
         {
             _waitTimer.RunTimer();
@@ -93,7 +106,8 @@ public class NetworkSetupControl : MonoBehaviour
                 ResetNetwork();
                 break;
         }
-        
+
+        SetupPlayerTexts();
     }
 
     void SetNextStep() {
@@ -112,8 +126,9 @@ public class NetworkSetupControl : MonoBehaviour
                 //check sync
                 if (CheckGameSyncState()) {
                     _nextStep = Step.Started;
-                    SetControl(false);
+                    //SetControl(false);
                     //gen test character
+                    SetupPlayerTexts();
                 }
                 break;
             case Step.Error:
@@ -128,54 +143,112 @@ public class NetworkSetupControl : MonoBehaviour
         }
     }
 
+    void SetupPlayerTexts() {
+        foreach (var t in PlayerText) {
+            Color c = t.color;
+            c = Color.black;
+            t.color = c;
+            t.text = "";
+        }
+
+        //if (_isHost)
+        //{
+        //    PlayerText[0].text = GlobalGameManager.Param.accountName;
+        //    PlayerText[0].color = Color.red;
+        //}
+        //else {
+
+        //}
+        if (_isHost)
+        {
+            //PlayerText[0].text = GlobalGameManager.Param.accountName + System.Environment.NewLine + GetLocalHost();
+            //PlayerText[0].color = Color.red;
+            var list = NetworkModule.Instance.GetReliableEndPoints();
+            for (int i = 0; i < list.Count; i++) {
+                if (i > 3) {
+                    Debug.LogError("Player count may higher than 4");
+                    break;
+                }
+                PlayerText[i].text = list[i].ToString();
+            }
+        }
+    }
+
     public void ServerStart()
     {
-        int port = _isHost ? NetConfig.GAME_PORT : NetConfig.GAME_PORT + 1;
-        //port += GlobalParameters.Param.AdditionalPortNum;
-        bool state = StartServer(port, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.UDP);
-        NetDebug.Log("UDP Setup"+state);
+        NetworkModule.Instance.ClearReceiveNotification();
+        int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;
+        Debug.LogError("Starting Server : " + port);
+        //UDP Server
+        bool ret = NetworkModule.Instance.StartServer(port, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.UDP);
         if (_isHost) {
-            state &= NetworkModule.Instance.StartGameServer(NetConfig.PLAYER_MAX);
+            ret &= NetworkModule.Instance.StartGameServer(NetConfig.PLAYER_MAX);//TCP Server
         }
-        LogStepState(state, Step.ServerStart);
-        if (!state) {
+        if (ret == false) {
+            LogStepState(ret, Step.ServerStart);
             _currentStep = Step.Error;
         }
     }
 
     public void ServerConnect() {
-        string serverAddress = GetHostAddress();
+        string hostAddr = "";
         if (_isHost) {
-            serverAddress = GetLocalHost();
+            hostAddr = GetLocalHost();
         }
-        bool state = Connect(serverAddress, NetConfig.SERVER_PORT, NetworkModule.ConnectionType.TCP);
-
-        LogStepState(state, Step.ServerConnect);
-        if (!state) {
+        else {
+            hostAddr = GetHostAddress();
+        }
+        int serverNode = NetworkModule.Instance.Connect(hostAddr, NetConfig.SERVER_PORT, NetworkModule.ConnectionType.TCP);
+        if (serverNode >= 0)
+        {
+            NetworkModule.Instance.SetServerNode(serverNode);
+            Debug.LogError("ServerNode : " + serverNode);
+        }
+        else
+        {
+            LogStepState(false, Step.ServerConnect);
             _currentStep = Step.Error;
         }
+
     }
 
     public void ClientConnect() {
+
+        //should know members
+        //int playerNum = NetConfig.PLAYER_MAX;
+        //for (int i = 0; i < playerNum; i++) {
+
+        //}
+
+        /*
         int port = _isHost ? NetConfig.GAME_PORT + 1 : NetConfig.GAME_PORT;
         //port += GlobalParameters.Param.AdditionalPortNum;
         bool state = Connect(GetHostAddress(), port, NetworkModule.ConnectionType.UDP);
         LogStepState(state, Step.ClientConnect);
         if (!state) {
             _currentStep = Step.Error;
-        }
+        }*/
     }
 
     public void OnClickHost() {
         _isHost = true;
-        _nextStep = Step.ServerStart;
+        //_nextStep = Step.ServerStart;
+        //Make Listening Server
+        ServerStart();
+        //ServerConnect();
     }
 
     public void OnClickConnect()
     {
         _isHost = false;
-        GlobalParameters.Param.AdditionalPortNum += 10;
-        _nextStep = Step.ServerStart;
+        //GlobalParameters.Param.AdditionalPortNum += 10;
+        //_nextStep = Step.ServerStart;
+        ServerConnect();
+        ServerStart();
+    }
+
+    public void OnClickSync() {
+
     }
 
     bool StartServer(int port, int connectionMax, NetworkModule.ConnectionType connectType) {
@@ -219,10 +292,10 @@ public class NetworkSetupControl : MonoBehaviour
     void LogStepState(bool state, Step step) {
         if (state)
         {
-            Debug.Log("Success to " + step.ToString());
+            NetDebug.Log("Success to " + step.ToString());
         }
         else {
-            Debug.LogError("Failed to " + step.ToString());
+            NetDebug.LogError("Failed to " + step.ToString());
         }
     }
 
@@ -236,7 +309,11 @@ public class NetworkSetupControl : MonoBehaviour
     void UpdateAccountId()
     {
         //change this network user id
-        GlobalGameManager.Param.accountId = System.Diagnostics.Process.GetCurrentProcess().Id;
+        //GlobalGameManager.Param.accountId = System.Diagnostics.Process.GetCurrentProcess().Id;
+    }
+
+    public void UpdateAccountId(string input) {
+        GlobalGameManager.Param.accountId = int.Parse(input);
     }
 
     public void OnReceiveGameSyncPacket(PacketId id, int packetSender, byte[] data) {
@@ -244,12 +321,40 @@ public class NetworkSetupControl : MonoBehaviour
         GameSyncPacket packet = new GameSyncPacket(data);
         GameSyncData sync = packet.GetPacket();
 
+
         if (packetSender == GlobalParameters.Param.accountId) return;
 
-        StageGenerator.Instance.SetSeed(sync.stageGenSeed);
+        //StageGenerator.Instance.SetSeed(sync.stageGenSeed);
 
-        var remoteCharacter = GameManager.MakePlayerCharacter(sync.accountName, packetSender, false);
-        remoteCharacter.SetUnitName(sync.accountName);
+        //var remoteCharacter = GameManager.MakePlayerCharacter(sync.accountName, packetSender, false);
+        //remoteCharacter.SetUnitName(sync.accountName);
+
+        Debug.Log("Received Packet Info : " + sync.accountName + " " + sync.accountId);
         //make remote char
+    }
+
+    public void OnNotice(string notice, params object[] param)
+    {
+        if (notice == NoticeName.OnPlayerConnected) {
+            _updateText = true;
+            //SetupPlayerTexts();
+        }
+        if (notice == NoticeName.OnPlayerDisconnected)
+        {
+            _updateText = true;
+            //SetupPlayerTexts();
+        }
+    }
+
+    public void ObserveNotices()
+    {
+        Notice.Instance.Observe(NoticeName.OnPlayerConnected, this);
+        Notice.Instance.Observe(NoticeName.OnPlayerDisconnected, this);
+    }
+
+    public void RemoveNotices()
+    {
+        Notice.Instance.Remove(NoticeName.OnPlayerConnected, this);
+        Notice.Instance.Remove(NoticeName.OnPlayerDisconnected, this);
     }
 }

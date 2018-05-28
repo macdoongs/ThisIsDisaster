@@ -17,6 +17,7 @@ namespace NetworkComponents
         MatchingRequest,
         MatchingResponse,
         SessionInfoSync,
+        SessionInfoSyncReflection,
         StartSessionNotify,
 
         Max//dummy End
@@ -76,5 +77,22 @@ namespace NetworkComponents
         public CharacterCoordinates[] coordinates;
         
         public const int MAX_CHAR_ID = 64;
+    }
+
+    public struct SessionSyncInfo {
+        public int accountId;
+        public int serverPort;
+        public int ipLength;
+        public string ip;
+        
+    }
+
+    public struct SessionSyncInfoReflection {
+        public int nodeIndex;
+        public bool isConnection;
+        public int nodeAccountId;
+        public int nodeServerPort;
+        public int ipLength;
+        public string nodeIp;
     }
 }
