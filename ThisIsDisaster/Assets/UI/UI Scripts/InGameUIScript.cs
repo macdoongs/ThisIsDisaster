@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class InGameUIScript : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class InGameUIScript : MonoBehaviour
 
     private void Awake()
     {
+        
        if(Instance != null && Instance.gameObject != null) {
             GameObject.Destroy(gameObject);
             return;
@@ -44,6 +46,10 @@ public class InGameUIScript : MonoBehaviour
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
         StatusBarUIScript.Instance.SetPlayerInfo(PlayerCharacter);
         InventoryUIController.Instance.InitialCategory();
+
+       
+     //   Destroy(LobbyUIScript.Instance.transform.gameObject);
+       
     }
 
     public void Update()
@@ -152,6 +158,11 @@ public class InGameUIScript : MonoBehaviour
     {
         EventNoticeText.text = "";
         EventNoticePanel.SetActive(false);
+    }
+
+    public void BackToLobbyScene()
+    {
+        SceneManager.LoadScene("Lobby Scene");
     }
 }
 
