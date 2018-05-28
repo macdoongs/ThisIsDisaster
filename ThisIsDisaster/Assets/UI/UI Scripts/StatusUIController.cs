@@ -27,6 +27,22 @@ public class StatusUIController : MonoBehaviour {
 
     public Disorder[] disorders;
 
+    public static StatusUIController Instance
+    {
+        private set;
+        get;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance.gameObject != null)
+        {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
     private void Start()
     {
          

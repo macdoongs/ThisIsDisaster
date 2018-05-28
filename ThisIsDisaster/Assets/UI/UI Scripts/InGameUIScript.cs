@@ -7,18 +7,11 @@ public class InGameUIScript : MonoBehaviour
 {
     // 플레이어 캐릭터 게임 오브젝트
     public GameObject PlayerCharacter;    
-    // 상태창 컨트롤러가 저장되는 게임 오브젝트
-    public GameObject StatusManager;
-    // 인벤토리 컨트롤러가 저장되는 게임 오브젝트
-    public GameObject InventoryManager;
 
-    public GameObject WarningPanel;
-    public Text WarningDescription;
-
-    public GameObject StatusBarManager;
-    public GameObject SettingManager;
-    public GameObject StageClearManager;
-
+    public GameObject NoticePanel;
+    public Text NoticeTitle;
+    public Text NoticeDescription;
+    
     public GameObject EventNoticePanel;
     public Text EventNoticeText;
 
@@ -47,27 +40,20 @@ public class InGameUIScript : MonoBehaviour
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
         }
 
-        StatusManager.GetComponent<StatusUIController>().SetPlayerInfo(PlayerCharacter);
-        StatusBarManager.GetComponent<StatusBarUIScript>().
-            SetPlayerInfo(PlayerCharacter);
-        InventoryManager.GetComponent<InventoryUIController>().
-            InitialCategory();
+        StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
+        StatusBarUIScript.Instance.SetPlayerInfo(PlayerCharacter);
+        InventoryUIController.Instance.InitialCategory();
     }
 
     public void Update()
     {
-        StatusManager.GetComponent<StatusUIController>().
-            GetStatus(PlayerCharacter);
+        StatusUIController.Instance.GetStatus(PlayerCharacter);
+        
+        InventoryUIController.Instance.SlotSprite();
+        InventoryUIController.Instance.PreviewSprite();
+        InventoryUIController.Instance.InventoryUpdate();
 
-        InventoryManager.GetComponent<InventoryUIController>().
-            SlotSprite();
-        InventoryManager.GetComponent<InventoryUIController>().
-            PreviewSprite();
-        InventoryManager.GetComponent<InventoryUIController>().
-            InventoryUpdate();
-
-        StatusBarManager.GetComponent<StatusBarUIScript>().
-            UpdateStatusBar(PlayerCharacter);
+        StatusBarUIScript.Instance.UpdateStatusBar(PlayerCharacter);
 
 
         if (NoticeToken) {
@@ -98,16 +84,16 @@ public class InGameUIScript : MonoBehaviour
     public void CloseAllUI()
     {
         DefaultEventNoticePanel();
-        StatusManager.GetComponent<StatusUIController>().Close();
-        InventoryManager.GetComponent<InventoryUIController>().Close();
-        SettingManager.GetComponent<SettingUIController>().Close();
-        WarningPanel.SetActive(false);
+        StatusUIController.Instance.Close();
+        InventoryUIController.Instance.Close();
+        SettingUIController.Instance.Close();
+        NoticePanel.SetActive(false);
     }
 
     public void StageClear()
     {
         CloseAllUI();
-        StageClearManager.GetComponent<StageClearUIContorller>().StageClearPanel.SetActive(true);
+        StageClearUIContorller.Instance.StageClearPanel.SetActive(true);
     }
 
     public void AttackClicked()
@@ -115,27 +101,44 @@ public class InGameUIScript : MonoBehaviour
         GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<PlayerAttackController>().OnAttackClicked();        
     }
 
-    public void Warning(string desc)
+    public void Notice(string title,string desc)
     {
-        WarningDescription.text = desc;
-        WarningPanel.SetActive(true);
+        NoticeTitle.text = title;
+        NoticeDescription.text = desc;
+        NoticePanel.SetActive(true);
     }
 
     public void EventNotice(string eventName, int type)
     {
         DefaultEventNoticePanel();
+        string Name = "";
 
-        if(type == 0)
+        if (eventName == "Cyclone")
+            Name = "태풍";
+        else if (eventName == "Flood")
+            Name = "홍수";
+        else if (eventName == "Yellowdust")
+            Name = "황사";
+        else if (eventName == "Drought")
+            Name = "가뭄";
+        else if (eventName == "Earthquake")
+            Name = "지진";
+        else if (eventName == "Thunderstorm")
+            Name = "천둥";
+        else
+            Name = "폭설";
+
+        if (type == 0)
         {
-            EventNoticeText.text = eventName + " 이벤트가 발생하였습니다.";
+            EventNoticeText.text = Name + " 이벤트가 발생하였습니다.";
         }
         else if(type == 1)
         {
-            EventNoticeText.text = eventName + " 이벤트가 시작되었습니다.";
+            EventNoticeText.text = Name + " 이벤트가 시작되었습니다.";
         }
         else
         {
-            EventNoticeText.text = eventName + " 이벤트가 종료되었습니다.";
+            EventNoticeText.text = Name + " 이벤트가 종료되었습니다.";
         }
 
         EventNoticePanel.SetActive(true);

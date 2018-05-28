@@ -31,6 +31,22 @@ public class StageClearUIContorller : MonoBehaviour {
 
     public Image[] Stars = new Image[3];
 
+    public static StageClearUIContorller Instance
+    {
+        private set;
+        get;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance.gameObject != null)
+        {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
     public void Start()
     {
         CheckBoxes = new Image[] { StageClearCheck, DeadCountCheck, DisasterCountCheck };
