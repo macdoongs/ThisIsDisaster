@@ -48,10 +48,7 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
         Initialize();
         UpdateAccountId();
         SetupPlayerTexts();
-        Debug.Log(GetLocalHost());
-        Debug.Log(GetHostAddress());
         ObserveNotices();
-        //NetworkModule.Instance.RegisterReceiveNotification(PacketId.GameSyncInfo, OnReceiveGameSyncPacket);
     }
 
     public void Initialize()
@@ -78,7 +75,6 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
             if (_delayEventTrigger.RunTimer()) {
                 if (_delayEvent != null) {
                     _delayEvent();
-                    _delayEvent = null;
                 }
             }
         }
@@ -164,19 +160,9 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
             t.color = c;
             t.text = "";
         }
-
-        //if (_isHost)
-        //{
-        //    PlayerText[0].text = GlobalGameManager.Param.accountName;
-        //    PlayerText[0].color = Color.red;
-        //}
-        //else {
-
-        //}
+        
         if (_isHost)
         {
-            //PlayerText[0].text = GlobalGameManager.Param.accountName + System.Environment.NewLine + GetLocalHost();
-            //PlayerText[0].color = Color.red;
             var list = NetworkModule.Instance.GetReliableEndPoints();
             for (int i = 0; i < list.Count; i++) {
                 if (i > 3) {
@@ -192,9 +178,12 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     {
         NetworkModule.Instance.ClearReceiveNotification();
         GameServer.Instance.InitializeNetworkModule();
-        int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;
-        Debug.LogError("Starting Server : " + port);
+        //int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;
+        ///TODO: Change port accounting
+        int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;//이 부분은 나중에 바꿔야 함
+        Debug.LogError("Starting Server, Should Change Structure : " + port);
         _udpServerPort = port;
+        GameServer.Instance.SetUDPServerPort(port);
         //UDP Server
         bool ret = NetworkModule.Instance.StartServer(port, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.UDP);
         if (_isHost) {
@@ -248,23 +237,43 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
 
     public void OnClickHost() {
         _isHost = true;
-        //_nextStep = Step.ServerStart;
-        //Make Listening Server
+        GameServer.Instance.SetHost(true);
+        GameServer.Instance.SetLocalAddress(GetLocalHost());
         ServerStart();
+
+        GameServer.Instance.MakeMatchingView();
         //ServerConnect();
     }
 
     public void OnClickConnect()
     {
         _isHost = false;
-        //GlobalParameters.Param.AdditionalPortNum += 10;
-        //_nextStep = Step.ServerStart;
+        GameServer.Instance.SetHost(false);
+        GameServer.Instance.SetLocalAddress(GetLocalHost());
         ServerConnect();
-        ServerStart();
 
-        _delayEvent = new DelayEvent(SendSessionSyncInfo);
-        //SendSessionSyncInfo();
+        GameServer.Instance.MakeMatchingView();
+        //GameServer.Instance.SendMatchingRequest();
+        //ServerStart();
+
+        _delayEvent = new DelayEvent(SendMatchingRequest);
         _delayEventTrigger.StartTimer(1f);
+    }
+
+    public void SendMatchingRequest()
+    {
+        int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;//이 부분은 나중에 바꿔야 함
+        //Debug.LogError("Starting Server, Should Change Structure : " + port);
+        _udpServerPort = port;
+        GameServer.Instance.SetUDPServerPort(port);
+        GameServer.Instance.SendMatchingRequest();
+        _delayEvent = new DelayEvent(RequsetMatchingData);
+        _delayEventTrigger.StartTimer(1f);
+    }
+
+    public void RequsetMatchingData() {
+        GameServer.Instance.SendGameServerRequest(GameServerRequestType.MatchingData);
+        _delayEvent = null;
     }
 
     public void SendSessionSyncInfo() {
@@ -292,6 +301,8 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     public void OnClickGameStart() {
         GlobalGameManager.Instance.OnGameStart();
         SetControl(false);
+
+        GameServer.Instance.DestroyMatchingView();
     }
 
     bool StartServer(int port, int connectionMax, NetworkModule.ConnectionType connectType) {
@@ -357,7 +368,11 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     }
 
     public void UpdateAccountId(string input) {
-        GlobalGameManager.Param.accountId = int.Parse(input);
+        int value = 0;
+        if (int.TryParse(input, out value)) {
+            GlobalGameManager.Param.accountId = value;
+        }
+        
     }
 
     public void OnReceiveGameSyncPacket(PacketId id, int packetSender, byte[] data) {
@@ -367,14 +382,7 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
 
 
         if (packetSender == GlobalParameters.Param.accountId) return;
-
-        //StageGenerator.Instance.SetSeed(sync.stageGenSeed);
-
-        //var remoteCharacter = GameManager.MakePlayerCharacter(sync.accountName, packetSender, false);
-        //remoteCharacter.SetUnitName(sync.accountName);
-
         Debug.Log("Received Packet Info : " + sync.accountName + " " + sync.accountId);
-        //make remote char
     }
 
     public void OnNotice(string notice, params object[] param)

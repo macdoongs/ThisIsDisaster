@@ -137,6 +137,7 @@ public class GlobalGameManager {
         if (NetworkModule.Instance != null) {
             if (GameServer.Instance != null) {
                 SendSessionStartNotice();
+                GameServer.Instance.ConnectUDPServer();
                 GenerateWorld();
             }
         }
@@ -154,6 +155,8 @@ public class GlobalGameManager {
     public void GenerateWorld() {
         if (GameManager.CurrentGameManager != null) {
             GameManager.CurrentGameManager.Init();
+
+            GameServer.Instance.MakeRemotePlayer();
         }
     }
 }

@@ -58,7 +58,6 @@ namespace NetworkComponents
         }
 
         protected bool CreateThread() {
-            NetDebug.Log("Create Thread");
             try
             {
                 _thread = new Thread(ThreadDispatch);
@@ -66,12 +65,10 @@ namespace NetworkComponents
                 _thread.Start();
             }
             catch { return false; }
-            NetDebug.Log("Thread Launched");
             return true;
         }
 
         protected bool DestroyThread() {
-            NetDebug.Log("DestroyThread");
             if (_threadLoop) {
                 _threadLoop = false;
                 if (_thread != null) {
@@ -186,9 +183,9 @@ namespace NetworkComponents
             bool ret = false;
             try
             {
-                NetDebug.Log("Transport connect");
+                NetDebug.Log("Transport connect : " + addr +" : " + port);
                 T transport = new T();
-                transport.SetServerPort(_port);
+                transport.SetServerPort(port);
                 ret = transport.Connect(addr, port);
                 if (ret)
                 {
