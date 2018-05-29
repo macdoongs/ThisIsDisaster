@@ -32,39 +32,19 @@ public class PlayerMoveController : MonoBehaviour {
     private int _jumpingLevel = 0;
 
 
+    public GameObject joystickObject;
     public Joystick joystick;
-
-    private Vector3 _moveVector; //플레이어 이동벡터
-    private Transform _transform;
-
+    
     void Awake(){
-
-		Player = this;
-
+		Player = this;        
 	}
 
     private void Start()
     {
-
-        _transform = transform;      //Transform 캐싱
-        _moveVector = Vector3.zero;  //플레이어 이동벡터 초기화
         currentTile = RandomMapGenerator.Instance.GetTile(transform.position);
         autoTileMovementSetter.SetChangeAction(OnChangeCurrentTile);
-    }
-
-    public void HandleInput()
-    {
-        _moveVector = PoolInput();
-    }
-
-    public Vector3 PoolInput()
-    {
-        float h = Joystick.Instance.GetHorizontalValue();
-        float v = Joystick.Instance.GetVerticalValue();
-        //Vector3 moveDir = new Vector3(h, v, 0).normalized;
-        Vector3 moveDir = new Vector3(h, v, 0);
-
-        return moveDir;
+        joystickObject = GameObject.FindGameObjectWithTag("Joystick");
+        joystick = joystickObject.GetComponent<Joystick>();
     }
 
     void OnChangeCurrentTile(TileUnit tile)
@@ -124,7 +104,7 @@ public class PlayerMoveController : MonoBehaviour {
 
     void Update() {
 
-      //  HandleInput();
+
 
 
         //var tile = RandomMapGenerator.Instance.GetTile(transform.position);
@@ -147,102 +127,59 @@ public class PlayerMoveController : MonoBehaviour {
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
 
+
+        if (joystick.JoyVec.x > 0.5)
+        {
+            MoveRight(ref movePos);
+        }
+
+        if (joystick.JoyVec.x < -0.5)
+        {
+            MoveLeft(ref movePos);
+        }
+
+        if (joystick.JoyVec.y > 0.5)
+        {
+            MoveUp(ref movePos);
+        }
+
+        if (joystick.JoyVec.y < -0.5)
+        {
+            MoveDown(ref movePos);
+        }
         
-        #if UNITY_ANDROID
 
-                float hor = Input.GetAxis("Horizontal");
-                float ver = Input.GetAxis("Vertical");
-                if (hor < 0f)
-                {
-                    MoveLeft(ref movePos);
-                }
-                else if (hor > 0f) {
-                    MoveRight(ref movePos);
-                }
+        if (movePos != Vector3.zero)
+        {
+            AnimatorUtil.SetBool(PlayerMovementCTRL, "Move", true);
+        }
+        else {
+            AnimatorUtil.SetBool(PlayerMovementCTRL, "Move", false);
+        }
 
-                if (ver < 0f)
-                {
-                    MoveDown(ref movePos);
-                }
-                else if (ver >0f){
-                    MoveUp(ref movePos);
-                }
+        if (movePos.x > 0f)
+        {
+            if (CurrentPivotXScale < 0f)
+            {
+                Flip();
+            }
+        }
+        else if (movePos.x < 0f)
+        {
+            if (CurrentPivotXScale > 0f)
+            {
+                Flip();
+            }
+        }
 
-        #else
-
-
-
-                
-                if (Input.GetKey(KeyCode.W))
-                {
-                    MoveUp(ref movePos);
-                }
-
-                if (Input.GetKey(KeyCode.S))
-                {
-                    MoveDown(ref movePos);
-                }
-
-                if (Input.GetKey(KeyCode.A))
-                {
-                    MoveLeft(ref movePos);
-                }
-
-                if (Input.GetKey(KeyCode.D))
-                {
-                    MoveRight(ref movePos);
-                }
-        #endif
-
-                //Vector3 newPos = currentPos;
-                //newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
-                //newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
-
-                //transform.localPosition = newPos;
-
-                if (movePos != Vector3.zero)
-                {
-                    AnimatorUtil.SetBool(PlayerMovementCTRL, "Move", true);
-                }
-                else {
-                    AnimatorUtil.SetBool(PlayerMovementCTRL, "Move", false);
-                }
-
-                if (movePos.x > 0f)
-                {
-                    if (CurrentPivotXScale < 0f)
-                    {
-                        Flip();
-                    }
-                }
-                else if (movePos.x < 0f)
-                {
-                    if (CurrentPivotXScale > 0f)
-                    {
-                        Flip();
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    Jump();
-                }
-
-                if (_jumpDelayTimer.started) {
-                    if (_jumpDelayTimer.RunTimer()) {
-                        _jumpingLevel = 0;
-                    }
-                }
-
-                
+        if (_jumpDelayTimer.started) {
+            if (_jumpDelayTimer.RunTimer()) {
+                _jumpingLevel = 0;
+            }
+        }
+    
+        
     }
-    /*
-    void FixedUpdate()
-    {
-
-        _moveVector.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        _moveVector.x -= moveSpeed * Time.deltaTime;
-        Move(_moveVector*moveSpeed);
-    }*/
 
     void Flip() {
         var scale = FlipPivot.transform.localScale;
@@ -254,7 +191,7 @@ public class PlayerMoveController : MonoBehaviour {
     /// Player Jump
     /// </summary>
     /// <param name="input">사용자 입력에 의한 점프인가</param>
-    void Jump(bool input = true) {
+    public void Jump(bool input = true) {
         //position update needed?
 
         if (input && _jumpDelayTimer.started) return;

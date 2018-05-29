@@ -2,11 +2,14 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler,IPointerDownHandler{
+public class Joystick : MonoBehaviour{
 
-    public Image bgImg;
-    public Image joystickImg;
-    private Vector3 inputVector;
+
+    public Transform Stick;
+
+    private Vector3 StickFirstPos;  // 조이스틱의 처음 위치.
+    public Vector3 JoyVec;         // 조이스틱의 벡터(방향)
+    private float Radius;           // 조이스틱 배경의 반 지름.
 
     public static Joystick Instance
     {
@@ -14,7 +17,8 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler,IPointerD
         get;
     }
 
-    private void Awake()
+
+    void Awake()
     {
 
         if (Instance != null && Instance.gameObject != null)
@@ -23,45 +27,46 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler,IPointerD
             return;
         }
         Instance = this;
+
     }
-	
-    public virtual void OnDrag(PointerEventData pad)
+
+
+    void Start()
     {
-        Vector2 pos;
-        if(RectTransformUtility.ScreenPointToLocalPointInRectangle(bgImg.rectTransform, pad.position , pad.pressEventCamera, out pos))
-        {
-            pos.x = (pos.x / bgImg.rectTransform.sizeDelta.x);
-            pos.y = (pos.y / bgImg.rectTransform.sizeDelta.y);
+        Radius = GetComponent<RectTransform>().sizeDelta.y * 0.5f;
+        StickFirstPos = Stick.transform.position;
 
-            inputVector = new Vector3(pos.x * 2 + 1, pos.y * 2 - 1, 0);
-
-            joystickImg.rectTransform.anchoredPosition = new Vector3(inputVector.x * (bgImg.rectTransform.sizeDelta.x / 3),
-                inputVector.y * (bgImg.rectTransform.sizeDelta.y / 3));
-        }
+        // 캔버스 크기에대한 반지름 조절.
+        float Can = transform.parent.GetComponent<RectTransform>().localScale.x;
+        Radius *= Can;
     }
 
-    public virtual void OnPointerDown(PointerEventData ped)
+    // 드래그
+    public void Drag(BaseEventData _Data)
     {
-        OnDrag(ped);
+        PointerEventData Data = _Data as PointerEventData;
+        Vector3 Pos = Data.position;
+
+        // 조이스틱을 이동시킬 방향을 구함.(오른쪽,왼쪽,위,아래)
+        JoyVec = (Pos - StickFirstPos).normalized;
+
+        // 조이스틱의 처음 위치와 현재 내가 터치하고있는 위치의 거리를 구한다.
+        float Dis = Vector3.Distance(Pos, StickFirstPos);
+
+        // 거리가 반지름보다 작으면 조이스틱을 현재 터치하고 있는곳으로 이동. 
+        if (Dis < Radius)
+            Stick.position = StickFirstPos + JoyVec * Dis;
+        // 거리가 반지름보다 커지면 조이스틱을 반지름의 크기만큼만 이동.
+        else
+            Stick.position = StickFirstPos + JoyVec * Radius;
     }
 
-    public virtual void OnPointerUp(PointerEventData ped)
+
+    public void DragEnd()
     {
-        inputVector = Vector3.zero;
-        joystickImg.rectTransform.anchoredPosition = Vector3.zero;
+        Stick.position = StickFirstPos; // 스틱을 원래의 위치로.
+        JoyVec = Vector3.zero;          // 방향을 0으로.
     }
-
-    public float GetHorizontalValue()
-    {
-        return inputVector.x;
-    }
-
-    public float GetVerticalValue()
-    {
-        return inputVector.y;
-    }
-
-
 
 
 }

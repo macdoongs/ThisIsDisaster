@@ -108,6 +108,12 @@ public class InGameUIScript : MonoBehaviour
         GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<PlayerAttackController>().OnAttackClicked();        
     }
 
+    public void JumpClicked()
+    {
+        GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<PlayerMoveController>().Jump();
+    }
+
+
     public void Notice(string title,string desc)
     {
         NoticeTitle.text = title;

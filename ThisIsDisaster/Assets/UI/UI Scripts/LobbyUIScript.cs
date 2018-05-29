@@ -41,6 +41,8 @@ public class LobbyUIScript : MonoBehaviour {
         Instance = this;
 
     }
+
+
     public void Update()
     {
         MenuUpdate();
