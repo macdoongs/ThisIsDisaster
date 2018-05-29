@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 
 public class Joystick : MonoBehaviour{
 
-
+    public GameObject JoystickGameObject;
+    
     public Transform Stick;
 
     private Vector3 StickFirstPos;  // 조이스틱의 처음 위치.
@@ -49,6 +50,9 @@ public class Joystick : MonoBehaviour{
 
         // 조이스틱을 이동시킬 방향을 구함.(오른쪽,왼쪽,위,아래)
         JoyVec = (Pos - StickFirstPos).normalized;
+        JoyVec.x *= 2f;
+        JoyVec.y *= 2f;
+
 
         // 조이스틱의 처음 위치와 현재 내가 터치하고있는 위치의 거리를 구한다.
         float Dis = Vector3.Distance(Pos, StickFirstPos);
@@ -68,5 +72,24 @@ public class Joystick : MonoBehaviour{
         JoyVec = Vector3.zero;          // 방향을 0으로.
     }
 
+
+
+    public void JoystickOn()
+    {
+        Camera[] cameras = Camera.allCameras;
+
+        JoystickGameObject.transform.position = cameras[0].ScreenToWorldPoint(Input.mousePosition);
+        Image JoystickImg = JoystickGameObject.GetComponentsInChildren<Image>()[1];
+        Stick.position = JoystickGameObject.transform.position;
+        StickFirstPos = Stick.position;
+        JoystickGameObject.GetComponentInChildren<Image>().color = Color.white;
+        Stick.GetComponentInChildren<Image>().color = Color.white;
+    }
+
+    public void JoystickOff()
+    {
+        JoystickGameObject.GetComponentInChildren<Image>().color = Color.clear;
+        Stick.GetComponentInChildren<Image>().color = Color.clear;
+    }
 
 }

@@ -127,26 +127,29 @@ public class PlayerMoveController : MonoBehaviour {
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
 
-
-        if (joystick.JoyVec.x > 0.5)
+        if(joystick != null)
         {
-            MoveRight(ref movePos);
+            if (joystick.JoyVec.x > 0.4)
+            {
+                MoveRight(ref movePos);
+            }
+
+            if (joystick.JoyVec.x < -0.4)
+            {
+                MoveLeft(ref movePos);
+            }
+
+            if (joystick.JoyVec.y > 0.4)
+            {
+                MoveUp(ref movePos);
+            }
+
+            if (joystick.JoyVec.y < -0.4)
+            {
+                MoveDown(ref movePos);
+            }
         }
 
-        if (joystick.JoyVec.x < -0.5)
-        {
-            MoveLeft(ref movePos);
-        }
-
-        if (joystick.JoyVec.y > 0.5)
-        {
-            MoveUp(ref movePos);
-        }
-
-        if (joystick.JoyVec.y < -0.5)
-        {
-            MoveDown(ref movePos);
-        }
         
 
         if (movePos != Vector3.zero)
