@@ -61,7 +61,8 @@ public class PlayerMoveController : MonoBehaviour {
     {
         float h = Joystick.Instance.GetHorizontalValue();
         float v = Joystick.Instance.GetVerticalValue();
-        Vector3 moveDir = new Vector3(h, v, 0).normalized;
+        //Vector3 moveDir = new Vector3(h, v, 0).normalized;
+        Vector3 moveDir = new Vector3(h, v, 0);
 
         return moveDir;
     }
@@ -123,7 +124,9 @@ public class PlayerMoveController : MonoBehaviour {
 
     void Update() {
 
-        HandleInput();
+      //  HandleInput();
+
+
         //var tile = RandomMapGenerator.Instance.GetTile(transform.position);
         //if (tile != currentTile) {
         //    OnChangeCurrentTile(tile);
@@ -140,7 +143,7 @@ public class PlayerMoveController : MonoBehaviour {
         //}
 
 
-        /*
+        
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
 
@@ -169,7 +172,7 @@ public class PlayerMoveController : MonoBehaviour {
 
 
 
-                /*
+                
                 if (Input.GetKey(KeyCode.W))
                 {
                     MoveUp(ref movePos);
@@ -230,16 +233,16 @@ public class PlayerMoveController : MonoBehaviour {
                     }
                 }
 
-                */
+                
     }
-
+    /*
     void FixedUpdate()
     {
 
         _moveVector.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
         _moveVector.x -= moveSpeed * Time.deltaTime;
         Move(_moveVector*moveSpeed);
-    }
+    }*/
 
     void Flip() {
         var scale = FlipPivot.transform.localScale;
