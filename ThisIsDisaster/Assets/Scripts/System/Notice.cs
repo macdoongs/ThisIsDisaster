@@ -9,6 +9,8 @@ public static class NoticeName {
     public static string FixedUpdate = "FixedUpdate";
     public static string LocalPlayerGenerated = "LocalPlayerGenerated";
 
+    public static string AddShelter = "AddShelter";
+
     //network message
     public static string OnPlayerConnected = "OnPlayerConnected";
     public static string OnPlayerDisconnected = "OnPlayerDisconnected";

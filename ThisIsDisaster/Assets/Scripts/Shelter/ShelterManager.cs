@@ -32,11 +32,12 @@ namespace Shelter
 
             //Make AccessPoint Door
 
-
             ShelterLayer.CurrentLayer.MakeShelter(newShelter);
             _shelters.Add(newShelter);
 
-            
+#if MIDDLE_PRES
+            Notice.Instance.Send(NoticeName.AddShelter, newShelter);
+#endif
         }
     }
 }
