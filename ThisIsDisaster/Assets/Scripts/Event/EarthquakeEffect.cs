@@ -125,7 +125,8 @@ public class EarthquakeEffect : MonoBehaviour
 #if MIDDLE_PRES
     void MakeInjury() {
         CharacterModel character = GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<CharacterModel>();
-        //injury
+        character.GetDisorder(Disorder.DisorderType.injury);
+        InGameUIScript.Instance.DisorderNotice(Disorder.DisorderType.injury);
     }
 #endif
 

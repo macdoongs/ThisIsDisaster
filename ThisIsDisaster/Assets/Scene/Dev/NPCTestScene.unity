@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -13151,7 +13151,7 @@ Prefab:
     - target: {fileID: 114860146992525652, guid: 696f753da88ed374b81f281e04e2e039,
         type: 2}
       propertyPath: isStageCleared
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114860146992525652, guid: 696f753da88ed374b81f281e04e2e039,
         type: 2}
@@ -13185,6 +13185,16 @@ Prefab:
       propertyPath: Stars.Array.data[2]
       value: 
       objectReference: {fileID: 999074590}
+    - target: {fileID: 114860146992525652, guid: 696f753da88ed374b81f281e04e2e039,
+        type: 2}
+      propertyPath: Rank
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114860146992525652, guid: 696f753da88ed374b81f281e04e2e039,
+        type: 2}
+      propertyPath: deadCount
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 696f753da88ed374b81f281e04e2e039, type: 2}
   m_IsPrefabParent: 0
@@ -26602,6 +26612,11 @@ Prefab:
       propertyPath: JoystickGameObject
       value: 
       objectReference: {fileID: 1243116060}
+    - target: {fileID: 114881424103005866, guid: 6ebee6d418cd1cf46b96245a0321b5c9,
+        type: 2}
+      propertyPath: canvasScaler
+      value: 
+      objectReference: {fileID: 1715839696}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ebee6d418cd1cf46b96245a0321b5c9, type: 2}
   m_IsPrefabParent: 0
