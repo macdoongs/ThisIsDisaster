@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3029cb47c86eef848842e56435ce9189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 0
+  level: 5
   EarthquakeForceCurve:
     serializedVersion: 2
     m_Curve:
@@ -62,22 +62,58 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.15
-      value: 0.2
-      inSlope: 3.2505276
-      outSlope: 3.2505276
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.5
-      value: 1
+      time: 0.09783728
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.9
-      value: 0.2
-      inSlope: -0.6207527
-      outSlope: -0.6207527
+      time: 0.14933017
+      value: 0.29974365
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.19876415
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.34809473
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.3944387
+      value: 0.49118084
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.4253347
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5046344
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6035247
+      value: 0.99746704
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6910401
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1

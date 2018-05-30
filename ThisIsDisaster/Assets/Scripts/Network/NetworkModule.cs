@@ -110,7 +110,7 @@ namespace NetworkComponents
         }
 
         public bool StartServer(int port, int connecitonMax, ConnectionType type) {
-            NetDebug.Log("Start Server");
+            NetDebug.Log("Start Server : " + type);
             try
             {
                 if (type == ConnectionType.TCP)
@@ -363,7 +363,7 @@ namespace NetworkComponents
             }
 
             int packetId = (int)header.packetId;
-            NetDebug.Log("Receive : " + node + " " + header.packetId);
+            
             if (_notifier.ContainsKey(packetId) && _notifier[packetId] != null) {
                 int headerSize = Marshal.SizeOf(typeof(PacketHeader));
                 byte[] packetData = new byte[data.Length - headerSize];
@@ -451,14 +451,10 @@ namespace NetworkComponents
 
         public bool StartGameServer(int playerNum)
         {
-            //find gameserver
-            //GameServer.Instance.StartServer();//
-            GameServer.Instance.StartServer(playerNum);
-            return true;
+            return GameServer.Instance.StartServer(playerNum);
         }
 
         public void StopGameServer() {
-            //GameServer.Instance.StopServer();
             GameServer.Instance.StopServer();
         }
 
@@ -471,6 +467,7 @@ namespace NetworkComponents
         }
 
         public void SetClientNode(int gid, int node) {
+            NetDebug.LogError("Set Client Node " + gid + " " + node);
             _clientNode[gid] = node;
         }
 

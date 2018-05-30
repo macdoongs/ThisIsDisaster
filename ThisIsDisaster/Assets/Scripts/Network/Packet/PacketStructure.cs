@@ -14,12 +14,15 @@ namespace NetworkComponents
         Coordinates,
 
         //Maching Relate
+        MatchingData,
         MatchingRequest,
         MatchingResponse,
+        SessionInfo,
         SessionInfoSync,
         SessionInfoSyncReflection,
         StartSessionNotify,
 
+        GameServerRequest,
         Max//dummy End
     }
 
@@ -99,5 +102,22 @@ namespace NetworkComponents
     public struct StartSessionNotice {
         public int sessionId;
         public int stageRandomSeed;
+    }
+
+    public struct MatchingRequest {
+        public int accountId;
+        public int port;
+        public string ip;
+        public const int IP_LENGTH = 32;
+    }
+
+    public struct MatchingResponse {
+        public bool connectionState;
+        public int nodeIndex;
+        public int sessionIndex;
+    }
+
+    public struct GameServerRequest {
+        public GameServerRequestType request;
     }
 }

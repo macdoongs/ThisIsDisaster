@@ -470,6 +470,7 @@ namespace NetworkComponents {
 
         public void SetServerPort(int port)
         {
+            
         }
 
         public void RegisterEventHandler(EventHandler handler)

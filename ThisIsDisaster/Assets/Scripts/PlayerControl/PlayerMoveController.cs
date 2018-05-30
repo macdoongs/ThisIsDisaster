@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMoveController : MonoBehaviour {
-    public float moveSpeed = 1f;
+    const float _SPEED_FACTOR = 0.1f;
+    public float MoveSpeed {
+        get {
+            return _character.CurrentStats.MoveSpeed * _SPEED_FACTOR;
+        }
+    }
+
+    public CharacterModel _character = null;
     public float jumpDelay = 1f;
     public Animator PlayerMovementCTRL;
     public Transform FlipPivot;
@@ -31,16 +38,20 @@ public class PlayerMoveController : MonoBehaviour {
 
     private int _jumpingLevel = 0;
 
-	void Awake(){
 
-		Player = this;
-
+    public GameObject joystickObject;
+    public Joystick joystick;
+    
+    void Awake(){
+		Player = this;        
 	}
 
     private void Start()
     {
         currentTile = RandomMapGenerator.Instance.GetTile(transform.position);
         autoTileMovementSetter.SetChangeAction(OnChangeCurrentTile);
+        joystickObject = GameObject.FindGameObjectWithTag("Joystick");
+        joystick = joystickObject.GetComponent<Joystick>();
     }
 
     void OnChangeCurrentTile(TileUnit tile)
@@ -99,6 +110,10 @@ public class PlayerMoveController : MonoBehaviour {
     }
 
     void Update() {
+
+
+
+
         //var tile = RandomMapGenerator.Instance.GetTile(transform.position);
         //if (tile != currentTile) {
         //    OnChangeCurrentTile(tile);
@@ -114,57 +129,51 @@ public class PlayerMoveController : MonoBehaviour {
         //    FlipPivot.transform.localPosition = lp;
         //}
 
+
+        
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
 
-
-#if UNITY_ANDROID
-        
-        float hor = Input.GetAxis("Horizontal");
-        float ver = Input.GetAxis("Vertical");
-        if (hor < 0f)
-        {
-            MoveLeft(ref movePos);
-        }
-        else if (hor > 0f) {
-            MoveRight(ref movePos);
-        }
-
-        if (ver < 0f)
-        {
-            MoveDown(ref movePos);
-        }
-        else if (ver >0f){
+#if UNITY_EDITOR
+        if (Input.GetKey(KeyCode.W)) {
             MoveUp(ref movePos);
         }
-
-#else
-        if (Input.GetKey(KeyCode.W))
-        {
-            MoveUp(ref movePos);
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
+        if (Input.GetKey(KeyCode.S)) {
             MoveDown(ref movePos);
         }
-
         if (Input.GetKey(KeyCode.A))
         {
             MoveLeft(ref movePos);
         }
-
         if (Input.GetKey(KeyCode.D))
         {
             MoveRight(ref movePos);
         }
 #endif
+        if (joystick != null)
+        {
+            if (joystick.JoyVec.x > 0.4)
+            {
+                MoveRight(ref movePos);
+            }
 
-        //Vector3 newPos = currentPos;
-        //newPos.x = Mathf.Clamp(newPos.x + movePos.x, -_movableSpace_x, _movableSpace_x);
-        //newPos.y = Mathf.Clamp(newPos.y + movePos.y, -_movableSpace_y + GameStaticInfo.TileHeight, _movableSpace_y);
+            if (joystick.JoyVec.x < -0.4)
+            {
+                MoveLeft(ref movePos);
+            }
 
-        //transform.localPosition = newPos;
+            if (joystick.JoyVec.y > 0.4)
+            {
+                MoveUp(ref movePos);
+            }
+
+            if (joystick.JoyVec.y < -0.4)
+            {
+                MoveDown(ref movePos);
+            }
+        }
+
+        
 
         if (movePos != Vector3.zero)
         {
@@ -189,15 +198,13 @@ public class PlayerMoveController : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            Jump();
-        }
-
         if (_jumpDelayTimer.started) {
             if (_jumpDelayTimer.RunTimer()) {
                 _jumpingLevel = 0;
             }
         }
+    
+        
     }
 
     void Flip() {
@@ -210,7 +217,7 @@ public class PlayerMoveController : MonoBehaviour {
     /// Player Jump
     /// </summary>
     /// <param name="input">사용자 입력에 의한 점프인가</param>
-    void Jump(bool input = true) {
+    public void Jump(bool input = true) {
         //position update needed?
 
         if (input && _jumpDelayTimer.started) return;
@@ -252,25 +259,25 @@ public class PlayerMoveController : MonoBehaviour {
 
     void MoveUp(ref Vector3 pos)
     {
-        pos.y += moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
+        pos.y += MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
         Move(pos);
     }
 
     void MoveDown(ref Vector3 pos)
     {
-        pos.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
+        pos.y -= MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
         Move(pos);
     }
 
     void MoveLeft(ref Vector3 pos)
     {
-        pos.x -= moveSpeed * Time.deltaTime;
+        pos.x -= MoveSpeed * Time.deltaTime;
         Move(pos);
     }
 
     void MoveRight(ref Vector3 pos)
     {
-        pos.x += moveSpeed * Time.deltaTime;
+        pos.x += MoveSpeed * Time.deltaTime;
         Move(pos);
     }
 }

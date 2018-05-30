@@ -286,45 +286,42 @@ namespace NetworkComponents {
             {
                 _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 NetDebug.Log("Create new UDP Socket");
-
-                try
-                {
-                    //string hostName = Dns.GetHostName();
-                    //IPAddress[] adrList = Dns.GetHostAddresses(hostName);
-                    //foreach (var addr in adrList)
-                    //{
-                    //    if (addr.AddressFamily == AddressFamily.InterNetwork)
-                    //    {
-                    //        _localEndPoint = new IPEndPoint(addr, _serverPort);
-                    //        break;
-                    //    }
-                    //}
-
-                    _localEndPoint = new IPEndPoint(IPAddress.Parse(Network.player.ipAddress),
-                                    _serverPort);
-
-                    _remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
-                    _isRequested = true;
-                    NetDebug.Log("UDP SetUp success");
-                    NetDebug.Log("Local: " + _localEndPoint.Address.ToString());
-                    NetDebug.Log("Remote: " + _remoteEndPoint.Address.ToString() + " : " + _remoteEndPoint.Port);
-                }
-                catch
-                {
-                    _isRequested = false;
-                    NetDebug.LogError("UDP Connect Failed");
-                }
-
-                NetDebug.Log("Transport UDP Connection : " + _isRequested);
-                if (_handler != null)
-                {
-                    NetEventState state = new NetEventState(NetEventType.Connect, _isRequested ? NetEventResult.Success : NetEventResult.Failure);
-                    _handler(this, state);
-                    NetDebug.Log("Event Handler Called");
-                }
-                _keepAliveTicker = DateTime.Now;
-                _isFirst = true;
+                
             }
+            try
+            {
+                //string hostName = Dns.GetHostName();
+                //IPAddress[] adrList = Dns.GetHostAddresses(hostName);
+                //foreach (var addr in adrList)
+                //{
+                //    if (addr.AddressFamily == AddressFamily.InterNetwork)
+                //    {
+                //        _localEndPoint = new IPEndPoint(addr, _serverPort);
+                //        break;
+                //    }
+                //}
+
+                _localEndPoint = new IPEndPoint(IPAddress.Parse(Network.player.ipAddress),
+                                port);
+                
+                _isRequested = true;
+                NetDebug.Log("UDP SetUp success");
+            }
+            catch
+            {
+                _isRequested = false;
+                NetDebug.LogError("UDP Connect Failed");
+            }
+
+            NetDebug.Log("Transport UDP Connection : " + _isRequested);
+            if (_handler != null)
+            {
+                NetEventState state = new NetEventState(NetEventType.Connect, _isRequested ? NetEventResult.Success : NetEventResult.Failure);
+                _handler(this, state);
+                NetDebug.Log("Event Handler Called");
+            }
+            _keepAliveTicker = DateTime.Now;
+            _isFirst = true;
             return _isRequested;
         }
 
@@ -358,6 +355,7 @@ namespace NetworkComponents {
                     _socket.SendTo(request, request.Length, SocketFlags.None, _remoteEndPoint);
                     _keepAliveTicker = DateTime.Now;
                     _isFirst = false;
+                    NetDebug.LogError("Send UDP Message : " + message);
                 }
             }
         }
@@ -434,6 +432,7 @@ namespace NetworkComponents {
 
         public void SetServerPort(int port)
         {
+            NetDebug.LogError("UDP Set ServerPort : " + port);
             _serverPort = port;
         }
     }

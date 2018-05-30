@@ -208,6 +208,7 @@ public class GameManager : MonoBehaviour {
     private void Awake()
     {
         CurrentGameManager = this;
+        _remotePlayer = new Dictionary<int, UnitControllerBase>();
         //Init();
     }
 
@@ -215,7 +216,6 @@ public class GameManager : MonoBehaviour {
     //  
     /// </summary>
     public void Init() {
-        _remotePlayer = new Dictionary<int, UnitControllerBase>();
 
         GenerateWorld(StageGenerator.Instance.ReadNextValue());
 
@@ -227,6 +227,16 @@ public class GameManager : MonoBehaviour {
             NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
                 NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
+
+#if MIDDLE_PRES
+        ProtoInit();
+#endif
+    }
+
+    public void ProtoInit()
+    {
+        //make shelter
+        //add shelter item
     }
 
     public void GenerateWorld(int seed)
@@ -267,7 +277,7 @@ public class GameManager : MonoBehaviour {
         }
 
         NPCManager.Manager.SetNpcGenInfo(info.npcInfoList);
-        NPCManager.Manager.CheckGeneration();
+        //NPCManager.Manager.CheckGeneration();
         this._currentClimateInfo = info;
 
     }

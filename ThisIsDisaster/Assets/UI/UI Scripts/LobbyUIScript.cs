@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LobbyUIScript : MonoBehaviour {
 
@@ -9,20 +10,38 @@ public class LobbyUIScript : MonoBehaviour {
     public Color defaultTextColor;
 
     public Text[] MenuTexts = new Text[3];
-    public GameObject[] Underbars = new GameObject[3];
 
     public int MenuPosition = -1;
 
     public GameObject GameModePanel;
     public Text[] GameModeTexts = new Text[2];
-    public GameObject[] GameModeUnderbars = new GameObject[2];
 
     public GameObject StartPanel;
 
-    public void Start()
+    public GameObject LoadingPanel;
+    public Image LoadingBar;
+    public Text LoadingText;
+    public float LoadingAmount = 0;
+
+    public static LobbyUIScript Instance
     {
-        
+        private set;
+        get;
     }
+
+
+    void Awake()
+    {
+
+        if (Instance != null && Instance.gameObject != null)
+        {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+    }
+
 
     public void Update()
     {
@@ -47,12 +66,10 @@ public class LobbyUIScript : MonoBehaviour {
             if (i == MenuPosition)
             {
                 MenuTexts[i].color = focusedTextColor;
-                Underbars[i].SetActive(true);
             }
             else
             {
                 MenuTexts[i].color = defaultTextColor;
-                Underbars[i].SetActive(false);
             }
         }
 
@@ -71,7 +88,6 @@ public class LobbyUIScript : MonoBehaviour {
         for(int i = 0; i < MenuTexts.Length; i++)
         {
             MenuTexts[i].color = defaultTextColor;
-            Underbars[i].SetActive(false);
         }
         DefaultGameMode();
         GameModePanel.SetActive(false);
@@ -82,7 +98,6 @@ public class LobbyUIScript : MonoBehaviour {
         for(int i = 0; i < GameModeTexts.Length; i++)
         {
             GameModeTexts[i].color = defaultTextColor;
-            GameModeUnderbars[i].SetActive(false);
         }
 
         StartPanel.SetActive(false);
@@ -92,7 +107,12 @@ public class LobbyUIScript : MonoBehaviour {
     {
         DefaultGameMode();
         GameModeTexts[mode].color = focusedTextColor;
-        GameModeUnderbars[mode].SetActive(true);
         StartPanel.SetActive(true);
     }
+
+    public void StartGame()
+    {
+        LoadingSceneManager.LoadScene("NPCTestScene");
+    }
+
 }

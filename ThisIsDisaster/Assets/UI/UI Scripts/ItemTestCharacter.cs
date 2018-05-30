@@ -88,6 +88,7 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F12))
         {
+            InventoryUIController.Instance.HighlightCategoryType();
         }
     }
 

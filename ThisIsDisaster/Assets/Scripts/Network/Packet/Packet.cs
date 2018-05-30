@@ -290,4 +290,50 @@ namespace NetworkComponents
             return PacketId.StartSessionNotify;
         }
     }
+
+    public class GameServerRequestPacket : IPacket<GameServerRequest> {
+
+        public class GameServerRequestPacketSerializer : Serializer {
+            public bool Serializer(GameServerRequest request) {
+                Serialize((int)request.request);
+                return true;
+            }
+
+            public bool Deserialize(ref GameServerRequest data) {
+                int type = 0;
+                Deserialize(ref type);
+                data.request = (GameServerRequestType)type;
+                return true;
+            }
+        }
+
+        GameServerRequest _packet;
+
+        public GameServerRequestPacket(GameServerRequest packet) {
+            _packet = packet;
+        }
+
+        public GameServerRequestPacket(byte[] data) {
+            GameServerRequestPacketSerializer serializer = new GameServerRequestPacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref _packet);
+        }
+
+        public byte[] GetData()
+        {
+            GameServerRequestPacketSerializer serializer = new GameServerRequestPacketSerializer();
+            serializer.Serializer(_packet);
+            return serializer.GetSerializedData();
+        }
+
+        public GameServerRequest GetPacket()
+        {
+            return _packet;
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.GameServerRequest;
+        }
+    }
 }

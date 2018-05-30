@@ -44,6 +44,10 @@ public class EarthquakeEffect : MonoBehaviour
     int _waveCount = 0;
     float _waveFreq = 0.1f;
 
+#if MIDDLE_PRES
+    bool _injury = false;
+#endif
+
 
     TileUnit _originTile = null;
 
@@ -118,11 +122,27 @@ public class EarthquakeEffect : MonoBehaviour
         _waveTimer.StartTimer(_waveFreq);
     }
 
+#if MIDDLE_PRES
+    void MakeInjury() {
+        CharacterModel character = GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<CharacterModel>();
+        //injury
+    }
+#endif
+
     private void Update()
     {
         if (_lifeTimeTimer.started)
         {
-            float rate = _lifeTimeTimer.Rate;
+            float rate = GetEarthquakeForce((_lifeTimeTimer.Rate));
+#if MIDDLE_PRES
+            if (!_injury) {
+                if (rate >= 0.6f) {
+                    MakeInjury();
+                    _injury = true;
+                }
+            }
+#endif
+
             if (_waveTimer.started)
             {
                 if (_waveTimer.RunTimer())
