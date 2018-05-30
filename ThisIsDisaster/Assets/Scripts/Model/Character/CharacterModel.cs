@@ -751,7 +751,8 @@ public class CharacterModel : MonoBehaviour
     {
         CurrentStats.Health -= weight;
 
-        if(CurrentStats.Health <= 0f)
+        Debug.Log(CurrentStats.Health);
+        if (CurrentStats.Health <= 0f)
         {
             CurrentStats.Health = 0f;
             Debug.Log("Player Died");

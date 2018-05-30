@@ -10,6 +10,11 @@ public class EarthquakeEvent : EventBase
 
     TileUnit _originTile = null;
     EarthquakeEffect _effect = null;
+    
+    Timer _damageTimer = new Timer();
+    public float damageHealthPerSec = 1f;
+    public float damageEnergyPerSec = 2f;
+    public float damageTime = 60f;
 
     public EarthquakeEvent()
     {
@@ -59,13 +64,26 @@ public class EarthquakeEvent : EventBase
         //synchronization need
         _effect.SetEndEvent(EndEvent);
         _effect.StartEarthquakeEffect(60f);
+        _damageTimer.StartTimer(damageTime);
 	}
 
     void EndEvent() {
         EventManager.Manager.EndEvent(this.type);
     }
 
-	public override void OnEnd()
+    public override void OnExecute()
+    {
+        if (_damageTimer.started)
+        {
+            if (_damageTimer.RunTimer())
+            {
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec);
+                CharacterModel.Instance.SubtractHealth(damageEnergyPerSec);
+                _damageTimer.StartTimer();
+            }
+        }
+    }
+    public override void OnEnd()
 	{
 		quakeObject = null;
 		crackObject = null;

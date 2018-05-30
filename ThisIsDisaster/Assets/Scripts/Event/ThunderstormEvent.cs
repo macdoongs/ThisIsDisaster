@@ -17,7 +17,10 @@ public class ThunderstormEvent : EventBase
 
     Timer _lifeTimeTimer = new Timer();
     Timer _blinkTimer = new Timer();
+    Timer _damageTimer = new Timer();
     float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
+    public float eventDamage = 50;
+    public float damageTime = 120;
 
 	public ThunderstormEvent()
 	{
@@ -43,6 +46,8 @@ public class ThunderstormEvent : EventBase
 		lightningObject = null;
 
         _lifeTimeTimer.StartTimer(lifeTime);
+        _damageTimer.StartTimer(damageTime);
+        //StartDamageByEvent(eventDamage, damageTime);
     }
 
 
@@ -81,10 +86,24 @@ public class ThunderstormEvent : EventBase
                 {
                         rainParticle.maxParticles -= 50;
                 }
-
                 return;
             }
         }
+        if(_damageTimer.started)
+        {
+            //피난처 안에 있을 경우, 데미지를 받지 않게 추가해야함
+            if(_damageTimer.RunTimer())
+            {
+                CharacterModel.Instance.SubtractHealth(eventDamage / _damageTimer.maxTime);
+            }
+        }
+    }
+    
+    public void StartDamageByEvent(float damage, float time)
+    {
+        eventDamage = damage;
+        damageTime = time;
+        _damageTimer.StartTimer(time);
     }
 
     public override void OnEnd()

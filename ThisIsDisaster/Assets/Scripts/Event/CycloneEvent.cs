@@ -19,6 +19,12 @@ public class CycloneEvent : EventBase {
     const float _THUNDER_FREQ_MIN = 5f;
     const float _THUNDER_FREQ_MAX = 10f;
 
+
+    Timer _damageTimer = new Timer();
+    public float damageHealthPerSec = 1f;
+    public float damageEnergyPerSec = 2f;
+    public float damageTime = 1f;
+
     GameObject _thunderRender = null;
     ThunderRenderEffect ThunderEffect {
         get {
@@ -46,6 +52,7 @@ public class CycloneEvent : EventBase {
         StartRain();
         SetRainAlpha(0f);
         _worldDarkEffectTimer.StartTimer(_WORLD_DARK_EFFECT_TIME);
+        _damageTimer.StartTimer(damageTime);
 
         LoadThunderRender();
 
@@ -130,6 +137,18 @@ public class CycloneEvent : EventBase {
         if (_thunderTimer.RunTimer()) {
             StartThunderTimer();
             InvokeThunder();
+        }
+
+        if (_damageTimer.started)
+        {
+            //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
+            if (_damageTimer.RunTimer())
+            {
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec);
+                CharacterModel.Instance.SubtractHealth(damageEnergyPerSec);
+                _damageTimer.StartTimer(damageTime);
+            }
+            
         }
     }
 
