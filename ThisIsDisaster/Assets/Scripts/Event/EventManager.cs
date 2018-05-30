@@ -38,6 +38,7 @@ public class EventManager : MonoBehaviour {
     public GameObject snowObject = null;
     public GameObject sandObject = null;
     public GameObject cloudObject = null;
+    public GameObject blinkObject = null;
     private EarthquakeEffect earthquakeEffect = null;
 	private LandslideEffect landslideEffect = null;
 	private FloodEffect floodEffect = null;
@@ -187,26 +188,23 @@ public class EventManager : MonoBehaviour {
         }
     }         // 메뉴 실행 키
 
-	public GameObject MakeWorldThunderstorm() {                       // 공통 비
-		if (rainObject == null)
+	public GameObject MakeWorldBlink() {                       // 공통 비
+		if (blinkObject == null)
 		{
-			GameObject effectObject = Resources.Load<GameObject>("Prefabs/Thunderstorm");
+			GameObject effectObject = Resources.Load<GameObject>("Prefabs/Blink");
 			if (effectObject)
 			{
 				effectObject = Instantiate(effectObject);
 				effectObject.transform.SetParent(Camera.main.transform);
-				effectObject.transform.localPosition = new Vector3(1f, 1f, 1f);
-				effectObject.transform.localScale = Vector3.one;
-				effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 				effectObject.SetActive(false);
 
 			}
 
-			rainObject = effectObject;
+			blinkObject = effectObject;
 
 		}
 
-		return rainObject;
+		return blinkObject;
 	}
 
     public GameObject MakeWorldRain() {                       // 공통 비
@@ -217,9 +215,6 @@ public class EventManager : MonoBehaviour {
             {
                 effectObject = Instantiate(effectObject);
                 effectObject.transform.SetParent(Camera.main.transform);
-                effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
-                effectObject.transform.localScale = Vector3.one;
-				effectObject.transform.localRotation = Quaternion.Euler(0f, 1f, 1f);
                 effectObject.SetActive(false);
 
             }
@@ -466,6 +461,16 @@ public class EventManager : MonoBehaviour {
         }
         return output;
     }
+
+    /*일정 시간동안 이벤트에 의해 데미지 받음
+     * 60데미지 120초동안
+     */
+    public void StartDamagedByEvent(int damage, int time)
+    {
+        Timer damageTimer = new Timer();
+
+    }
+
 }
 		
 

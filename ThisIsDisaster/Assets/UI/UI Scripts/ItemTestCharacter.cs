@@ -55,12 +55,9 @@ public class ItemTestCharacter : MonoBehaviour {
             CharacterUnit.SubtractHealth(20);
         }
         if (Input.GetKeyDown(KeyCode.F6))
-        {
-            CharacterUnit.GetDisorder(Disorder.DisorderType.poisoning);           
+        {          
             CharacterUnit.GetDisorder(Disorder.DisorderType.injury);
-            CharacterUnit.GetDisorder(Disorder.DisorderType.mirage);
-            CharacterUnit.GetDisorder(Disorder.DisorderType.hunger);
-            CharacterUnit.GetDisorder(Disorder.DisorderType.thirst);
+            InGameUIScript.Instance.DisorderNotice(Disorder.DisorderType.injury);
         }
 
         if (Input.GetKeyDown(KeyCode.F7))
@@ -79,7 +76,7 @@ public class ItemTestCharacter : MonoBehaviour {
         
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            CharacterUnit.RecoverDisoreder(Disorder.DisorderType.poisoning);
+            CharacterUnit.RecoverDisorder(Disorder.DisorderType.poisoning);
             
         }
         if (Input.GetKeyDown(KeyCode.F11))

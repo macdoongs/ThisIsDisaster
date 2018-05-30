@@ -65,6 +65,8 @@ public class PlayerModel : UnitModel
 
 public class CharacterModel : MonoBehaviour
 {
+    public static CharacterModel Instance { get; private set; }
+
     public enum PlayerSpriteParts
     {
         Body = 0,
@@ -175,6 +177,8 @@ public class CharacterModel : MonoBehaviour
         }
         initialCharacterSetting();
         InitDefaultSprite();
+
+        Instance = this;
     }
 
     private void Update()
@@ -645,21 +649,24 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
-    public void RecoverDisoreder(Disorder.DisorderType type)
+    public void RecoverDisorder(Disorder.DisorderType type)
     {
         if (!ContainDisorder(type))
         {
             for(int i = 0; i < disorders.Length; i++)
             {
-                if (disorders[i].disorderType.Equals(type))
+                if(disorders[i] != null)
                 {
-                    disorders[i] = null;
-                    for(int j = i; j <disorders.Length-1; j++)
+                    if (disorders[i].disorderType.Equals(type))
                     {
-                        disorders[j] = disorders[j + 1];
-                    }
+                        disorders[i] = null;
+                        for (int j = i; j < disorders.Length - 1; j++)
+                        {
+                            disorders[j] = disorders[j + 1];
+                        }
 
-                    disorders[disorders.Length-1] = null;
+                        disorders[disorders.Length - 1] = null;
+                    }
                 }
             }
         }
@@ -736,10 +743,35 @@ public class CharacterModel : MonoBehaviour
                 result = true;
         }
 
+        if(etc.metaInfo.metaId.Equals(41001))
+        {
+            RevoerDisorderByType(Disorder.DisorderType.poisoning);
+            result = true;
+        }
+        else if (etc.metaInfo.metaId.Equals(41002))
+        {
+            RevoerDisorderByType(Disorder.DisorderType.injury);
+            result = true;
+        }
+
         UpdateStat();
 
-
         return result;
+    }
+
+    private void RevoerDisorderByType(Disorder.DisorderType Disordertype)
+    {
+        foreach (var disorder in disorders)
+        {
+            if (disorder != null)
+            {
+                if (disorder.disorderType.Equals(Disordertype))
+                {
+                    RecoverDisorder(disorder.disorderType);
+                    break;
+                }
+            }
+        }
     }
 
     //HP 감소
@@ -747,7 +779,8 @@ public class CharacterModel : MonoBehaviour
     {
         CurrentStats.Health -= weight;
 
-        if(CurrentStats.Health <= 0f)
+        Debug.Log(CurrentStats.Health);
+        if (CurrentStats.Health <= 0f)
         {
             CurrentStats.Health = 0f;
             Debug.Log("Player Died");
