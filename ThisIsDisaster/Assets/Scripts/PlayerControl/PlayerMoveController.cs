@@ -127,7 +127,23 @@ public class PlayerMoveController : MonoBehaviour {
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
 
-        if(joystick != null)
+#if UNITY_EDITOR
+        if (Input.GetKey(KeyCode.W)) {
+            MoveUp(ref movePos);
+        }
+        if (Input.GetKey(KeyCode.S)) {
+            MoveDown(ref movePos);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            MoveLeft(ref movePos);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            MoveRight(ref movePos);
+        }
+#endif
+        if (joystick != null)
         {
             if (joystick.JoyVec.x > 0.4)
             {

@@ -6,11 +6,15 @@ public class Joystick : MonoBehaviour{
 
     public GameObject JoystickGameObject;
     
+    RectTransform joysticRect {
+        get { return JoystickGameObject.GetComponent<RectTransform>(); }
+    }
     public Transform Stick;
 
     private Vector3 StickFirstPos;  // 조이스틱의 처음 위치.
     public Vector3 JoyVec;         // 조이스틱의 벡터(방향)
     private float Radius;           // 조이스틱 배경의 반 지름.
+    public CanvasScaler canvasScaler;           // 조이스틱 렌더링 캔버스
 
     public static Joystick Instance
     {
@@ -77,24 +81,19 @@ public class Joystick : MonoBehaviour{
     public void JoystickOn()
     {
         Camera[] cameras = Camera.allCameras;
-        /*
-        var x = Input.mousePosition.x;
-        var y = Input.mousePosition.y;
-        var z = cameras[0].nearClipPlane;
+        float input_x_rate = Input.mousePosition.x / Screen.width;
+        float input_y_rate = Input.mousePosition.y / Screen.height;
 
-        JoystickGameObject.transform.position = cameras[0].ScreenToWorldPoint(new Vector3(x,y,z));
-        Stick.position = cameras[0].ScreenToWorldPoint(new Vector3(x, y, z));
-        StickFirstPos = cameras[0].ScreenToWorldPoint(new Vector3(x, y, z));
-        */
-        Debug.Log(Input.mousePosition);
-        Debug.Log(cameras[0].ScreenToWorldPoint(Input.mousePosition));
-        Debug.Log(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
+        float x = canvasScaler.referenceResolution.x * input_x_rate;
+        float y = canvasScaler.referenceResolution.y * input_y_rate;
 
-        JoystickGameObject.transform.position = cameras[0].ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
+        joysticRect.anchoredPosition = new Vector2(x, y);
+
         Stick.position = JoystickGameObject.transform.position;
         StickFirstPos = Stick.position;
         JoystickGameObject.GetComponentInChildren<Image>().color = Color.white;
         Stick.GetComponentInChildren<Image>().color = Color.white;
+
     }
 
     public void JoystickOff()
