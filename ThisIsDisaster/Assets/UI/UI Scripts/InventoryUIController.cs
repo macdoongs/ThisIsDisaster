@@ -19,10 +19,10 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     public int prevPosition = 0;
 
     //인벤토리 타입 상단 아이템 종류 텍스트
-    public Text[] Category = new Text[5];
+    public Text[] Category = new Text[4];
 
     //인벤토리 타입 하단 언더바 이미지
-    public GameObject[] CategoryUnderBar = new GameObject[5];
+    public GameObject[] CategoryUnderBar = new GameObject[4];
 
     public Color defaultItemTypeColor;
     public Color focusedItemTypeColor;
@@ -193,29 +193,32 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     {
         SlotCategory(typePosition);
 
+        HighlightCategoryType();
+
+        SlotSprite();
+        PresetUpdate();
+        PlayerCharacter.SpriteUpdate();
+        PreviewCharacterSprite();
+    }
+
+    public void HighlightCategoryType()
+    {
         DefaultBorder();
 
         switch (typePosition)
         {
-            case 0:
+            case 0:                
                 break;
             case 1:
                 HighlightsCategory(ItemType.Head);
                 break;
             case 2:
-                HighlightsCategory(ItemType.Weapon);
-                break;
-            case 3:
-                //HighlightsCategory(ItemType.Util);
-                break;
-            case 4:
                 HighlightsCategory(ItemType.Etc);
                 break;
+            case 3:
+                HighlightsCategory(ItemType.Normal);
+                break;
         }
-        SlotSprite();
-        PresetUpdate();
-        PlayerCharacter.SpriteUpdate();
-        PreviewCharacterSprite();
     }
 
     //****************************************************************************************//
@@ -231,7 +234,6 @@ public class InventoryUIController : MonoBehaviour, IObserver {
             ItemSlotBackground[i].color = defaultSlotColor;
             ItemSlots[i].sprite = null;
             ItemSlots[i].color = Color.clear;
-            ItemBorders[i].color = RestrictedSlotClolr;
             ItemCounts[i].text = "";
         }
         for (int i = bagSize; i < 30; i++)
@@ -239,7 +241,6 @@ public class InventoryUIController : MonoBehaviour, IObserver {
             ItemSlotBackground[i].color = RestrictedSlotClolr;
             ItemSlots[i].sprite = null;
             ItemSlots[i].color = Color.clear;
-            ItemBorders[i].color = RestrictedSlotClolr;
             ItemCounts[i].text = "";
         }
     }
@@ -274,7 +275,6 @@ public class InventoryUIController : MonoBehaviour, IObserver {
             ItemSlotBackground[index].color = RestrictedSlotClolr;
             ItemSlots[index].sprite = null;
             ItemSlots[index].color = Color.clear;
-            ItemBorders[index].color = RestrictedSlotClolr;
         }
     }
  
@@ -324,13 +324,39 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     {
         List<ItemModel> items = PlayerCharacter.ItemLists;
 
-        for (int i = 0; i < items.Count; i++)
+        if (type.Equals(ItemType.Head))
         {
-            if (items[i].metaInfo.itemType.Equals(type))
+            for (int i = 0; i < items.Count; i++)
             {
-                ItemBorders[i].color = typeColor;
+                if (items[i].metaInfo.itemType.Equals(type) || items[i].metaInfo.itemType.Equals(ItemType.Clothes)
+                    || items[i].metaInfo.itemType.Equals(ItemType.Weapon) || items[i].metaInfo.itemType.Equals(ItemType.Backpack)
+                    || items[i].metaInfo.itemType.Equals(ItemType.Bottle) || items[i].metaInfo.itemType.Equals(ItemType.Tool_Equip))
+                {
+                    ItemBorders[i].color = typeColor;
+                }
             }
         }
+        else if (type.Equals(ItemType.Etc))
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i].metaInfo.itemType.Equals(type) || items[i].metaInfo.itemType.Equals(ItemType.Tool_Use))
+                {
+                    ItemBorders[i].color = typeColor;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i].metaInfo.itemType.Equals(type))
+                {
+                    ItemBorders[i].color = typeColor;
+                }
+            }
+        }
+        
     }
 
     //인벤토리 아이템 슬롯 클릭시
