@@ -160,6 +160,37 @@ public class InGameUIScript : MonoBehaviour
         nextTime = Time.time + TimeLeft;
     }
 
+    public void DisorderNotice(Disorder.DisorderType disorder)
+    {
+        DefaultEventNoticePanel();
+        if (disorder.Equals(Disorder.DisorderType.mirage))
+        {
+            EventNoticeText.text = "캐릭터가 신기루를 보고 있습니다.";
+        }
+        else if (disorder.Equals(Disorder.DisorderType.injury))
+        {
+            EventNoticeText.text = "캐릭터가 부상을 당했습니다.";
+        }
+        else if (disorder.Equals(Disorder.DisorderType.hunger))
+        {
+            EventNoticeText.text = "캐릭터가 굶주림을 느낍니다.";
+        }
+        else if (disorder.Equals(Disorder.DisorderType.thirst))
+        {
+            EventNoticeText.text = "캐릭터가 갈증을 심하게 느낍니다.";
+        }
+        else if (disorder.Equals(Disorder.DisorderType.poisoning))
+        {
+            EventNoticeText.text = "캐릭터가 식중독에 걸렸습니다.";
+        }
+
+        EventNoticePanel.SetActive(true);
+
+        NoticeToken = true;
+        nextTime = Time.time + TimeLeft;
+    }
+
+
     public void DefaultEventNoticePanel()
     {
         EventNoticeText.text = "";

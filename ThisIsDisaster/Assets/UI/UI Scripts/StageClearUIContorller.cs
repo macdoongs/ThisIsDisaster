@@ -67,7 +67,7 @@ public class StageClearUIContorller : MonoBehaviour {
         DeadCountText.text = deadCount.ToString();
         SetCheckBox(deadCount < 2, DeadCountCheck);
         DisasterCountText.text = disasterCount.ToString();
-        SetCheckBox(disasterCount > 5, DisasterCountCheck);
+        SetCheckBox(disasterCount >= 2, DisasterCountCheck);
 
         EXPImage.fillAmount = EXP;
 

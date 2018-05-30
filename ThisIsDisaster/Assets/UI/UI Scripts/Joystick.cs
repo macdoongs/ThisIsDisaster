@@ -32,7 +32,6 @@ public class Joystick : MonoBehaviour{
             return;
         }
         Instance = this;
-
     }
 
 
