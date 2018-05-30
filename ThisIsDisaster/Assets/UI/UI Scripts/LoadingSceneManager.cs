@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -7,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class LoadingSceneManager : MonoBehaviour
 {
     public static string nextScene;
+    public Image LoadingBackground;
+
 
     [SerializeField]
     Image progressBar;
@@ -14,10 +17,14 @@ public class LoadingSceneManager : MonoBehaviour
 
     private void Start()
     {
+
+
         StartCoroutine(LoadScene());
     }
 
     string nextSceneName;
+
+
     public static void LoadScene(string sceneName)
     {
         nextScene = sceneName;
@@ -26,6 +33,14 @@ public class LoadingSceneManager : MonoBehaviour
 
     IEnumerator LoadScene()
     {
+
+        System.Random random = new System.Random();
+        int x = random.Next(1, 100);
+        x = x % 3 + 1;
+        string backgroundSrc = "loading/loading" + x.ToString();
+        Sprite s = Resources.Load<Sprite>(backgroundSrc);
+
+        LoadingBackground.sprite = s;
         yield return null;
 
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);

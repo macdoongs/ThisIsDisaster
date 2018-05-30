@@ -454,6 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed7896d2559e39040b0a1fba147f83ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LoadingBackground: {fileID: 1583464433}
   progressBar: {fileID: 1907429650}
   progressText: {fileID: 1119308039}
 --- !u!4 &1296549034
@@ -574,6 +575,12 @@ Prefab:
       propertyPath: m_Name
       value: LoadingBackground
       objectReference: {fileID: 0}
+    - target: {fileID: 114496385931771184, guid: 7d58d5d1d23d79243ad66560d7f42b89,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4595c7ea4fd8a82488cbd7b131e3731f,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7d58d5d1d23d79243ad66560d7f42b89, type: 2}
   m_IsPrefabParent: 0
@@ -582,6 +589,12 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224649699954883678, guid: 7d58d5d1d23d79243ad66560d7f42b89,
     type: 2}
   m_PrefabInternal: {fileID: 1583464431}
+--- !u!114 &1583464433 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114496385931771184, guid: 7d58d5d1d23d79243ad66560d7f42b89,
+    type: 2}
+  m_PrefabInternal: {fileID: 1583464431}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1619694995
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,7 +705,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.597
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
 --- !u!222 &1907429651

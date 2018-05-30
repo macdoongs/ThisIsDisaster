@@ -77,9 +77,20 @@ public class Joystick : MonoBehaviour{
     public void JoystickOn()
     {
         Camera[] cameras = Camera.allCameras;
+        /*
+        var x = Input.mousePosition.x;
+        var y = Input.mousePosition.y;
+        var z = cameras[0].nearClipPlane;
 
-        JoystickGameObject.transform.position = cameras[0].ScreenToWorldPoint(Input.mousePosition);
-        Image JoystickImg = JoystickGameObject.GetComponentsInChildren<Image>()[1];
+        JoystickGameObject.transform.position = cameras[0].ScreenToWorldPoint(new Vector3(x,y,z));
+        Stick.position = cameras[0].ScreenToWorldPoint(new Vector3(x, y, z));
+        StickFirstPos = cameras[0].ScreenToWorldPoint(new Vector3(x, y, z));
+        */
+        Debug.Log(Input.mousePosition);
+        Debug.Log(cameras[0].ScreenToWorldPoint(Input.mousePosition));
+        Debug.Log(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
+
+        JoystickGameObject.transform.position = cameras[0].ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
         Stick.position = JoystickGameObject.transform.position;
         StickFirstPos = Stick.position;
         JoystickGameObject.GetComponentInChildren<Image>().color = Color.white;
