@@ -30,8 +30,13 @@ namespace Shelter
             //access point make as ShelterAccess
             accessPoint.spriteRenderer.color = Color.gray;
 
+            //Make AccessPoint Door
+
+
             ShelterLayer.CurrentLayer.MakeShelter(newShelter);
             _shelters.Add(newShelter);
+
+            
         }
     }
 }

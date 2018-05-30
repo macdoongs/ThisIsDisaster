@@ -46,18 +46,29 @@ public class RenderLayerChanger : MonoBehaviour
                 }
             }
             else {
+                var renderLayerAdder = t.GetComponent<RenderLayerAdder>();
+                int addedValue = 0;
+                if (renderLayerAdder != null) {
+                    addedValue = renderLayerAdder.addedRenderLayerOrder;
+                }
                 var sr = t.GetComponent<SpriteRenderer>();
                 if (sr != null)
                 {
                     sr.sortingLayerName = ReferenceRenderer.sortingLayerName;
-                    sr.sortingOrder = ReferenceRenderer.sortingOrder;
+                    sr.sortingOrder = ReferenceRenderer.sortingOrder + addedValue;
                 }
                 var ps = t.GetComponent<ParticleSystem>();
                 if (ps != null)
                 {
                     var ps_Render = ps.GetComponent<ParticleSystemRenderer>();
                     ps_Render.sortingLayerName = ReferenceRenderer.sortingLayerName;
-                    ps_Render.sortingOrder = ReferenceRenderer.sortingOrder;
+                    ps_Render.sortingOrder = ReferenceRenderer.sortingOrder + addedValue;
+                }
+                var ms = t.GetComponent<MeshRenderer>();
+                if (ms != null)
+                {
+                    ms.sortingLayerName = ReferenceRenderer.sortingLayerName;
+                    ms.sortingOrder = ReferenceRenderer.sortingOrder + addedValue;
                 }
             }
 

@@ -237,6 +237,9 @@ public class GameManager : MonoBehaviour {
     {
         //make shelter
         //add shelter item
+        var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(3);
+        Debug.LogError(randTile.x + " " + randTile.y);
+        Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
     }
 
     public void GenerateWorld(int seed)
@@ -390,9 +393,14 @@ public class GameManager : MonoBehaviour {
             controller.OnReceiveCharacterCoordinate(charData);
         }
     }
-
+    
     public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
         UnitControllerBase controller = null;
+        Debug.Log(node);
+        foreach (var kv in RemotePlayer) {
+            Debug.Log(kv.Key + " " + kv.Value.NameText.text);
+        }
+
         if (RemotePlayer.TryGetValue(node, out controller))
         {
             NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);

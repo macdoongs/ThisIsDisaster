@@ -6,6 +6,8 @@ public class AutoTileMovementSetter : MonoBehaviour {
     const float _heightDelta = 0.25f;
     public delegate void OnTileChanged(TileUnit current);
     public delegate void OnHeightChanged();
+
+    public int AdditionalValue = 0;
     
     RandomMapGenerator _map;
 
@@ -95,7 +97,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
 
     public void RenderOrderChange(TileUnit tile) {
         if (_changer)
-            _changer.UpdateLayerInfo(tile.GetSpriteOrder() + 3);
+            _changer.UpdateLayerInfo(tile.GetSpriteOrder() + 3 + AdditionalValue);
     }
 
     public void HeightChange(TileUnit tile) {

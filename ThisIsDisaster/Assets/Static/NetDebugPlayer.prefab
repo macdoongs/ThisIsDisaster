@@ -149,6 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4165614215227668}
   - component: {fileID: 212761592730884522}
+  - component: {fileID: 114668790114854922}
   m_Layer: 0
   m_Name: Front weapon
   m_TagString: Untagged
@@ -1198,6 +1199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d1d8d923102d8f41955e3952637e05e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AdditionalValue: 1
   _changer: {fileID: 114670820349214264}
   HeightPivot: {fileID: 4266273020658952}
   _heightAscendTime: 0.1
@@ -1286,6 +1288,18 @@ MonoBehaviour:
   _heightDescendTime: 0.25
   joystickObject: {fileID: 0}
   joystick: {fileID: 0}
+--- !u!114 &114668790114854922
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1380739495896958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 642355028b6355c41bd3407511631127, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  addedRenderLayerOrder: 6
 --- !u!114 &114670820349214264
 MonoBehaviour:
   m_ObjectHideFlags: 1

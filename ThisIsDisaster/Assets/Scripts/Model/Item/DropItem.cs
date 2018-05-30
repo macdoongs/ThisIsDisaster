@@ -18,6 +18,9 @@ public class DropItem : MonoBehaviour {
         if (sprite != null) {
             float px = sprite.texture.width;
             int scaleInv = (int)(px / 64);
+            if (scaleInv == 0) {
+                scaleInv = 1;
+            }
             ItemRenderer.transform.localScale = Vector3.one / scaleInv;
             ItemRenderer.sprite = sprite;
         }
