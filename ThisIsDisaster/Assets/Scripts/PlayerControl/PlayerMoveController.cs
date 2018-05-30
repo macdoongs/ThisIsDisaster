@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMoveController : MonoBehaviour {
-    public float moveSpeed = 1f;
+    const float _SPEED_FACTOR = 0.1f;
+    public float MoveSpeed {
+        get {
+            return _character.CurrentStats.MoveSpeed * _SPEED_FACTOR;
+        }
+    }
+
+    public CharacterModel _character = null;
     public float jumpDelay = 1f;
     public Animator PlayerMovementCTRL;
     public Transform FlipPivot;
@@ -252,25 +259,25 @@ public class PlayerMoveController : MonoBehaviour {
 
     void MoveUp(ref Vector3 pos)
     {
-        pos.y += moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
+        pos.y += MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
         Move(pos);
     }
 
     void MoveDown(ref Vector3 pos)
     {
-        pos.y -= moveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
+        pos.y -= MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
         Move(pos);
     }
 
     void MoveLeft(ref Vector3 pos)
     {
-        pos.x -= moveSpeed * Time.deltaTime;
+        pos.x -= MoveSpeed * Time.deltaTime;
         Move(pos);
     }
 
     void MoveRight(ref Vector3 pos)
     {
-        pos.x += moveSpeed * Time.deltaTime;
+        pos.x += MoveSpeed * Time.deltaTime;
         Move(pos);
     }
 }

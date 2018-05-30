@@ -1216,21 +1216,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerName: TestID
   PlayerLevel: 123
-  defaultBagSize: 30
-  defaultHealth: 100
-  defaultStamina: 100
-  defaultDefense: 10
-  defaultDamage: 10
-  maxHealth: 0
-  maxStamina: 0
-  health: 0
-  stamina: 0
-  defense: 0
-  damage: 0
-  itemHealth: 0
-  itemStamina: 0
-  itemDefense: 0
-  itemDamage: 0
+  default_attack_range_x: 5
+  default_attack_range_y: 5
+  attack_range_x: 0
+  attack_range_y: 0
+  bagSize: 0
+  waterMax: 0
   Body: {fileID: 212546606660524438}
   SpriteParts:
   - {fileID: 212546606660524438}
@@ -1283,7 +1274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714b1bdabdeb33d4881f63801e33d814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
+  _character: {fileID: 114519334667667194}
   jumpDelay: 0.5
   PlayerMovementCTRL: {fileID: 95400447252878834}
   FlipPivot: {fileID: 4266273020658952}
@@ -1293,6 +1284,8 @@ MonoBehaviour:
   autoTileMovementSetter: {fileID: 114497361334405528}
   _heightAscendTime: 0.1
   _heightDescendTime: 0.25
+  joystickObject: {fileID: 0}
+  joystick: {fileID: 0}
 --- !u!114 &114670820349214264
 MonoBehaviour:
   m_ObjectHideFlags: 1
