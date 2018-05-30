@@ -122,7 +122,7 @@ public class EarthquakeEffect : MonoBehaviour
     {
         if (_lifeTimeTimer.started)
         {
-            float rate = _lifeTimeTimer.Rate;
+            float rate = GetEarthquakeForce((_lifeTimeTimer.Rate));
             if (_waveTimer.started)
             {
                 if (_waveTimer.RunTimer())
