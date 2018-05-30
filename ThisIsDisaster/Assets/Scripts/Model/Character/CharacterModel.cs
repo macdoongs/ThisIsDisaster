@@ -65,6 +65,8 @@ public class PlayerModel : UnitModel
 
 public class CharacterModel : MonoBehaviour
 {
+    public static CharacterModel Instance { get; private set; }
+
     public enum PlayerSpriteParts
     {
         Body = 0,
@@ -175,6 +177,8 @@ public class CharacterModel : MonoBehaviour
         }
         initialCharacterSetting();
         InitDefaultSprite();
+
+        Instance = this;
     }
 
     private void Update()

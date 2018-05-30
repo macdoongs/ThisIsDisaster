@@ -16,6 +16,7 @@ public class ThunderstormEvent : EventBase
 	GameObject lightningObject = null;     // 낙뢰 효과
 
     Timer _lifeTimeTimer = new Timer();
+    Timer _blinkTimer = new Timer();
     float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
 
 	public ThunderstormEvent()
@@ -25,10 +26,10 @@ public class ThunderstormEvent : EventBase
 
 	public override void OnGenerated()
 	{
-		rainObject = EventManager.Manager.MakeWorldThunderstorm();
+		rainObject = EventManager.Manager.MakeWorldRain();
 		darkObject = EventManager.Manager.MakeWorldDark();
-
-		blinkObject = null;
+        blinkObject = EventManager.Manager.MakeWorldBlink();
+        
 		lightningObject = null;
 	}
 
@@ -36,6 +37,7 @@ public class ThunderstormEvent : EventBase
 	{
 		//rainObject.SetActive(true);
 		darkObject.SetActive(true);
+        rainObject.SetActive(true);
 
 		blinkObject = null;
 		lightningObject = null;
@@ -48,13 +50,15 @@ public class ThunderstormEvent : EventBase
     {
         if (_lifeTimeTimer.started)
         {
+            _lifeTimeTimer.RunTimer();
+            
+
             if (_lifeTimeTimer.elapsed < 5)
             {
                 SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
                 if (renderer != null)
                 {
                     Color color = renderer.color;
-                    Debug.Log(color);
                     if (color.a < 0.5f)
                         color.a += 0.01f;
                     renderer.color = color;
@@ -62,11 +66,23 @@ public class ThunderstormEvent : EventBase
 
                 return;
             }
-
-            if (_lifeTimeTimer.RunTimer())
+            if (_lifeTimeTimer.elapsed > 10 && _lifeTimeTimer.elapsed < 20)
             {
-                
+                SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    Color color = renderer.color;
+                    if (color.a > 0)
+                        color.a -= 0.002f;
+                    renderer.color = color;
+                }
+                var rainParticle = rainObject.GetComponent<ParticleSystem>();
+                if (rainParticle != null)
+                {
+                        rainParticle.maxParticles -= 50;
+                }
 
+                return;
             }
         }
     }

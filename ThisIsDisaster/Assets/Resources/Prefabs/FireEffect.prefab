@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e69874df0a5e2f448a46fdf75bcf9a00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireObject: {fileID: 1991311810587702, guid: f5ba5b71cec90e444b364ecd6cab651e, type: 2}
+  fireObject: {fileID: 1849754053944542}
   level: 1
 --- !u!198 &198670069811691982
 ParticleSystem:
