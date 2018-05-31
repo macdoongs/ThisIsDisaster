@@ -49,8 +49,25 @@ public class StageGenerator {
         public List<int> uniqueGenItemList = new List<int>();
         public List<EnvInfo> envInfoList = new List<EnvInfo>();
         public List<NpcInfo> npcInfoList = new List<NpcInfo>();
+#if MIDDLE_PRES
+        WeatherType[] testTypes = new WeatherType[2] {
+             WeatherType.Earthquake,
+             WeatherType.Cyclone
+        };
+
+        List<WeatherType> testTypeList = new List<WeatherType>();
+#endif
+
 
         public WeatherType GetNextWeather() {
+#if MIDDLE_PRES
+            if (testTypeList.Count == 0) {
+                testTypeList.AddRange(testTypes);
+            }
+            var sel = testTypeList[0];
+            testTypeList.Remove(sel);
+            return sel;
+#endif
             int randIndexMax = weatherList.Count;
             int index = StageGenerator.Instance.ReadNextValue(randIndexMax);
             WeatherType selected = weatherList[index];

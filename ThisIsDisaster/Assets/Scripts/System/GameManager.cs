@@ -41,16 +41,18 @@ public class GameManager : MonoBehaviour {
         public const float STAGE_CLOSE_TIME = 10f;
         */
         
+            //FOR MIDDLE PRES OR DEMO
         public const float STAGE_READY_TIME = 10f;
-        public const float EVENT_GENERATE_TIME = 10f;
-        public const float EVENT_RUN_TIME = 20f;
-        public const float EVENT_END_TIME = 10f;
+        public const float EVENT_GENERATE_TIME = 20f;
+        public const float EVENT_RUN_TIME = 70f;
+        public const float EVENT_END_TIME = 20f;
         public const float STAGE_CLOSE_TIME = 5f;
         public Timer stageTimer = new Timer();
         public StageEventType currentEventType = StageEventType.Init;
         public StageEventType nextEventType = StageEventType.Ready;
         public Timer eventHandleTimer = new Timer();
 
+        private bool clockEnabled = false;
         public int EventGenerateCount = 2;
 
         WeatherType generatedEvent = new WeatherType();
@@ -59,7 +61,7 @@ public class GameManager : MonoBehaviour {
             stageTimer.StartTimer();
             currentEventType = StageEventType.Init;
             nextEventType = StageEventType.Ready;
-            SetNextEventTime(nextEventType);
+            SetNextEventTime(nextEventType, true);
             
         }
 
@@ -71,7 +73,7 @@ public class GameManager : MonoBehaviour {
             eventHandleTimer.StartTimer(time);
         }
 
-        public void SetNextEventTime(StageEventType type, bool isClose = false) {
+        public void SetNextEventTime(StageEventType type, bool clock, bool isClose = false) {
             switch (type) {
                 case StageEventType.Ready:
                     eventHandleTimer.StartTimer(STAGE_READY_TIME);
@@ -83,19 +85,27 @@ public class GameManager : MonoBehaviour {
                     eventHandleTimer.StartTimer(EVENT_RUN_TIME);
                     break;
                 case StageEventType.Event_Ended:
-                    if (isClose)
-                    {
-                        eventHandleTimer.StartTimer(STAGE_CLOSE_TIME);
-                    }
-                    else {
-                        eventHandleTimer.StartTimer(EVENT_END_TIME);
-                    }
+                    eventHandleTimer.StartTimer(EVENT_END_TIME);
+                    break;
+                case StageEventType.Close:
+                    eventHandleTimer.StartTimer(STAGE_CLOSE_TIME);
                     break;
             }
+            if (clock)
+            {
+                CurrentGameManager.OnStartClock(eventHandleTimer.maxTime);
+            }
+            else {
+                CurrentGameManager.OnEndClock();
+            }
+            clockEnabled = clock;
         }
 
         public void Update() {
             stageTimer.RunTimer();
+            if (clockEnabled) {
+                CurrentGameManager.UpdateClock(eventHandleTimer.elapsed, eventHandleTimer.maxTime);
+            }
 
             if (eventHandleTimer.RunTimer()) {
                 ExecuteNextStep();
@@ -110,43 +120,32 @@ public class GameManager : MonoBehaviour {
                 case StageEventType.Ready:
                     //generate next event
                     GenerateEvent();
-                    SetNextEventTime(nextEventType);
                     nextEventType = StageEventType.Event_Generated;
+                    SetNextEventTime(nextEventType, true);
                     break;
                 case StageEventType.Event_Generated:
                     //start current generated event
                     StartCurrentEvent();
-                    SetNextEventTime(nextEventType);
                     nextEventType = StageEventType.Event_Started;
+                    SetNextEventTime(nextEventType, true);
                     break;
                 case StageEventType.Event_Started:
                     //end current event
                     EndCurrentEvent();
-                    SetNextEventTime(nextEventType);
-                    nextEventType = StageEventType.Event_Ended;
-                    break;
-                case StageEventType.Event_Ended:
-                    //generate next event or close stage
                     if (EventGenerateCount > 0)
                     {
-                        GenerateEvent();
-                        SetNextEventTime(nextEventType);
-                        nextEventType = StageEventType.Event_Generated;
-                    }
-                    else
-                    {
+                        nextEventType = StageEventType.Event_Ended;
                         SetNextEventTime(nextEventType, true);
-                        nextEventType = StageEventType.Close;
                     }
-
-                    /*
-                     if MAKE_NEXT_EVENT
-            SetNextEventTime(nextEventType);
-                        nextEventType = StageEventType.Event_Generated;
-                     else
-            SetNextEventTime(nextEventType, true);
+                    else {
                         nextEventType = StageEventType.Close;
-                     */
+                        SetNextEventTime(nextEventType, true);
+                    }
+                    break;
+                case StageEventType.Event_Ended:
+                    GenerateEvent();
+                    nextEventType = StageEventType.Event_Generated;
+                    SetNextEventTime(nextEventType, true);
                     break;
                 case StageEventType.Close:
                     //close game
@@ -205,11 +204,14 @@ public class GameManager : MonoBehaviour {
     private StageClockInfo _stageClock = new StageClockInfo();
     private StageGenerator.ClimateInfo _currentClimateInfo = null;
 
+    public UnityEngine.UI.Text Clock;
+
     private void Awake()
     {
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
         //Init();
+        Clock.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -230,6 +232,7 @@ public class GameManager : MonoBehaviour {
 
 #if MIDDLE_PRES
         ProtoInit();
+        StartStage();
 #endif
     }
 
@@ -238,7 +241,7 @@ public class GameManager : MonoBehaviour {
         //make shelter
         //add shelter item
         var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(3);
-        Debug.LogError(randTile.x + " " + randTile.y);
+        //Debug.LogError(randTile.x + " " + randTile.y);
         Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
     }
 
@@ -269,6 +272,7 @@ public class GameManager : MonoBehaviour {
                     var model = EnvironmentManager.Manager.MakeEnvironment(env.id);
                     TileUnit tile = RandomMapGenerator.Instance.GetTile(coords[i].tileX, coords[i].tileY);
                     model.UpdatePosition(tile.transform.position);
+                    model.SetCurrentTileForcely(tile);
                 }
             }
         }
@@ -280,7 +284,7 @@ public class GameManager : MonoBehaviour {
         }
 
         NPCManager.Manager.SetNpcGenInfo(info.npcInfoList);
-        //NPCManager.Manager.CheckGeneration();
+        NPCManager.Manager.CheckGeneration();
         this._currentClimateInfo = info;
 
     }
@@ -328,7 +332,7 @@ public class GameManager : MonoBehaviour {
 
     public static UnitControllerBase MakePlayerCharacter(string name, int id, bool isLocal) {
         UnitControllerBase output = null;
-        Debug.LogError("Make Chararcter " + isLocal + " " + name);
+        //Debug.LogError("Make Chararcter " + isLocal + " " + name);
         if (!isLocal)
         {
             if (CurrentGameManager.RemotePlayer.TryGetValue(id, out output))
@@ -409,5 +413,24 @@ public class GameManager : MonoBehaviour {
             //Debug.LogError("Position Info " + packetSender);
             controller.OnReceiveCharacterCoordinate(charData);
         }
+    }
+
+    public void OnStartClock(float maxTime) {
+        if (!Clock) return;
+        Clock.gameObject.SetActive(true);
+        string clockTime = string.Format("{0}:{1}", ((int)(maxTime / 60)).ToString("D2"),((int)(maxTime % 60)).ToString("D2"));
+        Clock.text = clockTime;
+    }
+
+    public void UpdateClock(float elap, float maxTime) {
+        if (!Clock) return;
+        float time = maxTime - elap;
+        string clockTime = string.Format("{0}:{1}", ((int)(time / 60)).ToString("D2"), ((int)(time % 60)).ToString("D2"));
+        Clock.text = clockTime;
+    }
+
+    public void OnEndClock() {
+        if (!Clock) return;
+        Clock.gameObject.SetActive(false);
     }
 }

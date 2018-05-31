@@ -72,7 +72,7 @@ namespace Shelter
 
                     if (x > model.Width / 2 - 5 && x < model.Width / 2 + 5) {
                         if (y > model.Height / 2 - 5 && y < model.Height / 2 + 5) {
-                            //tiles.Add(tileUnit);
+                            tiles.Add(tileUnit);
                         }
                     }
                 }
@@ -88,7 +88,7 @@ namespace Shelter
             model.SetUnit(unit);
             unit.SetModel(model);
 
-            //MakePresDropItems();
+            MakePresDropItems();
 
             return unit;
         }

@@ -144,8 +144,30 @@ public class CycloneEvent : EventBase {
             //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
             if (_damageTimer.RunTimer())
             {
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec);
-                CharacterModel.Instance.SubtractHealth(damageEnergyPerSec);
+                float healthDamageRate = 1f;
+                float staminaDamageRate = 1f;
+                float speedDownRate = 0.3f;
+
+                var player = CharacterModel.Instance;
+
+                if (player.HasItem(17)) {
+                    healthDamageRate -= 0.2f;
+                }
+
+                if (player.HasItem(20004)) {
+                    healthDamageRate -= 0.1f;
+                }
+
+                if (player.GetPlayerModel().IsInShelter()) {
+                    healthDamageRate *= 0.5f;
+                    staminaDamageRate *= 0.5f;
+                    speedDownRate = 0f;
+                }
+
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+                CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+
                 _damageTimer.StartTimer(damageTime);
             }
             
@@ -156,6 +178,9 @@ public class CycloneEvent : EventBase {
 	{
 		cycloneObject.SetActive(false);
 		darkObject.SetActive(false);
+        ThunderEffect.gameObject.SetActive(false);
+        rainObject.gameObject.SetActive(false);
+        CharacterModel.Instance.SetSpeedFactor();
 	}
 
 	public override void OnDestroy()

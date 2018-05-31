@@ -60,5 +60,11 @@ namespace Environment
         {
             return Unit.TileSetter;
         }
+
+        public override void SetCurrentTileForcely(TileUnit tile)
+        {
+            Unit.TileSetter.SetCurrentTileForcely(tile);
+            tile.OnEnterTile(this);
+        }
     }
 }

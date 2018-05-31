@@ -159,6 +159,11 @@ public class CharacterModel : MonoBehaviour
     private float TimeLeft = 1.0f;
     private float nextTime = 0.0f;
 
+    public float SpeedFactor {
+        private set;
+        get;
+    }
+
 
     private void Awake()
     {
@@ -179,6 +184,7 @@ public class CharacterModel : MonoBehaviour
         InitDefaultSprite();
 
         Instance = this;
+        SpeedFactor = 1f;
     }
 
     private void Update()
@@ -381,6 +387,10 @@ public class CharacterModel : MonoBehaviour
         {
             Debug.Log(kv.Value.instanceId + " : " + kv.Value.metaInfo.ToString());
         }
+    }
+
+    public bool HasItem(int itemMetaId) {
+        return ItemSpace.ContainsKey(itemMetaId);
     }
 
     public void PrintItemsInItems()
@@ -994,6 +1004,10 @@ public class CharacterModel : MonoBehaviour
         }
 
         return 0;
+    }
+
+    public void SetSpeedFactor(float value = 1f) {
+        SpeedFactor = value;
     }
 
 
