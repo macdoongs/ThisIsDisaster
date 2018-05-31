@@ -208,11 +208,16 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        if (GlobalGameManager.Instance != null) {
+
+            GlobalGameManager.Instance.SetGameState(GameState.Stage);
+        }
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
         //Init();
         Clock.gameObject.SetActive(false);
     }
+    
 
     /// <summary>
     //  
@@ -314,8 +319,6 @@ public class GameManager : MonoBehaviour {
             //NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
             //    NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
-
-        GlobalGameManager.Instance.SetGameState(GameState.Stage);
 
         //Init();
         //Debug.LogError("Stage Started");

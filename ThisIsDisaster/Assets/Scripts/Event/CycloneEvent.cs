@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class CycloneEvent : EventBase {
+public class CycloneEvent : EventBase, IObserver
+{
     CycloneEffect cycloneObject = null;
     GameObject darkObject = null;
 
@@ -45,6 +46,7 @@ public class CycloneEvent : EventBase {
 
     public override void OnStart()
     {
+        ObserveNotices();
         cycloneObject.SetActive(true);
         darkObject.SetActive(true);
 
@@ -86,6 +88,13 @@ public class CycloneEvent : EventBase {
         rain.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         rain.transform.localScale = Vector3.one;
         this.rainObject = rain.GetComponent<ParticleSystem>();
+
+        if (CharacterModel.Instance) {
+            if (CharacterModel.Instance.GetPlayerModel().IsInShelter()) {
+                var rend = rainObject.GetComponent<ParticleSystemRenderer>();
+                rend.enabled = false;
+            }
+        }
     }
 
     public void SetRainAlpha(float alpha)
@@ -176,6 +185,7 @@ public class CycloneEvent : EventBase {
 
     public override void OnEnd()
 	{
+        RemoveNotices();
 		cycloneObject.SetActive(false);
 		darkObject.SetActive(false);
         ThunderEffect.gameObject.SetActive(false);
@@ -187,5 +197,30 @@ public class CycloneEvent : EventBase {
 	{
 
 	}
+
+    public void OnNotice(string notice, params object[] param)
+    {
+        if (NoticeName.OnPlayerEnterShelter == notice)
+        {
+            var rend = rainObject.GetComponent<ParticleSystemRenderer>();
+            rend.enabled = false;
+        }
+        else {
+            var rend = rainObject.GetComponent<ParticleSystemRenderer>();
+            rend.enabled = true;
+        }
+    }
+
+    public void ObserveNotices()
+    {
+        Notice.Instance.Observe(NoticeName.OnPlayerEnterShelter, this);
+        Notice.Instance.Observe(NoticeName.OnPlayerExitShelter, this);
+    }
+
+    public void RemoveNotices()
+    {
+        Notice.Instance.Remove(NoticeName.OnPlayerEnterShelter, this);
+        Notice.Instance.Remove(NoticeName.OnPlayerExitShelter, this);
+    }
 }      // 태풍 이벤트
 	

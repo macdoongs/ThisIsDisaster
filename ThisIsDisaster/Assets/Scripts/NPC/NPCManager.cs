@@ -64,7 +64,8 @@ public class NPCManager : IObserver
                     model.UpdatePosition(tile.transform.position);
                 }
             }
-            catch {
+            catch (System.Exception e){
+                Debug.LogError(e);
                 Debug.LogError("Monster gen error");
             }
         }

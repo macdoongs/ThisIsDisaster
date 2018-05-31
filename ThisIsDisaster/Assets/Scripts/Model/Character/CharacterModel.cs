@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Shelter;
 
 /// <summary>
 /// 임시
@@ -61,6 +62,20 @@ public class PlayerModel : UnitModel
     public override AutoTileMovementSetter GetTileSetter()
     {
         return _tileSetter;
+    }
+
+    public override void SetShelter(ShelterModel shelter)
+    {
+        base.SetShelter(shelter);
+        if (GameManager.CurrentGameManager.GetLocalPlayer() == _character.gameObject) {
+            if (shelter != null)
+            {
+                Notice.Instance.Send(NoticeName.OnPlayerEnterShelter, shelter);
+            }
+            else {
+                Notice.Instance.Send(NoticeName.OnPlayerExitShelter);
+            }
+        }
     }
 }
 
