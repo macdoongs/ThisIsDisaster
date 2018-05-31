@@ -72,6 +72,11 @@ public class ItemModel {
         return (int)GetStat("stamina_regen");
     }
 
+    public virtual int GetVision()
+    {
+        return (int)GetStat("vision");
+    }
+
     public float GetStat(string statName) {
         float output = 0f;
         metaInfo.stats.TryGetValue(statName, out output);

@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class InGameUIScript : MonoBehaviour
 {
+    public Image VisionImage;
+
     // 플레이어 캐릭터 게임 오브젝트
     public GameObject PlayerCharacter;    
 
@@ -19,6 +21,8 @@ public class InGameUIScript : MonoBehaviour
     public bool NoticeToken = false;
     private float TimeLeft = 5.0f;
     private float nextTime = 0.0f;
+
+    public Color DefaultNightColor;
 
     public static InGameUIScript Instance
     {
@@ -54,6 +58,7 @@ public class InGameUIScript : MonoBehaviour
 
     public void Update()
     {
+        VisionSet();
         StatusUIController.Instance.GetStatus(PlayerCharacter);
         
         InventoryUIController.Instance.SlotSprite();
@@ -71,6 +76,29 @@ public class InGameUIScript : MonoBehaviour
             }
         }
     }  
+
+    public void VisionSet()
+    {
+        int vision = PlayerCharacter.GetComponent<CharacterModel>().visionLevel;
+        
+        VisionImage.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(Screen.height, VisionImage.rectTransform.rect.width);
+
+        if (vision == 0)
+        {
+            VisionImage.sprite = null;
+            
+            
+        }
+        else
+        {
+            string spriteSrc = "Vision/vision" + vision.ToString();
+            Sprite s = Resources.Load<Sprite>(spriteSrc);
+            VisionImage.sprite = s;
+
+        }
+
+        VisionImage.color = DefaultNightColor;
+    }
 
 
     public void MenuClicked(GameObject menu)
