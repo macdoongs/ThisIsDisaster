@@ -98,10 +98,10 @@
     <defense>5</defense>
   </item>
   <item id="20001" type="clothes" name="일상복" sprite="Item/test/clothes01" description="아이템설명">
-    <stamina_regen>10</stamina_regen>
+    <stamina_regen>2</stamina_regen>
   </item>
   <item id="20002" type="clothes" name="츄리닝" sprite="Item/test/clothes02" description="아이템설명">
-    <stamina_regen>20</stamina_regen>
+    <stamina_regen>3</stamina_regen>
   </item>
   <item id="20003" type="clothes" name="등산복" sprite="Item/test/clothes03" description="아이템설명">
   </item>

@@ -12,7 +12,7 @@ public class EarthquakeEvent : EventBase
     EarthquakeEffect _effect = null;
     
     Timer _damageTimer = new Timer();
-    public float damageHealthPerSec = 1f;
+    public float damageHealthPerSec = 2f;
     public float damageEnergyPerSec = 2f;
     public float damageTime = 1f;
 
@@ -77,11 +77,11 @@ public class EarthquakeEvent : EventBase
         {
             if (_damageTimer.RunTimer())
             {
-                float speedDownValue = 0.4f;
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec);
-                CharacterModel.Instance.SubtractStamina(damageEnergyPerSec);
+                float speedDownValue = 0.2f;
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * _effect.GetEarthquakeForce());
+                //CharacterModel.Instance.SubtractStamina(damageEnergyPerSec);
                 CharacterModel.Instance.SetSpeedFactor(1f - speedDownValue);
-                _damageTimer.StartTimer();
+                _damageTimer.StartTimer(damageTime);
             }
         }
     }

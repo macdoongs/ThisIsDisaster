@@ -213,6 +213,7 @@ public class PlayerMoveController : MonoBehaviour {
         FlipPivot.transform.localScale = scale;
     }
 
+    const float _JUMP_COST = 5f;
     /// <summary>
     /// Player Jump
     /// </summary>
@@ -222,6 +223,13 @@ public class PlayerMoveController : MonoBehaviour {
 
         if (input && _jumpDelayTimer.started) return;
         if (_heightChangeTimer.started) return;
+
+        if (_character != null) {
+            if (_character.CurrentStats.Stamina < _JUMP_COST) {
+                return;
+            }
+        }
+        _character.SubtractStamina(_JUMP_COST);
 
         AnimatorUtil.SetTrigger(PlayerMovementCTRL, "Jump");
 

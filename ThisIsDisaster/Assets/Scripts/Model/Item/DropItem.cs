@@ -21,7 +21,11 @@ public class DropItem : MonoBehaviour {
             if (scaleInv == 0) {
                 scaleInv = 1;
             }
-            ItemRenderer.transform.localScale = Vector3.one / scaleInv;
+            float pixelFactor = 1f;
+            if (sprite.pixelsPerUnit > 100) {
+                pixelFactor = sprite.pixelsPerUnit / 100;
+            }
+            ItemRenderer.transform.localScale = Vector3.one / scaleInv * pixelFactor;
             ItemRenderer.sprite = sprite;
         }
     }

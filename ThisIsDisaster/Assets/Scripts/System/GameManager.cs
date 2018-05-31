@@ -243,7 +243,20 @@ public class GameManager : MonoBehaviour {
         var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(3);
         //Debug.LogError(randTile.x + " " + randTile.y);
         Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
+
+        var list = CellularAutomata.Instance.GetRoomsCoord(3, 20);
+        foreach (var v in list) {
+            TileUnit tile = RandomMapGenerator.Instance.GetTile(v.tileX, v.tileY);
+            ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], tile);
+        }
+
     }
+    
+#if MIDDLE_PRES
+    int[] dropItems = new int[] {
+            5,1,6,10001,20001,30001,310004
+        };
+#endif
 
     public void GenerateWorld(int seed)
     {

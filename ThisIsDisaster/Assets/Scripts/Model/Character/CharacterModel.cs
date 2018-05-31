@@ -27,6 +27,7 @@ public class PlayerModel : UnitModel
     public override void OnTakeDamage(UnitModel attacker, float damage)
     {
         Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+        _character.SubtractHealth(damage);
     }
 
     public void SetTileSetter(AutoTileMovementSetter tileSetter) {
@@ -43,7 +44,7 @@ public class PlayerModel : UnitModel
     {
         return _character.transform.position;
     }
-
+    
     public override void SetCurrentTileForcely(TileUnit tile)
     {
         _character.transform.position = tile.transform.position;
@@ -157,7 +158,7 @@ public class CharacterModel : MonoBehaviour
 
 
     private float TimeLeft = 1.0f;
-    private float nextTime = 0.0f;
+    private float nextTime = 1f;
 
     public float SpeedFactor {
         private set;
@@ -187,14 +188,25 @@ public class CharacterModel : MonoBehaviour
         SpeedFactor = 1f;
     }
 
+    private void Start()
+    {
+        _restorationTimer.StartTimer(nextTime);
+    }
+
+
+    Timer _restorationTimer = new Timer();//회복 타이머
     private void Update()
     {
         //일정 시간마다 HP, Stamina 회복
-        if (Time.time > nextTime)
-        {
-            nextTime = Time.time + TimeLeft;
+        if (_restorationTimer.RunTimer()) {
+            _restorationTimer.StartTimer(nextTime);
             StatRegeneration();
         }
+        //if (Time.time > nextTime)
+        //{
+        //    nextTime = Time.time + TimeLeft;
+        //    StatRegeneration();
+        //}
     }
 
     public PlayerModel GetPlayerModel() {
@@ -207,8 +219,8 @@ public class CharacterModel : MonoBehaviour
         DefaultStats.Stamina = 100.0f;
         DefaultStats.Defense = 10.0f;
         DefaultStats.Damage = 10.0f;
-        DefaultStats.HealthRegen = 5.0f;
-        DefaultStats.StaminaRegen = 5.0f;
+        DefaultStats.HealthRegen = 1.0f;
+        DefaultStats.StaminaRegen = 1.0f;
         DefaultStats.MoveSpeed = 10;
 
 
@@ -789,11 +801,9 @@ public class CharacterModel : MonoBehaviour
     {
         CurrentStats.Health -= weight;
 
-        Debug.Log(CurrentStats.Health);
         if (CurrentStats.Health <= 0f)
         {
             CurrentStats.Health = 0f;
-            Debug.Log("Player Died");
         }
     }
 
@@ -886,6 +896,9 @@ public class CharacterModel : MonoBehaviour
 
 
             SpriteParts[9].sprite = s;
+            if (SpriteParts[9].enabled == false) {
+                SpriteParts[9].enabled = true;
+            }
             SpriteParts[14].sprite = null;
             SpriteParts[15].sprite = null;
         }
