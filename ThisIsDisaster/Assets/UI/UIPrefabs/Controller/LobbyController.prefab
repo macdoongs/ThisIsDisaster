@@ -52,6 +52,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca3a2ba3e9fffb4a933ba9caeefe161, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerName: {fileID: 0}
+  PlayerLevel: {fileID: 0}
+  PlayerExp: {fileID: 0}
+  name: 
+  level: 0
+  exp: 0
+  gold: 0
 --- !u!114 &114693226391901754
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -69,16 +76,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Underbars:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   MenuPosition: -1
   GameModePanel: {fileID: 0}
   GameModeTexts:
   - {fileID: 0}
   - {fileID: 0}
-  GameModeUnderbars:
-  - {fileID: 0}
-  - {fileID: 0}
   StartPanel: {fileID: 0}
+  LoadingPanel: {fileID: 0}
+  LoadingBar: {fileID: 0}
+  LoadingText: {fileID: 0}
+  LoadingAmount: 0

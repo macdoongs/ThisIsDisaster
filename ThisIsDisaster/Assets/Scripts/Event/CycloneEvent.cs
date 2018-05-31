@@ -213,12 +213,14 @@ public class CycloneEvent : EventBase, IObserver
 
     public void ObserveNotices()
     {
+        return;
         Notice.Instance.Observe(NoticeName.OnPlayerEnterShelter, this);
         Notice.Instance.Observe(NoticeName.OnPlayerExitShelter, this);
     }
 
     public void RemoveNotices()
     {
+        return;
         Notice.Instance.Remove(NoticeName.OnPlayerEnterShelter, this);
         Notice.Instance.Remove(NoticeName.OnPlayerExitShelter, this);
     }

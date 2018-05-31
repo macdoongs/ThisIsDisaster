@@ -115,6 +115,10 @@ public class NPCManager : IObserver
         }
     }
 
+    public void Clear() {
+        _npcs.Clear();
+    }
+
     void FixedUpdate() { }
 
     public List<NPCModel> GetAllNPCs() {

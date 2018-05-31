@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMoveController : MonoBehaviour {
-    const float _SPEED_FACTOR = 0.1f;
+    const float _SPEED_FACTOR = 0.3f;
     public float MoveSpeed {
         get {
             return _character.CurrentStats.MoveSpeed * _SPEED_FACTOR;
@@ -134,7 +134,7 @@ public class PlayerMoveController : MonoBehaviour {
         Vector3 currentPos = transform.position;
         Vector3 movePos = Vector3.zero;
 
-#if UNITY_EDITOR
+#if true
         if (Input.GetKey(KeyCode.W)) {
             MoveUp(ref movePos);
         }

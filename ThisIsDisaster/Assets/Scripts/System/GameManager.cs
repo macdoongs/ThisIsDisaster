@@ -216,6 +216,7 @@ public class GameManager : MonoBehaviour {
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
         //Init();
         Clock.gameObject.SetActive(false);
+        NPCManager.Manager.Clear();
     }
     
 
@@ -234,7 +235,6 @@ public class GameManager : MonoBehaviour {
             NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
                 NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
-
 #if MIDDLE_PRES
         ProtoInit();
         StartStage();

@@ -9,7 +9,15 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     public GameObject InventoryUI;
 
     public GameObject Player;
-    public CharacterModel PlayerCharacter;
+    CharacterModel _playerModel = null;
+    public CharacterModel PlayerCharacter {
+        get {
+            if (_playerModel == null) {
+                _playerModel = CharacterModel.Instance;
+            }
+            return _playerModel;
+        }
+    }
 
     
     public int bagSize = 0;
@@ -248,6 +256,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     //아이템 슬롯 스프라이트 추가.
     public void SlotSprite()
     {
+        if (PlayerCharacter == null) return;
         initialSprite();
         var items = PlayerCharacter.GetAllItems();
         var counts = PlayerCharacter.GetAllCounts();
@@ -1164,7 +1173,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
             {
                 Player = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
             }
-            PlayerCharacter = Player.GetComponent<CharacterModel>();
+           // PlayerCharacter = Player.GetComponent<CharacterModel>();
             bagSize = PlayerCharacter.bagSize;
             getPreviewItems();
         }
