@@ -86,3 +86,14 @@
 /Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Unity.Cecil.Pdb.dll
 /Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Unity.Cecil.Mdb.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Unity.Compat.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Google.MiniJson.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Firebase.Platform.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Unity.Tasks.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Firebase.Auth.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Firebase.App.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Facebook.Unity.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/FacebookNamedPipeClient.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Facebook.Unity.Gameroom.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Facebook.Unity.Canvas.dll
+/Users/mac/Desktop/Github/ThisisDisaster/ThisIsDisaster/Temp/bin/Debug/Facebook.Unity.Settings.dll
