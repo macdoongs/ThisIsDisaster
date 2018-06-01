@@ -13,21 +13,28 @@ public class ItemTestCharacter : MonoBehaviour {
     static long[] _tool_use = { 33001, 33002};
     static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003, 41004, 41005};
     static long[] _norm = { 50001, 50002, 50003, 50004, 51001, 51002, 51003, 51004, 51005, 51006 };
-
-    public GameObject PlayerCharacter;
-
-    public CharacterModel CharacterUnit;
+    
+    private CharacterModel _player = null;
+    public CharacterModel CharacterUnit {
+        get {
+            if (_player == null) {
+                _player = CharacterModel.Instance;
+            }
+            return _player;
+        }
+    }
 
     public void Awake()
     {
+
     }
 
     public void Start()
     {
-        if (PlayerCharacter == null) {
-            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
-        }
-        CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
+        //if (PlayerCharacter == null) {
+        //    PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+        //}
+        //CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
     }
 
     public void Update()

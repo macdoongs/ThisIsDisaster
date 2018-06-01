@@ -250,11 +250,11 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
         _isHost = false;
         GameServer.Instance.SetHost(false);
         GameServer.Instance.SetLocalAddress(GetLocalHost());
+        ServerStart();
         ServerConnect();
 
         GameServer.Instance.MakeMatchingView();
         //GameServer.Instance.SendMatchingRequest();
-        //ServerStart();
 
         _delayEvent = new DelayEvent(SendMatchingRequest);
         _delayEventTrigger.StartTimer(1f);

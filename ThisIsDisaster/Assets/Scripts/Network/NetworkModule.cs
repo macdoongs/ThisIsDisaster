@@ -345,11 +345,13 @@ namespace NetworkComponents
         }
 
         public void SendUnreliableToAll<T>(IPacket<T> packet) {
+            int sendSize = -1;
             foreach (NodeInfo info in _unreliableNode) {
                 if (info != null) {
-                    SendUnreliable<T>(info.node, packet);
+                    sendSize = SendUnreliable<T>(info.node, packet);
                 }
             }
+            NetDebug.Log("Send Unreliable : " + packet.GetPacketID() + " " + sendSize);
         }
 
         private void Receive(int node, byte[] data) {

@@ -50,8 +50,12 @@ public class PlayerMoveController : MonoBehaviour {
     {
         currentTile = RandomMapGenerator.Instance.GetTile(transform.position);
         autoTileMovementSetter.SetChangeAction(OnChangeCurrentTile);
+        
         joystickObject = GameObject.FindGameObjectWithTag("Joystick");
-        joystick = joystickObject.GetComponent<Joystick>();
+        if (joystickObject != null)
+        {
+            joystick = joystickObject.GetComponent<Joystick>();
+        }
     }
 
     void OnChangeCurrentTile(TileUnit tile)

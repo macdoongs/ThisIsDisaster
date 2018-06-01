@@ -215,7 +215,8 @@ public class GameManager : MonoBehaviour {
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
         //Init();
-        Clock.gameObject.SetActive(false);
+        if (Clock != null)
+            Clock.gameObject.SetActive(false);
         NPCManager.Manager.Clear();
     }
     
@@ -416,16 +417,12 @@ public class GameManager : MonoBehaviour {
     
     public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
         UnitControllerBase controller = null;
-        Debug.Log(node);
-        foreach (var kv in RemotePlayer) {
-            Debug.Log(kv.Key + " " + kv.Value.NameText.text);
-        }
 
         if (RemotePlayer.TryGetValue(node, out controller))
         {
             NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
             NetworkComponents.CharacterData charData = packet.GetPacket();
-
+            //Debug.Log(charData.ToString());
             //Debug.LogError("Position Info " + packetSender);
             controller.OnReceiveCharacterCoordinate(charData);
         }

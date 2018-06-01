@@ -94,7 +94,9 @@ namespace NetworkComponents {
 
             Network.RegisterReceiveNotification(PacketId.MatchingRequest, OnReceiveMatchingRequest);
             Network.RegisterReceiveNotification(PacketId.MatchingResponse, OnReceiveMatchingResponse);
-            Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);    
+            Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);
+
+            //Network.RegisterReceiveNotification(PacketId.Coordinates, GameManager.CurrentGameManager.OnReceiveCharacterCoordinate);
         }
 
         private void Update()
@@ -294,6 +296,8 @@ namespace NetworkComponents {
                 if (clientNode >= 0)
                 {
                     Network.SetClientNode(node.nodeIndex, clientNode);
+
+                    GameManager.MakePlayerCharacter(node.nodeIndex.ToString(), clientNode, false);
                 }
                 else
                 {
@@ -315,7 +319,7 @@ namespace NetworkComponents {
 
         public void MakeRemotePlayer() {
             if (GameManager.CurrentGameManager == null) return;
-
+            /*
             foreach (var kv in _reflectionDics)
             {
                 string name = kv.Value.nodeIp;
@@ -327,7 +331,8 @@ namespace NetworkComponents {
             if (!IsHost)
             {
                 GameManager.MakePlayerCharacter("host", Network.GetServerNode(), false);
-            }
+            }*/
+
         }
 
         public void MakeNewSession() {

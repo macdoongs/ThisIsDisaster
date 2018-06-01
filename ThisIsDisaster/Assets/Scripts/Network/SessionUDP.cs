@@ -88,11 +88,17 @@ namespace NetworkComponents
                     }
                 }
 
+                NetDebug.LogError("udp"+node);
                 if (node >= 0) {
                     TransportUDP transport = _transports[node];
                     transport.SetReceiveData(buffer, recvSize, (IPEndPoint)endPoint);
                 }
             }
+        }
+
+        public override NetworkModule.ConnectionType GetConnectionType()
+        {
+            return NetworkModule.ConnectionType.UDP;
         }
 
         private int GetNodeFromEndPoint(IPEndPoint endPoint) {
