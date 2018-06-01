@@ -18,7 +18,7 @@ namespace GameStaticData
 
             try
             {
-                XmlDocument doc = GameStaticDataLoader.Loader.GetXmlDocuments(_path);
+                XmlDocument doc = GetDocument();
 
                 XmlNodeList fileList = doc.SelectNodes("root/file");
                 foreach (XmlNode node in fileList)

@@ -68,27 +68,7 @@ public class GlobalGameManager {
         param = new GlobalParameters();
         param.Init();
 
-        GameStaticDataLoader.Loader.LoadAll();
-        GameStaticData.ItemDataLoader itemLoader = new GameStaticData.ItemDataLoader();
-        itemLoader.Initialize(GameStaticData.ItemDataLoader._itemXmlFilePath);
-        itemLoader.LoadData();
-
-        GameStaticData.RecipeDataLoader recipeLoater = new GameStaticData.RecipeDataLoader();
-        recipeLoater.Initialize(GameStaticData.RecipeDataLoader._recipeXmlFilePath);
-        recipeLoater.LoadData();
-
-        GameStaticData.NPCDataLoader npcLoader = new GameStaticData.NPCDataLoader();
-        npcLoader.Initialize(GameStaticData.NPCDataLoader._npcXmlFilePath);
-        npcLoader.LoadData();
-
-        GameStaticData.EnvironmentDataLoader envLoader = new GameStaticData.EnvironmentDataLoader();
-        envLoader.Initialize(GameStaticData.EnvironmentDataLoader._envXmlFilePath);
-        envLoader.LoadData();
-
-        GameStaticData.StageInfoDataLoader stageLoader = new GameStaticData.StageInfoDataLoader();
-        stageLoader.Initialize(GameStaticData.StageInfoDataLoader._xmlPath);
-        stageLoader.LoadData();
-        
+        GameStaticDataLoader.Loader.LoaderInit();
         //LocalizeTextDataModel.Instance.LogAllData();
 
         GameObject networkObject = GameObject.Find("NetworkModule");

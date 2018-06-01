@@ -19,7 +19,7 @@ namespace GameStaticData
 
             try
             {
-                XmlDocument doc = GameStaticDataLoader.Loader.GetXmlDocuments(_recipeXmlFilePath);
+                XmlDocument doc = GetDocument();
                 XmlNodeList nodeList = doc.SelectNodes("root/recipe");
                 List<MixtureRecipe> recipeInfos = new List<MixtureRecipe>();
                 foreach (XmlNode recipeNode in nodeList)
