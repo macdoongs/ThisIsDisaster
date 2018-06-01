@@ -118,9 +118,8 @@ namespace NetworkComponents
 
     public struct MatchingRequest {
         public int accountId;
-        public int port;
-        public string ip;
-        public const int IP_LENGTH = 32;
+        public int accountLength;
+        public string accountName;
     }
 
     public struct MatchingResponse {

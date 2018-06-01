@@ -181,6 +181,10 @@ namespace NetworkComponents
 
         public void RegisterReceiveNotification(PacketId id, RecvNotifier notifier) {
             int index = (int)id;
+            if (_notifier.ContainsKey(index)) {
+                _notifier[index] = notifier;
+                return;
+            }
             _notifier.Add(index, notifier);
         }
 
@@ -511,6 +515,12 @@ namespace NetworkComponents
                 }
             }
             return output;
+        }
+
+        public IPEndPoint GetReliableEndPoint(int node) {
+            var ep = _sessionTCP.GetRemoteEndPoint(node);
+            if (ep == null && ep == default(IPEndPoint)) return null;
+            return ep;
         }
     }
 }

@@ -587,7 +587,7 @@ PlayerSettings:
   webGLUseWasm: 0
   webGLCompressionFormat: 1
   scriptingDefineSymbols:
-    1: MIDDLE_PRES
+    1: MIDDLE_PRES;NET_DEV
     4: NO_GPGS
   platformArchitecture: {}
   scriptingBackend: {}

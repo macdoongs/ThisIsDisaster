@@ -16,10 +16,10 @@ Multi,
 None//Lobby etc
 }
 
-public class GlobalParameters {
+public class GlobalParameters : ISavedData {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
-    public string accountName = "";
+    public string accountName = "Player";
     public bool isHost = false;
     public bool isConnected = false;
     public bool isDisconnnected = false;
@@ -27,6 +27,25 @@ public class GlobalParameters {
     public int AdditionalPortNum = 0;
     
     public void Init() { }
+
+    public Dictionary<string, object> GetSavedData()
+    {
+        Dictionary<string, object> output = new Dictionary<string, object>();
+        output.Add("accountId", accountId);
+        output.Add("accountName", accountName);
+        return output;
+    }
+
+    public void LoadData(Dictionary<string, object> data)
+    {
+        FileManager.TryGetValue(data, "accountId", ref accountId);
+        FileManager.TryGetValue(data, "accountName", ref accountName);
+    }
+
+    public string GetPath()
+    {
+        return "globalParam";
+    }
 }
 
 public class GlobalGameManager {
@@ -79,6 +98,28 @@ public class GlobalGameManager {
             }
         }
 
+        if (FileManager.Instance.ExistFile(GlobalParameters.Param)) {
+            FileManager.Instance.LoadData(GlobalParameters.Param);
+        }
+
+#if NET_DEV
+        string texts = FileManager.Instance.GetLocalTextData(GlobalParameters.Param.GetPath(), ".txt");
+
+        if (!string.IsNullOrEmpty(texts))
+        {
+            string[] split = texts.Split(' ', '\n');
+            //split[1] - id
+            //split[3] - name
+            int id = GlobalParameters.Param.accountId;
+            if (int.TryParse(split[1], out id))
+            {
+                GlobalParameters.Param.accountId = id;
+            }
+            GlobalParameters.Param.accountName = split[3];
+
+            Debug.LogError("Set Global Param " + id + " " + GlobalParameters.Param.accountName);
+        }
+#endif
     }
     // Use this for initialization
     void Start () {
