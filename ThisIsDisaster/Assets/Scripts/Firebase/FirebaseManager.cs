@@ -10,12 +10,16 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi; 
 using UnityEngine.SocialPlatforms; 
 using UnityEngine.SceneManagement;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 
-public class FirebaseManager : MonoBehaviour 
-{ 
-	// 이메일 InputField 
-	[SerializeField] 
+public class FirebaseManager : MonoBehaviour
+{
+
+
+#if false
+
+    // 이메일 InputField 
+    [SerializeField] 
 	InputField emailInput; 
 	// 비밀번호 InputField 
 	[SerializeField] 
@@ -92,7 +96,7 @@ public class FirebaseManager : MonoBehaviour
 	} 
 
 
-	#region FACEBOOK 로그인 
+#region FACEBOOK 로그인 
 	/** Facebook 초기화 콜백 */ 
 	void FacebookInitCallBack() { 
 		if (FB.IsInitialized) { 
@@ -189,7 +193,7 @@ public class FirebaseManager : MonoBehaviour
 				
 			}); 
 	} 
-	#endregion 
+#endregion
 
 	public void GooglePlayLogin() 
 	{ 
@@ -283,4 +287,5 @@ public class FirebaseManager : MonoBehaviour
 		resultText.text += (logText + "\n"); 
 		Debug.Log(logText); 
 	} 
-} 
+#endif
+}

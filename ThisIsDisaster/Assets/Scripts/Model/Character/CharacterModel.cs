@@ -123,6 +123,7 @@ public class CharacterModel : MonoBehaviour
     private int defaultBagSize = 5;
     //최대 물 보관 개수.
     private int defaultWaterMax = 5;
+    private int defaultVisionLevel = 0;
 
     public Stats CurrentStats = new Stats();
 
@@ -130,7 +131,7 @@ public class CharacterModel : MonoBehaviour
     public int attack_range_y = 0;
     public int bagSize = 0;
     public int waterMax = 0;
-
+    public int visionLevel = 0;
 
     public Stats ItemStats = new Stats();
     
@@ -256,6 +257,7 @@ public class CharacterModel : MonoBehaviour
         attack_range_y = default_attack_range_y;
         bagSize = defaultBagSize;
         waterMax = defaultWaterMax;
+        visionLevel = defaultVisionLevel;
 
         CurrentStats.Health = DefaultStats.Health;
         CurrentStats.Stamina = DefaultStats.Stamina;
@@ -521,7 +523,14 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot == null)
             {
                 toolSlot = equipment;      
-                ///특수 효과
+                if(toolSlot.GetStaminaRegen() != 0)
+                {
+                    AddStats(toolSlot);
+                }
+                if(toolSlot.GetVision() != 0)
+                {
+                    visionLevel = toolSlot.GetVision();
+                }
                 result = true;
             }
             else
@@ -606,8 +615,17 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
 
-            //특수효과 제거
+            if (toolSlot.GetVision() != 0)
+            {
+                visionLevel = 0;
+            }
+            if (toolSlot.GetStaminaRegen() != 0)
+            {
+                SubtractStats(toolSlot);
+            }
+
             toolSlot = null;
+
         }
 
         UpdateStat();
@@ -766,7 +784,7 @@ public class CharacterModel : MonoBehaviour
         bool result = false;
 
         float etcHealth = etc.GetHealth();
-        if(etcHealth != 0f)
+        if (etcHealth != 0f)
         {
             if (PlusHealth(etcHealth))
                 result = true;
@@ -780,18 +798,47 @@ public class CharacterModel : MonoBehaviour
                 result = true;
         }
 
-        if(etc.metaInfo.metaId.Equals(41001))
-        {
+        result = SpecialEffect(etc, result);
+
+        UpdateStat();
+
+        return result;
+    }
+
+    //특수효과 처리 
+    private bool SpecialEffect(ItemModel etc, bool result)
+    {
+        if (etc.metaInfo.metaId.Equals(41001))
+        {//약 특수효과
             RevoerDisorderByType(Disorder.DisorderType.poisoning);
             result = true;
         }
         else if (etc.metaInfo.metaId.Equals(41002))
-        {
+        {//구급상자 특수효과
             RevoerDisorderByType(Disorder.DisorderType.injury);
             result = true;
         }
-
-        UpdateStat();
+        else if (etc.metaInfo.metaId.Equals(40001))
+        {//물 특수효과
+            RevoerDisorderByType(Disorder.DisorderType.thirst);
+            result = true;
+        }
+        else if (etc.metaInfo.metaId.Equals(40003))
+        {//생고기 특수효과
+            System.Random random = new System.Random();
+            int randomInt = random.Next(0, 10);
+            if (randomInt < 2)
+                GetDisorder(Disorder.DisorderType.poisoning);
+            RevoerDisorderByType(Disorder.DisorderType.hunger);
+            result = true;
+        }
+        else if (etc.metaInfo.metaId.Equals(41003))
+        {//음식 특수효과
+            RevoerDisorderByType(Disorder.DisorderType.hunger);
+            result = true;
+        }
+        else
+            ;
 
         return result;
     }

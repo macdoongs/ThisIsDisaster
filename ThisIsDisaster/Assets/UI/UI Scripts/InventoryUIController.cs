@@ -191,7 +191,7 @@ public class InventoryUIController : MonoBehaviour, IObserver {
         }
 
         PreviewSlotName =
-            new string[6] { "head", "clothes", "weapon", "backpack", "bottle", "flash" };
+            new string[6] { "head", "clothes", "weapon", "backpack", "bottle", "tool" };
 
         PresetRegisterButton.onClick.AddListener(() => PresetEditOpen());
     }
