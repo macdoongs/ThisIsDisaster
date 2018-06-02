@@ -36,7 +36,7 @@ public class ShelterIndicator : MonoBehaviour, IObserver {
 
     // Update is called once per frame
     void Update () {
-        if (Input.GetKeyDown(KeyCode.F1)) {
+        if (Input.GetKeyDown(KeyCode.F12)) {
             SetActive(!state);
         }
 

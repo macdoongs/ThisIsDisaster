@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Shelter;
 
 /// <summary>
 /// 임시
@@ -27,6 +28,7 @@ public class PlayerModel : UnitModel
     public override void OnTakeDamage(UnitModel attacker, float damage)
     {
         Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+        _character.SubtractHealth(damage);
     }
 
     public void SetTileSetter(AutoTileMovementSetter tileSetter) {
@@ -43,7 +45,7 @@ public class PlayerModel : UnitModel
     {
         return _character.transform.position;
     }
-
+    
     public override void SetCurrentTileForcely(TileUnit tile)
     {
         _character.transform.position = tile.transform.position;
@@ -60,6 +62,20 @@ public class PlayerModel : UnitModel
     public override AutoTileMovementSetter GetTileSetter()
     {
         return _tileSetter;
+    }
+
+    public override void SetShelter(ShelterModel shelter)
+    {
+        base.SetShelter(shelter);
+        if (GameManager.CurrentGameManager.GetLocalPlayer() == _character.gameObject) {
+            if (shelter != null)
+            {
+                Notice.Instance.Send(NoticeName.OnPlayerEnterShelter, shelter);
+            }
+            else {
+                Notice.Instance.Send(NoticeName.OnPlayerExitShelter);
+            }
+        }
     }
 }
 
@@ -107,6 +123,7 @@ public class CharacterModel : MonoBehaviour
     private int defaultBagSize = 5;
     //최대 물 보관 개수.
     private int defaultWaterMax = 5;
+    private int defaultVisionLevel = 0;
 
     public Stats CurrentStats = new Stats();
 
@@ -114,7 +131,7 @@ public class CharacterModel : MonoBehaviour
     public int attack_range_y = 0;
     public int bagSize = 0;
     public int waterMax = 0;
-
+    public int visionLevel = 0;
 
     public Stats ItemStats = new Stats();
     
@@ -157,7 +174,12 @@ public class CharacterModel : MonoBehaviour
 
 
     private float TimeLeft = 1.0f;
-    private float nextTime = 0.0f;
+    private float nextTime = 1f;
+
+    public float SpeedFactor {
+        private set;
+        get;
+    }
 
 
     private void Awake()
@@ -179,16 +201,28 @@ public class CharacterModel : MonoBehaviour
         InitDefaultSprite();
 
         Instance = this;
+        SpeedFactor = 1f;
     }
 
+    private void Start()
+    {
+        _restorationTimer.StartTimer(nextTime);
+    }
+
+
+    Timer _restorationTimer = new Timer();//회복 타이머
     private void Update()
     {
         //일정 시간마다 HP, Stamina 회복
-        if (Time.time > nextTime)
-        {
-            nextTime = Time.time + TimeLeft;
+        if (_restorationTimer.RunTimer()) {
+            _restorationTimer.StartTimer(nextTime);
             StatRegeneration();
         }
+        //if (Time.time > nextTime)
+        //{
+        //    nextTime = Time.time + TimeLeft;
+        //    StatRegeneration();
+        //}
     }
 
     public PlayerModel GetPlayerModel() {
@@ -201,8 +235,8 @@ public class CharacterModel : MonoBehaviour
         DefaultStats.Stamina = 100.0f;
         DefaultStats.Defense = 10.0f;
         DefaultStats.Damage = 10.0f;
-        DefaultStats.HealthRegen = 5.0f;
-        DefaultStats.StaminaRegen = 5.0f;
+        DefaultStats.HealthRegen = 1.0f;
+        DefaultStats.StaminaRegen = 1.0f;
         DefaultStats.MoveSpeed = 10;
 
 
@@ -223,6 +257,7 @@ public class CharacterModel : MonoBehaviour
         attack_range_y = default_attack_range_y;
         bagSize = defaultBagSize;
         waterMax = defaultWaterMax;
+        visionLevel = defaultVisionLevel;
 
         CurrentStats.Health = DefaultStats.Health;
         CurrentStats.Stamina = DefaultStats.Stamina;
@@ -383,6 +418,10 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
+    public bool HasItem(int itemMetaId) {
+        return ItemSpace.ContainsKey(itemMetaId);
+    }
+
     public void PrintItemsInItems()
     {
         Debug.Log("Unit Items");
@@ -484,7 +523,14 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot == null)
             {
                 toolSlot = equipment;      
-                ///특수 효과
+                if(toolSlot.GetStaminaRegen() != 0)
+                {
+                    AddStats(toolSlot);
+                }
+                if(toolSlot.GetVision() != 0)
+                {
+                    visionLevel = toolSlot.GetVision();
+                }
                 result = true;
             }
             else
@@ -569,8 +615,17 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
 
-            //특수효과 제거
+            if (toolSlot.GetVision() != 0)
+            {
+                visionLevel = 0;
+            }
+            if (toolSlot.GetStaminaRegen() != 0)
+            {
+                SubtractStats(toolSlot);
+            }
+
             toolSlot = null;
+
         }
 
         UpdateStat();
@@ -734,7 +789,7 @@ public class CharacterModel : MonoBehaviour
         bool result = false;
 
         float etcHealth = etc.GetHealth();
-        if(etcHealth != 0f)
+        if (etcHealth != 0f)
         {
             if (PlusHealth(etcHealth))
                 result = true;
@@ -748,6 +803,7 @@ public class CharacterModel : MonoBehaviour
                 result = true;
         }
 
+<<<<<<< HEAD
 
         if (etc.metaInfo.metaId.Equals(40001) || etc.metaInfo.metaId.Equals(40002))
         {
@@ -781,9 +837,49 @@ public class CharacterModel : MonoBehaviour
                 RevoerDisorderByType(Disorder.DisorderType.injury);
                 result = true;
             }
-        }
+=======
+        result = SpecialEffect(etc, result);
 
         UpdateStat();
+
+        return result;
+    }
+
+    //특수효과 처리 
+    private bool SpecialEffect(ItemModel etc, bool result)
+    {
+        if (etc.metaInfo.metaId.Equals(41001))
+        {//약 특수효과
+            RevoerDisorderByType(Disorder.DisorderType.poisoning);
+            result = true;
+        }
+        else if (etc.metaInfo.metaId.Equals(41002))
+        {//구급상자 특수효과
+            RevoerDisorderByType(Disorder.DisorderType.injury);
+            result = true;
+>>>>>>> origin/master
+        }
+        else if (etc.metaInfo.metaId.Equals(40001))
+        {//물 특수효과
+            RevoerDisorderByType(Disorder.DisorderType.thirst);
+            result = true;
+        }
+        else if (etc.metaInfo.metaId.Equals(40003))
+        {//생고기 특수효과
+            System.Random random = new System.Random();
+            int randomInt = random.Next(0, 10);
+            if (randomInt < 2)
+                GetDisorder(Disorder.DisorderType.poisoning);
+            RevoerDisorderByType(Disorder.DisorderType.hunger);
+            result = true;
+        }
+        else if (etc.metaInfo.metaId.Equals(41003))
+        {//음식 특수효과
+            RevoerDisorderByType(Disorder.DisorderType.hunger);
+            result = true;
+        }
+        else
+            ;
 
         return result;
     }
@@ -808,11 +904,9 @@ public class CharacterModel : MonoBehaviour
     {
         CurrentStats.Health -= weight;
 
-        Debug.Log(CurrentStats.Health);
         if (CurrentStats.Health <= 0f)
         {
             CurrentStats.Health = 0f;
-            Debug.Log("Player Died");
         }
     }
 
@@ -905,6 +999,9 @@ public class CharacterModel : MonoBehaviour
 
 
             SpriteParts[9].sprite = s;
+            if (SpriteParts[9].enabled == false) {
+                SpriteParts[9].enabled = true;
+            }
             SpriteParts[14].sprite = null;
             SpriteParts[15].sprite = null;
         }
@@ -1023,6 +1120,10 @@ public class CharacterModel : MonoBehaviour
         }
 
         return 0;
+    }
+
+    public void SetSpeedFactor(float value = 1f) {
+        SpeedFactor = value;
     }
 
 

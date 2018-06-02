@@ -18,7 +18,7 @@ namespace GameStaticData
 
             try
             {
-                XmlDocument doc = GameStaticDataLoader.Loader.GetXmlDocuments(_envXmlFilePath);
+                XmlDocument doc = GetDocument();
                 XmlNodeList nodeList = doc.SelectNodes("root/environment");
                 List<EnvironmentTypeInfo> envInfos = new List<EnvironmentTypeInfo>();
                 foreach (XmlNode envNode in nodeList) {

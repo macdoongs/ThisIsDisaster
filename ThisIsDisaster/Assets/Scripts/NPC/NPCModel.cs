@@ -139,9 +139,18 @@ namespace NPC {
             Unit.hpSlider.gameObject.SetActive(false);
 
             _state = NPCState.Destroied;
-
+#if MIDDLE_PRES
+            ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], GetCurrentTile());
+#else
             ItemManager.Manager.MakeDropItem(41003, GetCurrentTile());
+#endif
         }
+
+#if MIDDLE_PRES
+        int[] dropItems = new int[] {
+            5,1,6,10001,20001,30001,310004
+        };
+#endif
 
         public void OnVictoried() {
             Script.OnVictoried();
@@ -298,6 +307,11 @@ namespace NPC {
         public override AutoTileMovementSetter GetTileSetter()
         {
             return Unit.TileSetter;
+        }
+
+        public override float GetAttackDamage()
+        {
+            return 5f;
         }
 
     }

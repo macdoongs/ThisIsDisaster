@@ -37,8 +37,8 @@
     </environments>
 
     <npcs>
-      <npc max="5">2</npc>
-      <npc max="5">6</npc>
+      <npc max="3">2</npc>
+      <npc max="3">6</npc>
     </npcs>
   </climate>
   

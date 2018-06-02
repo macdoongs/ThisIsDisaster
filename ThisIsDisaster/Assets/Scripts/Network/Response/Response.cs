@@ -7,7 +7,7 @@ namespace Json
     [Serializable]
     public class Response
     {
-        public string result_code;
+        public int result_code;
         public string result_msg;
         public string response_type;
 
@@ -17,8 +17,7 @@ namespace Json
 
         public bool GetResult()
         {
-            int resultValue = int.Parse(result_code.Trim());
-            return resultValue >= 200 && resultValue < 300;
+			return result_code >= 200 && result_code < 300;
         }
         
         public static Response CreateFromJson(string jsonString) {

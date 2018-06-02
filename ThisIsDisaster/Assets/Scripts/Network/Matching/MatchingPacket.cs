@@ -10,16 +10,17 @@ namespace NetworkComponents.Packet {
             public bool Serialize(MatchingRequest packet) {
 
                 Serialize(packet.accountId);
-                Serialize(packet.port);
-                Serialize(packet.ip, MatchingRequest.IP_LENGTH);
+                packet.accountLength = packet.accountName.Length;
+                Serialize(packet.accountLength);
+                Serialize(packet.accountName, packet.accountLength);
 
                 return true;
             }
 
             public bool Deserialize(ref MatchingRequest data) {
                 Deserialize(ref data.accountId);
-                Deserialize(ref data.port);
-                Deserialize(ref data.ip, MatchingRequest.IP_LENGTH);
+                Deserialize(ref data.accountLength);
+                Deserialize(ref data.accountName, data.accountLength);
                 return true;
             }
         }

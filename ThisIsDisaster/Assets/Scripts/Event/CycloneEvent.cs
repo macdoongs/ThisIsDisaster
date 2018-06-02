@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class CycloneEvent : EventBase {
+public class CycloneEvent : EventBase, IObserver
+{
     CycloneEffect cycloneObject = null;
     GameObject darkObject = null;
 
@@ -45,6 +46,7 @@ public class CycloneEvent : EventBase {
 
     public override void OnStart()
     {
+        ObserveNotices();
         cycloneObject.SetActive(true);
         darkObject.SetActive(true);
 
@@ -86,6 +88,13 @@ public class CycloneEvent : EventBase {
         rain.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         rain.transform.localScale = Vector3.one;
         this.rainObject = rain.GetComponent<ParticleSystem>();
+
+        if (CharacterModel.Instance) {
+            if (CharacterModel.Instance.GetPlayerModel().IsInShelter()) {
+                var rend = rainObject.GetComponent<ParticleSystemRenderer>();
+                rend.enabled = false;
+            }
+        }
     }
 
     public void SetRainAlpha(float alpha)
@@ -144,8 +153,30 @@ public class CycloneEvent : EventBase {
             //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
             if (_damageTimer.RunTimer())
             {
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec);
-                CharacterModel.Instance.SubtractHealth(damageEnergyPerSec);
+                float healthDamageRate = 1f;
+                float staminaDamageRate = 1f;
+                float speedDownRate = 0.3f;
+
+                var player = CharacterModel.Instance;
+
+                if (player.HasItem(17)) {
+                    healthDamageRate -= 0.2f;
+                }
+
+                if (player.HasItem(20004)) {
+                    healthDamageRate -= 0.1f;
+                }
+
+                if (player.GetPlayerModel().IsInShelter()) {
+                    healthDamageRate *= 0.5f;
+                    staminaDamageRate *= 0.5f;
+                    speedDownRate = 0f;
+                }
+
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+                CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+
                 _damageTimer.StartTimer(damageTime);
             }
             
@@ -154,13 +185,44 @@ public class CycloneEvent : EventBase {
 
     public override void OnEnd()
 	{
+        RemoveNotices();
 		cycloneObject.SetActive(false);
 		darkObject.SetActive(false);
+        ThunderEffect.gameObject.SetActive(false);
+        rainObject.gameObject.SetActive(false);
+        CharacterModel.Instance.SetSpeedFactor();
 	}
 
 	public override void OnDestroy()
 	{
 
 	}
+
+    public void OnNotice(string notice, params object[] param)
+    {
+        if (NoticeName.OnPlayerEnterShelter == notice)
+        {
+            var rend = rainObject.GetComponent<ParticleSystemRenderer>();
+            rend.enabled = false;
+        }
+        else {
+            var rend = rainObject.GetComponent<ParticleSystemRenderer>();
+            rend.enabled = true;
+        }
+    }
+
+    public void ObserveNotices()
+    {
+        return;
+        Notice.Instance.Observe(NoticeName.OnPlayerEnterShelter, this);
+        Notice.Instance.Observe(NoticeName.OnPlayerExitShelter, this);
+    }
+
+    public void RemoveNotices()
+    {
+        return;
+        Notice.Instance.Remove(NoticeName.OnPlayerEnterShelter, this);
+        Notice.Instance.Remove(NoticeName.OnPlayerExitShelter, this);
+    }
 }      // 태풍 이벤트
 	

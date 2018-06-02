@@ -116,7 +116,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
     public void UpdateHeightFromTile(float height)
     {
         var lp = HeightPivot.transform.localPosition;
-        lp.y = height;
+        lp.y = height + 0.5f;
         HeightPivot.transform.localPosition = lp;
     }
 

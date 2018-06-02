@@ -88,6 +88,7 @@ namespace NetworkComponents.Matching {
             };
             _nodes.Add(node);
             NodeCount++;
+            Debug.LogError("Add Matching Node : " + nodeIndex + " " + accountId + " " + ip + " " + port);
         }
 
         public void OnReceiveMatchingData(int node, PacketId packetId, byte[] data) {
@@ -101,7 +102,9 @@ namespace NetworkComponents.Matching {
             _nodes.Clear();
             _nodes.AddRange(matching.nodes);
 
-            UpdateInfo();
+            if (MatchingPanel.Instance != null) {
+                MatchingPanel.Instance.SetMatchingData(matching);
+            }
 
             PrintCurrentInfo();
         }
@@ -132,6 +135,12 @@ namespace NetworkComponents.Matching {
                 MatchingNode node = _nodes[i];
                 output.nodes[i] = node;
             }
+
+            if (MatchingPanel.Instance != null)
+            {
+                MatchingPanel.Instance.SetMatchingData(output);
+            }
+
             return output;
         }
     }

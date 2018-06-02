@@ -64,7 +64,8 @@ public class NPCManager : IObserver
                     model.UpdatePosition(tile.transform.position);
                 }
             }
-            catch {
+            catch (System.Exception e){
+                Debug.LogError(e);
                 Debug.LogError("Monster gen error");
             }
         }
@@ -112,6 +113,10 @@ public class NPCManager : IObserver
         foreach (var n in _npcs) {
             n.Update();
         }
+    }
+
+    public void Clear() {
+        _npcs.Clear();
     }
 
     void FixedUpdate() { }

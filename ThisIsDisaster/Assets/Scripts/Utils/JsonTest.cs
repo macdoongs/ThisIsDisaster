@@ -11,7 +11,7 @@ public class JsonTest : MonoBehaviour {
 
         var data = new UserResponse()
         {
-            result_code = "200",
+            result_code = 200,
             result_msg = "testing2",
             response_type = typeof(UserResponse).ToString(),
             result_data = new User() {
@@ -28,7 +28,7 @@ public class JsonTest : MonoBehaviour {
 
         var failData = new UserResponse()
         {
-            result_code = "400",
+            result_code = 400,
             result_msg = "testing2",
 
             result_data = new User()

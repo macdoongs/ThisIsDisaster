@@ -76,6 +76,10 @@ public class EarthquakeEffect : MonoBehaviour
         return EarthquakeForceCurve.Evaluate(rate);
     }
 
+    public float GetEarthquakeForce() {
+        return EarthquakeForceCurve.Evaluate(_lifeTimeTimer.Rate);
+    }
+
     public void StartEarthquakeEffect(float lifetime) {
         _lifeTimeTimer.StartTimer(lifetime);
         StartWave();

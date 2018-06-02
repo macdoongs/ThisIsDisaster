@@ -17,7 +17,7 @@ namespace GameStaticData
 
             try
             {
-                XmlDocument doc = GameStaticDataLoader.Loader.GetXmlDocuments(_npcXmlFilePath);
+                XmlDocument doc = GetDocument();
                 XmlNodeList nodeList = doc.SelectNodes("root/npc");
                 List<NPCTypeInfo> npcInfos = new List<NPCTypeInfo>();
                 foreach (XmlNode npcNode in nodeList) {

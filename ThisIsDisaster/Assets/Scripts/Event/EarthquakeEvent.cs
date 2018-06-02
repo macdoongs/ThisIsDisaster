@@ -12,9 +12,9 @@ public class EarthquakeEvent : EventBase
     EarthquakeEffect _effect = null;
     
     Timer _damageTimer = new Timer();
-    public float damageHealthPerSec = 1f;
+    public float damageHealthPerSec = 2f;
     public float damageEnergyPerSec = 2f;
-    public float damageTime = 60f;
+    public float damageTime = 1f;
 
     public EarthquakeEvent()
     {
@@ -63,7 +63,7 @@ public class EarthquakeEvent : EventBase
         //_effect.StartWave();
         //synchronization need
         _effect.SetEndEvent(EndEvent);
-        _effect.StartEarthquakeEffect(60f);
+        _effect.StartEarthquakeEffect(GameManager.StageClockInfo.EVENT_RUN_TIME);
         _damageTimer.StartTimer(damageTime);
 	}
 
@@ -77,9 +77,11 @@ public class EarthquakeEvent : EventBase
         {
             if (_damageTimer.RunTimer())
             {
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec);
-                CharacterModel.Instance.SubtractHealth(damageEnergyPerSec);
-                _damageTimer.StartTimer();
+                float speedDownValue = 0.2f;
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * _effect.GetEarthquakeForce());
+                //CharacterModel.Instance.SubtractStamina(damageEnergyPerSec);
+                CharacterModel.Instance.SetSpeedFactor(1f - speedDownValue);
+                _damageTimer.StartTimer(damageTime);
             }
         }
     }
@@ -89,6 +91,8 @@ public class EarthquakeEvent : EventBase
 		crackObject = null;
 		_effect.ReturnTiles();
 		_effect.SetActive(false);
+
+        CharacterModel.Instance.SetSpeedFactor();
 	}
 
 	public override void OnDestroy()

@@ -285,7 +285,7 @@ namespace NetworkComponents {
             if (_socket == null)
             {
                 _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                NetDebug.Log("Create new UDP Socket");
+                //NetDebug.Log("Create new UDP Socket");
                 
             }
             try
@@ -300,12 +300,12 @@ namespace NetworkComponents {
                 //        break;
                 //    }
                 //}
-
-                _localEndPoint = new IPEndPoint(IPAddress.Parse(Network.player.ipAddress),
-                                port);
+                _localEndPoint = new IPEndPoint(IPAddress.Parse(GameServer.Instance.LocalHost), _serverPort);
+                _remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
                 
                 _isRequested = true;
-                NetDebug.Log("UDP SetUp success");
+                //string log = String.Format("Setup Success : [Local]{0}", _remoteEndPoint);
+                //NetDebug.LogError(log);
             }
             catch
             {
@@ -350,12 +350,12 @@ namespace NetworkComponents {
                 TimeSpan ts = DateTime.Now - _keepAliveTicker;
                 if (ts.Seconds > _keepAliveInter || _isFirst)
                 {
-                    string message = _localEndPoint.Address.ToString() + ":" + _serverPort + ":" + _requestData;
+                    string message = _localEndPoint.Address.ToString() + ":" + GameServer.Instance.UdpServerPort + ":" + _requestData;
+
                     byte[] request = System.Text.Encoding.UTF8.GetBytes(message);
                     _socket.SendTo(request, request.Length, SocketFlags.None, _remoteEndPoint);
                     _keepAliveTicker = DateTime.Now;
                     _isFirst = false;
-                    NetDebug.LogError("Send UDP Message : " + message);
                 }
             }
         }
@@ -368,15 +368,19 @@ namespace NetworkComponents {
                 if (_socket.Poll(0, SelectMode.SelectWrite))
                 {
                     byte[] buffer = new byte[_packetSize];
-                    int sendSie = _sendQueue.Dequeue(ref buffer, buffer.Length);
-                    while (sendSie > 0)
+                    int sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                    while (sendSize > 0)
                     {
-                        _socket.SendTo(buffer, sendSie, SocketFlags.None, _remoteEndPoint);
-                        sendSie = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                        NetDebug.Log("udp send : " + sendSize);
+                        _socket.SendTo(buffer, sendSize, SocketFlags.None, _remoteEndPoint);
+                        sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
                     }
                 }
             }
-            catch { return; }
+            catch (System.Exception e) {
+                NetDebug.Log(e.ToString());
+                return;
+            }
         }
 
         public void SetReceiveData(byte[] data, int size, IPEndPoint endPoint)

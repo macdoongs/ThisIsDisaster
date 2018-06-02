@@ -57,11 +57,11 @@ public class StatusUIController : MonoBehaviour {
     public void GetStatus(GameObject PlayerCharacter)
     {
         string _maxHealth = PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.MaxHealth.ToString();
-        string _health = PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.Health.ToString();
+        string _health = (PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.Health).ToString("F1");
         string _healthInUI = _health + " / " + _maxHealth;
 
         string _maxStamina = PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.MaxStamina.ToString();
-        string _stamina = PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.Stamina.ToString();
+        string _stamina = (PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.Stamina).ToString("F1");
         string _staminaInUI = _stamina + " / " + _maxStamina;
 
 

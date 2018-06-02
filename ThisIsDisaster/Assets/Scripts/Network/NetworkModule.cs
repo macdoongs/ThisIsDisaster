@@ -181,6 +181,10 @@ namespace NetworkComponents
 
         public void RegisterReceiveNotification(PacketId id, RecvNotifier notifier) {
             int index = (int)id;
+            if (_notifier.ContainsKey(index)) {
+                _notifier[index] = notifier;
+                return;
+            }
             _notifier.Add(index, notifier);
         }
 
@@ -345,11 +349,13 @@ namespace NetworkComponents
         }
 
         public void SendUnreliableToAll<T>(IPacket<T> packet) {
+            int sendSize = -1;
             foreach (NodeInfo info in _unreliableNode) {
                 if (info != null) {
-                    SendUnreliable<T>(info.node, packet);
+                    sendSize = SendUnreliable<T>(info.node, packet);
                 }
             }
+            NetDebug.Log("Send Unreliable : " + packet.GetPacketID() + " " + sendSize);
         }
 
         private void Receive(int node, byte[] data) {
@@ -509,6 +515,12 @@ namespace NetworkComponents
                 }
             }
             return output;
+        }
+
+        public IPEndPoint GetReliableEndPoint(int node) {
+            var ep = _sessionTCP.GetRemoteEndPoint(node);
+            if (ep == null && ep == default(IPEndPoint)) return null;
+            return ep;
         }
     }
 }

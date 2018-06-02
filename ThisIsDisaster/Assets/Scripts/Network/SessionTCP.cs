@@ -13,13 +13,13 @@ namespace NetworkComponents
         {
             if ((_listener != null) && _listener.Poll(0, SelectMode.SelectRead)) {
                 NetDebug.Log("TCP Accept client");
-                Socket socker = _listener.Accept();
+                Socket socket = _listener.Accept();
                 int node = -1;
                 try
                 {
                     NetDebug.Log("TCP Create transport");
                     TransportTCP transport = new TransportTCP();
-                    transport.Initialize(socker);
+                    transport.Initialize(socket);
                     transport.transportName = "serverSocket";
                     NetDebug.Log("TCP Join Session");
                     node = JoinSession(transport);
@@ -57,6 +57,10 @@ namespace NetworkComponents
             _listener = null;
             return true;
         }
-        
+
+        public override NetworkModule.ConnectionType GetConnectionType()
+        {
+            return NetworkModule.ConnectionType.TCP;
+        }
     }
 }

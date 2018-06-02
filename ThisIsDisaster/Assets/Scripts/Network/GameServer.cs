@@ -19,6 +19,7 @@ namespace NetworkComponents {
 
     public enum GameServerRequestType {
         MatchingData,
+        UpdateGuestPort,
         ConnectionState
     }
 
@@ -52,6 +53,8 @@ namespace NetworkComponents {
         private float[] _keepAlive = new float[NetConfig.PLAYER_MAX];
         private const float KEEPALIVE_TIMEOUT = 10.0f;
         private Matching.MatchingView _matchingView = null;
+
+        Dictionary<int, string> _playerNames = new Dictionary<int, string>();
 
         public bool IsHost {
             private set;
@@ -94,7 +97,9 @@ namespace NetworkComponents {
 
             Network.RegisterReceiveNotification(PacketId.MatchingRequest, OnReceiveMatchingRequest);
             Network.RegisterReceiveNotification(PacketId.MatchingResponse, OnReceiveMatchingResponse);
-            Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);    
+            Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);
+
+            //Network.RegisterReceiveNotification(PacketId.Coordinates, GameManager.CurrentGameManager.OnReceiveCharacterCoordinate);
         }
 
         private void Update()
@@ -216,24 +221,39 @@ namespace NetworkComponents {
             MatchingRequestPacket packet = new MatchingRequestPacket(data);
             var request = packet.GetPacket();
 
-            _matchingView.AddNode(node, request.accountId, request.port, request.ip);
+            //_matchingView.AddNode(node, request.accountId, request.accountLength, request.accountName);
 
-            NetDebug.LogError(string.Format("Matching Request From node [{0}]\r\n{1}-{2}", node, request.accountId, request.ip));
-
+            NetDebug.LogError(string.Format("Matching Request From node [{0}]\r\n{1}-{2}", node, request.accountId, request.accountName));
+            if (_playerNames.ContainsKey(node))
+            {
+                _playerNames[node] = request.accountName;
+            }
+            else {
+                _playerNames.Add(node, request.accountName);
+            }
             //check smth
             MatchingResponse response = new MatchingResponse()
             {
                 connectionState = true,
-                nodeIndex = node,
+                nodeIndex = node + 1,
                 sessionIndex = -1
             };
-            //SendMatchingResponse(node, response);
+            SendMatchingResponse(node, response);
+            var ep = NetworkModule.Instance.GetReliableEndPoint(node);
+            if (ep != null) {
+                _matchingView.AddNode(node, request.accountId, response.nodeIndex + NetConfig.GAME_PORT, ep.Address.ToString());
+            }
         }
 
         public void OnReceiveMatchingResponse(int node, PacketId id, byte[] data) {
             MatchingResponsePacket packet = new MatchingResponsePacket(data);
             var response = packet.GetPacket();
             NetDebug.LogError("Matching Response : " + response.nodeIndex + " " + response.connectionState + " " + response.sessionIndex);
+            if (response.connectionState) {
+                Notice.Instance.Send(NoticeName.OnReceiveMatchingResponse, response.nodeIndex, response.sessionIndex);
+                
+            }
+            
         }
 
         public void OnReceiveGameServerRequest(int node, PacketId id, byte[] data) {
@@ -259,7 +279,7 @@ namespace NetworkComponents {
                 if (IsHost)
                 {
                     int node = (int)param[0];
-                    SendMatchingResponse(node);
+                    //SendMatchingResponse(node);
                 }
             }
         }
@@ -294,6 +314,8 @@ namespace NetworkComponents {
                 if (clientNode >= 0)
                 {
                     Network.SetClientNode(node.nodeIndex, clientNode);
+
+                    GameManager.MakePlayerCharacter(node.nodeIndex.ToString(), clientNode, false);
                 }
                 else
                 {
@@ -315,7 +337,7 @@ namespace NetworkComponents {
 
         public void MakeRemotePlayer() {
             if (GameManager.CurrentGameManager == null) return;
-
+            /*
             foreach (var kv in _reflectionDics)
             {
                 string name = kv.Value.nodeIp;
@@ -327,7 +349,8 @@ namespace NetworkComponents {
             if (!IsHost)
             {
                 GameManager.MakePlayerCharacter("host", Network.GetServerNode(), false);
-            }
+            }*/
+
         }
 
         public void MakeNewSession() {
@@ -339,7 +362,7 @@ namespace NetworkComponents {
 
         #region Send
 
-        void SendMatchingResponse(int node)
+        void SendMatchingResponse(int node, MatchingResponse response)
         {
             //SessionSyncInfoReflection reflection = new SessionSyncInfoReflection()
             //{
@@ -355,12 +378,12 @@ namespace NetworkComponents {
 
             //Network.SendReliable(node, packet);
 
-            MatchingResponse response = new MatchingResponse()
-            {
-                connectionState = true,
-                nodeIndex = node,
-                sessionIndex = -1
-            };
+            //MatchingResponse response = new MatchingResponse()
+            //{
+            //    connectionState = true,
+            //    nodeIndex = node,
+            //    sessionIndex = -1
+            //};
 
             MatchingResponsePacket packet = new MatchingResponsePacket(response);
             Network.SendReliable(node, packet);
@@ -421,8 +444,8 @@ namespace NetworkComponents {
         public void SendMatchingRequest() {
             MatchingRequest request = new MatchingRequest() {
                 accountId = GlobalParameters.Param.accountId,
-                port = UdpServerPort,
-                ip = LocalHost
+                accountLength = GlobalParameters.Param.accountName.Length,
+                accountName = GlobalParameters.Param.accountName
             };
 
             MatchingRequestPacket packet = new MatchingRequestPacket(request);
@@ -433,7 +456,7 @@ namespace NetworkComponents {
         public void SendMatchingData() {
             if (_matchingView != null) {
                 var data = _matchingView.GetMatchingData();
-
+                Debug.LogError(data);
                 MatchingDataPacket packet = new MatchingDataPacket(data);
                 Network.SendReliableToAll(packet);
             }
@@ -467,7 +490,12 @@ namespace NetworkComponents {
                 Destroy(_matchingView);
             }
         }
-        
+
+        public string GetPlayerName(int nodeIndex) {
+            string output = "";
+            _playerNames.TryGetValue(nodeIndex, out output);
+            return output;
+        }
     }
 
 }

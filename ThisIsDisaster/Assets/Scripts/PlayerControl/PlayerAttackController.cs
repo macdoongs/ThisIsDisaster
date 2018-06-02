@@ -57,6 +57,7 @@ public class PlayerAttackController : MonoBehaviour {
     public void OnAttackClicked() {
         if (IsAttackable())
         {
+            CharacterModel.Instance.SubtractStamina(5f);
             Sender.OnAttack();
             if (MoveController)
             {
@@ -78,6 +79,6 @@ public class PlayerAttackController : MonoBehaviour {
     }
     
     public bool IsAttackable() {
-        return !_attackDelayTimer.started;
+        return !_attackDelayTimer.started && CharacterModel.Instance.CurrentStats.Stamina > 5f;
     }
 }
