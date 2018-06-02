@@ -756,7 +756,7 @@ public class CharacterModel : MonoBehaviour
         CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth;
         CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina;
         CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense;
-        if (CurrentStats.Defense < 0)
+        if(CurrentStats.Defense < 0)
             CurrentStats.Defense = 0;
         CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage;
         if (CurrentStats.Damage < 0)
@@ -803,41 +803,6 @@ public class CharacterModel : MonoBehaviour
                 result = true;
         }
 
-<<<<<<< HEAD
-
-        if (etc.metaInfo.metaId.Equals(40001) || etc.metaInfo.metaId.Equals(40002))
-        {
-            if (!ContainDisorder(Disorder.DisorderType.thirst))
-            {
-                RevoerDisorderByType(Disorder.DisorderType.thirst);
-                result = true;
-            }
-        }
-        else if (etc.metaInfo.metaId.Equals(40003))
-        {
-            if (!ContainDisorder(Disorder.DisorderType.hunger))
-            {
-                RevoerDisorderByType(Disorder.DisorderType.hunger);
-                DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.poisoning, 25);
-                result = true;
-            }
-        }
-        else if(etc.metaInfo.metaId.Equals(41001))
-        {
-            if (!ContainDisorder(Disorder.DisorderType.poisoning))
-            {
-                RevoerDisorderByType(Disorder.DisorderType.poisoning);
-                result = true;
-            }
-        }
-        else if (etc.metaInfo.metaId.Equals(41002))
-        {
-            if (!ContainDisorder(Disorder.DisorderType.injury))
-            {
-                RevoerDisorderByType(Disorder.DisorderType.injury);
-                result = true;
-            }
-=======
         result = SpecialEffect(etc, result);
 
         UpdateStat();
@@ -858,7 +823,7 @@ public class CharacterModel : MonoBehaviour
             RevoerDisorderByType(Disorder.DisorderType.injury);
             result = true;
         }
-        else if (etc.metaInfo.metaId.Equals(40001))
+        else if (etc.metaInfo.metaId.Equals(40001) || etc.metaInfo.metaId.Equals(40002))
         {//물 특수효과
             RevoerDisorderByType(Disorder.DisorderType.thirst);
             result = true;
@@ -866,8 +831,8 @@ public class CharacterModel : MonoBehaviour
         else if (etc.metaInfo.metaId.Equals(40003))
         {//생고기 특수효과
             System.Random random = new System.Random();
-            int randomInt = random.Next(0, 10);
-            if (randomInt < 2)
+            int randomInt = random.Next(0, 100);
+            if (randomInt < 25)
                 GetDisorder(Disorder.DisorderType.poisoning);
             RevoerDisorderByType(Disorder.DisorderType.hunger);
             result = true;
