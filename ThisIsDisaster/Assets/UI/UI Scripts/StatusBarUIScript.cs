@@ -38,6 +38,7 @@ public class StatusBarUIScript : MonoBehaviour {
     public Image DisorderDescImage;
     public Text DisorderDescName;
     public Text DisorderDesc;
+    public Text DisorderRecoveryCondition;
 
     public static StatusBarUIScript Instance
     {
@@ -177,40 +178,40 @@ public class StatusBarUIScript : MonoBehaviour {
             DisorderDescImage.sprite = Mirage;
             DisorderDescImage.color = Color.white;
             DisorderDescName.text = "신기루";
-            DisorderDesc.text = "사막에서 발생하는 상태이상." +
-                "신기루가 발생하게 되면 스태미너가 더 빨리 소모됩니다." +
-                "일정 스태미너 이상이 되면 신기루 현상이 사라지게 되므로 스테미너를 회복하도록 하자.";
-
+            DisorderDesc.text = "사막에서 발생하는 상태이상.\n신기루로 인해 바뀐 지형을 지나가면 체력이 감소하고 몬스터를 사냥하면 스테미너가 감소합니다.";
+            DisorderRecoveryCondition.text = "신기루 발생 후 30초 후에 자동 종료";
         }
         else if (type.Equals(Disorder.DisorderType.injury))
         {
             DisorderDescImage.sprite = Injury;
             DisorderDescImage.color = Color.white;
             DisorderDescName.text = "부상";
-            DisorderDesc.text = "부상을 당한 캐릭터는 이동속도가 감소하고 최대체력이 감소합니다." +
-                "부상을 당한 동안에는 공격력과 방어력이 낮아집니다.";
+            DisorderDesc.text = "부상을 당한 캐릭터는 이동속도가 감소하고 최대체력이 감소합니다.\n또한 부상을 당한 동안에는 공격력과 방어력이 낮아집니다.";
+            DisorderRecoveryCondition.text = "아이템 '구급상자' 로 부상 회복";
         }
         else if (type.Equals(Disorder.DisorderType.poisoning))
         {
             DisorderDescImage.sprite = Poisoning;
             DisorderDescImage.color = Color.white;
             DisorderDescName.text = "식중독";
-            DisorderDesc.text = "생고기를 먹을 경우 낮은 확률로 식중독에 걸립니다." +
-                "식중독에 걸리면 체력과 스테미너가 감소되며 스테미너회복량이 감소됩니다. ";
+            DisorderDesc.text = "식중독에 걸리면 체력과 스태미나가 감소되며 스태미나 회복량이 감소합니다. ";
+            DisorderRecoveryCondition.text = "아이템 '약' 으로 부상 회복";
         }
         else if (type.Equals(Disorder.DisorderType.thirst))
         {
             DisorderDescImage.sprite = Thirst;
             DisorderDescImage.color = Color.white;
             DisorderDescName.text = "갈증";
-            DisorderDesc.text = "갈증상태에 빠지면 스태미너가 감소합니다. ";
+            DisorderDesc.text = "갈증 상태에 빠지면 스태미나가 감소합니다.";
+            DisorderRecoveryCondition.text = "아이템 '물'을 소모해 갈증 회복";
         }
         else
         {
             DisorderDescImage.sprite = Hunger;
             DisorderDescImage.color = Color.white;
             DisorderDescName.text = "굶주림";
-            DisorderDesc.text = "굶주림을 느끼면 이동속도가 크게 저하되고 스테미너가 감소합니다.";
+            DisorderDesc.text = "굶주림을 느끼면 이동속도가 크게 저하되고 스테미너와 기본 공격력이 감소합니다.";
+            DisorderRecoveryCondition.text = "아이템 '생고기','음식'을 소모해 굶주림 회복";
         }
 
         DisorderDescPanel.SetActive(true);

@@ -57,7 +57,10 @@ public class ItemTestCharacter : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.F6))
         {          
             CharacterUnit.GetDisorder(Disorder.DisorderType.injury);
-            InGameUIScript.Instance.DisorderNotice(Disorder.DisorderType.injury);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.mirage);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.poisoning);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.thirst);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.hunger);
         }
 
         if (Input.GetKeyDown(KeyCode.F7))

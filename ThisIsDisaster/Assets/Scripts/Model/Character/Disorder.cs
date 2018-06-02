@@ -59,42 +59,43 @@ public class Disorder
     public float MaxStamina;
     public float MoveSpeed;
     public int DisorerLevel;
+    public string description;
+    public string triggerCondition;
+    public string recoveryCondition;
+
 
     public void MirageEffect()
     {
-        StaminaRegen = -5;
+        MaxStamina = -30;   
     }
 
     public void InjuryEffect()
     {
         MoveSpeed = -5;
-        MaxHealth = -5;
-        Health = -5;
+        MaxHealth = -20;
+        Defense = -30;
+        Damage = -30;
+        MoveSpeed = -4;
+
     }
 
     public void PoisoningEffect()
     {
-        MoveSpeed = -5;
         Health = -30;
         Stamina = -30;
-        Defense = -5;
-        Damage = -5;
+        HealthRegen = -5;
+        StaminaRegen = -5;
     }
 
     public void ThirstEffect()
     {
-
+        Stamina = -40;
     }
 
     public void HungerEffect()
     {
-
-    }
-
-
-    public void ThirstUpgrade()
-    {
-        DisorerLevel++;
-
+        Stamina = -20;
+        Damage = -40;
+        MoveSpeed = -3;
     }
 }

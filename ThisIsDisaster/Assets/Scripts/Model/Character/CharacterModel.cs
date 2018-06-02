@@ -666,6 +666,7 @@ public class CharacterModel : MonoBehaviour
                         }
 
                         disorders[disorders.Length - 1] = null;
+                        break;
                     }
                 }
             }
@@ -700,7 +701,11 @@ public class CharacterModel : MonoBehaviour
         CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth;
         CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina;
         CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense;
+        if (CurrentStats.Defense < 0)
+            CurrentStats.Defense = 0;
         CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage;
+        if (CurrentStats.Damage < 0)
+            CurrentStats.Damage = 0;
         CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen;
         CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen;
         CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed;
@@ -743,15 +748,39 @@ public class CharacterModel : MonoBehaviour
                 result = true;
         }
 
-        if(etc.metaInfo.metaId.Equals(41001))
+
+        if (etc.metaInfo.metaId.Equals(40001) || etc.metaInfo.metaId.Equals(40002))
         {
-            RevoerDisorderByType(Disorder.DisorderType.poisoning);
-            result = true;
+            if (!ContainDisorder(Disorder.DisorderType.thirst))
+            {
+                RevoerDisorderByType(Disorder.DisorderType.thirst);
+                result = true;
+            }
+        }
+        else if (etc.metaInfo.metaId.Equals(40003))
+        {
+            if (!ContainDisorder(Disorder.DisorderType.hunger))
+            {
+                RevoerDisorderByType(Disorder.DisorderType.hunger);
+                DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.poisoning, 25);
+                result = true;
+            }
+        }
+        else if(etc.metaInfo.metaId.Equals(41001))
+        {
+            if (!ContainDisorder(Disorder.DisorderType.poisoning))
+            {
+                RevoerDisorderByType(Disorder.DisorderType.poisoning);
+                result = true;
+            }
         }
         else if (etc.metaInfo.metaId.Equals(41002))
         {
-            RevoerDisorderByType(Disorder.DisorderType.injury);
-            result = true;
+            if (!ContainDisorder(Disorder.DisorderType.injury))
+            {
+                RevoerDisorderByType(Disorder.DisorderType.injury);
+                result = true;
+            }
         }
 
         UpdateStat();
