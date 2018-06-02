@@ -63,7 +63,6 @@ public class Disorder
     public string triggerCondition;
     public string recoveryCondition;
 
-
     public void MirageEffect()
     {
         MaxStamina = -30;   

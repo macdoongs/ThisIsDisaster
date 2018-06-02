@@ -857,7 +857,6 @@ public class CharacterModel : MonoBehaviour
         {//구급상자 특수효과
             RevoerDisorderByType(Disorder.DisorderType.injury);
             result = true;
->>>>>>> origin/master
         }
         else if (etc.metaInfo.metaId.Equals(40001))
         {//물 특수효과

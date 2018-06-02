@@ -63,15 +63,12 @@ public class ItemTestCharacter : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F6))
         {          
-<<<<<<< HEAD
             CharacterUnit.GetDisorder(Disorder.DisorderType.injury);
             CharacterUnit.GetDisorder(Disorder.DisorderType.mirage);
             CharacterUnit.GetDisorder(Disorder.DisorderType.poisoning);
             CharacterUnit.GetDisorder(Disorder.DisorderType.thirst);
             CharacterUnit.GetDisorder(Disorder.DisorderType.hunger);
-=======
-            
->>>>>>> origin/master
+
         }
 
         if (Input.GetKeyDown(KeyCode.F7))
