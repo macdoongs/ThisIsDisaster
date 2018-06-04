@@ -42,22 +42,36 @@ public class InGameUIScript : MonoBehaviour
 
     public void Start()
     {
-        GameManager.CurrentGameManager.Init();
-        if (PlayerCharacter == null) {
-            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+        {
+            return;
         }
-
-        StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
-        StatusBarUIScript.Instance.SetPlayerInfo(PlayerCharacter);
-        InventoryUIController.Instance.InitialCategory();
+        else {
+            GameManager.CurrentGameManager.Init();
+            //Init();
+        }
+        
 
        
      //   Destroy(LobbyUIScript.Instance.transform.gameObject);
        
     }
 
+    public void Init()
+    {
+        if (PlayerCharacter == null)
+        {
+            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+        }
+
+        StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
+        StatusBarUIScript.Instance.SetPlayerInfo(PlayerCharacter);
+        InventoryUIController.Instance.InitialCategory();
+    }
+
     public void Update()
     {
+        if (PlayerCharacter == null) return;
         VisionSet();
         StatusUIController.Instance.GetStatus(PlayerCharacter);
         

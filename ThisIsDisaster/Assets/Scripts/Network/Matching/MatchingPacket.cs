@@ -110,8 +110,12 @@ namespace NetworkComponents.Packet {
                 Serialize(packet.sessionId);
                 Serialize(packet.serverAccountId);
                 Serialize(packet.nodeCount);
+                
                 for (int i = 0; i < packet.nodeCount; i++) {
                     Serialize(packet.nodes[i].nodeIndex);
+                    Serialize(packet.nodes[i].playerName.Length);
+                    Serialize(packet.nodes[i].playerName, packet.nodes[i].playerName.Length);
+                    Serialize(packet.nodes[i].isReady);
                     Serialize(packet.nodes[i].accountId);
                     Serialize(packet.nodes[i].port);
                     Serialize(packet.nodes[i].ip, MatchingNode.IP_LENGTH);
@@ -126,6 +130,9 @@ namespace NetworkComponents.Packet {
                 data.nodes = new MatchingNode[data.nodeCount];
                 for (int i = 0; i < data.nodeCount; i++) {
                     Deserialize(ref data.nodes[i].nodeIndex);
+                    Deserialize(ref data.nodes[i].playerNameLength);
+                    Deserialize(ref data.nodes[i].playerName, data.nodes[i].playerNameLength);
+                    Deserialize(ref data.nodes[i].isReady);
                     Deserialize(ref data.nodes[i].accountId);
                     Deserialize(ref data.nodes[i].port);
                     Deserialize(ref data.nodes[i].ip, MatchingNode.IP_LENGTH);
@@ -161,6 +168,52 @@ namespace NetworkComponents.Packet {
         public PacketId GetPacketID()
         {
             return PacketId.MatchingData;
+        }
+    }
+
+    public class MatchingReadyStatePacket : IPacket<MatchingReadyState>
+    {
+        public class MatchingReadyStatePacketSerializer : Serializer {
+            public bool Serialize(MatchingReadyState packet) {
+                Serialize(packet.accountId);
+                Serialize(packet.isReady);
+                return true;
+            }
+
+            public bool Deserialize(ref MatchingReadyState data) {
+                Deserialize(ref data.accountId);
+                Deserialize(ref data.isReady);
+                return true;
+            }
+        }
+
+        private MatchingReadyState packet;
+
+        public MatchingReadyStatePacket(MatchingReadyState packet) {
+            this.packet = packet;
+        }
+
+        public MatchingReadyStatePacket(byte[] data) {
+            MatchingReadyStatePacketSerializer serializer = new MatchingReadyStatePacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref packet);
+        }
+
+        public byte[] GetData()
+        {
+            MatchingReadyStatePacketSerializer serializer = new MatchingReadyStatePacketSerializer();
+            serializer.Serialize(packet);
+            return serializer.GetSerializedData();
+        }
+
+        public MatchingReadyState GetPacket()
+        {
+            return packet;
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.MatchingReady;
         }
     }
 }

@@ -58,7 +58,6 @@ namespace NetworkComponents
         }
 
         protected bool CreateThread() {
-            NetDebug.LogError("Make Thread: " + GetConnectionType());
             try
             {
                 _thread = new Thread(ThreadDispatch);

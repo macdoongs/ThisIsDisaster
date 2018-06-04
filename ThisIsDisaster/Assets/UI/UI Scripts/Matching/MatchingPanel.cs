@@ -20,6 +20,8 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     private bool _isHost = false;
 
+    public CanvasGroup StartingPanel;
+
     private void Awake()
     {
         Instance = this;
@@ -58,10 +60,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     public void OnOpenPanel() {
         Show();
+        SetGameStarting(false);
 
         //zero is localplayer
         matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, 1, GlobalParameters.Param.accountName, true);
-
+        matchingSlots[0].SetPlayerReady(false);
     }
 
     public void OnClosePanel() {
@@ -127,6 +130,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     public void OnHost() {
         SetIsHost(true);
         GameServer.Instance.SetLocalAddress(GetLocalHost());
+        GameServer.Instance.InitializeNetworkModule();
         //StartUdpServer();
         StartUdpServer(NetConfig.GAME_PORT);
         StartHostServer();
@@ -136,7 +140,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     public void OnGuest() {
         SetIsHost(false);
         GameServer.Instance.SetLocalAddress(GetLocalHost());
-
+        GameServer.Instance.InitializeNetworkModule();
         ConnectToHost();
         GameServer.Instance.MakeMatchingView();
 
@@ -168,9 +172,10 @@ public class MatchingPanel : MonoBehaviour, IObserver
     public void SetIsHost(bool isHost) {
         _isHost = isHost;
         GameServer.Instance.SetHost(isHost);
+        GlobalGameManager.Instance.SetHost(isHost);
     }
 
-    void ResetNetwork() {
+    public void ResetNetwork() {
         NetworkModule.Instance.Disconnect();
         NetworkModule.Instance.StopGameServer();
         NetworkModule.Instance.StopServer();
@@ -180,7 +185,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     {
         if (notice == NoticeName.OnReceiveMatchingResponse) {
             int node = (int)param[0];
-            StartUdpServer(node);
+            StartUdpServer(node + NetConfig.GAME_PORT);
             RequestMatchingData();
         }
     }
@@ -206,10 +211,52 @@ public class MatchingPanel : MonoBehaviour, IObserver
                 return;
             }
             var slot = matchingSlots[index];
-            slot.SetPlayer(d.accountId, 1, NetworkComponents.GameServer.Instance.GetPlayerName(d.nodeIndex), false);
+            slot.SetPlayer(d.accountId, 1, d.playerName, false);
+            slot.SetPlayerReady(d.isReady);
             index++;
 
         }
+        for (; index < matchingSlots.Length; index++) {
+            var slot = matchingSlots[index];
+            slot.ClearPlayer();
+        }
+    }
+
+    public void ClearMatchingData() {
+        int index = 1;
+        for (; index < matchingSlots.Length; index++) {
+            matchingSlots[index].ClearPlayer();
+        }
+    }
+
+    public void SetMatchingReadyState(int accountId, bool state) {
+        foreach (var s in matchingSlots) {
+            if (s.AccountId == accountId) {
+                s.SetPlayerReady(state);
+                break;
+            }
+        }
+        //check ready state
+        bool isStartable = true;
+        foreach (var s in matchingSlots) {
+            if (s.AccountId != -1) {
+                isStartable &= s.IsReady;
+            }
+        }
+
+        if (isStartable)
+        {
+            SetGameStarting(true);
+            //send message to start game
+            OnClickGameStart();
+        }
+        else {
+            isStartable = false;
+        }
+    }
+
+    public void SetGameStarting(bool state) {
+        StartingPanel.alpha = state ? 1f : 0f;
     }
 
     #endregion

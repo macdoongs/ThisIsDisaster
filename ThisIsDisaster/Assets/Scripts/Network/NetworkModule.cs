@@ -131,7 +131,7 @@ namespace NetworkComponents
         }
 
         public void StopServer() {
-            NetDebug.Log("Stop Serve called");
+            NetDebug.Log("Stop Server called");
             if (_sessionUDP != null) {
                 _sessionUDP.StopServer();
             }
@@ -400,9 +400,9 @@ namespace NetworkComponents
                 case NetEventType.Disconnect:
                     for (int i = 0; i < _reliableNode.Length; i++) {
                         if (_reliableNode[i] != null && _reliableNode[i].node == node) {
-                            Notice.Instance.Send(NoticeName.OnPlayerDisconnected, node);
+                            //Notice.Instance.Send(NoticeName.OnPlayerDisconnected, node);
                             //send
-                            GameServer.Instance.SendDisconnectReflection(node);
+                            //GameServer.Instance.SendDisconnectReflection(node);
                             _reliableNode[i].node = -1;
                             break;
                         }

@@ -67,7 +67,7 @@ public class GlobalGameManager {
 
     public DevelopmentConsole developmentConsole;
     public GlobalParameters param = null;
-    
+
     [ReadOnly]
     public GameState GameState = GameState.Lobby;
 
@@ -76,19 +76,17 @@ public class GlobalGameManager {
         get;
     }
 
+    public bool IsHost {
+        private set;
+        get;
+    }
+
     private void Init()
     {
-        //if (Instance != null) {
-        //    //Destroy(gameObject); return;
-        //}
-        //Instance = this;
-        //DontDestroyOnLoad(gameObject);
-
         param = new GlobalParameters();
         param.Init();
 
         GameStaticDataLoader.Loader.LoaderInit();
-        //LocalizeTextDataModel.Instance.LogAllData();
 
         GameObject networkObject = GameObject.Find("NetworkModule");
         if (networkObject) {
@@ -108,8 +106,6 @@ public class GlobalGameManager {
         if (!string.IsNullOrEmpty(texts))
         {
             string[] split = texts.Split(' ', '\n');
-            //split[1] - id
-            //split[3] - name
             int id = GlobalParameters.Param.accountId;
             if (int.TryParse(split[1], out id))
             {
@@ -120,26 +116,16 @@ public class GlobalGameManager {
             Debug.LogError("Set Global Param " + id + " " + GlobalParameters.Param.accountName);
         }
 #endif
+        //testing
+        SetGameNetworkType(GameNetworkType.Multi);
     }
-    // Use this for initialization
-    void Start () {
-        //developmentConsole.gameObject.SetActive(false);
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        //if (Input.GetKeyDown(KeyCode.Tab))
-        //{
-        //    if (developmentConsole.gameObject.activeInHierarchy)
-        //    {
-        //        developmentConsole.Close();
-        //    }
-        //    else
-        //    {
-        //        developmentConsole.Open();
-        //    }
-        //}
+
+    public void SetHost(bool isHost) {
+        IsHost = isHost;
+    }
+
+    public void SetGameNetworkType(GameNetworkType type) {
+        this.GameNetworkType = type;
     }
 
     public void SetGameState(GameState state) {
@@ -155,13 +141,21 @@ public class GlobalGameManager {
         StageGenerator.Instance.SetSeed(randValue);
         //check game state is Mulitplay or singlePlay
         //in this case, assume that game state is Multiplay
-        if (NetworkModule.Instance != null) {
-            if (GameServer.Instance != null) {
-                SendSessionStartNotice();
-                GameServer.Instance.ConnectUDPServer();
-                GenerateWorld();
+        if (NetworkModule.Instance != null)
+        {
+            if (GameServer.Instance != null)
+            {
+                //SendSessionStartNotice();
+
+                //GameServer.Instance.ConnectUDPServer();
             }
         }
+        if (GameNetworkType == GameNetworkType.Multi) {
+            GameServer.Instance.ConnectUDPServer();
+            SendSessionStartNotice();
+        }
+        
+        LoadGameScene();
     }
 
     void SendSessionStartNotice() {
@@ -175,9 +169,34 @@ public class GlobalGameManager {
 
     public void GenerateWorld() {
         if (GameManager.CurrentGameManager != null) {
+
+
             GameManager.CurrentGameManager.Init();
 
             GameServer.Instance.MakeRemotePlayer();
         }
     }
+
+    public void LoadGameScene()
+    {
+        LoadingSceneManager.LoadScene("NPCTestScene");
+        
+    }
+
+    public void LoadLobbyScene()
+    {
+        LoadingSceneManager.LoadScene("Lobby Scene");
+    }
+
+    public Dictionary<int, int> _remotePlayers = new Dictionary<int, int>();
+    //other data need
+    public void AddRemotePlayer(int clientNode) {
+        _remotePlayers.Add(clientNode, clientNode);
+    }
+
+    public void ClearRemotePlayer() {
+        _remotePlayers.Clear();
+    }
+
+    
 }

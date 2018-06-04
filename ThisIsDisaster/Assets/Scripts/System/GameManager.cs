@@ -218,9 +218,9 @@ public class GameManager : MonoBehaviour {
         if (Clock != null)
             Clock.gameObject.SetActive(false);
         NPCManager.Manager.Clear();
+
     }
     
-
     /// <summary>
     //  
     /// </summary>
@@ -236,6 +236,14 @@ public class GameManager : MonoBehaviour {
             NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
                 NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
+
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
+            foreach (var kv in GlobalGameManager.Instance._remotePlayers) {
+                MakePlayerCharacter(kv.Key.ToString(), kv.Key, false);
+            }
+        }
+
+        InGameUIScript.Instance.Init();
 #if MIDDLE_PRES
         ProtoInit();
         StartStage();
@@ -321,9 +329,10 @@ public class GameManager : MonoBehaviour {
             //    NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
 
-        //Init();
-        //Debug.LogError("Stage Started");
-        //StartStage();
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+        {
+            GlobalGameManager.Instance.GenerateWorld();
+        }
     }
 	
 	// Update is called once per frame
@@ -446,4 +455,6 @@ public class GameManager : MonoBehaviour {
         if (!Clock) return;
         Clock.gameObject.SetActive(false);
     }
+
+    
 }

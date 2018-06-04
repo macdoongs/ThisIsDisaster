@@ -6,6 +6,11 @@ using System.Net;
 using UnityEngine;
 
 namespace NetworkComponents.Matching {
+    public struct MatchingReadyState {
+        public int accountId;
+        public bool isReady;
+    }
+
     public struct MatchingInfo {
         public int nodeIndex;
         public int accountId;
@@ -35,6 +40,9 @@ namespace NetworkComponents.Matching {
     {
         public int nodeIndex;
         public int accountId;
+        public int playerNameLength;
+        public string playerName;
+        public bool isReady;
         public int port;
         public string ip;
 
@@ -70,25 +78,73 @@ namespace NetworkComponents.Matching {
         public void AddHost() {
             MatchingNode node = new MatchingNode() {
                 accountId = GlobalParameters.Param.accountId,
-                nodeIndex = 0,
+                nodeIndex = -1,
                 ip = GameServer.Instance.LocalHost,
-                port = GameServer.Instance.UdpServerPort
+                port = GameServer.Instance.UdpServerPort,
+                isReady = false,
+                playerNameLength = GlobalParameters.Param.accountName.Length,
+                playerName = GlobalParameters.Param.accountName
             };
             _nodes.Add(node);
             NodeCount = 1;
         }
 
-        public void AddNode(int nodeIndex, int accountId, int port, string ip) {
+        public void AddNode(int nodeIndex, int accountId, int port, string ip, string name) {
             MatchingNode node = new MatchingNode()
             {
                 accountId = accountId,
                 nodeIndex = nodeIndex,
                 ip = ip,
-                port = port
+                port = port,
+                playerNameLength =  name.Length,
+                playerName = name,
+                isReady = false,
             };
             _nodes.Add(node);
             NodeCount++;
             Debug.LogError("Add Matching Node : " + nodeIndex + " " + accountId + " " + ip + " " + port);
+        }
+
+        public void SetNodeReadyState(int nodeAccount, bool state) {
+            try
+            {
+                int index = -1;
+                foreach (var node in _nodes) {
+                    index++;
+                    if (node.accountId == nodeAccount) {
+                        break;
+                    }
+                }
+                var target = _nodes[index];
+                MatchingNode newData = new MatchingNode() {
+                    accountId = target.accountId,
+                    nodeIndex = target.nodeIndex,
+                    ip = target.ip,
+                    port = target.port,
+                    playerNameLength = target.playerNameLength,
+                    playerName = target.playerName,
+                    isReady = state
+                };
+                _nodes[index] = newData;
+
+            }
+            catch {
+
+            }
+        }
+
+        public bool RemoveNode(int nodeIndex) {
+            try
+            {
+                var node = _nodes.Find((x => x.nodeIndex == nodeIndex));
+                _nodes.Remove(node);
+                NodeCount--;
+                return true;
+            }
+            catch {
+
+            }
+            return false;
         }
 
         public void OnReceiveMatchingData(int node, PacketId packetId, byte[] data) {
@@ -135,7 +191,6 @@ namespace NetworkComponents.Matching {
                 MatchingNode node = _nodes[i];
                 output.nodes[i] = node;
             }
-
             if (MatchingPanel.Instance != null)
             {
                 MatchingPanel.Instance.SetMatchingData(output);

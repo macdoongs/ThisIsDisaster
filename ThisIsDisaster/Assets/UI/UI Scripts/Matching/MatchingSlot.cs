@@ -16,8 +16,15 @@ public class MatchingSlot : MonoBehaviour {
     [Space(10)]
     public Button Input;
 
-    private int AccountId = -1;
+    private int _accountId = -1;
+    public int AccountId {
+        get { return _accountId; }
+    }
+
     private bool _isReady = false;
+    public bool IsReady {
+        get { return _isReady; }
+    }
 
     public void SetBlockState(bool state) {
         Block.gameObject.SetActive(state);
@@ -39,8 +46,8 @@ public class MatchingSlot : MonoBehaviour {
 
         SetBlockState(false);
 
-        SetPlayerReady(false);
-        this.AccountId = AccountId;
+        //SetPlayerReady(false);
+        this._accountId = AccountId;
 
         Input.interactable = isLocalPlayer;
         _isReady = false;
@@ -49,7 +56,7 @@ public class MatchingSlot : MonoBehaviour {
     public void ClearPlayer() {
         SetBlockState(true);
         SetPlayerReady(false);
-        AccountId = -1;
+        _accountId = -1;
     }
 
     public void SetPlayerReady(bool isReady) {
@@ -59,7 +66,16 @@ public class MatchingSlot : MonoBehaviour {
     }
 
     public void OnClickReady() {
-        if (AccountId == -1) return;
+        if (_accountId == -1) return;
         SetPlayerReady(!_isReady);
+        if (!GlobalGameManager.Instance.IsHost)
+        {
+            NetworkComponents.GameServer.Instance.SendMatchingReady(_isReady);
+        }
+        else {
+            NetworkComponents.GameServer.Instance.SetHostReady(_isReady);
+        }
+        //NetworkComponents.GameServer.Instance.SendGameServerRequest(NetworkComponents.GameServerRequestType.MatchingData);
     }
+    
 }

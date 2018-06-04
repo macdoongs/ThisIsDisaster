@@ -17,6 +17,7 @@ namespace NetworkComponents
         MatchingData,
         MatchingRequest,
         MatchingResponse,
+        MatchingReady,
         SessionInfo,
         SessionInfoSync,
         SessionInfoSyncReflection,
