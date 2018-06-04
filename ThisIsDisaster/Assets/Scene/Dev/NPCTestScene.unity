@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.45076913, g: 0.49893284, b: 0.5652587, a: 1}
+  m_IndirectSpecularColor: {r: 0.45076966, g: 0.49893355, b: 0.5652596, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1709,9 +1709,12 @@ MonoBehaviour:
   sandObject: {fileID: 0}
   cloudObject: {fileID: 0}
   blinkObject: {fileID: 0}
+  lightningObject: {fileID: 0}
+  dryObject: {fileID: 0}
+  crackObject: {fileID: 0}
   tsunamiObject: {fileID: 0}
   landslideObject: {fileID: 0}
-  currentTestType: 4
+  currentTestType: 3
 --- !u!1 &907431126
 GameObject:
   m_ObjectHideFlags: 0

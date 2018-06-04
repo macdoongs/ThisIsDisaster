@@ -6,10 +6,18 @@ using UnityEngine;
 public class HeavysnowEvent : EventBase
 {
 	int max = -1;//max level of this event
-	SnowEffect snowEffect = null;
-	CloudEffect cloudEffect = null;  
+    Timer _lifeTimeTimer = new Timer();
+    float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
+    SnowEffect snowEffect = null;
+	CloudEffect cloudEffect = null;
 
-	public HeavysnowEvent()
+
+    Timer _damageTimer = new Timer();
+    public float damageHealthPerSec = 2f;
+    public float damageEnergyPerSec = 2f;
+    public float damageTime = 1f;
+
+    public HeavysnowEvent()
 	{
 		type = WeatherType.Heavysnow;
 	}
@@ -26,14 +34,14 @@ public class HeavysnowEvent : EventBase
 		snowEffect.SetActive(true);
 		snowEffect.SetLevel(5);
 		EventManager.Manager.SetWorldFilterColor(new Color(71f/255f, 73f/255f, 73f/255f, 98f/255f));
-		for (int i = 0; i < 10; i++) {
-			NPCManager.Manager.MakeNPC (0);
-		}
 
 		Debug.Log(RandomMapGenerator.Instance.GetRandomTileByHeight (1));
-		//cloudEffect.SetActive(true);
 
-	}
+        _lifeTimeTimer.StartTimer(lifeTime);
+        _damageTimer.StartTimer(damageTime);
+        //cloudEffect.SetActive(true);
+
+    }
 
 	public override void OnEnd()
 	{
@@ -45,6 +53,41 @@ public class HeavysnowEvent : EventBase
 	{
 
 	}
+
+
+    public override void OnExecute()
+    {
+        if (_lifeTimeTimer.started)
+        {
+            if(_lifeTimeTimer.RunTimer());
+            //이벤트 끝내는 함수 필요
+        }
+        if (_damageTimer.started)
+        {
+            //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
+            if (_damageTimer.RunTimer())
+            {
+                float healthDamageRate = 1f;
+                float staminaDamageRate = 1f;
+                float speedDownRate = 0.5f;
+
+                var player = CharacterModel.Instance;
+
+                if (player.GetPlayerModel().IsInShelter())
+                {
+                    healthDamageRate *= 0.5f;
+                    staminaDamageRate *= 0.5f;
+                    speedDownRate = 0f;
+                }
+
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+                CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+
+                _damageTimer.StartTimer(damageTime);
+            }
+        }
+    }
 }  // 폭설 이벤트
 	
 
