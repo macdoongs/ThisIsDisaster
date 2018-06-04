@@ -6,7 +6,7 @@ public class DisorderController : MonoBehaviour {
 
     public GameObject PlayerCharacter;
 
-    private float TimeLeft = 5.0f;
+    private float TimeLeft = 60.0f;
     private float nextTime = 0.0f;
 
     private float TimeLeftMirage = 30.0f;
@@ -33,13 +33,15 @@ public class DisorderController : MonoBehaviour {
 
     private void Start()
     {
+
+    }
+
+    void Update () {
+
         if (PlayerCharacter == null)
         {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
         }
-    }
-
-    void Update () {
 
         //신기루에 걸린 후 30초 후에 자동으로 신기루 해제
         if (!PlayerCharacter.GetComponent<CharacterModel>().ContainDisorder(Disorder.DisorderType.mirage) )
@@ -70,10 +72,9 @@ public class DisorderController : MonoBehaviour {
     {
         //스테이지가 사막이면 신기루를 만듬
         //if(stage == desert)
-        if (PlayerCharacter.GetComponent<CharacterModel>().ContainDisorder(Disorder.DisorderType.mirage))
-        {
-            MakeDisorderByProbability(Disorder.DisorderType.mirage, 25);
-        }
+
+        MakeDisorderByProbability(Disorder.DisorderType.mirage, 25);
+
 
         //이미 갈증이나 굶주림에 걸린 경우
         if (!PlayerCharacter.GetComponent<CharacterModel>().ContainDisorder(Disorder.DisorderType.thirst)
@@ -107,7 +108,11 @@ public class DisorderController : MonoBehaviour {
         int x = random.Next(1, 100);
         if (x < TriggerCondition)
         {
-            PlayerCharacter.GetComponent<CharacterModel>().GetDisorder(type);
+            if (PlayerCharacter.GetComponent<CharacterModel>().ContainDisorder(type))
+            {
+                PlayerCharacter.GetComponent<CharacterModel>().GetDisorder(type);
+                InGameUIScript.Instance.DisorderNotice(type);
+            }
         }
     }
 }

@@ -28,6 +28,9 @@ public class PlayerModel : UnitModel
     public override void OnTakeDamage(UnitModel attacker, float damage)
     {
         Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+
+        //피격시 5% 확률로 부상 
+        DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 5);
         _character.SubtractHealth(damage);
     }
 
@@ -813,6 +816,15 @@ public class CharacterModel : MonoBehaviour
     //특수효과 처리 
     private bool SpecialEffect(ItemModel etc, bool result)
     {
+        if (etc.metaInfo.metaId.Equals(33001))
+        {//텐트
+
+        }
+        else if (etc.metaInfo.metaId.Equals(33002))
+        {//모닥불
+
+        }
+
         if (etc.metaInfo.metaId.Equals(41001))
         {//약 특수효과
             RevoerDisorderByType(Disorder.DisorderType.poisoning);
@@ -1129,4 +1141,15 @@ public class CharacterModel : MonoBehaviour
             MoveSpeed = 0.0f;
         }
     }
+
+    public class RegionEffectItem : DropItem
+    {
+        new
+        public void OnTriggerEnter2D(Collider2D collision)
+        {
+            ;
+        }
+
+    }
+
 }

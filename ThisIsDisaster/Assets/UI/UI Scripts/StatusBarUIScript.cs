@@ -151,7 +151,7 @@ public class StatusBarUIScript : MonoBehaviour {
         Stamina = PlayerCharacter.GetComponent<CharacterModel>().CurrentStats.Stamina;
 
         HPBar.fillAmount = HP / MaxHP;
-        HPText.text = HP.ToString();
+        HPText.text = ((int)HP).ToString();
         StaminaBar.fillAmount = Stamina / MaxStamina;
         StaminaText.text = Stamina.ToString();
     }

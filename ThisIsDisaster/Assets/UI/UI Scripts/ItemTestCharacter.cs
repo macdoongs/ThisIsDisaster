@@ -11,9 +11,10 @@ public class ItemTestCharacter : MonoBehaviour {
     static long[] _bottle = { 30010, 30020};
     static long[] _tool_equip = { 31001, 31002};
     static long[] _tool_use = { 33001, 33002};
-    static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003, 41004, 41005};
-    static long[] _norm = { 50001, 50002, 50003, 50004, 51001, 51002, 51003, 51004, 51005, 51006 };
-    
+    static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003};
+    static long[] _norm = { 50002, 50003, 50004, 51001};
+    bool token = true;
+
     private CharacterModel _player = null;
     public CharacterModel CharacterUnit {
         get {
@@ -26,19 +27,28 @@ public class ItemTestCharacter : MonoBehaviour {
 
     public void Awake()
     {
+        ItemManager.Manager.AddItem(CharacterUnit, 31001, 1);
+        ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
+        ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
+        ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
 
     }
 
     public void Start()
     {
-        //if (PlayerCharacter == null) {
-        //    PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
-        //}
-        //CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
+
     }
 
     public void Update()
     {
+        if (token)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
+            token = false;
+        }
+
         if (Input.GetKeyDown(KeyCode.F1)){
             GetEqip();
         }

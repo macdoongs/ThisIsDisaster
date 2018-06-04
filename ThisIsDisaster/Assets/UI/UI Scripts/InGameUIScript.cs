@@ -50,10 +50,6 @@ public class InGameUIScript : MonoBehaviour
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
         StatusBarUIScript.Instance.SetPlayerInfo(PlayerCharacter);
         InventoryUIController.Instance.InitialCategory();
-
-       
-     //   Destroy(LobbyUIScript.Instance.transform.gameObject);
-       
     }
 
     public void Update()
@@ -85,18 +81,14 @@ public class InGameUIScript : MonoBehaviour
 
         if (vision == 0)
         {
-            VisionImage.sprite = null;
-            
-            
+            VisionImage.sprite = null;                      
         }
         else
         {
             string spriteSrc = "Vision/vision" + vision.ToString();
             Sprite s = Resources.Load<Sprite>(spriteSrc);
             VisionImage.sprite = s;
-
         }
-
         VisionImage.color = DefaultNightColor;
     }
 
