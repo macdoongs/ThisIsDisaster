@@ -13,7 +13,7 @@ namespace GameStaticData
         {
             if (!base.Load()) return false;
             try {
-                XmlDocument doc = GameStaticDataLoader.Loader.GetXmlDocuments(_xmlPath);
+                XmlDocument doc = GetDocument();
                 XmlNode commonNode = doc.SelectSingleNode("common");
                 XmlNodeList nodeList = doc.SelectNodes("root/climate");
 

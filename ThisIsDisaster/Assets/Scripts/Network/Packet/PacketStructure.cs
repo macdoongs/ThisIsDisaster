@@ -17,6 +17,7 @@ namespace NetworkComponents
         MatchingData,
         MatchingRequest,
         MatchingResponse,
+        MatchingReady,
         SessionInfo,
         SessionInfoSync,
         SessionInfoSyncReflection,
@@ -80,6 +81,18 @@ namespace NetworkComponents
         public CharacterCoordinates[] coordinates;
         
         public const int MAX_CHAR_ID = 64;
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("Index : {0}\tDataNum : {1}", index, dataNum);
+            builder.AppendLine();
+            int count = 0;
+            foreach (var coord in coordinates) {
+                builder.AppendFormat("\tind:{0} ({1},{2},{3})", count, coord.x, coord.y, coord.z);
+            }
+            return builder.ToString();
+        }
     }
 
     public struct SessionSyncInfo {
@@ -106,9 +119,8 @@ namespace NetworkComponents
 
     public struct MatchingRequest {
         public int accountId;
-        public int port;
-        public string ip;
-        public const int IP_LENGTH = 32;
+        public int accountLength;
+        public string accountName;
     }
 
     public struct MatchingResponse {

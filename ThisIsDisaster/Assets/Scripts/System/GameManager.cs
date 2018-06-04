@@ -215,11 +215,12 @@ public class GameManager : MonoBehaviour {
         CurrentGameManager = this;
         _remotePlayer = new Dictionary<int, UnitControllerBase>();
         //Init();
-        Clock.gameObject.SetActive(false);
+        if (Clock != null)
+            Clock.gameObject.SetActive(false);
         NPCManager.Manager.Clear();
+
     }
     
-
     /// <summary>
     //  
     /// </summary>
@@ -235,6 +236,14 @@ public class GameManager : MonoBehaviour {
             NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
                 NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
+
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
+            foreach (var kv in GlobalGameManager.Instance._remotePlayers) {
+                MakePlayerCharacter(kv.Key.ToString(), kv.Key, false);
+            }
+        }
+
+        InGameUIScript.Instance.Init();
 #if MIDDLE_PRES
         ProtoInit();
         StartStage();
@@ -320,9 +329,10 @@ public class GameManager : MonoBehaviour {
             //    NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
 
-        //Init();
-        //Debug.LogError("Stage Started");
-        //StartStage();
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+        {
+            GlobalGameManager.Instance.GenerateWorld();
+        }
     }
 	
 	// Update is called once per frame
@@ -416,16 +426,12 @@ public class GameManager : MonoBehaviour {
     
     public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
         UnitControllerBase controller = null;
-        Debug.Log(node);
-        foreach (var kv in RemotePlayer) {
-            Debug.Log(kv.Key + " " + kv.Value.NameText.text);
-        }
 
         if (RemotePlayer.TryGetValue(node, out controller))
         {
             NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
             NetworkComponents.CharacterData charData = packet.GetPacket();
-
+            //Debug.Log(charData.ToString());
             //Debug.LogError("Position Info " + packetSender);
             controller.OnReceiveCharacterCoordinate(charData);
         }
@@ -449,4 +455,6 @@ public class GameManager : MonoBehaviour {
         if (!Clock) return;
         Clock.gameObject.SetActive(false);
     }
+
+    
 }

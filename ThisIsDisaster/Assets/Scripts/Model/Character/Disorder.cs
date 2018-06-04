@@ -62,33 +62,35 @@ public class Disorder
 
     public void MirageEffect()
     {
-        StaminaRegen = -5;
+        MaxStamina = -30;
     }
 
     public void InjuryEffect()
     {
-        MoveSpeed = -5;
-        MaxHealth = -5;
-        Health = -5;
+        MaxHealth = -20;
+        Defense = -30;
+        Damage = -30;
+        MoveSpeed = -4;
     }
 
     public void PoisoningEffect()
     {
-        MoveSpeed = -5;
         Health = -30;
         Stamina = -30;
-        Defense = -5;
-        Damage = -5;
+        HealthRegen = -1;
+        StaminaRegen = -1;
     }
 
     public void ThirstEffect()
     {
-
+        Stamina = -40;
     }
 
     public void HungerEffect()
     {
-
+        Stamina = -20;
+        Damage = -40;
+        MoveSpeed = -3;
     }
 
 

@@ -11,27 +11,44 @@ public class ItemTestCharacter : MonoBehaviour {
     static long[] _bottle = { 30010, 30020};
     static long[] _tool_equip = { 31001, 31002};
     static long[] _tool_use = { 33001, 33002};
-    static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003, 41004, 41005};
-    static long[] _norm = { 50001, 50002, 50003, 50004, 51001, 51002, 51003, 51004, 51005, 51006 };
+    static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003};
+    static long[] _norm = { 50002, 50003, 50004, 51001};
+    bool token = true;
 
-    public GameObject PlayerCharacter;
-
-    public CharacterModel CharacterUnit;
+    private CharacterModel _player = null;
+    public CharacterModel CharacterUnit {
+        get {
+            if (_player == null) {
+                _player = CharacterModel.Instance;
+            }
+            return _player;
+        }
+    }
 
     public void Awake()
     {
+        ItemManager.Manager.AddItem(CharacterUnit, 31001, 1);
+        ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
+        ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
+        ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
+
     }
 
     public void Start()
     {
-        if (PlayerCharacter == null) {
-            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
-        }
-        CharacterUnit = PlayerCharacter.GetComponent<CharacterModel>();
+
     }
 
     public void Update()
     {
+        if (token)
+        {
+            ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
+            token = false;
+        }
+
         if (Input.GetKeyDown(KeyCode.F1)){
             GetEqip();
         }
@@ -57,7 +74,11 @@ public class ItemTestCharacter : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.F6))
         {          
             CharacterUnit.GetDisorder(Disorder.DisorderType.injury);
-            InGameUIScript.Instance.DisorderNotice(Disorder.DisorderType.injury);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.mirage);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.poisoning);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.thirst);
+            CharacterUnit.GetDisorder(Disorder.DisorderType.hunger);
+
         }
 
         if (Input.GetKeyDown(KeyCode.F7))

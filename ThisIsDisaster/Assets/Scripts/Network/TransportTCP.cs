@@ -183,7 +183,7 @@ namespace NetworkComponents.Legacy
                 IPEndPoint remote = socket.RemoteEndPoint as IPEndPoint;
                 logger.AppendFormat("Connected Client\r\n[Local Info]\tIP: {0}\t\tPort: {1}\r\n[Remote Info]\tIP: {2}\t\tPort: {3}",
                     local.Address, local.Port, remote.Address, remote.Port);
-                Debug.LogError(logger.ToString());
+                //Debug.LogError(logger.ToString());
 
                 if (_handler != null)
                 {
@@ -371,6 +371,7 @@ namespace NetworkComponents {
             if (_handler != null)
             {
                 NetEventState state = new NetEventState(NetEventType.Disconnect, NetEventResult.Success);
+                state.node = _nodeId;
                 _handler(this, state);
             }
         }
@@ -401,6 +402,9 @@ namespace NetworkComponents {
                             if (sendResult < 0)
                             {
                                 NetDebug.Log("Transport send error : " + sendResult);
+                            }
+                            else {
+                                //NetDebug.LogError("TCP Send : " + sendResult);
                             }
                         }
                         catch (SocketException e)
@@ -433,7 +437,7 @@ namespace NetworkComponents {
                     int recvSize = _socket.Receive(buffer, buffer.Length, SocketFlags.None);
                     if (recvSize == 0)
                     {
-                        NetDebug.Log("TCP Disconnect recv from other");
+                        //Notice.Instance.Send(NoticeName.OnPlayerDisconnected, _nodeId);
                         Disconnect();
                     }
                     else if (recvSize > 0)

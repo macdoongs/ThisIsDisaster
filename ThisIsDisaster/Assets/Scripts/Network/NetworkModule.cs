@@ -131,7 +131,7 @@ namespace NetworkComponents
         }
 
         public void StopServer() {
-            NetDebug.Log("Stop Serve called");
+            NetDebug.Log("Stop Server called");
             if (_sessionUDP != null) {
                 _sessionUDP.StopServer();
             }
@@ -181,6 +181,10 @@ namespace NetworkComponents
 
         public void RegisterReceiveNotification(PacketId id, RecvNotifier notifier) {
             int index = (int)id;
+            if (_notifier.ContainsKey(index)) {
+                _notifier[index] = notifier;
+                return;
+            }
             _notifier.Add(index, notifier);
         }
 
@@ -345,11 +349,13 @@ namespace NetworkComponents
         }
 
         public void SendUnreliableToAll<T>(IPacket<T> packet) {
+            int sendSize = -1;
             foreach (NodeInfo info in _unreliableNode) {
                 if (info != null) {
-                    SendUnreliable<T>(info.node, packet);
+                    sendSize = SendUnreliable<T>(info.node, packet);
                 }
             }
+            NetDebug.Log("Send Unreliable : " + packet.GetPacketID() + " " + sendSize);
         }
 
         private void Receive(int node, byte[] data) {
@@ -394,9 +400,9 @@ namespace NetworkComponents
                 case NetEventType.Disconnect:
                     for (int i = 0; i < _reliableNode.Length; i++) {
                         if (_reliableNode[i] != null && _reliableNode[i].node == node) {
-                            Notice.Instance.Send(NoticeName.OnPlayerDisconnected, node);
+                            //Notice.Instance.Send(NoticeName.OnPlayerDisconnected, node);
                             //send
-                            GameServer.Instance.SendDisconnectReflection(node);
+                            //GameServer.Instance.SendDisconnectReflection(node);
                             _reliableNode[i].node = -1;
                             break;
                         }
@@ -509,6 +515,12 @@ namespace NetworkComponents
                 }
             }
             return output;
+        }
+
+        public IPEndPoint GetReliableEndPoint(int node) {
+            var ep = _sessionTCP.GetRemoteEndPoint(node);
+            if (ep == null && ep == default(IPEndPoint)) return null;
+            return ep;
         }
     }
 }

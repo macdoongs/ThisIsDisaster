@@ -17,6 +17,7 @@ public static class NoticeName {
     public static string OnPlayerConnected = "OnPlayerConnected";
     public static string OnPlayerDisconnected = "OnPlayerDisconnected";
     public static string OnStartSession = "OnStartSession";
+    public static string OnReceiveMatchingResponse = "OnReceiveMatchingResponse";
 }
 
 public class Notice {

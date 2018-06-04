@@ -176,8 +176,8 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
 
     public void ServerStart()
     {
-        NetworkModule.Instance.ClearReceiveNotification();
-        GameServer.Instance.InitializeNetworkModule();
+        //NetworkModule.Instance.ClearReceiveNotification();
+        //GameServer.Instance.InitializeNetworkModule();
         //int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;
         ///TODO: Change port accounting
         int port = NetConfig.GAME_PORT + GlobalParameters.Param.accountId % 4;//이 부분은 나중에 바꿔야 함
@@ -250,11 +250,11 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
         _isHost = false;
         GameServer.Instance.SetHost(false);
         GameServer.Instance.SetLocalAddress(GetLocalHost());
+        ServerStart();
         ServerConnect();
 
         GameServer.Instance.MakeMatchingView();
         //GameServer.Instance.SendMatchingRequest();
-        //ServerStart();
 
         _delayEvent = new DelayEvent(SendMatchingRequest);
         _delayEventTrigger.StartTimer(1f);

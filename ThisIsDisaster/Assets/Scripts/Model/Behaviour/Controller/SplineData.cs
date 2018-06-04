@@ -10,7 +10,7 @@ public class SplineData
 
     private List<CharacterCoordinates> _points = new List<CharacterCoordinates>();
 
-    public void CalcSpline(List<CharacterCoordinates> dPoints, int cullingNum)
+    public void CalcSpline(List<CharacterCoordinates> dPoints)
     {
         int pointCount = dPoints.Count;
         _points.Clear();

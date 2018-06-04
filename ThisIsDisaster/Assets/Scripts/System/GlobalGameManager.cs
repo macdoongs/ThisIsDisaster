@@ -16,10 +16,10 @@ Multi,
 None//Lobby etc
 }
 
-public class GlobalParameters {
+public class GlobalParameters : ISavedData {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
-    public string accountName = "";
+    public string accountName = "Player";
     public bool isHost = false;
     public bool isConnected = false;
     public bool isDisconnnected = false;
@@ -27,6 +27,25 @@ public class GlobalParameters {
     public int AdditionalPortNum = 0;
     
     public void Init() { }
+
+    public Dictionary<string, object> GetSavedData()
+    {
+        Dictionary<string, object> output = new Dictionary<string, object>();
+        output.Add("accountId", accountId);
+        output.Add("accountName", accountName);
+        return output;
+    }
+
+    public void LoadData(Dictionary<string, object> data)
+    {
+        FileManager.TryGetValue(data, "accountId", ref accountId);
+        FileManager.TryGetValue(data, "accountName", ref accountName);
+    }
+
+    public string GetPath()
+    {
+        return "globalParam";
+    }
 }
 
 public class GlobalGameManager {
@@ -48,7 +67,7 @@ public class GlobalGameManager {
 
     public DevelopmentConsole developmentConsole;
     public GlobalParameters param = null;
-    
+
     [ReadOnly]
     public GameState GameState = GameState.Lobby;
 
@@ -57,39 +76,17 @@ public class GlobalGameManager {
         get;
     }
 
+    public bool IsHost {
+        private set;
+        get;
+    }
+
     private void Init()
     {
-        //if (Instance != null) {
-        //    //Destroy(gameObject); return;
-        //}
-        //Instance = this;
-        //DontDestroyOnLoad(gameObject);
-
         param = new GlobalParameters();
         param.Init();
 
-        GameStaticDataLoader.Loader.LoadAll();
-        GameStaticData.ItemDataLoader itemLoader = new GameStaticData.ItemDataLoader();
-        itemLoader.Initialize(GameStaticData.ItemDataLoader._itemXmlFilePath);
-        itemLoader.LoadData();
-
-        GameStaticData.RecipeDataLoader recipeLoater = new GameStaticData.RecipeDataLoader();
-        recipeLoater.Initialize(GameStaticData.RecipeDataLoader._recipeXmlFilePath);
-        recipeLoater.LoadData();
-
-        GameStaticData.NPCDataLoader npcLoader = new GameStaticData.NPCDataLoader();
-        npcLoader.Initialize(GameStaticData.NPCDataLoader._npcXmlFilePath);
-        npcLoader.LoadData();
-
-        GameStaticData.EnvironmentDataLoader envLoader = new GameStaticData.EnvironmentDataLoader();
-        envLoader.Initialize(GameStaticData.EnvironmentDataLoader._envXmlFilePath);
-        envLoader.LoadData();
-
-        GameStaticData.StageInfoDataLoader stageLoader = new GameStaticData.StageInfoDataLoader();
-        stageLoader.Initialize(GameStaticData.StageInfoDataLoader._xmlPath);
-        stageLoader.LoadData();
-        
-        //LocalizeTextDataModel.Instance.LogAllData();
+        GameStaticDataLoader.Loader.LoaderInit();
 
         GameObject networkObject = GameObject.Find("NetworkModule");
         if (networkObject) {
@@ -99,26 +96,36 @@ public class GlobalGameManager {
             }
         }
 
+        if (FileManager.Instance.ExistFile(GlobalParameters.Param)) {
+            FileManager.Instance.LoadData(GlobalParameters.Param);
+        }
+
+#if NET_DEV
+        string texts = FileManager.Instance.GetLocalTextData(GlobalParameters.Param.GetPath(), ".txt");
+
+        if (!string.IsNullOrEmpty(texts))
+        {
+            string[] split = texts.Split(' ', '\n');
+            int id = GlobalParameters.Param.accountId;
+            if (int.TryParse(split[1], out id))
+            {
+                GlobalParameters.Param.accountId = id;
+            }
+            GlobalParameters.Param.accountName = split[3];
+
+            Debug.LogError("Set Global Param " + id + " " + GlobalParameters.Param.accountName);
+        }
+#endif
+        //testing
+        SetGameNetworkType(GameNetworkType.Multi);
     }
-    // Use this for initialization
-    void Start () {
-        //developmentConsole.gameObject.SetActive(false);
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        //if (Input.GetKeyDown(KeyCode.Tab))
-        //{
-        //    if (developmentConsole.gameObject.activeInHierarchy)
-        //    {
-        //        developmentConsole.Close();
-        //    }
-        //    else
-        //    {
-        //        developmentConsole.Open();
-        //    }
-        //}
+
+    public void SetHost(bool isHost) {
+        IsHost = isHost;
+    }
+
+    public void SetGameNetworkType(GameNetworkType type) {
+        this.GameNetworkType = type;
     }
 
     public void SetGameState(GameState state) {
@@ -134,13 +141,21 @@ public class GlobalGameManager {
         StageGenerator.Instance.SetSeed(randValue);
         //check game state is Mulitplay or singlePlay
         //in this case, assume that game state is Multiplay
-        if (NetworkModule.Instance != null) {
-            if (GameServer.Instance != null) {
-                SendSessionStartNotice();
-                GameServer.Instance.ConnectUDPServer();
-                GenerateWorld();
+        if (NetworkModule.Instance != null)
+        {
+            if (GameServer.Instance != null)
+            {
+                //SendSessionStartNotice();
+
+                //GameServer.Instance.ConnectUDPServer();
             }
         }
+        if (GameNetworkType == GameNetworkType.Multi) {
+            GameServer.Instance.ConnectUDPServer();
+            SendSessionStartNotice();
+        }
+        
+        LoadGameScene();
     }
 
     void SendSessionStartNotice() {
@@ -154,9 +169,34 @@ public class GlobalGameManager {
 
     public void GenerateWorld() {
         if (GameManager.CurrentGameManager != null) {
-            GameManager.CurrentGameManager.Init();
 
-            GameServer.Instance.MakeRemotePlayer();
+
+            GameManager.CurrentGameManager.Init();
+            if (GameServer.Instance != null)
+                GameServer.Instance.MakeRemotePlayer();
         }
     }
+
+    public void LoadGameScene()
+    {
+        LoadingSceneManager.LoadScene("NPCTestScene");
+        
+    }
+
+    public void LoadLobbyScene()
+    {
+        LoadingSceneManager.LoadScene("Lobby Scene");
+    }
+
+    public Dictionary<int, int> _remotePlayers = new Dictionary<int, int>();
+    //other data need
+    public void AddRemotePlayer(int clientNode) {
+        _remotePlayers.Add(clientNode, clientNode);
+    }
+
+    public void ClearRemotePlayer() {
+        _remotePlayers.Clear();
+    }
+
+    
 }

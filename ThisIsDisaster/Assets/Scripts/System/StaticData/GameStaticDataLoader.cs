@@ -24,14 +24,79 @@ public class GameStaticDataLoader {
         private set;
     }
 
+    private List<StaticDataLoader> dataLoaders = new List<StaticDataLoader>();
+    private List<StaticDataLoader> invalidatedLoaders = new List<StaticDataLoader>();
+
     
     public GameStaticDataLoader() { }
 
-    public void LoadAll() {
-
+    public void LoaderInit() {
+        dataLoaders.Clear();
+        invalidatedLoaders.Clear();
         SetLanguage("kr");//make kr as Variables
+
+
+        ItemDataLoader itemLoader = new ItemDataLoader();
+        RecipeDataLoader recipeLoater = new RecipeDataLoader();
+        NPCDataLoader npcLoader = new NPCDataLoader();
+        EnvironmentDataLoader envLoader = new EnvironmentDataLoader();
+        StageInfoDataLoader stageLoader = new StageInfoDataLoader();
+        
+        itemLoader.Initialize(ItemDataLoader._itemXmlFilePath);
+        dataLoaders.Add(itemLoader);
+        //itemLoader.LoadData();
+        if (!itemLoader.Validtion()) {
+            invalidatedLoaders.Add(itemLoader);
+        }
+
+        recipeLoater.Initialize(RecipeDataLoader._recipeXmlFilePath);
+        dataLoaders.Add(recipeLoater);
+        if (!recipeLoater.Validtion())
+        {
+            invalidatedLoaders.Add(recipeLoater);
+        }
+        //recipeLoater.LoadData();
+
+        npcLoader.Initialize(NPCDataLoader._npcXmlFilePath);
+        dataLoaders.Add(npcLoader);
+        if (!npcLoader.Validtion())
+        {
+            invalidatedLoaders.Add(npcLoader);
+        }
+        //npcLoader.LoadData();
+
+        envLoader.Initialize(EnvironmentDataLoader._envXmlFilePath);
+        dataLoaders.Add(envLoader);
+        if (!envLoader.Validtion())
+        {
+            invalidatedLoaders.Add(envLoader);
+        }
+        //envLoader.LoadData();
+
+        stageLoader.Initialize(StageInfoDataLoader._xmlPath);
+        dataLoaders.Add(stageLoader);
+        if (!stageLoader.Validtion())
+        {
+            invalidatedLoaders.Add(stageLoader);
+        }
+        //stageLoader.LoadData();
+
+        if (invalidatedLoaders.Count == 0) {
+            LoadXmls();
+        }
     }
 
+    public void ReLoadInvalidatedLoaders() {
+        //download is needed
+        
+    }
+
+    public void LoadXmls() {
+        foreach (var load in dataLoaders) {
+            load.LoadData();
+        }
+    }
+    
     public void SetLanguage(string language) {
         CurrentLoadLanguage = language;
         LoadLocalizeTexts();
@@ -54,6 +119,10 @@ public class GameStaticDataLoader {
         XmlDocument doc = new XmlDocument();
         doc.LoadXml(textAsset.text);
         return doc;
+    }
+
+    public int GetXmlHash(XmlDocument doc) {
+        return doc.InnerText.GetHashCode();
     }
 
     public void LoadLocalizeTexts() {
@@ -101,6 +170,23 @@ namespace GameStaticData {
                 _loadedAction();
             }
         }
+
+        public virtual bool Validtion() {
+            //networking to server
+            var doc = GetDocument();
+            if (doc == null) return false;
+            
+            ///TODO : REST API Sync
+
+            return true;
+        }
+
+        public XmlDocument GetDocument() {
+            if (string.IsNullOrEmpty(_path)) return null;
+            return GameStaticDataLoader.Loader.GetXmlDocuments(_path);
+        }
+
+        
     }
 
 }

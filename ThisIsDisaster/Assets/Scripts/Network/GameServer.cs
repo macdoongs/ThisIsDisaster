@@ -19,6 +19,7 @@ namespace NetworkComponents {
 
     public enum GameServerRequestType {
         MatchingData,
+        UpdateGuestPort,
         ConnectionState
     }
 
@@ -51,7 +52,9 @@ namespace NetworkComponents {
 
         private float[] _keepAlive = new float[NetConfig.PLAYER_MAX];
         private const float KEEPALIVE_TIMEOUT = 10.0f;
-        private Matching.MatchingView _matchingView = null;
+        private Matching.MatchingView _matchingCTRL = null;
+
+        Dictionary<int, string> _playerNames = new Dictionary<int, string>();
 
         public bool IsHost {
             private set;
@@ -94,7 +97,9 @@ namespace NetworkComponents {
 
             Network.RegisterReceiveNotification(PacketId.MatchingRequest, OnReceiveMatchingRequest);
             Network.RegisterReceiveNotification(PacketId.MatchingResponse, OnReceiveMatchingResponse);
-            Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);    
+            Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);
+            Network.RegisterReceiveNotification(PacketId.MatchingReady, OnReceiveMatchingReadyState);
+            //Network.RegisterReceiveNotification(PacketId.Coordinates, GameManager.CurrentGameManager.OnReceiveCharacterCoordinate);
         }
 
         private void Update()
@@ -108,12 +113,12 @@ namespace NetworkComponents {
 
         public bool StartServer(int playerNum) {
             _playerNum = playerNum;
-
             return Network.StartServer(NetConfig.SERVER_PORT, NetConfig.PLAYER_MAX, NetworkModule.ConnectionType.TCP);
         }
 
         public void SetUDPServerPort(int portNum) {
             this.UdpServerPort = portNum;
+            NetDebug.LogError("Set udp server port : " + portNum);
         }
 
         public void SetLocalAddress(string addr) {
@@ -129,6 +134,7 @@ namespace NetworkComponents {
         }
 
         private void DisconnectClient(int node) {
+            
             Network.Disconnect(node);
             if (!_nodes.ContainsKey(node)){
                 return;
@@ -136,6 +142,8 @@ namespace NetworkComponents {
 
             int gid = _nodes[node];
             _currentPartMask &= ~(1 << gid);
+
+            //send disconnect message
         }
 
         public void EventHandling()
@@ -147,8 +155,32 @@ namespace NetworkComponents {
                         NetDebug.Log("[Server] NET CONNECT");
                         break;
                     case NetEventType.Disconnect:
-                        NetDebug.Log("[Server] NET DISCONNECT");
+                        NetDebug.Log("[Server] NET DISCONNECT " + state.node);
+                        if (state.node == _network.GetServerNode()) {
+                            //disconnect from host
+                            NetDebug.LogError("Disconnect From Host");
+                            if (_matchingCTRL) {
+                                DestroyMatchingView();
+                                if (MatchingPanel.Instance) {
+                                    MatchingPanel.Instance.OnClosePanel();
+                                    MatchingPanel.Instance.ClearMatchingData();
+                                }
+                            }
+
+                            Network.Disconnect();
+                            Network.StopGameServer();
+                            
+                            return;
+                        }
+                        if (_matchingCTRL) {
+                            _matchingCTRL.RemoveNode(state.node);
+                        }
+                        SendDisconnectReflection(state.node);
                         DisconnectClient(state.node);
+
+                        if (_matchingCTRL) {
+                            _matchingCTRL.GetMatchingData();//for update ui
+                        }
                         break;
                 }
             }
@@ -194,6 +226,11 @@ namespace NetworkComponents {
             else
             {
                 Debug.Log("Remove " + info.nodeIndex);
+                NetDebug.LogError("Disconnect NODE : " + info.nodeIndex);
+
+                if (_matchingCTRL) {
+                    SendGameServerRequest(GameServerRequestType.MatchingData);
+                }
                 _reflectionDics.Remove(info.nodeIndex);
             }
         }
@@ -203,11 +240,14 @@ namespace NetworkComponents {
             StartSessionNoticePacket packet = new StartSessionNoticePacket(data);
             var notice = packet.GetPacket();
             NetDebug.LogError("Start Session, Seed : " + notice.stageRandomSeed);
-
             ConnectUDPServer();
-
             StageGenerator.Instance.SetSeed(notice.stageRandomSeed);
             Notice.Instance.Send(NoticeName.OnStartSession);
+            GlobalGameManager.Instance.LoadGameScene();
+
+
+            return;
+
             //connect all guests for mesh topology
             GlobalGameManager.Instance.GenerateWorld();
         }
@@ -216,24 +256,40 @@ namespace NetworkComponents {
             MatchingRequestPacket packet = new MatchingRequestPacket(data);
             var request = packet.GetPacket();
 
-            _matchingView.AddNode(node, request.accountId, request.port, request.ip);
+            //_matchingView.AddNode(node, request.accountId, request.accountLength, request.accountName);
 
-            NetDebug.LogError(string.Format("Matching Request From node [{0}]\r\n{1}-{2}", node, request.accountId, request.ip));
-
+            NetDebug.LogError(string.Format("Matching Request From node [{0}]\r\n{1}-{2}", node, request.accountId, request.accountName));
+            if (_playerNames.ContainsKey(node))
+            {
+                _playerNames[node] = request.accountName;
+            }
+            else {
+                _playerNames.Add(node, request.accountName);
+            }
             //check smth
             MatchingResponse response = new MatchingResponse()
             {
                 connectionState = true,
-                nodeIndex = node,
+                nodeIndex = node + 1,
                 sessionIndex = -1
             };
-            //SendMatchingResponse(node, response);
+            SendMatchingResponse(node, response);
+            var ep = NetworkModule.Instance.GetReliableEndPoint(node);
+            if (ep != null) {
+                _matchingCTRL.AddNode(node, request.accountId,
+                    response.nodeIndex + NetConfig.GAME_PORT, ep.Address.ToString(), request.accountName);
+            }
         }
 
         public void OnReceiveMatchingResponse(int node, PacketId id, byte[] data) {
             MatchingResponsePacket packet = new MatchingResponsePacket(data);
             var response = packet.GetPacket();
             NetDebug.LogError("Matching Response : " + response.nodeIndex + " " + response.connectionState + " " + response.sessionIndex);
+            if (response.connectionState) {
+                Notice.Instance.Send(NoticeName.OnReceiveMatchingResponse, response.nodeIndex, response.sessionIndex);
+                
+            }
+            
         }
 
         public void OnReceiveGameServerRequest(int node, PacketId id, byte[] data) {
@@ -247,120 +303,28 @@ namespace NetworkComponents {
                     break;
             }
         }
+
+        public void OnReceiveMatchingReadyState(int node, PacketId id, byte[] data) {
+            MatchingReadyStatePacket packet = new MatchingReadyStatePacket(data);
+            var red = packet.GetPacket();
+            NetDebug.LogError("Received Ready State: " + node);
+            if (_matchingCTRL)
+            {
+                _matchingCTRL.SetNodeReadyState(red.accountId, red.isReady);
+            }
+            if (MatchingPanel.Instance) {
+                MatchingPanel.Instance.SetMatchingReadyState(red.accountId, red.isReady);
+            }
+            SendMatchingData();
+        }
         
         #endregion
 
-        public void OnNotice(string notice, params object[] param)
-        {
-            if (notice == NoticeName.OnPlayerDisconnected) {
-                
-            }
-            if (notice == NoticeName.OnPlayerConnected) {
-                if (IsHost)
-                {
-                    int node = (int)param[0];
-                    SendMatchingResponse(node);
-                }
-            }
-        }
-
-        public void ObserveNotices()
-        {
-            Notice.Instance.Observe(NoticeName.OnPlayerDisconnected, this);
-            Notice.Instance.Observe(NoticeName.OnPlayerConnected, this);
-        }
-
-        public void RemoveNotices()
-        {
-            Notice.Instance.Remove(NoticeName.OnPlayerDisconnected, this);
-            Notice.Instance.Remove(NoticeName.OnPlayerConnected, this);
-        }
-
-        void PrintRefInfo() {
-            NetDebug.Log("PrintReflection");
-            foreach (var kv in _reflectionDics) {
-                NetDebug.Log(string.Format("[{0}]{1}:{2}", kv.Key, kv.Value.nodeIndex, kv.Value.nodeServerPort));
-            }
-        }
-
-        public void ConnectUDPServer() {
-
-            var list = _matchingView._nodes;
-            foreach (var node in list) {
-                //connect
-                if (node.accountId == GlobalParameters.Param.accountId) continue;
-                NetDebug.LogError("Connect UDP " + node.accountId + " " + node.port);
-                int clientNode = Network.Connect(node.ip, node.port, NetworkModule.ConnectionType.UDP);
-                if (clientNode >= 0)
-                {
-                    Network.SetClientNode(node.nodeIndex, clientNode);
-                }
-                else
-                {
-                    string err = "Error in Establishing Unreliable Connection : " + node.accountId;
-                    NetDebug.LogError(err);
-                }
-
-            }
-
-        }
-
-        public SessionSyncInfoReflection GetSessionPlayerInfo(int node) {
-            SessionSyncInfoReflection output;
-            if (_reflectionDics.TryGetValue(node, out output)) {
-
-            }
-            return output;
-        }
-
-        public void MakeRemotePlayer() {
-            if (GameManager.CurrentGameManager == null) return;
-
-            foreach (var kv in _reflectionDics)
-            {
-                string name = kv.Value.nodeIp;
-                int index = kv.Key;
-
-                GameManager.MakePlayerCharacter(name, index, false);
-            }
-
-            if (!IsHost)
-            {
-                GameManager.MakePlayerCharacter("host", Network.GetServerNode(), false);
-            }
-        }
-
-        public void MakeNewSession() {
-            _currentSessionInfo = new SessionInfo (){
-                playerId = 0,
-                state = MatchingState.Connect,
-            };
-        }
 
         #region Send
 
-        void SendMatchingResponse(int node)
+        void SendMatchingResponse(int node, MatchingResponse response)
         {
-            //SessionSyncInfoReflection reflection = new SessionSyncInfoReflection()
-            //{
-            //    nodeIndex = 0,
-            //    isConnection = true,
-            //    nodeAccountId = GlobalParameters.Param.accountId,
-            //    nodeServerPort = UdpServerPort,
-            //    nodeIp = LocalHost,
-            //    ipLength = LocalHost.Length
-            //};
-
-            //SessionSyncInfoReflectionPacket packet = new SessionSyncInfoReflectionPacket(reflection);
-
-            //Network.SendReliable(node, packet);
-
-            MatchingResponse response = new MatchingResponse()
-            {
-                connectionState = true,
-                nodeIndex = node,
-                sessionIndex = -1
-            };
 
             MatchingResponsePacket packet = new MatchingResponsePacket(response);
             Network.SendReliable(node, packet);
@@ -421,28 +385,37 @@ namespace NetworkComponents {
         public void SendMatchingRequest() {
             MatchingRequest request = new MatchingRequest() {
                 accountId = GlobalParameters.Param.accountId,
-                port = UdpServerPort,
-                ip = LocalHost
+                accountLength = GlobalParameters.Param.accountName.Length,
+                accountName = GlobalParameters.Param.accountName
             };
 
             MatchingRequestPacket packet = new MatchingRequestPacket(request);
             Network.SendReliable(Network.GetServerNode(), packet);
-            NetDebug.LogError("Sending Matching Request");
+           // NetDebug.LogError("Sending Matching Request");
         }
 
         public void SendMatchingData() {
-            if (_matchingView != null) {
-                var data = _matchingView.GetMatchingData();
-
+            if (_matchingCTRL != null) {
+                var data = _matchingCTRL.GetMatchingData();
                 MatchingDataPacket packet = new MatchingDataPacket(data);
                 Network.SendReliableToAll(packet);
             }
         }
 
         public void SendGameServerRequest(GameServerRequestType type) {
-            NetDebug.LogError("Make Request " + type);
+            //NetDebug.LogError("Make Request " + type);
             GameServerRequest request = new GameServerRequest() { request = type };
             GameServerRequestPacket packet = new GameServerRequestPacket(request);
+            Network.SendReliable(Network.GetServerNode(), packet);
+        }
+
+        public void SendMatchingReady(bool state) {
+            Matching.MatchingReadyState ready = new Matching.MatchingReadyState()
+            {
+                isReady = state,
+                accountId = GlobalParameters.Param.accountId,
+            };
+            MatchingReadyStatePacket packet = new MatchingReadyStatePacket(ready);
             Network.SendReliable(Network.GetServerNode(), packet);
         }
         #endregion
@@ -459,15 +432,139 @@ namespace NetworkComponents {
             view.ServerAccountId = GlobalParameters.Param.accountId;
             view.AddHost();
             
-            this._matchingView = view;
+            this._matchingCTRL = view;
         }
 
         public void DestroyMatchingView() {
-            if (_matchingView != null) {
-                Destroy(_matchingView);
+            if (_matchingCTRL != null) {
+                Destroy(_matchingCTRL);
             }
         }
-        
+
+        public string GetPlayerName(int nodeIndex) {
+            string output = "";
+            _playerNames.TryGetValue(nodeIndex, out output);
+            return output;
+        }
+
+        public void SetHostReady(bool state) {
+            if (_matchingCTRL) {
+                _matchingCTRL.SetNodeReadyState(GlobalParameters.Param.accountId, state);
+            }
+            if (MatchingPanel.Instance) {
+                MatchingPanel.Instance.SetMatchingReadyState(GlobalParameters.Param.accountId, state);
+            }
+            SendMatchingData();
+        }
+
+        public void OnNotice(string notice, params object[] param)
+        {
+            if (notice == NoticeName.OnPlayerDisconnected)
+            {
+
+            }
+            if (notice == NoticeName.OnPlayerConnected)
+            {
+                if (IsHost)
+                {
+                    int node = (int)param[0];
+                    //SendMatchingResponse(node);
+                }
+            }
+        }
+
+        public void ObserveNotices()
+        {
+            Notice.Instance.Observe(NoticeName.OnPlayerDisconnected, this);
+            Notice.Instance.Observe(NoticeName.OnPlayerConnected, this);
+        }
+
+        public void RemoveNotices()
+        {
+            Notice.Instance.Remove(NoticeName.OnPlayerDisconnected, this);
+            Notice.Instance.Remove(NoticeName.OnPlayerConnected, this);
+        }
+
+        void PrintRefInfo()
+        {
+            NetDebug.Log("PrintReflection");
+            foreach (var kv in _reflectionDics)
+            {
+                NetDebug.Log(string.Format("[{0}]{1}:{2}", kv.Key, kv.Value.nodeIndex, kv.Value.nodeServerPort));
+            }
+        }
+
+        public void ConnectUDPServer()
+        {
+
+            var list = _matchingCTRL._nodes;
+            foreach (var node in list)
+            {
+                //connect
+                if (node.accountId == GlobalParameters.Param.accountId) continue;
+                NetDebug.LogError("Connect UDP " + node.accountId + " " + node.port);
+                int clientNode = Network.Connect(node.ip, node.port, NetworkModule.ConnectionType.UDP);
+                if (clientNode >= 0)
+                {
+                    if (node.nodeIndex == -1) {
+                        if (GlobalGameManager.Instance.IsHost == false)
+                        {
+                            Network.SetClientNode(0, clientNode);
+                            GlobalGameManager.Instance.AddRemotePlayer(0);
+                            return;
+                        }
+                    }
+                    
+                    Network.SetClientNode(node.nodeIndex, clientNode);
+                    GlobalGameManager.Instance.AddRemotePlayer(clientNode);
+                }
+                else
+                {
+                    string err = "Error in Establishing Unreliable Connection : " + node.accountId;
+                    NetDebug.LogError(err);
+                }
+
+            }
+
+        }
+
+        public SessionSyncInfoReflection GetSessionPlayerInfo(int node)
+        {
+            SessionSyncInfoReflection output;
+            if (_reflectionDics.TryGetValue(node, out output))
+            {
+
+            }
+            return output;
+        }
+
+        public void MakeRemotePlayer()
+        {
+            if (GameManager.CurrentGameManager == null) return;
+            /*
+            foreach (var kv in _reflectionDics)
+            {
+                string name = kv.Value.nodeIp;
+                int index = kv.Key;
+
+                GameManager.MakePlayerCharacter(name, index, false);
+            }
+
+            if (!IsHost)
+            {
+                GameManager.MakePlayerCharacter("host", Network.GetServerNode(), false);
+            }*/
+
+        }
+
+        public void MakeNewSession()
+        {
+            _currentSessionInfo = new SessionInfo()
+            {
+                playerId = 0,
+                state = MatchingState.Connect,
+            };
+        }
     }
 
 }

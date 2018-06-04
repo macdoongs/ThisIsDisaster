@@ -23,6 +23,8 @@ public class LobbyUIScript : MonoBehaviour {
     public Text LoadingText;
     public float LoadingAmount = 0;
 
+    public MatchingPanel matching;
+
     public static LobbyUIScript Instance
     {
         private set;
@@ -107,7 +109,13 @@ public class LobbyUIScript : MonoBehaviour {
     {
         DefaultGameMode();
         GameModeTexts[mode].color = focusedTextColor;
-        StartPanel.SetActive(true);
+
+
+        if (mode == 1) {
+            matching.OnOpenPanel();
+        }
+        else
+            StartPanel.SetActive(true);
     }
 
     public void StartGame()

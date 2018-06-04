@@ -64,7 +64,9 @@ namespace NetworkComponents
                 _threadLoop = true;
                 _thread.Start();
             }
-            catch { return false; }
+            catch (Exception e) {
+                NetDebug.LogError(e.ToString());
+                return false; }
             return true;
         }
 
@@ -164,13 +166,11 @@ namespace NetworkComponents
         }
 
         public virtual void ThreadDispatch() {
-            NetDebug.Log("ThreadDispatch : " + _threadLoop.ToString());
             while (_threadLoop) {
                 AcceptClient();
                 Dispatch();
                 Thread.Sleep(3);
             }
-            NetDebug.Log("Thread end");
         }
 
         public virtual int Connect(string addr, int port) {
@@ -191,6 +191,9 @@ namespace NetworkComponents
                 {
                     node = JoinSession(transport);
                     NetDebug.Log("Join session : " + node);
+                }
+                else {
+                    NetDebug.LogError("Failed To Session : " + node);
                 }
             }
 
@@ -314,6 +317,10 @@ namespace NetworkComponents
             if (_handler != null) {
                 _handler(node, state);
             }
+        }
+
+        public virtual NetworkModule.ConnectionType GetConnectionType() {
+            return NetworkModule.ConnectionType.BOTH;
         }
 
         public abstract bool CreateListener(int port, int connectionMax);
