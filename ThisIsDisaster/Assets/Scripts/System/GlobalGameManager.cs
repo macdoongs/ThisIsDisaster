@@ -172,8 +172,8 @@ public class GlobalGameManager {
 
 
             GameManager.CurrentGameManager.Init();
-
-            GameServer.Instance.MakeRemotePlayer();
+            if (GameServer.Instance != null)
+                GameServer.Instance.MakeRemotePlayer();
         }
     }
 
