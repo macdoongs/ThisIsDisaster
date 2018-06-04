@@ -28,6 +28,9 @@ public class PlayerModel : UnitModel
     public override void OnTakeDamage(UnitModel attacker, float damage)
     {
         Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+
+        //피격시 5% 확률로 부상 
+        DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 5);
         _character.SubtractHealth(damage);
     }
 
@@ -721,6 +724,7 @@ public class CharacterModel : MonoBehaviour
                         }
 
                         disorders[disorders.Length - 1] = null;
+                        break;
                     }
                 }
             }
@@ -755,7 +759,11 @@ public class CharacterModel : MonoBehaviour
         CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth;
         CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina;
         CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense;
+        if(CurrentStats.Defense < 0)
+            CurrentStats.Defense = 0;
         CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage;
+        if (CurrentStats.Damage < 0)
+            CurrentStats.Damage = 0;
         CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen;
         CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen;
         CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed;
@@ -808,6 +816,15 @@ public class CharacterModel : MonoBehaviour
     //특수효과 처리 
     private bool SpecialEffect(ItemModel etc, bool result)
     {
+        if (etc.metaInfo.metaId.Equals(33001))
+        {//텐트
+
+        }
+        else if (etc.metaInfo.metaId.Equals(33002))
+        {//모닥불
+
+        }
+
         if (etc.metaInfo.metaId.Equals(41001))
         {//약 특수효과
             RevoerDisorderByType(Disorder.DisorderType.poisoning);
@@ -818,7 +835,7 @@ public class CharacterModel : MonoBehaviour
             RevoerDisorderByType(Disorder.DisorderType.injury);
             result = true;
         }
-        else if (etc.metaInfo.metaId.Equals(40001))
+        else if (etc.metaInfo.metaId.Equals(40001) || etc.metaInfo.metaId.Equals(40002))
         {//물 특수효과
             RevoerDisorderByType(Disorder.DisorderType.thirst);
             result = true;
@@ -826,8 +843,8 @@ public class CharacterModel : MonoBehaviour
         else if (etc.metaInfo.metaId.Equals(40003))
         {//생고기 특수효과
             System.Random random = new System.Random();
-            int randomInt = random.Next(0, 10);
-            if (randomInt < 2)
+            int randomInt = random.Next(0, 100);
+            if (randomInt < 25)
                 GetDisorder(Disorder.DisorderType.poisoning);
             RevoerDisorderByType(Disorder.DisorderType.hunger);
             result = true;
@@ -1124,4 +1141,15 @@ public class CharacterModel : MonoBehaviour
             MoveSpeed = 0.0f;
         }
     }
+
+    public class RegionEffectItem : DropItem
+    {
+        new
+        public void OnTriggerEnter2D(Collider2D collision)
+        {
+            ;
+        }
+
+    }
+
 }

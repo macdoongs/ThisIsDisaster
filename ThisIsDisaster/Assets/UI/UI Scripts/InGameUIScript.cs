@@ -99,18 +99,14 @@ public class InGameUIScript : MonoBehaviour
 
         if (vision == 0)
         {
-            VisionImage.sprite = null;
-            
-            
+            VisionImage.sprite = null;                      
         }
         else
         {
             string spriteSrc = "Vision/vision" + vision.ToString();
             Sprite s = Resources.Load<Sprite>(spriteSrc);
             VisionImage.sprite = s;
-
         }
-
         VisionImage.color = DefaultNightColor;
     }
 

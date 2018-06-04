@@ -35,8 +35,8 @@ public class LoadingSceneManager : MonoBehaviour
     {
 
         System.Random random = new System.Random();
-        int x = random.Next(1, 100);
-        x = x % 3 + 1;
+        int x = random.Next(1, 190);
+        x = x % 19 + 1;
         string backgroundSrc = "loading/loading" + x.ToString();
         Sprite s = Resources.Load<Sprite>(backgroundSrc);
 
