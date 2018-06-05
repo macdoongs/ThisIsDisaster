@@ -301,7 +301,6 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     public void OnClickGameStart() {
         GlobalGameManager.Instance.OnGameStart();
         SetControl(false);
-
         GameServer.Instance.DestroyMatchingView();
     }
 

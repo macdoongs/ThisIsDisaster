@@ -20,7 +20,7 @@ public class GlobalParameters : ISavedData {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
     public string accountName = "Player";
-    public bool isHost = false;
+    
     public bool isConnected = false;
     public bool isDisconnnected = false;
 
@@ -135,24 +135,15 @@ public class GlobalGameManager {
 
     public void OnGameStart()
     {
-        //syncrhonize game info
-        //set game seed
         int randValue = UnityEngine.Random.Range(0, int.MaxValue);
         StageGenerator.Instance.SetSeed(randValue);
-        //check game state is Mulitplay or singlePlay
-        //in this case, assume that game state is Multiplay
-        if (NetworkModule.Instance != null)
+        if (GameNetworkType == GameNetworkType.Multi)
         {
-            if (GameServer.Instance != null)
-            {
-                //SendSessionStartNotice();
-
-                //GameServer.Instance.ConnectUDPServer();
-            }
-        }
-        if (GameNetworkType == GameNetworkType.Multi) {
             GameServer.Instance.ConnectUDPServer();
             SendSessionStartNotice();
+            if (IsHost) {
+                GameServer.Instance.OnStartLoadingGame();
+            }
         }
         
         LoadGameScene();
@@ -179,8 +170,19 @@ public class GlobalGameManager {
 
     public void LoadGameScene()
     {
+        if (GameNetworkType == GameNetworkType.Multi)
+        {
+            SetSceneLoadedAction(StartMultiSession);
+        }
+        else if (GameNetworkType == GameNetworkType.Single)
+        {
+            SetSceneLoadedAction(GenerateWorld);
+        }
         LoadingSceneManager.LoadScene("NPCTestScene");
-        
+    }
+
+    void StartMultiSession() {
+        GameManager.CurrentGameManager.CheckStartMultiStage();
     }
 
     public void LoadLobbyScene()
@@ -198,5 +200,21 @@ public class GlobalGameManager {
         _remotePlayers.Clear();
     }
 
-    
+
+    public delegate void OnSceneLoadCompleted();
+    private OnSceneLoadCompleted _completed = null;
+
+    public void SetSceneLoadedAction(OnSceneLoadCompleted action)
+    {
+        _completed = action;
+    }
+
+    public void OnSceneLoaded()
+    {
+        Debug.Log(_completed);
+        if (_completed != null) {
+            _completed();
+            _completed = null;
+        }
+    }
 }

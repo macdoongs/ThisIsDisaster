@@ -336,4 +336,54 @@ namespace NetworkComponents
             return PacketId.GameServerRequest;
         }
     }
+
+    public class StageStartTimePacket : IPacket<StageStartTime>
+    {
+        public class StageStartTimePacketSerializer : Serializer {
+            public bool Serialize(StageStartTime packet) {
+                long time = packet.startTime.Ticks;
+                Serialize(time);
+                return true;
+            }
+
+            public bool Deserialize(ref StageStartTime data) {
+                long time = 0;
+                Deserialize(ref time);
+                data.startTime = new DateTime(time);
+                return true;
+            }
+        }
+
+        StageStartTime packet;
+
+        public StageStartTimePacket(StageStartTime packet)
+        {
+            this.packet = packet;
+        }
+
+        public StageStartTimePacket(byte[] data)
+        {
+            StageStartTimePacketSerializer serializer = new StageStartTimePacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref packet);
+        }
+
+        public byte[] GetData()
+        {
+            StageStartTimePacketSerializer serializer = new StageStartTimePacketSerializer();
+            serializer.Serialize(packet);
+            return serializer.GetSerializedData();
+        }
+
+        public StageStartTime GetPacket()
+        {
+            return packet;
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.StageStartTime;
+        }
+
+    }
 }

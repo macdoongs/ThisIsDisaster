@@ -37,11 +37,18 @@ public class DisorderController : MonoBehaviour {
     }
 
     void Update () {
-
+        
         if (PlayerCharacter == null)
         {
-            PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+            try
+            {
+                PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
+            }
+            catch {
+
+            }
         }
+        if (PlayerCharacter == null) return;
 
         //신기루에 걸린 후 30초 후에 자동으로 신기루 해제
         if (!PlayerCharacter.GetComponent<CharacterModel>().ContainDisorder(Disorder.DisorderType.mirage) )

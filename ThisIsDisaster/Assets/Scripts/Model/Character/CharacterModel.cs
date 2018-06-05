@@ -184,14 +184,13 @@ public class CharacterModel : MonoBehaviour
         get;
     }
 
-
     private void Awake()
     {
         _player = new PlayerModel
         {
             _character = this
         };
-
+        
         if (attackSender)
             attackSender.SetOwner(_player);
         if (attackReceiver)

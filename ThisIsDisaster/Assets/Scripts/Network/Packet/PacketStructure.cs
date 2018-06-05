@@ -22,6 +22,7 @@ namespace NetworkComponents
         SessionInfoSync,
         SessionInfoSyncReflection,
         StartSessionNotify,
+        StageStartTime,
 
         GameServerRequest,
         Max//dummy End
@@ -131,5 +132,9 @@ namespace NetworkComponents
 
     public struct GameServerRequest {
         public GameServerRequestType request;
+    }
+
+    public struct StageStartTime {
+        public DateTime startTime;
     }
 }

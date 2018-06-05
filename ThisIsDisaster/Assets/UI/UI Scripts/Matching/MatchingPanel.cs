@@ -165,6 +165,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     public void OnClickGameStart() {
         if (!_isHost) return;
+        GlobalGameManager.Instance.SetGameNetworkType(GameNetworkType.Multi);
         GlobalGameManager.Instance.OnGameStart();
         GameServer.Instance.DestroyMatchingView();
     }

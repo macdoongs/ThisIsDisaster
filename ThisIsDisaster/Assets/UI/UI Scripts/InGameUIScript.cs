@@ -47,7 +47,7 @@ public class InGameUIScript : MonoBehaviour
             return;
         }
         else {
-            GameManager.CurrentGameManager.Init();
+            //GameManager.CurrentGameManager.Init();
             //Init();
         }
         
