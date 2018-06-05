@@ -11,6 +11,9 @@ public class DropItem : MonoBehaviour {
     private Timer _acquireDelayTimer = new Timer();
     const float _acquireDelay = 1f;
 
+
+    public bool isRegionEffect = false;
+
     public void SetModel(ItemModel item) {
         ItemModel = item;
 

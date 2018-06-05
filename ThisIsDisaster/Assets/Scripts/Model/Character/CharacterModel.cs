@@ -43,7 +43,7 @@ public class PlayerModel : UnitModel
     {
         return _tileSetter.GetCurrentTile();
     }
-
+    
     public override Vector3 GetCurrentPos()
     {
         return _character.transform.position;
@@ -113,7 +113,9 @@ public class CharacterModel : MonoBehaviour
         public Color color;
         public bool enabled;
     }
-    
+
+    public List<TileUnit> EffectTiles = new List<TileUnit>();
+    public bool EffectToken = false;
     //테스트용 값
     public string PlayerName = "TestID";
     public string PlayerLevel = "123";
@@ -221,6 +223,9 @@ public class CharacterModel : MonoBehaviour
             _restorationTimer.StartTimer(nextTime);
             StatRegeneration();
         }
+
+        EffectTileEffect(GetPlayerModel().GetCurrentTile());
+
         //if (Time.time > nextTime)
         //{
         //    nextTime = Time.time + TimeLeft;
@@ -813,16 +818,83 @@ public class CharacterModel : MonoBehaviour
         return result;
     }
 
+    private void EffectTileEffect(TileUnit currentTile)
+    {
+        if (EffectTiles.Contains(currentTile))
+        {
+            if (!EffectToken)
+                CurrentStats.StaminaRegen += 10;
+            EffectToken = true;
+        }
+        else
+        {
+            if(EffectToken)
+                CurrentStats.StaminaRegen -= 10;
+            EffectToken = false;
+        }
+    }
+
     //특수효과 처리 
     private bool SpecialEffect(ItemModel etc, bool result)
     {
         if (etc.metaInfo.metaId.Equals(33001))
         {//텐트
+            TileUnit currentTile = GetPlayerModel().GetCurrentTile();
 
+            var item = ItemManager.Manager.MakeDropItem(33001, currentTile);
+            if (EffectTiles.Contains(currentTile))
+            {
+                InGameUIScript.Instance.Notice("아이템 사용", "근처에 이미 다른 아이템이 설치되어 있습니다.");
+                result = false;
+                return result;
+            }
+
+            item.ItemRenderer.transform.localScale *= 7;
+
+            item.isRegionEffect = true;
+            result = true;
+
+            for (int i = -10; i <= 10; i++)
+            {
+                int x = currentTile.x + i;
+
+                for (int j = -10; j <= 10; j++)
+                {
+                    int y = currentTile.y + j;
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                    if (tile == null) continue;
+                    else
+                        EffectTiles.Add(tile);
+                }
+            }
         }
         else if (etc.metaInfo.metaId.Equals(33002))
         {//모닥불
+            TileUnit currentTile = GetPlayerModel().GetCurrentTile();
+            if (EffectTiles.Contains(currentTile))
+            {
+                InGameUIScript.Instance.Notice("아이템 사용", "근처에 이미 다른 아이템이 설치되어 있습니다.");
+                result = false;
+                return result;
+            }
+            var item = ItemManager.Manager.MakeDropItem(33002, currentTile);
+            item.ItemRenderer.transform.localScale *= 1.5f;
+            item.isRegionEffect = true;
+            result = true;
+       
+            for (int i = -10; i <= 10; i++)
+            {
+                int x = currentTile.x + i;
 
+                for (int j = -10; j <= 10; j++)
+                {
+                    int y = currentTile.y + j;
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                    if (tile == null) continue;
+                    else
+                        EffectTiles.Add(tile);
+                }
+            }
         }
 
         if (etc.metaInfo.metaId.Equals(41001))
@@ -1149,7 +1221,6 @@ public class CharacterModel : MonoBehaviour
         {
             ;
         }
-
     }
 
 }
