@@ -11,6 +11,7 @@ public class LoadingSceneManager : MonoBehaviour
     public Image LoadingBackground;
 
 
+
     [SerializeField]
     Image progressBar;
     public Text progressText;

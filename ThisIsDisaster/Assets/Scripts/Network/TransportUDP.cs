@@ -371,9 +371,9 @@ namespace NetworkComponents {
                     int sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
                     while (sendSize > 0)
                     {
-                        NetDebug.Log("udp send : " + sendSize);
                         _socket.SendTo(buffer, sendSize, SocketFlags.None, _remoteEndPoint);
                         sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
+                        Debug.LogError("UDP SendSize : " + sendSize);
                     }
                 }
             }

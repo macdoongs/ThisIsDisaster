@@ -20,7 +20,8 @@ namespace NetworkComponents {
     public enum GameServerRequestType {
         MatchingData,
         UpdateGuestPort,
-        ConnectionState
+        ConnectionState,
+        SceneLoadCompleted,
     }
 
     public class GameServer : MonoBehaviour, IObserver {
@@ -42,6 +43,8 @@ namespace NetworkComponents {
         Dictionary<int, int> _nodes = new Dictionary<int, int>();
 
         Dictionary<int, SessionSyncInfoReflection> _reflectionDics = new Dictionary<int, SessionSyncInfoReflection>();
+
+        private List<int> _loadigWaitingNodes = new List<int>();
 
         private const int KEY_MASK = NetConfig.PLAYER_MAX;
 
@@ -99,6 +102,7 @@ namespace NetworkComponents {
             Network.RegisterReceiveNotification(PacketId.MatchingResponse, OnReceiveMatchingResponse);
             Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);
             Network.RegisterReceiveNotification(PacketId.MatchingReady, OnReceiveMatchingReadyState);
+            Network.RegisterReceiveNotification(PacketId.StageStartTime, OnReceiveStageStartTime);
             //Network.RegisterReceiveNotification(PacketId.Coordinates, GameManager.CurrentGameManager.OnReceiveCharacterCoordinate);
         }
 
@@ -142,6 +146,8 @@ namespace NetworkComponents {
 
             int gid = _nodes[node];
             _currentPartMask &= ~(1 << gid);
+
+            _nodes.Remove(node);
 
             //send disconnect message
         }
@@ -247,9 +253,6 @@ namespace NetworkComponents {
 
 
             return;
-
-            //connect all guests for mesh topology
-            GlobalGameManager.Instance.GenerateWorld();
         }
 
         public void OnReceiveMatchingRequest(int node, PacketId id, byte[] data) {
@@ -301,6 +304,9 @@ namespace NetworkComponents {
                     //broadcast to all
                     SendMatchingData();
                     break;
+                case GameServerRequestType.SceneLoadCompleted:
+                    OnNodeLoadCompleted(node);
+                    break;
             }
         }
 
@@ -316,6 +322,12 @@ namespace NetworkComponents {
                 MatchingPanel.Instance.SetMatchingReadyState(red.accountId, red.isReady);
             }
             SendMatchingData();
+        }
+
+        public void OnReceiveStageStartTime(int node, PacketId packetId, byte[] data) {
+            StageStartTimePacket packet = new StageStartTimePacket(data);
+            StageStartTime time = packet.GetPacket();
+            GameManager.CurrentGameManager.StartMultiStage(time.startTime);
         }
         
         #endregion
@@ -418,6 +430,12 @@ namespace NetworkComponents {
             MatchingReadyStatePacket packet = new MatchingReadyStatePacket(ready);
             Network.SendReliable(Network.GetServerNode(), packet);
         }
+
+        public void SendStageStartTime(DateTime startTime) {
+            StageStartTime stageStart = new StageStartTime() { startTime = startTime };
+            StageStartTimePacket packet = new StageStartTimePacket(stageStart);
+            Network.SendReliableToAll(packet);
+        }
         #endregion
 
         public void MakeMatchingView() {
@@ -510,8 +528,8 @@ namespace NetworkComponents {
                         if (GlobalGameManager.Instance.IsHost == false)
                         {
                             Network.SetClientNode(0, clientNode);
-                            GlobalGameManager.Instance.AddRemotePlayer(0);
-                            return;
+                            GlobalGameManager.Instance.AddRemotePlayer(10000);
+                            continue;
                         }
                     }
                     
@@ -564,6 +582,21 @@ namespace NetworkComponents {
                 playerId = 0,
                 state = MatchingState.Connect,
             };
+        }
+
+        public void OnStartLoadingGame() {
+            _loadigWaitingNodes.AddRange(_nodes.Keys);
+        }
+
+        public void OnNodeLoadCompleted(int node) {
+            if (_loadigWaitingNodes.Contains(node)) {
+                _loadigWaitingNodes.Remove(node);
+            }
+            
+        }
+
+        public bool IsLoadEnded() {
+            return _loadigWaitingNodes.Count == 0;
         }
     }
 

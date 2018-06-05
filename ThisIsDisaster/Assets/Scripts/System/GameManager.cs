@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Prefab {
     /// <summary>
@@ -328,12 +329,10 @@ public class GameManager : MonoBehaviour {
             //NetworkComponents.NetworkModule.Instance.RegisterReceiveNotification(
             //    NetworkComponents.PacketId.Coordinates, OnReceiveCharacterCoordinate);
         }
-
-        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
-        {
-            GlobalGameManager.Instance.GenerateWorld();
-        }
+        
     }
+
+    
 	
 	// Update is called once per frame
 	void Update ()
@@ -412,20 +411,10 @@ public class GameManager : MonoBehaviour {
         script.Target = attach;
     }
 
-    public void OnReceiveCharacterCoordinate(NetworkComponents.PacketId packetId, int packetSender, byte[] data) {
-        UnitControllerBase controller = null;
-        if (RemotePlayer.TryGetValue(packetSender, out controller))
-        {
-            NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
-            NetworkComponents.CharacterData charData = packet.GetPacket();
-
-            //Debug.LogError("Position Info " + packetSender);
-            controller.OnReceiveCharacterCoordinate(charData);
-        }
-    }
-    
     public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
         UnitControllerBase controller = null;
+
+        Debug.LogError("Coordinate from " + node);
 
         if (RemotePlayer.TryGetValue(node, out controller))
         {
@@ -456,5 +445,63 @@ public class GameManager : MonoBehaviour {
         Clock.gameObject.SetActive(false);
     }
 
-    
+    private void OnEnable()
+    {
+        
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GlobalGameManager.Instance.OnSceneLoaded();
+        Debug.LogError("OnSceneLoaded: " + scene.name);
+        //Debug.Log(mode);
+    }
+
+    public void CheckStartMultiStage() {
+        StartCoroutine(StartMultiStage());
+    }
+
+    IEnumerator StartMultiStage() {
+        while (true) {
+            yield return new WaitForSeconds(1f);
+            if (NetworkComponents.GameServer.Instance.IsLoadEnded()) {
+                //start at 5 seconds
+                //Debug.LogError("Should Start Game");
+                if (GlobalGameManager.Instance.IsHost)
+                {
+                    DateTime now = DateTime.Now;
+                    DateTime next = now.AddSeconds(5);
+                    if (NetworkComponents.GameServer.Instance != null)
+                    {
+                        NetworkComponents.GameServer.Instance.SendStageStartTime(next);
+                        StartMultiStage(next);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    IEnumerator StartStageDelayed(DateTime time) {
+        while (true) {
+            yield return new WaitForFixedUpdate();
+            DateTime now = DateTime.Now;
+            if (now >= time) {
+                //start
+                GlobalGameManager.Instance.GenerateWorld();
+                break;
+            }
+        }
+    }
+
+    public void StartMultiStage(DateTime time)
+    {
+        StartCoroutine(StartStageDelayed(time));
+    }
 }

@@ -120,7 +120,8 @@ public class LobbyUIScript : MonoBehaviour {
 
     public void StartGame()
     {
-        LoadingSceneManager.LoadScene("NPCTestScene");
+        GlobalGameManager.Instance.SetGameNetworkType(GameNetworkType.Single);
+        GlobalGameManager.Instance.OnGameStart();
     }
 
 }
