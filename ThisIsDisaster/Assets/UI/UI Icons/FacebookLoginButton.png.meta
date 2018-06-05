@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 6945f54abb519b844a8acd9f2e0f93a4
-timeCreated: 1527998132
+guid: 5e7f237017b3e9e4a9883ffa850e9698
+timeCreated: 1528181689
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName: {}
@@ -9,7 +9,7 @@ TextureImporter:
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 0
+    sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0

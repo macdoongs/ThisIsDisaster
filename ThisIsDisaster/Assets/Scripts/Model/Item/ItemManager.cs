@@ -138,9 +138,13 @@ public class ItemManager {
     }
 
     public bool OnTryAcquireItem(DropItem item, PlayerModel player) {
-        UnityEngine.Debug.Log("player try to acquire item " + item.ItemModel.metaInfo.Name);
-        if (player._character.AddItem(item.ItemModel, 1)) {
-            return true;
+        if (!item.isRegionEffect)
+        {
+            UnityEngine.Debug.Log("player try to acquire item " + item.ItemModel.metaInfo.Name);
+            if (player._character.AddItem(item.ItemModel, 1))
+            {
+                return true;
+            }
         }
         return false;
     }

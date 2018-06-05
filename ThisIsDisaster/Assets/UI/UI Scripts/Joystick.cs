@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 public class Joystick : MonoBehaviour{
 
     public GameObject JoystickGameObject;
-    
+    public Color JoystickColor;
+
     RectTransform joysticRect {
         get { return JoystickGameObject.GetComponent<RectTransform>(); }
     }
@@ -90,8 +91,8 @@ public class Joystick : MonoBehaviour{
 
         Stick.position = JoystickGameObject.transform.position;
         StickFirstPos = Stick.position;
-        JoystickGameObject.GetComponentInChildren<Image>().color = Color.white;
-        Stick.GetComponentInChildren<Image>().color = Color.white;
+        JoystickGameObject.GetComponentInChildren<Image>().color = JoystickColor;
+        Stick.GetComponentInChildren<Image>().color = JoystickColor;
 
     }
 
