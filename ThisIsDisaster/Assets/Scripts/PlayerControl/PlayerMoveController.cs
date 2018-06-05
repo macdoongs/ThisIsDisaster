@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMoveController : MonoBehaviour {
-    const float _SPEED_FACTOR = 0.3f;
+    const float _SPEED_FACTOR = 0.2f;
     public float MoveSpeed {
         get {
             return _character.CurrentStats.MoveSpeed * _SPEED_FACTOR;
@@ -30,6 +30,10 @@ public class PlayerMoveController : MonoBehaviour {
     Timer _heightChangeTimer = new Timer();
     public float _heightAscendTime = 0.1f;
     public float _heightDescendTime = 0.25f;
+
+    public float HorizontalMovementFactor = 1f;
+    public float VerticalMovementFactor = 1f;
+
     float _targetHeight = 0f;
     float _initialHeight = 0f;
 
@@ -176,6 +180,7 @@ public class PlayerMoveController : MonoBehaviour {
                 MoveDown(ref movePos);
             }
         }
+        Move(movePos);
 
         
 
@@ -271,25 +276,25 @@ public class PlayerMoveController : MonoBehaviour {
 
     void MoveUp(ref Vector3 pos)
     {
-        pos.y += MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        Move(pos);
+        pos.y += MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio * HorizontalMovementFactor;
+        //Move(pos);
     }
 
     void MoveDown(ref Vector3 pos)
     {
-        pos.y -= MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio;
-        Move(pos);
+        pos.y -= MoveSpeed * Time.deltaTime * GameStaticInfo.HorizontalRatio * HorizontalMovementFactor;
+        //Move(pos);
     }
 
     void MoveLeft(ref Vector3 pos)
     {
-        pos.x -= MoveSpeed * Time.deltaTime;
-        Move(pos);
+        pos.x -= MoveSpeed * Time.deltaTime * VerticalMovementFactor;
+        //Move(pos);
     }
 
     void MoveRight(ref Vector3 pos)
     {
-        pos.x += MoveSpeed * Time.deltaTime;
-        Move(pos);
+        pos.x += MoveSpeed * Time.deltaTime * VerticalMovementFactor;
+        //Move(pos);
     }
 }

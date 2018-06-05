@@ -70,11 +70,13 @@ namespace Shelter
                     tileUnit.spriteRenderer.sprite = shelterTileSprite;
                     model.AddTile(tileUnit, x, y);
 
+#if MIDDLE_PRES
                     if (x > model.Width / 2 - 5 && x < model.Width / 2 + 5) {
                         if (y > model.Height / 2 - 5 && y < model.Height / 2 + 5) {
                             tiles.Add(tileUnit);
                         }
                     }
+#endif
                 }
             }
 
@@ -87,9 +89,9 @@ namespace Shelter
 
             model.SetUnit(unit);
             unit.SetModel(model);
-
+#if MIDDLE_PRES
             MakePresDropItems();
-
+#endif
             return unit;
         }
 

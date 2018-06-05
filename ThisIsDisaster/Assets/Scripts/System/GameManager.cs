@@ -259,12 +259,13 @@ public class GameManager : MonoBehaviour {
         //Debug.LogError(randTile.x + " " + randTile.y);
         Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
 
+#if MIDDLE_PRES
         var list = CellularAutomata.Instance.GetRoomsCoord(3, 20);
         foreach (var v in list) {
             TileUnit tile = RandomMapGenerator.Instance.GetTile(v.tileX, v.tileY);
             ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], tile);
         }
-
+#endif
     }
     
 #if MIDDLE_PRES
