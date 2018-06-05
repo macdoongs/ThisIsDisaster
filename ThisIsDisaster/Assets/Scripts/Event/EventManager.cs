@@ -39,6 +39,9 @@ public class EventManager : MonoBehaviour {
     public GameObject sandObject = null;
     public GameObject cloudObject = null;
     public GameObject blinkObject = null;
+    public GameObject lightningObject = null;
+    public GameObject dryObject = null;
+    public GameObject crackObject = null;
     private EarthquakeEffect earthquakeEffect = null;
 	private LandslideEffect landslideEffect = null;
 	private FloodEffect floodEffect = null;
@@ -247,6 +250,67 @@ public class EventManager : MonoBehaviour {
         return darkObject;
     }     // map을 어둡게하는 effect
 
+    public GameObject MakeWorldLightning()
+    {                       
+        if (lightningObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/LightningEffect");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.transform.SetParent(Camera.main.transform);
+                effectObject.SetActive(false);
+
+            }
+
+            lightningObject = effectObject;
+
+        }
+
+        return lightningObject;
+    }
+
+    public GameObject MakeWorldDry()
+    {
+        if (dryObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/Dry");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.transform.SetParent(Camera.main.transform);
+                effectObject.SetActive(false);
+
+            }
+
+            dryObject = effectObject;
+
+        }
+
+        return dryObject;
+    }
+
+    public GameObject MakeWorldCrack()
+    {
+        if (crackObject == null)
+        {
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/Crack");
+            if (effectObject)
+            {
+                effectObject = Instantiate(effectObject);
+                effectObject.transform.SetParent(Camera.main.transform);
+                effectObject.SetActive(false);
+
+            }
+
+            crackObject = effectObject;
+
+        }
+
+        return crackObject;
+    }
+
+
     public void SetWorldFilterColor(Color color) {
 		if (darkObject = null) {
 			SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
@@ -285,7 +349,7 @@ public class EventManager : MonoBehaviour {
             {
                 effectObject = Instantiate(effectObject);
                 effectObject.transform.SetParent(Camera.main.transform);
-                effectObject.transform.localPosition = new Vector3(1f, 1f, 1f);    // 0  5 10
+                effectObject.transform.localPosition = new Vector3(0f, 0f, 0f);    // 0  5 10
                 effectObject.transform.localScale = Vector3.one;
                 effectObject.transform.localRotation = Quaternion.Euler(0f, 1f, 1f);
                 effectObject.SetActive(false);

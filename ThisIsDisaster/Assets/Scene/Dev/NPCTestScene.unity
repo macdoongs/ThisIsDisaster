@@ -2179,9 +2179,12 @@ MonoBehaviour:
   sandObject: {fileID: 0}
   cloudObject: {fileID: 0}
   blinkObject: {fileID: 0}
+  lightningObject: {fileID: 0}
+  dryObject: {fileID: 0}
+  crackObject: {fileID: 0}
   tsunamiObject: {fileID: 0}
   landslideObject: {fileID: 0}
-  currentTestType: 4
+  currentTestType: 3
 --- !u!1 &907431126
 GameObject:
   m_ObjectHideFlags: 0

@@ -618,6 +618,67 @@ public class CellularAutomata : MonoBehaviour {
         return RoomsCoords;
     }
 
+    public List<Coord> GetRoomsCoordByRoomNum(int roomNum, int height, int num)
+    {
+        List<Coord> RoomsCoords = new List<Coord>();
+        Room currentRoom;
+        int MaxPoint = survivingRooms.Count;
+        int randomTile = 0;
+
+
+        for (int i = 0; i < num; i++)
+        {
+            currentRoom = survivingRooms[roomNum];
+            switch (height)
+            {
+                case 1:
+                    if (currentRoom.tilesDepth1.Count > 0)
+                    {
+                        randomTile = GetRandomValue(currentRoom.tilesDepth1.Count);
+                        //Debug.Log("tiles1depth :" + currentRoom.tilesDepth1.Count);
+                        //Debug.Log("randomTile :" + randomTile);
+                        RoomsCoords.Add(currentRoom.tilesDepth1[randomTile]);
+
+                        //Debug.Log("heightf :" + height);
+                        //Debug.Log("tile :" + worldMap[currentRoom.tilesDepth1[randomTile].tileX, currentRoom.tilesDepth1[randomTile].tileY]);
+                    }
+                    else i--;
+
+                    break;
+                case 2:
+                    if (currentRoom.tilesDepth2.Count > 0)
+                    {
+                        randomTile = GetRandomValue(currentRoom.tilesDepth2.Count);
+                        //Debug.Log("tiles2depth :" + currentRoom.tilesDepth2.Count);
+                        //Debug.Log("randomTile :" + randomTile);
+                        RoomsCoords.Add(currentRoom.tilesDepth2[randomTile]);
+
+                        //Debug.Log("heightf :" + height);
+                        //Debug.Log("tile :" + worldMap[currentRoom.tilesDepth2[randomTile].tileX, currentRoom.tilesDepth2[randomTile].tileY]);
+
+                    }
+                    else i--;
+                    break;
+                case 3:
+                    if (currentRoom.tilesDepth3.Count > 0)
+                    {
+                        randomTile = GetRandomValue(currentRoom.tilesDepth3.Count);
+                        //Debug.Log("tiles3depth :" + currentRoom.tilesDepth3.Count);
+                        //Debug.Log("randomTile :" + randomTile);
+                        RoomsCoords.Add(currentRoom.tilesDepth3[randomTile]);
+
+                        //Debug.Log("heightf :" + height);
+                        //Debug.Log("tile :" + worldMap[currentRoom.tilesDepth3[randomTile].tileX, currentRoom.tilesDepth3[randomTile].tileY]);
+                    }
+                    else i--;
+
+                    break;
+            }
+        }
+
+        return RoomsCoords;
+    }
+    
     public List<Coord> GetEnvironCoord(int height, int num)
     {
         List<Coord> RoomsCoords = new List<Coord>();

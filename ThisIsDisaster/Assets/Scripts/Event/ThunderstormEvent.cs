@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,11 +17,18 @@ public class ThunderstormEvent : EventBase
 	GameObject lightningObject = null;     // 낙뢰 효과
 
     Timer _lifeTimeTimer = new Timer();
+    float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
+
     Timer _blinkTimer = new Timer();
     Timer _damageTimer = new Timer();
-    float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
-    public float eventDamage = 50;
-    public float damageTime = 120;
+    public float damageHealthPerSec = 3f;
+    public float damageTime = 1f;
+
+    Timer _thunderTimer = new Timer();
+    const float _THUNDER_FREQ_MIN = 5f;
+    const float _THUNDER_FREQ_MAX = 10f;
+    
+
 
 	public ThunderstormEvent()
 	{
@@ -32,8 +40,8 @@ public class ThunderstormEvent : EventBase
 		rainObject = EventManager.Manager.MakeWorldRain();
 		darkObject = EventManager.Manager.MakeWorldDark();
         blinkObject = EventManager.Manager.MakeWorldBlink();
+        lightningObject = EventManager.Manager.MakeWorldLightning();
         
-		lightningObject = null;
 	}
 
 	public override void OnStart()
@@ -47,6 +55,7 @@ public class ThunderstormEvent : EventBase
 
         _lifeTimeTimer.StartTimer(lifeTime);
         _damageTimer.StartTimer(damageTime);
+        _thunderTimer.StartTimer(UnityEngine.Random.Range(_THUNDER_FREQ_MIN, _THUNDER_FREQ_MAX));
         //StartDamageByEvent(eventDamage, damageTime);
     }
 
@@ -68,11 +77,18 @@ public class ThunderstormEvent : EventBase
                         color.a += 0.01f;
                     renderer.color = color;
                 }
-
-                return;
             }
             if (_lifeTimeTimer.elapsed > 10 && _lifeTimeTimer.elapsed < 20)
             {
+                var rainParticle = rainObject.GetComponent<ParticleSystem>();
+                if (rainParticle != null)
+                {
+                        rainParticle.maxParticles -= 5;
+                }
+            }
+            if (_lifeTimeTimer.elapsed > _lifeTimeTimer.maxTime - 10f)
+            {
+
                 SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
                 if (renderer != null)
                 {
@@ -81,30 +97,44 @@ public class ThunderstormEvent : EventBase
                         color.a -= 0.002f;
                     renderer.color = color;
                 }
-                var rainParticle = rainObject.GetComponent<ParticleSystem>();
-                if (rainParticle != null)
-                {
-                        rainParticle.maxParticles -= 50;
-                }
-                return;
             }
+
+
+            if (_thunderTimer.RunTimer())
+            {
+                StartLightning();
+                _thunderTimer.StartTimer(UnityEngine.Random.Range(_THUNDER_FREQ_MIN, _THUNDER_FREQ_MAX));
+            }
+
         }
+
         if(_damageTimer.started)
         {
-            //피난처 안에 있을 경우, 데미지를 받지 않게 추가해야함
-            if(_damageTimer.RunTimer())
-            {
-                CharacterModel.Instance.SubtractHealth(eventDamage / _damageTimer.maxTime);
-            }
+
+                //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
+                if (_damageTimer.RunTimer())
+                {
+                    float healthDamageRate = 1f;
+
+                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+
+                    _damageTimer.StartTimer(damageTime);
+                }
+                
         }
     }
-    
-    public void StartDamageByEvent(float damage, float time)
+
+    private void StartLightning()
+    {
+        lightningObject.SetActive(true);
+    }
+
+    /*public void StartDamageByEvent(float damage, float time)
     {
         eventDamage = damage;
         damageTime = time;
         _damageTimer.StartTimer(time);
-    }
+    }*/
 
     public override void OnEnd()
 	{

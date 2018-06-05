@@ -6,12 +6,18 @@ using UnityEngine;
 public class FloodEvent : EventBase {
 	GameObject rainObject = null;
 	GameObject darkObject = null;
-	GameObject tsunamiObject = null;
-	GameObject fillObject = null;    // 맵에 물차오르는거
 	FloodEffect _effect = null;
+    
+    Timer _lifeTimeTimer = new Timer();
+    float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
 
+    Timer _damageTimer = new Timer();
+    public float damageHealthPerSec = 1f;
+    public float damageEnergyPerSec = 1f;
+    public float damageTime = 1f;
 
-	public FloodEvent() {
+    
+    public FloodEvent() {
 		type = WeatherType.Flood;
 	}
 
@@ -29,6 +35,8 @@ public class FloodEvent : EventBase {
 
 		rainObject.SetActive(true);
 		darkObject.SetActive(true);
+
+        _damageTimer.StartTimer(damageTime);
 	}
 
 	public override void OnEnd()
@@ -42,7 +50,71 @@ public class FloodEvent : EventBase {
 		darkObject = null;
 	}
 
-	public override void OnDestroy()
+    public override void OnExecute()
+    {
+        if (_lifeTimeTimer.started)
+        { _lifeTimeTimer.RunTimer();
+
+
+            if (_lifeTimeTimer.elapsed < 5)
+            {
+                SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    Color color = renderer.color;
+                    if (color.a < 0.5f)
+                        color.a += 0.01f;
+                    renderer.color = color;
+                }
+                
+            }
+            if (_lifeTimeTimer.elapsed > _lifeTimeTimer.maxTime - 10f)
+            {
+
+                SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    Color color = renderer.color;
+                    if (color.a > 0)
+                        color.a -= 0.002f;
+                    renderer.color = color;
+                }
+
+                var rainParticle = rainObject.GetComponent<ParticleSystem>();
+                if (rainParticle != null)
+                {
+                    rainParticle.maxParticles -= 5;
+                }
+            }
+
+            if (_damageTimer.started)
+            {
+                if (_damageTimer.RunTimer())
+                {
+                    float healthDamageRate = 0.5f;
+                    float staminaDamageRate = 1f;
+                    float speedDownRate = 0.3f;
+
+                    var player = CharacterModel.Instance;
+                    
+                    if (player.GetPlayerModel().IsInShelter() || RandomMapGenerator.Instance.GetDepth(player.transform.position) < 3)
+                    {
+                        healthDamageRate = 2.0f;
+                        staminaDamageRate = 2.0f;
+                        CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+                    }
+
+                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                    CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+
+                    _damageTimer.StartTimer(damageTime);
+                }
+            }
+
+        }
+    }
+
+    public override void OnDestroy()
 	{
 
 	}
