@@ -1795,7 +1795,6 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
   m_Material: {fileID: 0}
   m_Color: {r: 0.8352942, g: 0.83921576, b: 0.854902, a: 1}
   m_RaycastTarget: 1
@@ -1814,39 +1813,6 @@ MonoBehaviour:
   m_FillOrigin: 0
 --- !u!222 &85207358
 CanvasRenderer:
-=======
-  cycloneObject: {fileID: 0}
-  rainObject: {fileID: 0}
-  darkObject: {fileID: 0}
-  fireObject: {fileID: 0}
-  snowObject: {fileID: 0}
-  sandObject: {fileID: 0}
-  cloudObject: {fileID: 0}
-  blinkObject: {fileID: 0}
-  lightningObject: {fileID: 0}
-  dryObject: {fileID: 0}
-  crackObject: {fileID: 0}
-  tsunamiObject: {fileID: 0}
-  landslideObject: {fileID: 0}
-  currentTestType: 3
---- !u!1 &907431126
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 907431127}
-  m_Layer: 5
-  m_Name: ActiveControl
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &907431127
-RectTransform:
->>>>>>> origin/master
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 222474901158335174, guid: 2f193eaa3eb340e4fa0dc69f2880329b,
     type: 2}
