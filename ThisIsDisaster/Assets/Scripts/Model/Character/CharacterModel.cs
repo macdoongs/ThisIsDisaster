@@ -115,6 +115,7 @@ public class CharacterModel : MonoBehaviour
     }
 
     public List<TileUnit> EffectTiles = new List<TileUnit>();
+    public long EffectItemID;
     public bool EffectToken = false;
     //테스트용 값
     public string PlayerName = "TestID";
@@ -141,7 +142,11 @@ public class CharacterModel : MonoBehaviour
     public Stats ItemStats = new Stats();
     
     public Stats DisorderStats = new Stats();
-    
+
+    public Stats EventStats = new Stats();
+
+    public Stats RegionItemStats = new Stats();
+
     public Disorder[] disorders = new Disorder[5];
 
     //아이템 착용 슬롯
@@ -225,11 +230,6 @@ public class CharacterModel : MonoBehaviour
 
         EffectTileEffect(GetPlayerModel().GetCurrentTile());
 
-        //if (Time.time > nextTime)
-        //{
-        //    nextTime = Time.time + TimeLeft;
-        //    StatRegeneration();
-        //}
     }
 
     public PlayerModel GetPlayerModel() {
@@ -750,8 +750,6 @@ public class CharacterModel : MonoBehaviour
                 break;
             }
         }
-
-
         return result;
     }
 
@@ -760,17 +758,17 @@ public class CharacterModel : MonoBehaviour
     private void UpdateStat()
     {
         DisorderStatSetting();
-        CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth;
-        CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina;
-        CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense;
+        CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth + EventStats.MaxHealth;
+        CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina + EventStats.MaxStamina;
+        CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense + EventStats.Defense;
         if(CurrentStats.Defense < 0)
             CurrentStats.Defense = 0;
-        CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage;
+        CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage + EventStats.Damage;
         if (CurrentStats.Damage < 0)
             CurrentStats.Damage = 0;
-        CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen;
-        CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen;
-        CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed;
+        CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen + EventStats.HealthRegen + RegionItemStats.HealthRegen;
+        CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen + EventStats.StaminaRegen + RegionItemStats.StaminaRegen;
+        CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed + EventStats.MoveSpeed;
     }
 
     private void StatRegeneration()
@@ -821,14 +819,26 @@ public class CharacterModel : MonoBehaviour
     {
         if (EffectTiles.Contains(currentTile))
         {
+            
             if (!EffectToken)
-                CurrentStats.StaminaRegen += 10;
+            {
+                if (EffectItemID.Equals(33001))
+                {
+                    RegionItemStats.StaminaRegen += 5;                    
+                }
+                else
+                {
+                    RegionItemStats.StaminaRegen += 3;
+                }
+                UpdateStat();
+            }
             EffectToken = true;
         }
         else
         {
-            if(EffectToken)
-                CurrentStats.StaminaRegen -= 10;
+            RegionItemStats.StaminaRegen = 0;
+            UpdateStat();
+
             EffectToken = false;
         }
     }
@@ -838,8 +848,9 @@ public class CharacterModel : MonoBehaviour
     {
         if (etc.metaInfo.metaId.Equals(33001))
         {//텐트
+            EffectItemID = etc.metaInfo.metaId;
             TileUnit currentTile = GetPlayerModel().GetCurrentTile();
-
+        
             var item = ItemManager.Manager.MakeDropItem(33001, currentTile);
             if (EffectTiles.Contains(currentTile))
             {
@@ -853,11 +864,11 @@ public class CharacterModel : MonoBehaviour
             item.isRegionEffect = true;
             result = true;
 
-            for (int i = -10; i <= 10; i++)
+            for (int i = -5; i <= 5; i++)
             {
                 int x = currentTile.x + i;
 
-                for (int j = -10; j <= 10; j++)
+                for (int j = -5; j <= 5; j++)
                 {
                     int y = currentTile.y + j;
                     TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
@@ -869,6 +880,7 @@ public class CharacterModel : MonoBehaviour
         }
         else if (etc.metaInfo.metaId.Equals(33002))
         {//모닥불
+            EffectItemID = etc.metaInfo.metaId;            
             TileUnit currentTile = GetPlayerModel().GetCurrentTile();
             if (EffectTiles.Contains(currentTile))
             {
@@ -881,11 +893,11 @@ public class CharacterModel : MonoBehaviour
             item.isRegionEffect = true;
             result = true;
        
-            for (int i = -10; i <= 10; i++)
+            for (int i = -5; i <= 5; i++)
             {
                 int x = currentTile.x + i;
 
-                for (int j = -10; j <= 10; j++)
+                for (int j = -5; j <= 5; j++)
                 {
                     int y = currentTile.y + j;
                     TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);

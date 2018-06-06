@@ -34,6 +34,8 @@ public class SettingUIController : MonoBehaviour {
     public Image HPWarningFill;
     public Image StaminaWarningFill;
 
+    public Toggle JoystickSetting;
+
     public static SettingUIController Instance
     {
         private set;
@@ -100,8 +102,19 @@ public class SettingUIController : MonoBehaviour {
     public void MenuButtonClicked(GameObject menu)
     {
         CloseAllMenu();
-        menu.SetActive(true);
+        OpenSettingMenu(menu);
         HighlightCategory();
+    }
+
+    public void OpenSettingMenu(GameObject menu)
+    {
+
+        if (menu.Equals(GameSettingPanel))
+        {
+            JoystickSetting.isOn = !(Joystick.Instance.floatingJoystick);
+        }
+
+        menu.SetActive(true);
     }
 
     public void FillScrollBar()

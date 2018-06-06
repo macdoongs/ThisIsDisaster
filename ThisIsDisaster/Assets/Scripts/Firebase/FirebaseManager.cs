@@ -16,7 +16,7 @@ public class FirebaseManager : MonoBehaviour
 {
 
 
-#if true
+#if false
 
     // 이메일 InputField 
     [SerializeField] 
