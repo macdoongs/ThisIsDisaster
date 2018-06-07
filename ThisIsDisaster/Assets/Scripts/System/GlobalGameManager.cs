@@ -176,13 +176,19 @@ public class GlobalGameManager {
         }
         else if (GameNetworkType == GameNetworkType.Single)
         {
-            SetSceneLoadedAction(GenerateWorld);
+            SetSceneLoadedAction(StartSinngleSession);
         }
         LoadingSceneManager.LoadScene("NPCTestScene");
     }
 
     void StartMultiSession() {
+        GenerateWorld();
         GameManager.CurrentGameManager.CheckStartMultiStage();
+    }
+
+    void StartSinngleSession() {
+        GenerateWorld();
+        GameManager.CurrentGameManager.StartStage();
     }
 
     public void LoadLobbyScene()
@@ -192,8 +198,8 @@ public class GlobalGameManager {
 
     public Dictionary<int, int> _remotePlayers = new Dictionary<int, int>();
     //other data need
-    public void AddRemotePlayer(int clientNode) {
-        _remotePlayers.Add(clientNode, clientNode);
+    public void AddRemotePlayer(int clientNode, int clientId) {
+        _remotePlayers.Add(clientNode, clientId);
     }
 
     public void ClearRemotePlayer() {

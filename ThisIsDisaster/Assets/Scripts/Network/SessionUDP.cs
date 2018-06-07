@@ -65,7 +65,7 @@ namespace NetworkComponents
                 {
                     string[] strAry = str.Split(':');
                     IPEndPoint ep = new IPEndPoint(IPAddress.Parse(strAry[0]), int.Parse(strAry[1]));
-                    NetDebug.LogError("UDP Connection : " + ep.ToString());
+                    //NetDebug.LogError("UDP Connection : " + ep.ToString());
 
                     if (_nodeAddress.ContainsKey(nodeAddr))
                     {
@@ -88,7 +88,7 @@ namespace NetworkComponents
                     }
                 }
 
-                NetDebug.LogError("udp"+node);
+                //NetDebug.LogError("udp"+node);
                 if (node >= 0) {
                     TransportUDP transport = _transports[node];
                     transport.SetReceiveData(buffer, recvSize, (IPEndPoint)endPoint);

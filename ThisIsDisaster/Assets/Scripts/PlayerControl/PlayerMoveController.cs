@@ -229,7 +229,7 @@ public class PlayerMoveController : MonoBehaviour {
     /// <param name="input">사용자 입력에 의한 점프인가</param>
     public void Jump(bool input = true) {
         //position update needed?
-
+        if (_character.IsDead()) return;
         if (input && _jumpDelayTimer.started) return;
         if (_heightChangeTimer.started) return;
 
@@ -241,6 +241,11 @@ public class PlayerMoveController : MonoBehaviour {
         _character.SubtractStamina(_JUMP_COST);
 
         AnimatorUtil.SetTrigger(PlayerMovementCTRL, "Jump");
+
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+        {
+            NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Jump");
+        }
 
         if (input) {
             _jumpingLevel = 1;
@@ -257,6 +262,7 @@ public class PlayerMoveController : MonoBehaviour {
 
     //공용 이동처리
     void Move(Vector3 pos) {
+        if (_character.IsDead()) return;
         if (autoTileMovementSetter.Owner != null) {
             if (autoTileMovementSetter.Owner.IsInShelter())
             {
@@ -296,5 +302,12 @@ public class PlayerMoveController : MonoBehaviour {
     {
         pos.x += MoveSpeed * Time.deltaTime * VerticalMovementFactor;
         //Move(pos);
+    }
+
+    public void OnPlayerDead() {
+        AnimatorUtil.SetTrigger(PlayerMovementCTRL, "Dead");
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
+            NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Dead");
+        }
     }
 }

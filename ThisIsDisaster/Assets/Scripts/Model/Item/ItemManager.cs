@@ -78,6 +78,12 @@ public class ItemManager {
         }
     }
 
+    public ItemTypeInfo GetItemTypeInfo(int id) {
+        ItemTypeInfo output = null;
+        _typeInfoDic.TryGetValue(id, out output);
+        return output;
+    }
+
     public static void Log(string desc, bool isError = false) {
 #if UNITY_EDITOR
         if (isError)

@@ -103,6 +103,9 @@ namespace NetworkComponents {
             Network.RegisterReceiveNotification(PacketId.GameServerRequest, OnReceiveGameServerRequest);
             Network.RegisterReceiveNotification(PacketId.MatchingReady, OnReceiveMatchingReadyState);
             Network.RegisterReceiveNotification(PacketId.StageStartTime, OnReceiveStageStartTime);
+            Network.RegisterReceiveNotification(PacketId.PlayerAnimTrigger, OnReceivePlayerAnimTrigger);
+            Network.RegisterReceiveNotification(PacketId.PlayerItemInfo, OnReceivePlayerItemInfo);
+            Network.RegisterReceiveNotification(PacketId.PlayerStateInfo, OnReceivePlayerStateInfo);
             //Network.RegisterReceiveNotification(PacketId.Coordinates, GameManager.CurrentGameManager.OnReceiveCharacterCoordinate);
         }
 
@@ -329,7 +332,38 @@ namespace NetworkComponents {
             StageStartTime time = packet.GetPacket();
             GameManager.CurrentGameManager.StartMultiStage(time.startTime);
         }
-        
+
+        public void OnReceivePlayerAnimTrigger(int node, PacketId packetId, byte[] data) {
+            PlayerAnimTriggerPacket packet = new PlayerAnimTriggerPacket(data);
+            PlayerAnimTrigger trigger = packet.GetPacket();
+            if (GameManager.CurrentGameManager != null) {
+                GameManager.CurrentGameManager.OnRemoteChararcterAnimTrigger(node, trigger.animKey);
+            }
+        }
+
+        public void OnReceivePlayerItemInfo(int node, PacketId packetId, byte[] data) {
+            PlayerItemInfoPacket packet = new PlayerItemInfoPacket(data);
+            PlayerItemInfo info = packet.GetPacket();
+
+            if (info.accountId == GlobalParameters.Param.accountId) return;
+
+            if (GameManager.CurrentGameManager != null) {
+                GameManager.CurrentGameManager.OnRemoteCharacterItemInfoSetted(info);
+            }
+            if (IsHost) {
+                SendPlayerItemInfo(packet);
+            }
+
+        }
+
+        public void OnReceivePlayerStateInfo(int node, PacketId packetId, byte[] data) {
+            PlayerStateInfoPacket packet = new PlayerStateInfoPacket(data);
+            PlayerStateInfo info = packet.GetPacket();
+
+            if (GameManager.CurrentGameManager != null) {
+
+            }
+        }
         #endregion
 
 
@@ -436,6 +470,47 @@ namespace NetworkComponents {
             StageStartTimePacket packet = new StageStartTimePacket(stageStart);
             Network.SendReliableToAll(packet);
         }
+
+        public void SendPlayerAnimTrigger(string animation) {
+            PlayerAnimTrigger trigger = new PlayerAnimTrigger();
+            trigger.playerId = GlobalGameManager.Param.accountId;
+            trigger.animKey = animation;
+            trigger.animKeyLength = animation.Length;
+
+            PlayerAnimTriggerPacket packet = new PlayerAnimTriggerPacket(trigger);
+            Network.SendUnreliableToAll(packet);
+        }
+
+        public void SendPlayerItemAcquire(int playerItem, bool isAcquire) {
+            PlayerItemInfo info = new PlayerItemInfo()
+            {
+                accountId = GlobalGameManager.Param.accountId,
+                itemId = playerItem,
+                isAcquire = isAcquire
+            };
+
+            PlayerItemInfoPacket packet = new PlayerItemInfoPacket(info);
+
+            if (IsHost) {
+                SendPlayerItemInfo(packet);
+            }
+            else  Network.SendReliable(Network.GetServerNode(), packet);
+        }
+
+        void SendPlayerItemInfo(PlayerItemInfoPacket packet) {
+            Network.SendReliableToAll(packet);
+        }
+
+        public void SendPlayerStateInfo(int health, bool isDead) {
+            PlayerStateInfo info = new PlayerStateInfo() {
+                accountId = GlobalParameters.Param.accountId,
+                playerHp = health,
+                isPlayerDead = isDead
+            };
+
+            PlayerStateInfoPacket packet = new PlayerStateInfoPacket(info);
+            Network.SendUnreliableToAll(packet);
+        }
         #endregion
 
         public void MakeMatchingView() {
@@ -528,13 +603,13 @@ namespace NetworkComponents {
                         if (GlobalGameManager.Instance.IsHost == false)
                         {
                             Network.SetClientNode(0, clientNode);
-                            GlobalGameManager.Instance.AddRemotePlayer(10000);
+                            GlobalGameManager.Instance.AddRemotePlayer(10000, node.accountId);
                             continue;
                         }
                     }
                     
                     Network.SetClientNode(node.nodeIndex, clientNode);
-                    GlobalGameManager.Instance.AddRemotePlayer(clientNode);
+                    GlobalGameManager.Instance.AddRemotePlayer(clientNode, node.accountId);
                 }
                 else
                 {

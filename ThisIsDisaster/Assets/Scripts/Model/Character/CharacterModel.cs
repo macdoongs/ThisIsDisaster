@@ -197,7 +197,6 @@ public class CharacterModel : MonoBehaviour
         {
             _character = this
         };
-        
         if (attackSender)
             attackSender.SetOwner(_player);
         if (attackReceiver)
@@ -209,8 +208,12 @@ public class CharacterModel : MonoBehaviour
         initialCharacterSetting();
         InitDefaultSprite();
 
-        Instance = this;
+        //Instance = this;
         SpeedFactor = 1f;
+    }
+
+    public void SetInstance() {
+        Instance = this;
     }
 
     private void Start()
@@ -452,6 +455,39 @@ public class CharacterModel : MonoBehaviour
         return output;
     }
 
+    public bool IsDead() {
+        return CurrentStats.Health <= 0f;
+    }
+
+    public virtual void WearEquipmentNetwork(int id, bool isAcquire) {
+        var info = ItemManager.Manager.GetItemTypeInfo(id);
+        
+        switch (info.itemType) {
+            case ItemType.Weapon:
+                if (!isAcquire)
+                {
+                    weaponSlot = null;
+                }
+                else {
+                    var item = ItemManager.Manager.MakeItem(id);
+                    weaponSlot = item;
+                }
+                break;
+            case ItemType.Head:
+                if (!isAcquire)
+                {
+                    headSlot = null;
+                }
+                else {
+                    var item = ItemManager.Manager.MakeItem(id);
+                    headSlot = item;
+                }
+                break;
+        }
+
+        SpriteUpdate();
+    }
+
     //장비 착용.
     public virtual bool WearEquipment(ItemModel equipment)
     {
@@ -466,6 +502,14 @@ public class CharacterModel : MonoBehaviour
                 weaponSlot = equipment;
                 AddStats(weaponSlot);
                 result = true;
+
+                if (result)
+                {
+                    if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+                    {
+                        NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)equipment.metaInfo.metaId, true);
+                    }
+                }
             }
             else
             {
@@ -492,6 +536,14 @@ public class CharacterModel : MonoBehaviour
                 headSlot = equipment;
                 AddStats(headSlot);
                 result = true;
+
+                if (result)
+                {
+                    if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+                    {
+                        NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)equipment.metaInfo.metaId, true);
+                    }
+                }
             }
             else
             {
@@ -565,7 +617,13 @@ public class CharacterModel : MonoBehaviour
             SubtractStats(weaponSlot);
             attack_range_x = default_attack_range_x;
             attack_range_y = default_attack_range_y;
+
+            if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+            {
+                NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)weaponSlot.metaInfo.metaId, false);
+            }
             weaponSlot = null;
+
         }
         else if (SlotName.Equals("clothes"))
         {
@@ -587,6 +645,10 @@ public class CharacterModel : MonoBehaviour
             }
 
             SubtractStats(headSlot);
+            if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+            {
+                NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)headSlot.metaInfo.metaId, false);
+            }
             headSlot = null;
         }
         else if (SlotName.Equals("backpack"))
@@ -967,6 +1029,13 @@ public class CharacterModel : MonoBehaviour
         {
             CurrentStats.Health = 0f;
         }
+        SendHealthState();
+    }
+
+    void SendHealthState() {
+        if (GlobalGameManager.Instance.GameNetworkType != GameNetworkType.Multi) return;
+        NetworkComponents.GameServer.Instance.SendPlayerStateInfo((int)CurrentStats.Health, CurrentStats.Health <= 0f);
+
     }
 
     //소모품 사용시 체력 회복. MaxHealth 이상은 회복되지 않음
@@ -982,7 +1051,7 @@ public class CharacterModel : MonoBehaviour
             }
             result = true;
         }
-
+        SendHealthState();
         return result;
     }
 

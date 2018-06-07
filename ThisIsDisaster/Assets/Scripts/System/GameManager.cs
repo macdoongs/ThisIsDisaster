@@ -231,6 +231,8 @@ public class GameManager : MonoBehaviour {
 
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
+        localPlayer.AccountId = GlobalParameters.Param.accountId;
+        
 
         if (NetworkComponents.NetworkModule.Instance != null)
         {
@@ -240,14 +242,14 @@ public class GameManager : MonoBehaviour {
 
         if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
             foreach (var kv in GlobalGameManager.Instance._remotePlayers) {
-                MakePlayerCharacter(kv.Key.ToString(), kv.Key, false);
+                var c = MakePlayerCharacter(kv.Value.ToString(), kv.Key, false);
+                c.AccountId = kv.Value;
             }
         }
 
         InGameUIScript.Instance.Init();
 #if MIDDLE_PRES
         ProtoInit();
-        StartStage();
 #endif
     }
 
@@ -390,11 +392,13 @@ public class GameManager : MonoBehaviour {
 
         if (isLocal)
         {
+            output.GetComponent<CharacterModel>().SetInstance();
             output.behaviour.IsRemoteCharacter = false;
             CurrentGameManager._localPlayer = output;
             Notice.Instance.Send(NoticeName.LocalPlayerGenerated);
             //attach chase
             CurrentGameManager.MakeCameraMoveScript(output.gameObject);
+            
         }
         else {
             output.behaviour.IsRemoteCharacter = true;
@@ -495,7 +499,7 @@ public class GameManager : MonoBehaviour {
             DateTime now = DateTime.Now;
             if (now >= time) {
                 //start
-                GlobalGameManager.Instance.GenerateWorld();
+                StartStage();
                 break;
             }
         }
@@ -504,5 +508,45 @@ public class GameManager : MonoBehaviour {
     public void StartMultiStage(DateTime time)
     {
         StartCoroutine(StartStageDelayed(time));
+    }
+
+    public void OnRemoteChararcterAnimTrigger(int node, string anim) {
+        UnitControllerBase control = null;
+        if (RemotePlayer.TryGetValue(node, out control)) {
+            PlayerMoveController ctrl = control.GetComponent<PlayerMoveController>();
+            if (ctrl != null) {
+                AnimatorUtil.SetTrigger(ctrl.PlayerMovementCTRL, anim);
+            }
+        }
+    }
+
+    public void OnRemoteCharacterItemInfoSetted(NetworkComponents.PlayerItemInfo info) {
+        var ctrl = GetRemotePlayerById(info.accountId);
+        if (ctrl != null) {
+            CharacterModel model = ctrl.GetComponent<CharacterModel>();
+            model.WearEquipmentNetwork(info.itemId, info.isAcquire);
+        }
+    }
+
+    public void OnRemotePlayerStateInfoReceived(int node, int health, bool isDead) {
+        UnitControllerBase ctrl = null;
+        if (RemotePlayer.TryGetValue(node, out ctrl)) {
+            CharacterModel model = ctrl.GetComponent<CharacterModel>();
+            model.CurrentStats.Health = health;
+            if (isDead) {
+                model.SubtractHealth(model.CurrentStats.MaxHealth);
+            }
+        }
+    }
+
+    public UnitControllerBase GetRemotePlayerById(int id) {
+        UnitControllerBase output = null;
+        foreach (var kv in _remotePlayer) {
+            if (kv.Value.AccountId == id) {
+                output = kv.Value;
+                break;
+            }
+        }
+        return output;
     }
 }
