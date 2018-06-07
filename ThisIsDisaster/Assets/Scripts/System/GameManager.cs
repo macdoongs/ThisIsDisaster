@@ -387,6 +387,7 @@ public class GameManager : MonoBehaviour {
         if (moveScript) {
             if (!isLocal) {
                 moveScript.enabled = false;
+                output.SetFlipPivot(moveScript.FlipPivot);
             }
         }
 
@@ -403,6 +404,7 @@ public class GameManager : MonoBehaviour {
         else {
             output.behaviour.IsRemoteCharacter = true;
             CurrentGameManager.RemotePlayer.Add(id, output);
+            
         }
 
         return output;

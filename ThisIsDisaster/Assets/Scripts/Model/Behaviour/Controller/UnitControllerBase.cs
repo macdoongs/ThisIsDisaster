@@ -9,6 +9,7 @@ public class UnitControllerBase : MonoBehaviour
     public UnitBehaviourBase behaviour = null;
     private ItemManager _itemManager = null;
     public int AccountId = 0;
+    private Transform _flipPivot = null;
 
     public NetworkComponents.NetworkModule Network {
         get {
@@ -35,6 +36,10 @@ public class UnitControllerBase : MonoBehaviour
 
     }
 
+    public void SetFlipPivot(Transform pivot) {
+        this._flipPivot = pivot;
+    }
+
     public void SetUnitName(string name) {
         if (NameText) {
             NameText.text = name;
@@ -52,8 +57,27 @@ public class UnitControllerBase : MonoBehaviour
         Debug.Log(string.Format("{0} set position {1}", _unitName, position));
     }
 
+    public void SetDirection(float xDiff) {
+        if (_flipPivot == null) return;
+        if (xDiff == 0f) return;
+        Vector3 current = _flipPivot.localScale;
+        if (xDiff < 0f)
+        {
+            if (current.x > 0f)
+            {
+                current.x = -1f;
+            }
+        }
+        else {
+            if (current.x < 0f) {
+                current.x = 1f;
+            }
+        }
+        _flipPivot.localScale = current;
+    }
+
     public float GetDirection() {
-        return transform.localScale.x;
+        return _flipPivot.localScale.x;
     }
 
     public void OnReceiveMovingPacket(PacketId id, byte[] data) {
@@ -61,7 +85,7 @@ public class UnitControllerBase : MonoBehaviour
     }
 
     public void SendCharacterCoordinate(int index, List<CharacterCoordinates> coords) {
-        if (Network)
+        if (Network && GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
         {
             //check connection
             CharacterData data = new CharacterData()

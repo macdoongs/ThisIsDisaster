@@ -22,6 +22,7 @@ public class UnitBehaviourBase : MonoBehaviour
     
     private List<CharacterCoordinates> _culling = new List<CharacterCoordinates>();
     private List<CharacterCoordinates> _plots = new List<CharacterCoordinates>();
+    
     // Use this for initialization
     void Start()
     {
@@ -150,7 +151,8 @@ public class UnitBehaviourBase : MonoBehaviour
     }
 
     public void CalcRemotePosition() {
-        Vector3 newPos = Controller.GetPosition();
+        Vector3 oldPos = Controller.GetPosition();
+        Vector3 newPos = oldPos;
         if (_plots.Count > 0) {
             CharacterCoordinates coord = _plots[0];
             newPos = new Vector3(coord.x, coord.y, coord.z);
@@ -166,6 +168,7 @@ public class UnitBehaviourBase : MonoBehaviour
                 }
             }
             Controller.SetPosition(newPos);
+            Controller.SetDirection((newPos - oldPos).x);
         }
         
     }

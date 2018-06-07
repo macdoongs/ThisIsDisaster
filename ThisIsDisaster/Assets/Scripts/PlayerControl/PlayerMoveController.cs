@@ -60,6 +60,7 @@ public class PlayerMoveController : MonoBehaviour {
         {
             joystick = joystickObject.GetComponent<Joystick>();
         }
+        
     }
 
     void OnChangeCurrentTile(TileUnit tile)
