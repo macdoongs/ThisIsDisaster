@@ -10,10 +10,11 @@ public class PlayerAttackController : MonoBehaviour {
     public bool isDebuggEnabled = false;
     public SpriteRenderer _DebugRenderer;
     public PlayerMoveController MoveController;
+    public AnimatorEventHandler animatorEventHandler;
 
 	// Use this for initialization
 	void Start () {
-		
+        animatorEventHandler.SetEventCalled(Sender.OnAttack);
 	}
 	
 	// Update is called once per frame
@@ -58,7 +59,7 @@ public class PlayerAttackController : MonoBehaviour {
         if (IsAttackable())
         {
             CharacterModel.Instance.SubtractStamina(5f);
-            Sender.OnAttack();
+            //Sender.OnAttack();
             if (MoveController)
             {
                 AnimatorUtil.SetInteger(MoveController.PlayerMovementCTRL, "AttackType",
@@ -85,5 +86,13 @@ public class PlayerAttackController : MonoBehaviour {
     public bool IsAttackable() {
         if (CharacterModel.Instance.IsDead()) return false;
         return !_attackDelayTimer.started && CharacterModel.Instance.CurrentStats.Stamina > 5f;
+    }
+
+    public void SetAttackRange(float x, float y)
+    {
+        float xValue = x / 5f;
+        float yValue = y / 5f;
+        var col = Sender.GetComponent<BoxCollider2D>();
+        col.size = new Vector2(xValue, yValue);
     }
 }

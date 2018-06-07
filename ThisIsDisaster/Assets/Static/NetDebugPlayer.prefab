@@ -230,6 +230,7 @@ GameObject:
   - component: {fileID: 95400447252878834}
   - component: {fileID: 212047882042135652}
   - component: {fileID: 114670820349214264}
+  - component: {fileID: 114892885560777118}
   m_Layer: 0
   m_Name: HumanF
   m_TagString: Untagged
@@ -1114,6 +1115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   behaviour: {fileID: 114856907653785162}
+  AccountId: 0
   NameText: {fileID: 114264617304194666}
 --- !u!114 &114135694712073198
 MonoBehaviour:
@@ -1188,6 +1190,7 @@ MonoBehaviour:
   isDebuggEnabled: 1
   _DebugRenderer: {fileID: 212054318605826038}
   MoveController: {fileID: 114598321412525876}
+  animatorEventHandler: {fileID: 114892885560777118}
 --- !u!114 &114497361334405528
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1216,6 +1219,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b611b1196ba53bf4faa1ff4fa82a2e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EffectTiles: []
+  EffectItemID: 0
+  EffectToken: 0
   PlayerName: TestID
   PlayerLevel: 123
   default_attack_range_x: 5
@@ -1224,6 +1230,7 @@ MonoBehaviour:
   attack_range_y: 0
   bagSize: 0
   waterMax: 0
+  visionLevel: 0
   Body: {fileID: 212546606660524438}
   SpriteParts:
   - {fileID: 212546606660524438}
@@ -1286,6 +1293,8 @@ MonoBehaviour:
   autoTileMovementSetter: {fileID: 114497361334405528}
   _heightAscendTime: 0.1
   _heightDescendTime: 0.25
+  HorizontalMovementFactor: 1
+  VerticalMovementFactor: 1
   joystickObject: {fileID: 0}
   joystick: {fileID: 0}
 --- !u!114 &114668790114854922
@@ -1370,6 +1379,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsRemoteCharacter: 0
   Controller: {fileID: 114092647226822026}
+--- !u!114 &114892885560777118
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1507994986819722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4248d59a4705742ad8d00877bff94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114953748333478950
 MonoBehaviour:
   m_ObjectHideFlags: 1

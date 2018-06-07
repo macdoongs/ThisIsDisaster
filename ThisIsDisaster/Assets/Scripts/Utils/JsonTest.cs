@@ -24,7 +24,7 @@ public class JsonTest : MonoBehaviour {
 
         var json = JsonUtility.ToJson(data);
 
-        WebCommunicationManager.Manager.OnReceiveGETMessage(json);
+        //WebCommunicationManager.Manager.OnReceiveGETMessage(json);
 
         var failData = new UserResponse()
         {
@@ -42,7 +42,7 @@ public class JsonTest : MonoBehaviour {
 
         var failJson = JsonUtility.ToJson(failData);
 
-        WebCommunicationManager.Manager.OnReceiveGETMessage(failJson);
+        //WebCommunicationManager.Manager.OnReceiveGETMessage(failJson);
         string jsonBody = @"{
      “email”: “test@test.com”,
     “password”: “assdfa”
@@ -54,14 +54,24 @@ public class JsonTest : MonoBehaviour {
 }
 ";
 
-        WebCommunicationManager.Manager.SendRequest(RequestMethod.GET, "user");
-        WebCommunicationManager.Manager.SendRequest(RequestMethod.POST, "user", jsonBody);
-        WebCommunicationManager.Manager.SendRequest(RequestMethod.DELETE, "user", jsonBody);
-        WebCommunicationManager.Manager.SendRequest(RequestMethod.PUT, "notice/" + 0, deleteBody);
+        
+
+        //WebCommunicationManager.Manager.SendRequest(RequestMethod.GET, "user");
+        //WebCommunicationManager.Manager.SendRequest(RequestMethod.POST, "user", jsonBody);
+        //WebCommunicationManager.Manager.SendRequest(RequestMethod.DELETE, "user", jsonBody);
+        //WebCommunicationManager.Manager.SendRequest(RequestMethod.PUT, "notice/" + 0, deleteBody);
+        Debug.Log("SaveLog");
+        GameLogManager.Instance.SaveLog("Testing Log");
+
+        
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (Input.GetKeyDown(KeyCode.F6))
+        {
+            Debug.Log("GetLog");
+            GameLogManager.Instance.GetLog();   
+        }
 	}
 }
