@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using NetworkComponents;
+using System.Net;
 
 public class MatchingPanel : MonoBehaviour, IObserver
 {
@@ -21,6 +22,8 @@ public class MatchingPanel : MonoBehaviour, IObserver
     private bool _isHost = false;
 
     public CanvasGroup StartingPanel;
+
+    string hostAddress = Network.player.ipAddress;
 
     private void Awake()
     {
@@ -58,13 +61,21 @@ public class MatchingPanel : MonoBehaviour, IObserver
         RemoveNotices();
     }
 
+    /*
+     매칭 패널이 열리는 순간 호출됩니다.
+     이 때, 서버와의 통신을 통해 매칭 중인 방이 없다면 OnHost를 호출해야 합니다.
+     만약 매칭 중인 방이 있다면 해당 방의 IP를 호스트 IP로 지정한 뒤, OnGuest를 호출해야 합니다.
+     
+        매칭 호스트 지정: MatchingPanel.Instance.SetHostAddress(ipAddr : string);
+         */
     public void OnOpenPanel() {
         Show();
         SetGameStarting(false);
-
-        //zero is localplayer
+        
         matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, 1, GlobalParameters.Param.accountName, true);
         matchingSlots[0].SetPlayerReady(false);
+        
+        //do smth
     }
 
     public void OnClosePanel() {
@@ -93,7 +104,15 @@ public class MatchingPanel : MonoBehaviour, IObserver
     /// <returns></returns>
     string GetHostAddress()
     {
+        IPAddress temp;
+        if (IPAddress.TryParse(hostAddress, out temp)) {
+            return hostAddress;
+        }
         return GetLocalHost();//dummy
+    }
+
+    public void SetHostAddress(string address) {
+        hostAddress = address;
     }
     
     void StartHostServer() {

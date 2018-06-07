@@ -286,6 +286,7 @@ public class CharacterModel : MonoBehaviour
         }
         DisorderStatSetting();
         UpdateStat();
+        UpdateAttackRange();
     }
 
     public void DisorderStatSetting()
@@ -711,7 +712,7 @@ public class CharacterModel : MonoBehaviour
         }
 
         UpdateStat();
-
+        UpdateAttackRange();
         if (CurrentStats.Health > CurrentStats.MaxHealth)
             CurrentStats.Health = CurrentStats.MaxHealth;
         if (CurrentStats.Stamina > CurrentStats.MaxStamina)
@@ -741,6 +742,7 @@ public class CharacterModel : MonoBehaviour
         ItemStats.StaminaRegen += equip.GetStaminaRegen();
 
         UpdateStat();
+        UpdateAttackRange();
     }
 
     //장비 제거시 스텟 업데이트
@@ -765,6 +767,7 @@ public class CharacterModel : MonoBehaviour
         ItemStats.HealthRegen -= equip.GetHealthRegen();
         ItemStats.StaminaRegen -= equip.GetStaminaRegen();
         UpdateStat();
+        UpdateAttackRange();
     }
 
     //상태이상 효과 추가
@@ -1041,14 +1044,35 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
+    public void OnDie() {
+        PlayerMoveController ctrl = gameObject.GetComponent<PlayerMoveController>();
+        Animator anim = ctrl.PlayerMovementCTRL;
+        AnimatorUtil.SetTrigger(anim, "Dead");
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
+            NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Dead");
+        }
+
+        PlayerAttackController attackController = gameObject.GetComponent<PlayerAttackController>();
+        if (attackController != null) {
+            attackController.enabled = false;
+        }
+
+        attackReceiver.gameObject.SetActive(false);
+        ctrl.enabled = false;
+    }
+
     //HP 감소
     public void SubtractHealth(float weight)
     {
+        if (IsDead()) {
+            return;
+        }
         CurrentStats.Health -= weight;
 
         if (CurrentStats.Health <= 0f)
         {
             CurrentStats.Health = 0f;
+            OnDie();
         }
         SendHealthState();
     }
@@ -1109,6 +1133,12 @@ public class CharacterModel : MonoBehaviour
         WeaponSprite();
     }
 
+    public void UpdateAttackRange() {
+        var attackCTRL = gameObject.GetComponent<PlayerAttackController>();
+        if (attackCTRL) {
+            attackCTRL.SetAttackRange(attack_range_x, attack_range_y);
+        }
+    }
 
     /// <summary>
     /// This is Odd

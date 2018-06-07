@@ -521,7 +521,7 @@ namespace NetworkComponents {
 
             Matching.MatchingView view = g.AddComponent<Matching.MatchingView>();
 
-            view.SessionId = UnityEngine.Random.Range(0, 100);
+            view.SessionId = DateTime.Now.Ticks;
             view.ServerAccountId = GlobalParameters.Param.accountId;
             view.AddHost();
             

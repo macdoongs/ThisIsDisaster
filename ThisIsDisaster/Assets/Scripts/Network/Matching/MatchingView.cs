@@ -51,7 +51,7 @@ namespace NetworkComponents.Matching {
 
     public struct MatchingData
     {
-        public int sessionId;
+        public long sessionId;
         public int serverAccountId;
         public int nodeCount;
         public MatchingNode[] nodes;
@@ -59,7 +59,7 @@ namespace NetworkComponents.Matching {
 
     public class MatchingView : MonoBehaviour
     {
-        public int SessionId = 0;
+        public long SessionId = 0;
         public int ServerAccountId = 0;
         public int NodeCount = 0;
 
