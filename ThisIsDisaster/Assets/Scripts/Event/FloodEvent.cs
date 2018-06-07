@@ -97,12 +97,28 @@ public class FloodEvent : EventBase {
 
                     var player = CharacterModel.Instance;
                     
-                    if (player.GetPlayerModel().IsInShelter() || RandomMapGenerator.Instance.GetDepth(player.transform.position) < 3)
+                    if(RandomMapGenerator.Instance.GetDepth(player.transform.position) == 1)
                     {
-                        healthDamageRate = 2.0f;
-                        staminaDamageRate = 2.0f;
-                        CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+                        healthDamageRate = 2;
+                        staminaDamageRate = 2;
+                        speedDownRate = 0.5f;
                     }
+                    else if (RandomMapGenerator.Instance.GetDepth(player.transform.position) == 2)
+                    {
+                        healthDamageRate = 1;
+                        staminaDamageRate = 2;
+                        speedDownRate = 0.3f;
+                    }
+                    else
+                    {
+                        healthDamageRate = 0;
+                        staminaDamageRate = 2;
+                        speedDownRate = 0.2f;
+                    }
+
+
+                    CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+                    
 
                     CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
                     CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
