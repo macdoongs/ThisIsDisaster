@@ -9,8 +9,8 @@ public class YellowdustEvent : EventBase
 	GameObject YellowObject = null;          // 노란 화면
 
     Timer _damageTimer = new Timer();
-    public float damageHealthPerSec = 4f;
-    public float damageEnergyPerSec = 1f;
+    public float damageHealthPerSec = 1.5f;
+    public float damageEnergyPerSec = 2f;
     public float damageTime = 1f;
 
     public YellowdustEvent()
@@ -44,18 +44,13 @@ public class YellowdustEvent : EventBase
         {
             if (_damageTimer.RunTimer())
             {
-                float healthDamageRate = 1f;
-                float staminaDamageRate = 1f;
+                float healthDamageRate = 1.5f;
+                float staminaDamageRate = 2f;
                 var player = CharacterModel.Instance;
 
-                if (player.HasItem(17))
+                if (player.toolSlot.metaInfo.metaId.Equals(31005))
                 {
-                    healthDamageRate -= 0.2f;
-                }
-
-                if (player.HasItem(20004))
-                {
-                    healthDamageRate -= 0.1f;
+                    healthDamageRate -= 1f;
                 }
 
                 if (player.GetPlayerModel().IsInShelter())
