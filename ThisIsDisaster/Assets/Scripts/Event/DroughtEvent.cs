@@ -53,7 +53,7 @@ public class DroughtEvent : EventBase
             if (_damageTimer.RunTimer())
             {
                 float healthDamageRate = 1f;
-                float staminaDamageRate = 1f;
+                float staminaDamageRate = 3f;
 
                 CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
                 CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);

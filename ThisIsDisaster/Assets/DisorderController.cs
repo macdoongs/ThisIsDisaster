@@ -64,24 +64,15 @@ public class DisorderController : MonoBehaviour {
                 timerToken = true;
             }
         }
-
-
-        //60초마다 상태이상 조건을 체크해 상태이상에 걸림
-        if (Time.time > nextTime)
-        {
-            nextTime = Time.time + TimeLeft;
-            MakeDisorder();
-        }
-
     }
 
-    void MakeDisorder()
+    public void MakeDisorder()
     {
         //스테이지가 사막이면 신기루를 만듬
-        //if(stage == desert)
-
-        MakeDisorderByProbability(Disorder.DisorderType.mirage, 25);
-
+        if (GameManager.CurrentGameManager.CurrentStageClimateTpye.Equals(ClimateType.Desert)
+        {
+            MakeDisorderByProbability(Disorder.DisorderType.mirage, 25);
+        }
 
         //이미 갈증이나 굶주림에 걸린 경우
         if (!PlayerCharacter.GetComponent<CharacterModel>().ContainDisorder(Disorder.DisorderType.thirst)

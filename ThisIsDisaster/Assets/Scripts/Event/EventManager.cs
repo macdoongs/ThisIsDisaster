@@ -120,6 +120,7 @@ public class EventManager : MonoBehaviour {
         var e = GetEvent(type);
         if (e == null) return;
         if (e.IsStarted) return;
+        DisorderController.Instance.MakeDisorder();
         e.OnStart();
         e.IsStarted = true;
 
@@ -533,6 +534,13 @@ public class EventManager : MonoBehaviour {
     {
         Timer damageTimer = new Timer();
 
+    }
+
+    public void ApplyEventStat(WeatherType type)
+    {
+        if (type.Equals(WeatherType.Cyclone))
+        {
+        }
     }
 
 }
