@@ -237,6 +237,8 @@ public class PlayerMoveController : MonoBehaviour {
 
         AnimatorUtil.SetTrigger(PlayerMovementCTRL, "Jump");
 
+        SoundLayer.CurrentLayer.PlaySound("Jump");
+
         if (input) {
             _jumpingLevel = 1;
             _jumpDelayTimer.StartTimer(jumpDelay);
