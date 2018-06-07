@@ -24,6 +24,11 @@ namespace NetworkComponents
         StartSessionNotify,
         StageStartTime,
 
+        //InGmae
+        PlayerStateInfo,
+        PlayerItemInfo,
+        PlayerAnimTrigger,
+
         GameServerRequest,
         Max//dummy End
     }
@@ -136,5 +141,24 @@ namespace NetworkComponents
 
     public struct StageStartTime {
         public DateTime startTime;
+    }
+
+    public struct PlayerStateInfo {
+        public int accountId;
+        public int playerHp;
+        public bool isPlayerDead;
+    }
+
+    public struct PlayerItemInfo {
+        public int accountId;
+        public int itemId;
+        public bool isAcquire;
+    }
+
+    public struct PlayerAnimTrigger {
+        public int playerId;
+        public int animKeyLength;
+        public string animKey;
+        
     }
 }

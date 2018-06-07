@@ -78,6 +78,12 @@ public class ItemManager {
         }
     }
 
+    public ItemTypeInfo GetItemTypeInfo(int id) {
+        ItemTypeInfo output = null;
+        _typeInfoDic.TryGetValue(id, out output);
+        return output;
+    }
+
     public static void Log(string desc, bool isError = false) {
 #if UNITY_EDITOR
         if (isError)
@@ -138,9 +144,13 @@ public class ItemManager {
     }
 
     public bool OnTryAcquireItem(DropItem item, PlayerModel player) {
-        UnityEngine.Debug.Log("player try to acquire item " + item.ItemModel.metaInfo.Name);
-        if (player._character.AddItem(item.ItemModel, 1)) {
-            return true;
+        if (!item.isRegionEffect)
+        {
+            UnityEngine.Debug.Log("player try to acquire item " + item.ItemModel.metaInfo.Name);
+            if (player._character.AddItem(item.ItemModel, 1))
+            {
+                return true;
+            }
         }
         return false;
     }

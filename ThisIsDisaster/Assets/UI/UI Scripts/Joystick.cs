@@ -5,7 +5,9 @@ using UnityEngine.EventSystems;
 public class Joystick : MonoBehaviour{
 
     public GameObject JoystickGameObject;
-    
+    public Color JoystickColor;
+    public bool floatingJoystick = true;
+
     RectTransform joysticRect {
         get { return JoystickGameObject.GetComponent<RectTransform>(); }
     }
@@ -53,8 +55,8 @@ public class Joystick : MonoBehaviour{
 
         // 조이스틱을 이동시킬 방향을 구함.(오른쪽,왼쪽,위,아래)
         JoyVec = (Pos - StickFirstPos).normalized;
-        JoyVec.x *= 2f;
-        JoyVec.y *= 2f;
+        JoyVec.x *= 1.3f;
+        JoyVec.y *= 1.3f;
 
 
         // 조이스틱의 처음 위치와 현재 내가 터치하고있는 위치의 거리를 구한다.
@@ -79,26 +81,51 @@ public class Joystick : MonoBehaviour{
 
     public void JoystickOn()
     {
-        Camera[] cameras = Camera.allCameras;
-        float input_x_rate = Input.mousePosition.x / Screen.width;
-        float input_y_rate = Input.mousePosition.y / Screen.height;
+        if (floatingJoystick)
+        {
+            Camera[] cameras = Camera.allCameras;
+            float input_x_rate = Input.mousePosition.x / Screen.width;
+            float input_y_rate = Input.mousePosition.y / Screen.height;
 
-        float x = canvasScaler.referenceResolution.x * input_x_rate;
-        float y = canvasScaler.referenceResolution.y * input_y_rate;
+            float x = canvasScaler.referenceResolution.x * input_x_rate;
+            float y = canvasScaler.referenceResolution.y * input_y_rate;
 
-        joysticRect.anchoredPosition = new Vector2(x, y);
+            joysticRect.anchoredPosition = new Vector2(x, y);
 
-        Stick.position = JoystickGameObject.transform.position;
-        StickFirstPos = Stick.position;
-        JoystickGameObject.GetComponentInChildren<Image>().color = Color.white;
-        Stick.GetComponentInChildren<Image>().color = Color.white;
-
+            Stick.position = JoystickGameObject.transform.position;
+            StickFirstPos = Stick.position;
+            JoystickGameObject.GetComponentInChildren<Image>().color = JoystickColor;
+            Stick.GetComponentInChildren<Image>().color = JoystickColor;
+        }
+        else
+        {
+            joysticRect.anchoredPosition = new Vector2(145, 307);
+            Stick.position = JoystickGameObject.transform.position;
+            StickFirstPos = Stick.position;
+            JoystickGameObject.GetComponentInChildren<Image>().color = JoystickColor;
+            Stick.GetComponentInChildren<Image>().color = JoystickColor;
+        }
     }
 
     public void JoystickOff()
     {
-        JoystickGameObject.GetComponentInChildren<Image>().color = Color.clear;
-        Stick.GetComponentInChildren<Image>().color = Color.clear;
+        if (floatingJoystick)
+        {
+            JoystickGameObject.GetComponentInChildren<Image>().color = Color.clear;
+            Stick.GetComponentInChildren<Image>().color = Color.clear;
+        }
+        else
+        {
+            joysticRect.anchoredPosition = new Vector2(145, 307);
+            Stick.position = JoystickGameObject.transform.position;
+            StickFirstPos = Stick.position;
+            JoystickGameObject.GetComponentInChildren<Image>().color = JoystickColor;
+            Stick.GetComponentInChildren<Image>().color = JoystickColor;
+        }
     }
 
+    public void FloatingJoystickSetting(bool isFloat)
+    {
+        floatingJoystick = isFloat;
+    }
 }

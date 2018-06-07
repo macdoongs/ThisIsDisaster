@@ -386,4 +386,148 @@ namespace NetworkComponents
         }
 
     }
+
+    public class PlayerStateInfoPacket : IPacket<PlayerStateInfo>{
+        public class PlayerStateInfoPacketSerializer : Serializer
+        {
+            public bool Serialize(PlayerStateInfo packet) {
+                Serialize(packet.accountId);
+                Serialize(packet.playerHp);
+                Serialize(packet.isPlayerDead);
+                return true;
+            }
+
+            public bool Deserialize(ref PlayerStateInfo packet) {
+                Deserialize(ref packet.accountId);
+                Deserialize(ref packet.playerHp);
+                Deserialize(ref packet.isPlayerDead);
+                return true;
+            }
+
+        }
+
+        private PlayerStateInfo packet;
+
+        public PlayerStateInfoPacket(PlayerStateInfo packet) {
+            this.packet = packet;
+        }
+
+        public PlayerStateInfoPacket(byte[] data) {
+            PlayerStateInfoPacketSerializer serializer = new PlayerStateInfoPacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref packet);
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.CharacterData;
+        }
+
+        public PlayerStateInfo GetPacket()
+        {
+            return packet;
+        }
+
+        public byte[] GetData()
+        {
+            PlayerStateInfoPacketSerializer serializer = new PlayerStateInfoPacketSerializer();
+            serializer.Serialize(packet);
+            return serializer.GetSerializedData();
+        }
+    }
+
+    public class PlayerItemInfoPacket : IPacket<PlayerItemInfo>{
+        public class PlayerItemInfoPacketSerializer : Serializer {
+            public bool Serialize(PlayerItemInfo packet) {
+                Serialize(packet.accountId);
+                Serialize(packet.itemId);
+                Serialize(packet.isAcquire);
+                return true;
+            }
+
+            public bool Deserialize(ref PlayerItemInfo packet) {
+                Deserialize(ref packet.accountId);
+                Deserialize(ref packet.itemId);
+                Deserialize(ref packet.isAcquire);
+                return true;
+            }
+        }
+
+        private PlayerItemInfo _packet;
+
+        public PlayerItemInfoPacket(PlayerItemInfo packet) {
+            _packet = packet;
+        }
+
+        public PlayerItemInfoPacket(byte[] data) {
+            PlayerItemInfoPacketSerializer serializer = new PlayerItemInfoPacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref _packet);
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.PlayerItemInfo;
+        }
+
+        public PlayerItemInfo GetPacket()
+        {
+            return _packet;
+        }
+
+        public byte[] GetData()
+        {
+            PlayerItemInfoPacketSerializer serializer = new PlayerItemInfoPacketSerializer();
+            serializer.Serialize(_packet);
+            return serializer.GetSerializedData();
+        }
+    }
+
+    public class PlayerAnimTriggerPacket : IPacket<PlayerAnimTrigger>
+    {
+        public class PlayerAnimTriggerPacketSerializer : Serializer {
+            public bool Serialize(PlayerAnimTrigger packet) {
+                Serialize(packet.playerId);
+                Serialize(packet.animKey.Length);
+                Serialize(packet.animKey, packet.animKey.Length);
+                return true;
+            }
+
+            public bool Deserialize(ref PlayerAnimTrigger data) {
+                Deserialize(ref data.playerId);
+                Deserialize(ref data.animKeyLength);
+                Deserialize(ref data.animKey, data.animKeyLength);
+                return true;
+            }
+        }
+
+        private PlayerAnimTrigger _packet;
+
+        public PlayerAnimTriggerPacket(PlayerAnimTrigger packet) {
+            _packet = packet;
+        }
+
+        public PlayerAnimTriggerPacket(byte[] data) {
+            PlayerAnimTriggerPacketSerializer serializer = new PlayerAnimTriggerPacketSerializer();
+            serializer.SetDesrializedData(data);
+            serializer.Deserialize(ref _packet);
+        }
+
+        public byte[] GetData()
+        {
+            PlayerAnimTriggerPacketSerializer serializer = new PlayerAnimTriggerPacketSerializer();
+            serializer.Serialize(_packet);
+            return serializer.GetSerializedData();
+        }
+
+        public PlayerAnimTrigger GetPacket()
+        {
+            return _packet;
+        }
+
+        public PacketId GetPacketID()
+        {
+            return PacketId.PlayerAnimTrigger;
+        }
+    }
 }

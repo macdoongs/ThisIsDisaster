@@ -87,6 +87,10 @@ public class MatchingPanel : MonoBehaviour, IObserver
         return Network.player.ipAddress.ToString();
     }
 
+    /// <summary>
+    /// Host의 아이디를 이어줘야합니다.
+    /// </summary>
+    /// <returns></returns>
     string GetHostAddress()
     {
         return GetLocalHost();//dummy

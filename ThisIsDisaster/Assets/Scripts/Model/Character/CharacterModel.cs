@@ -43,7 +43,7 @@ public class PlayerModel : UnitModel
     {
         return _tileSetter.GetCurrentTile();
     }
-
+    
     public override Vector3 GetCurrentPos()
     {
         return _character.transform.position;
@@ -113,7 +113,10 @@ public class CharacterModel : MonoBehaviour
         public Color color;
         public bool enabled;
     }
-    
+
+    public List<TileUnit> EffectTiles = new List<TileUnit>();
+    public long EffectItemID;
+    public bool EffectToken = false;
     //테스트용 값
     public string PlayerName = "TestID";
     public string PlayerLevel = "123";
@@ -139,7 +142,11 @@ public class CharacterModel : MonoBehaviour
     public Stats ItemStats = new Stats();
     
     public Stats DisorderStats = new Stats();
-    
+
+    public Stats EventStats = new Stats();
+
+    public Stats RegionItemStats = new Stats();
+
     public Disorder[] disorders = new Disorder[5];
 
     //아이템 착용 슬롯
@@ -190,7 +197,6 @@ public class CharacterModel : MonoBehaviour
         {
             _character = this
         };
-        
         if (attackSender)
             attackSender.SetOwner(_player);
         if (attackReceiver)
@@ -202,8 +208,12 @@ public class CharacterModel : MonoBehaviour
         initialCharacterSetting();
         InitDefaultSprite();
 
-        Instance = this;
+        //Instance = this;
         SpeedFactor = 1f;
+    }
+
+    public void SetInstance() {
+        Instance = this;
     }
 
     private void Start()
@@ -220,11 +230,9 @@ public class CharacterModel : MonoBehaviour
             _restorationTimer.StartTimer(nextTime);
             StatRegeneration();
         }
-        //if (Time.time > nextTime)
-        //{
-        //    nextTime = Time.time + TimeLeft;
-        //    StatRegeneration();
-        //}
+
+        EffectTileEffect(GetPlayerModel().GetCurrentTile());
+
     }
 
     public PlayerModel GetPlayerModel() {
@@ -447,6 +455,39 @@ public class CharacterModel : MonoBehaviour
         return output;
     }
 
+    public bool IsDead() {
+        return CurrentStats.Health <= 0f;
+    }
+
+    public virtual void WearEquipmentNetwork(int id, bool isAcquire) {
+        var info = ItemManager.Manager.GetItemTypeInfo(id);
+        
+        switch (info.itemType) {
+            case ItemType.Weapon:
+                if (!isAcquire)
+                {
+                    weaponSlot = null;
+                }
+                else {
+                    var item = ItemManager.Manager.MakeItem(id);
+                    weaponSlot = item;
+                }
+                break;
+            case ItemType.Head:
+                if (!isAcquire)
+                {
+                    headSlot = null;
+                }
+                else {
+                    var item = ItemManager.Manager.MakeItem(id);
+                    headSlot = item;
+                }
+                break;
+        }
+
+        SpriteUpdate();
+    }
+
     //장비 착용.
     public virtual bool WearEquipment(ItemModel equipment)
     {
@@ -461,6 +502,14 @@ public class CharacterModel : MonoBehaviour
                 weaponSlot = equipment;
                 AddStats(weaponSlot);
                 result = true;
+
+                if (result)
+                {
+                    if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+                    {
+                        NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)equipment.metaInfo.metaId, true);
+                    }
+                }
             }
             else
             {
@@ -487,6 +536,14 @@ public class CharacterModel : MonoBehaviour
                 headSlot = equipment;
                 AddStats(headSlot);
                 result = true;
+
+                if (result)
+                {
+                    if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+                    {
+                        NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)equipment.metaInfo.metaId, true);
+                    }
+                }
             }
             else
             {
@@ -560,7 +617,13 @@ public class CharacterModel : MonoBehaviour
             SubtractStats(weaponSlot);
             attack_range_x = default_attack_range_x;
             attack_range_y = default_attack_range_y;
+
+            if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+            {
+                NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)weaponSlot.metaInfo.metaId, false);
+            }
             weaponSlot = null;
+
         }
         else if (SlotName.Equals("clothes"))
         {
@@ -582,6 +645,10 @@ public class CharacterModel : MonoBehaviour
             }
 
             SubtractStats(headSlot);
+            if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+            {
+                NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)headSlot.metaInfo.metaId, false);
+            }
             headSlot = null;
         }
         else if (SlotName.Equals("backpack"))
@@ -745,8 +812,6 @@ public class CharacterModel : MonoBehaviour
                 break;
             }
         }
-
-
         return result;
     }
 
@@ -755,17 +820,17 @@ public class CharacterModel : MonoBehaviour
     private void UpdateStat()
     {
         DisorderStatSetting();
-        CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth;
-        CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina;
-        CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense;
+        CurrentStats.MaxHealth = DefaultStats.Health + ItemStats.Health + DisorderStats.MaxHealth + EventStats.MaxHealth;
+        CurrentStats.MaxStamina = DefaultStats.Stamina + ItemStats.Stamina + DisorderStats.MaxStamina + EventStats.MaxStamina;
+        CurrentStats.Defense = DefaultStats.Defense + ItemStats.Defense + DisorderStats.Defense + EventStats.Defense;
         if(CurrentStats.Defense < 0)
             CurrentStats.Defense = 0;
-        CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage;
+        CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage + EventStats.Damage;
         if (CurrentStats.Damage < 0)
             CurrentStats.Damage = 0;
-        CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen;
-        CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen;
-        CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed;
+        CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen + EventStats.HealthRegen + RegionItemStats.HealthRegen;
+        CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen + EventStats.StaminaRegen + RegionItemStats.StaminaRegen;
+        CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed + EventStats.MoveSpeed;
     }
 
     private void StatRegeneration()
@@ -812,16 +877,97 @@ public class CharacterModel : MonoBehaviour
         return result;
     }
 
+    private void EffectTileEffect(TileUnit currentTile)
+    {
+        if (EffectTiles.Contains(currentTile))
+        {
+            
+            if (!EffectToken)
+            {
+                if (EffectItemID.Equals(33001))
+                {
+                    RegionItemStats.StaminaRegen += 5;                    
+                }
+                else
+                {
+                    RegionItemStats.StaminaRegen += 3;
+                }
+                UpdateStat();
+            }
+            EffectToken = true;
+        }
+        else
+        {
+            RegionItemStats.StaminaRegen = 0;
+            UpdateStat();
+
+            EffectToken = false;
+        }
+    }
+
     //특수효과 처리 
     private bool SpecialEffect(ItemModel etc, bool result)
     {
         if (etc.metaInfo.metaId.Equals(33001))
         {//텐트
+            EffectItemID = etc.metaInfo.metaId;
+            TileUnit currentTile = GetPlayerModel().GetCurrentTile();
+        
+            var item = ItemManager.Manager.MakeDropItem(33001, currentTile);
+            if (EffectTiles.Contains(currentTile))
+            {
+                InGameUIScript.Instance.Notice("아이템 사용", "근처에 이미 다른 아이템이 설치되어 있습니다.");
+                result = false;
+                return result;
+            }
 
+            item.ItemRenderer.transform.localScale *= 7;
+
+            item.isRegionEffect = true;
+            result = true;
+
+            for (int i = -5; i <= 5; i++)
+            {
+                int x = currentTile.x + i;
+
+                for (int j = -5; j <= 5; j++)
+                {
+                    int y = currentTile.y + j;
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                    if (tile == null) continue;
+                    else
+                        EffectTiles.Add(tile);
+                }
+            }
         }
         else if (etc.metaInfo.metaId.Equals(33002))
         {//모닥불
+            EffectItemID = etc.metaInfo.metaId;            
+            TileUnit currentTile = GetPlayerModel().GetCurrentTile();
+            if (EffectTiles.Contains(currentTile))
+            {
+                InGameUIScript.Instance.Notice("아이템 사용", "근처에 이미 다른 아이템이 설치되어 있습니다.");
+                result = false;
+                return result;
+            }
+            var item = ItemManager.Manager.MakeDropItem(33002, currentTile);
+            item.ItemRenderer.transform.localScale *= 1.5f;
+            item.isRegionEffect = true;
+            result = true;
+       
+            for (int i = -5; i <= 5; i++)
+            {
+                int x = currentTile.x + i;
 
+                for (int j = -5; j <= 5; j++)
+                {
+                    int y = currentTile.y + j;
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                    if (tile == null) continue;
+                    else
+                        EffectTiles.Add(tile);
+                }
+            }
         }
 
         if (etc.metaInfo.metaId.Equals(41001))
@@ -883,6 +1029,13 @@ public class CharacterModel : MonoBehaviour
         {
             CurrentStats.Health = 0f;
         }
+        SendHealthState();
+    }
+
+    void SendHealthState() {
+        if (GlobalGameManager.Instance.GameNetworkType != GameNetworkType.Multi) return;
+        NetworkComponents.GameServer.Instance.SendPlayerStateInfo((int)CurrentStats.Health, CurrentStats.Health <= 0f);
+
     }
 
     //소모품 사용시 체력 회복. MaxHealth 이상은 회복되지 않음
@@ -898,7 +1051,7 @@ public class CharacterModel : MonoBehaviour
             }
             result = true;
         }
-
+        SendHealthState();
         return result;
     }
 
@@ -1148,7 +1301,6 @@ public class CharacterModel : MonoBehaviour
         {
             ;
         }
-
     }
 
 }

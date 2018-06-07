@@ -27,10 +27,7 @@ public class ItemTestCharacter : MonoBehaviour {
 
     public void Awake()
     {
-        ItemManager.Manager.AddItem(CharacterUnit, 31001, 1);
-        ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
-        ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
-        ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
+
 
     }
 
@@ -92,7 +89,10 @@ public class ItemTestCharacter : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.F9))
         {
-            GetBottle();
+            ItemManager.Manager.AddItem(CharacterUnit, 31001, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
+            ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
         }
         
         if (Input.GetKeyDown(KeyCode.F10))

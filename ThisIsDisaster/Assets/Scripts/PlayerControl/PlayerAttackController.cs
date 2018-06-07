@@ -64,6 +64,10 @@ public class PlayerAttackController : MonoBehaviour {
                 AnimatorUtil.SetInteger(MoveController.PlayerMovementCTRL, "AttackType",
                     (Sender.Owner as PlayerModel).GetAttackAnimType());
                 AnimatorUtil.SetTrigger(MoveController.PlayerMovementCTRL, "Attack");
+
+                if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
+                    NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Attack");
+                }
             }
             _attackDelayTimer.StartTimer(NextAttackDelay);
         }
@@ -79,6 +83,7 @@ public class PlayerAttackController : MonoBehaviour {
     }
     
     public bool IsAttackable() {
+        if (CharacterModel.Instance.IsDead()) return false;
         return !_attackDelayTimer.started && CharacterModel.Instance.CurrentStats.Stamina > 5f;
     }
 }
