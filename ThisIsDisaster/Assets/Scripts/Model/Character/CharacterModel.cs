@@ -32,6 +32,8 @@ public class PlayerModel : UnitModel
         //피격시 5% 확률로 부상 
         DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 5);
         _character.SubtractHealth(damage);
+
+        SoundLayer.CurrentLayer.PlaySound("se_takedamage");
     }
 
     public void SetTileSetter(AutoTileMovementSetter tileSetter) {
@@ -495,7 +497,6 @@ public class CharacterModel : MonoBehaviour
         bool result = false;
 
         ItemType equipType = equipment.metaInfo.itemType;
-
         if (equipType.Equals(ItemType.Weapon))
         {
             if(weaponSlot == null){
@@ -510,6 +511,7 @@ public class CharacterModel : MonoBehaviour
                         NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)equipment.metaInfo.metaId, true);
                     }
                 }
+                SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
             else
             {
@@ -523,6 +525,7 @@ public class CharacterModel : MonoBehaviour
                 clothesSlot = equipment;
                 AddStats(clothesSlot);
                 result = true;
+                SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
             else
             {
@@ -544,6 +547,7 @@ public class CharacterModel : MonoBehaviour
                         NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)equipment.metaInfo.metaId, true);
                     }
                 }
+                SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
             else
             {
@@ -558,6 +562,7 @@ public class CharacterModel : MonoBehaviour
                 int backpackSize = equipment.GetSize();
                 bagSize = backpackSize;
                 result = true;
+                SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
             else
             {
@@ -571,6 +576,7 @@ public class CharacterModel : MonoBehaviour
                 bottleSlot = equipment;
                 waterMax = equipment.GetSize();
                 result = true;
+                SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
             else
             {
@@ -591,6 +597,7 @@ public class CharacterModel : MonoBehaviour
                     visionLevel = toolSlot.GetVision();
                 }
                 result = true;
+                SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
             else
             {
@@ -623,6 +630,7 @@ public class CharacterModel : MonoBehaviour
                 NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)weaponSlot.metaInfo.metaId, false);
             }
             weaponSlot = null;
+            SoundLayer.CurrentLayer.PlaySound("se_unequip");
 
         }
         else if (SlotName.Equals("clothes"))
@@ -635,6 +643,7 @@ public class CharacterModel : MonoBehaviour
 
             SubtractStats(clothesSlot);
             clothesSlot = null;
+            SoundLayer.CurrentLayer.PlaySound("se_unequip");
         }
         else if (SlotName.Equals("head"))
         {
@@ -650,6 +659,7 @@ public class CharacterModel : MonoBehaviour
                 NetworkComponents.GameServer.Instance.SendPlayerItemAcquire((int)headSlot.metaInfo.metaId, false);
             }
             headSlot = null;
+            SoundLayer.CurrentLayer.PlaySound("se_unequip");
         }
         else if (SlotName.Equals("backpack"))
         {
@@ -666,6 +676,7 @@ public class CharacterModel : MonoBehaviour
             }
             bagSize = defaultBagSize;
             backpackSlot = null;
+            SoundLayer.CurrentLayer.PlaySound("se_unequip");
         }
         else if (SlotName.Equals("bottle"))
         {
@@ -675,6 +686,7 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
             bottleSlot = null;
+            SoundLayer.CurrentLayer.PlaySound("se_unequip");
         }
         else if (SlotName.Equals("tool"))
         {
@@ -694,6 +706,7 @@ public class CharacterModel : MonoBehaviour
             }
 
             toolSlot = null;
+            SoundLayer.CurrentLayer.PlaySound("se_unequip");
 
         }
 

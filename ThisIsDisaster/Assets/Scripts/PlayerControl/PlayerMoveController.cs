@@ -242,7 +242,8 @@ public class PlayerMoveController : MonoBehaviour {
         _character.SubtractStamina(_JUMP_COST);
 
         AnimatorUtil.SetTrigger(PlayerMovementCTRL, "Jump");
-
+        SoundLayer.CurrentLayer.PlaySound("se_jump");
+        
         if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
         {
             NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Jump");
