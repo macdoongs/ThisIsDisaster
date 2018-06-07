@@ -11,7 +11,9 @@ public class FireEvent : EventBase
     Timer _lifeTimer = new Timer();
     float lifeTime = GameManager.StageClockInfo.EVENT_RUN_TIME;
     public float fireLifeTime = 3f;
-    public float fireDamageTime = 1f;
+
+    public float damageHealthPerSec = 0.5f; //화재주변 데미지 2f
+    public float damageTime = 1f;
 
     public AttackSender sender;
 
@@ -41,7 +43,7 @@ public class FireEvent : EventBase
         foreach(FireObject fire in fireObjects)
         {
             fire.timer.StartTimer(fireLifeTime);
-            fire.damageTimer.StartTimer(fireDamageTime);
+            fire.damageTimer.StartTimer(damageTime);
             fire.SetActive(true);
 
         }
@@ -69,7 +71,7 @@ public class FireEvent : EventBase
         fire.effect.transform.Translate(fire.tile.transform.position);
 
         fire.timer.StartTimer(fireLifeTime);
-        fire.damageTimer.StartTimer(fireDamageTime);
+        fire.damageTimer.StartTimer(damageTime);
         fireObjects.Add(fire);
         fire.SetActive(true);
     }
@@ -94,7 +96,9 @@ public class FireEvent : EventBase
                 }
                 if(fire.damageTimer.RunTimer())
                 {
-                    fire.damageTimer.StartTimer(fireDamageTime);
+                    float healthDamageRate = 1f;
+
+                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
                 }
             }
 

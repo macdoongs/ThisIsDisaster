@@ -21,7 +21,8 @@ public class ThunderstormEvent : EventBase
 
     Timer _blinkTimer = new Timer();
     Timer _damageTimer = new Timer();
-    public float damageHealthPerSec = 3f;
+    public float damageHealthPerSec = 0.5f;
+    public float damageEnergePerSec = 2f;
     public float damageTime = 1f;
 
     Timer _thunderTimer = new Timer();
@@ -67,7 +68,7 @@ public class ThunderstormEvent : EventBase
             _lifeTimeTimer.RunTimer();
             
 
-            if (_lifeTimeTimer.elapsed < 5)
+            if (_lifeTimeTimer.elapsed < 5) // 어둠, 비 이펙트 시작
             {
                 SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
                 if (renderer != null)
@@ -78,15 +79,16 @@ public class ThunderstormEvent : EventBase
                     renderer.color = color;
                 }
             }
-            if (_lifeTimeTimer.elapsed > 10 && _lifeTimeTimer.elapsed < 20)
+            if (_lifeTimeTimer.elapsed > 10 && _lifeTimeTimer.elapsed < 20) // 비 이펙트 끝
             {
                 var rainParticle = rainObject.GetComponent<ParticleSystem>();
                 if (rainParticle != null)
                 {
                         rainParticle.maxParticles -= 5;
                 }
+                damageEnergePerSec = 0;
             }
-            if (_lifeTimeTimer.elapsed > _lifeTimeTimer.maxTime - 10f)
+            if (_lifeTimeTimer.elapsed > _lifeTimeTimer.maxTime - 10f) // 어둠 이펙트 끝
             {
 
                 SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
@@ -111,15 +113,23 @@ public class ThunderstormEvent : EventBase
         if(_damageTimer.started)
         {
 
-                //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
-                if (_damageTimer.RunTimer())
+            //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
+            if (_damageTimer.RunTimer())
+            {
+                float healthDamageRate = 1f;
+                float staminaDamageRate = 1f;
+                var player = CharacterModel.Instance;
+                if (player.GetPlayerModel().IsInShelter())
                 {
-                    float healthDamageRate = 1f;
-
-                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
-
-                    _damageTimer.StartTimer(damageTime);
+                    healthDamageRate *= 0.5f;
+                    staminaDamageRate *= 0.5f;
                 }
+
+                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                CharacterModel.Instance.SubtractStamina(damageEnergePerSec * staminaDamageRate);
+
+                _damageTimer.StartTimer(damageTime);
+            }
                 
         }
     }

@@ -952,6 +952,8 @@ public class CharacterModel : MonoBehaviour
                         EffectTiles.Add(tile);
                 }
             }
+
+            SoundLayer.CurrentLayer.PlaySound("se_tent");
         }
         else if (etc.metaInfo.metaId.Equals(33002))
         {//모닥불
@@ -981,22 +983,28 @@ public class CharacterModel : MonoBehaviour
                         EffectTiles.Add(tile);
                 }
             }
+
+            SoundLayer.CurrentLayer.PlaySound("se_bonfire");
         }
 
         if (etc.metaInfo.metaId.Equals(41001))
         {//약 특수효과
             RevoerDisorderByType(Disorder.DisorderType.poisoning);
             result = true;
+
+            SoundLayer.CurrentLayer.PlaySound("se_eatitem");
         }
         else if (etc.metaInfo.metaId.Equals(41002))
         {//구급상자 특수효과
             RevoerDisorderByType(Disorder.DisorderType.injury);
             result = true;
+            SoundLayer.CurrentLayer.PlaySound("se_eatitem");
         }
         else if (etc.metaInfo.metaId.Equals(40001) || etc.metaInfo.metaId.Equals(40002))
         {//물 특수효과
             RevoerDisorderByType(Disorder.DisorderType.thirst);
             result = true;
+            SoundLayer.CurrentLayer.PlaySound("se_eatitem");
         }
         else if (etc.metaInfo.metaId.Equals(40003))
         {//생고기 특수효과

@@ -69,7 +69,7 @@ public class DisorderController : MonoBehaviour {
     public void MakeDisorder()
     {
         //스테이지가 사막이면 신기루를 만듬
-        if (GameManager.CurrentGameManager.CurrentStageClimateTpye.Equals(ClimateType.Desert)
+        if (GameManager.CurrentGameManager.CurrentStageClimateTpye.Equals(ClimateType.Desert))
         {
             MakeDisorderByProbability(Disorder.DisorderType.mirage, 25);
         }
