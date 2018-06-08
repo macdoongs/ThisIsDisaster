@@ -23,7 +23,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     public CanvasGroup StartingPanel;
 
-    string hostAddress = Network.player.ipAddress;
+    string hostAddress = "";
+
+    public bool IsEnabled {
+        private set; get;
+    }
 
     private void Awake()
     {
@@ -33,6 +37,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     private void Start()
     {
+        hostAddress = GetLocalHost();
         //zero is account
         _slotAccount.Add(0, GlobalParameters.Param.accountId);
     }
@@ -69,6 +74,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
         매칭 호스트 지정: MatchingPanel.Instance.SetHostAddress(ipAddr : string);
          */
     public void OnOpenPanel() {
+        IsEnabled = true;
         Show();
         SetGameStarting(false);
         
@@ -80,6 +86,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     public void OnClosePanel() {
         //stop
+        IsEnabled = false;
         Hide();
         LobbyUIScript.Instance.DefaultMenu();
     }

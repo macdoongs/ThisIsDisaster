@@ -160,11 +160,14 @@ public class GameManager : MonoBehaviour {
         void EndCurrentEvent()
         {
             EventManager.Manager.EndEvent(generatedEvent);
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.EventEnded, generatedEvent);
+
         }
 
         void StartCurrentEvent()
         {
             EventManager.Manager.OnStart(generatedEvent);
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.EventStarted, generatedEvent);
 
         }
 
@@ -172,13 +175,19 @@ public class GameManager : MonoBehaviour {
         {
             EventGenerateCount--;
             generatedEvent = GameManager.CurrentGameManager.GetWeatherType();
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.EventGenerated, generatedEvent);
+            
             EventManager.Manager.OnGenerate(generatedEvent);
             //EventManager.Manager.OnStart(generatedEvent);
         }
 
         void EndStage() {
             CurrentGameManager.EndStage();
-            
+
+            var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
+            if (script != null) {
+                script.Capature();
+            }
         }
     }
 
@@ -229,10 +238,13 @@ public class GameManager : MonoBehaviour {
 
         GenerateWorld(StageGenerator.Instance.ReadNextValue());
 
+        TileUnit zeroTile = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(1);
+
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
         localPlayer.AccountId = GlobalParameters.Param.accountId;
-        
+
+        localPlayer.GetComponent<CharacterModel>().GetPlayerModel().SetCurrentTileForcely(zeroTile);
 
         if (NetworkComponents.NetworkModule.Instance != null)
         {
@@ -244,6 +256,8 @@ public class GameManager : MonoBehaviour {
             foreach (var kv in GlobalGameManager.Instance._remotePlayers) {
                 var c = MakePlayerCharacter(kv.Value.ToString(), kv.Key, false);
                 c.AccountId = kv.Value;
+
+                c.GetComponent<CharacterModel>().GetPlayerModel().SetCurrentTileForcely(zeroTile);
             }
         }
 
@@ -257,17 +271,15 @@ public class GameManager : MonoBehaviour {
     {
         //make shelter
         //add shelter item
-        var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(3);
+        var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(3);
         //Debug.LogError(randTile.x + " " + randTile.y);
         Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
-
-#if MIDDLE_PRES
+        
         var list = CellularAutomata.Instance.GetRoomsCoord(3, 20);
         foreach (var v in list) {
             TileUnit tile = RandomMapGenerator.Instance.GetTile(v.tileX, v.tileY);
-            ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], tile);
+            ItemManager.Manager.MakeDropItem(dropItems[StageGenerator.Instance.ReadNextValue(0, dropItems.Length)], tile);
         }
-#endif
     }
     
 #if MIDDLE_PRES
@@ -345,12 +357,14 @@ public class GameManager : MonoBehaviour {
 	}
 
     public void StartStage() {
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageStart, GlobalGameManager.Instance.GameNetworkType);
         _stageClock.StartStage();
     }
 
     public void EndStage() {
         //do smth
         Debug.LogError("Stage Ended");
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType);
         InGameUIScript.Instance.StageClear();
     }
 

@@ -76,9 +76,11 @@ public class PlayerModel : UnitModel
             if (shelter != null)
             {
                 Notice.Instance.Send(NoticeName.OnPlayerEnterShelter, shelter);
+                Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerEnterShelter, GlobalParameters.Param.accountName);
             }
             else {
                 Notice.Instance.Send(NoticeName.OnPlayerExitShelter);
+                Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerExitShelter, GlobalParameters.Param.accountName);
             }
         }
     }
@@ -1070,6 +1072,11 @@ public class CharacterModel : MonoBehaviour
 
         attackReceiver.gameObject.SetActive(false);
         ctrl.enabled = false;
+
+        var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
+        if (script != null) {
+            script.Capature(1f);
+        }
     }
 
     //HP 감소
