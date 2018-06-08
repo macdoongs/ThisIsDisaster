@@ -36,6 +36,7 @@ public class StatusBarUIScript : MonoBehaviour {
 
     public GameObject DisorderDescPanel;
     public Image DisorderDescImage;
+    public GameObject DisorderDescPanelTitle;
     public Text DisorderDescName;
     public Text DisorderDesc;
     public Text DisorderRecoveryCondition;
@@ -83,11 +84,16 @@ public class StatusBarUIScript : MonoBehaviour {
         disorders = PlayerCharacter.GetComponent<CharacterModel>().disorders;
         DefaultDisorder();
 
+        bool TitleToken = false;
+
         int index = 0;
         foreach (var disorder in disorders)
         {
+
+
             if (disorder != null)
             {
+                TitleToken = true;
                 Disorder.DisorderType type = disorder.disorderType;
 
                 if (type.Equals(Disorder.DisorderType.mirage))
@@ -129,6 +135,8 @@ public class StatusBarUIScript : MonoBehaviour {
             if (index == 5)
                 break;
         }
+
+        DisorderDescPanelTitle.SetActive(TitleToken);
     }
 
     public void DefaultDisorder()

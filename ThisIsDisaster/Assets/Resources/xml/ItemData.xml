@@ -153,7 +153,7 @@
   <item id="31004" type="tool_equip" name="양초" sprite="Item/sample/candle" description="아이템 설명">
     <vision>2</vision>
   </item>
-  <item id="31005" type="tool_equip" name="썬글라스" sprite="Item/sample/sun_glasses" description="아이템 설명">
+  <item id="31005" type="tool_equip" name="마스크" sprite="Item/sample/mask1" description="아이템 설명">
   </item>
   <item id="31006" type="tool_equip" name="담요" sprite="Item/sample/blanket" description="아이템 설명">
     <stamina_regen>15</stamina_regen>
