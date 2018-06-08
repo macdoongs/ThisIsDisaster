@@ -597,6 +597,12 @@ public class CharacterModel : MonoBehaviour
                 {
                     visionLevel = toolSlot.GetVision();
                 }
+
+                if (equipment.metaInfo.metaId.Equals(31005))
+                {//마스크 착용시
+                    MaskSprite();
+                }
+
                 result = true;
                 SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
@@ -704,6 +710,11 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot.GetStaminaRegen() != 0)
             {
                 SubtractStats(toolSlot);
+            }
+
+            if (toolSlot.metaInfo.metaId.Equals(31005))
+            {
+                RemoveMaskSprite();
             }
 
             toolSlot = null;
@@ -1285,6 +1296,23 @@ public class CharacterModel : MonoBehaviour
 
         }
     }       
+
+    public void MaskSprite()
+    {
+        string src = "item/sample/mask0";
+        Sprite s = Resources.Load<Sprite>(src);
+
+        SpriteParts[11].sprite = s;
+        SpriteParts[11].color = Color.white;
+        SpriteParts[11].transform.gameObject.SetActive(true);
+    }
+
+    public void RemoveMaskSprite()
+    {
+        SpriteParts[11].sprite = null;
+        SpriteParts[11].color = Color.clear;
+        SpriteParts[11].transform.gameObject.SetActive(false);
+    }
 
     public int GetReservedItemCount(ItemModel item)
     {
