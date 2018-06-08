@@ -81,6 +81,7 @@ public class EventManager : MonoBehaviour {
         Debug.Log("Generate " + evntBase.type);
         //이벤트 시작
         InGameUIScript.Instance.EventNotice(evntBase.type.ToString(), 0);
+        InGameUIScript.Instance.EventDescSetting(type);
     }
 
     EventBase GenEvent(WeatherType type) {
@@ -145,6 +146,7 @@ public class EventManager : MonoBehaviour {
         e.IsStarted = false;
         Debug.Log("End " + e.type);
         InGameUIScript.Instance.EventNotice(e.type.ToString(), 2);
+        InGameUIScript.Instance.DefaultEventDesc();
     }
 
     public void OnDestroyEvent(WeatherType type)

@@ -24,6 +24,12 @@ public class InGameUIScript : MonoBehaviour
 
     public Color DefaultNightColor;
 
+    public GameObject EventDescTitle;
+    public Image EventIconImage;
+    public Text EventNameText;
+    public GameObject EventDescPanel;
+    public Text EventDescText;
+
     public static InGameUIScript Instance
     {
         private set;
@@ -50,11 +56,6 @@ public class InGameUIScript : MonoBehaviour
             //GameManager.CurrentGameManager.Init();
             //Init();
         }
-        
-
-       
-     //   Destroy(LobbyUIScript.Instance.transform.gameObject);
-       
     }
 
     public void Init()
@@ -67,6 +68,7 @@ public class InGameUIScript : MonoBehaviour
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
         StatusBarUIScript.Instance.SetPlayerInfo(PlayerCharacter);
         InventoryUIController.Instance.InitialCategory();
+        DefaultEventDesc();
     }
 
     public void Update()
@@ -239,6 +241,96 @@ public class InGameUIScript : MonoBehaviour
     {
         SceneManager.LoadScene("Lobby Scene");
     }
+
+    public void EventDescSetting(WeatherType weather)
+    {
+        string src;
+        if (weather.Equals(WeatherType.Flood))
+        {
+            src = "EventIcon/floodEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "홍수";
+            EventDescText.text = "홍수가 발생하면 낮은 지역에 물이 차오릅니다.\n물이 차오른 지역에 있는 캐릭터는 피해를 받습니다.\n홍수가 끝날때까지 높은곳으로 대피하세요.";
+        }
+        else if (weather.Equals(WeatherType.Yellowdust))
+        {
+            src = "EventIcon/yeelowdustEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "황사";
+            EventDescText.text = "황사가 발생하면 지속적으로 피해를 받습니다.\n피난처로 대피하거나 마스크를 착용하세요.";
+        }
+        else if (weather.Equals(WeatherType.Drought))
+        {
+            src = "EventIcon/droughtEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "가뭄";
+            EventDescText.text = "가뭄이 발생하면 스테미나가 빠르게 감소합니다.\n지속적으로 물을 섭취해주세요.";
+        }
+        else if (weather.Equals(WeatherType.Fire))
+        {
+            src = "EventIcon/fireEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "화재";
+            EventDescText.text = "화재가 발생하면 불이 빠른속도로 번지게 됩니다.\n소화기 아이템을 이용해 불을 꺼주세요.";
+
+        }
+        else if (weather.Equals(WeatherType.Earthquake))
+        {
+            src = "EventIcon/earthquakeEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "지진";
+            EventDescText.text = "지진이 발생하면 진앙을 기준으로 일정범위에 큰 피해를 줍니다.\n강진이 오기 전에 진앙으로부터 최대한 멀어지세요.";
+        }
+        else if (weather.Equals(WeatherType.Thunderstorm))
+        {
+            src = "EventIcon/thunderEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "낙뢰";
+            EventDescText.text = "낙뢰에 맞으면 큰 피해를 받습니다.\n피뢰침을 설치하여 낙뢰를 대신 맞게 하세요.";
+        }
+        else if (weather.Equals(WeatherType.Landslide))
+        {
+            src = "EventIcon/landslidEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "산사태";
+            EventDescText.text = "산사태 설명";
+        }
+        else//heavysnow 
+        {
+            src = "EventIcon/heavysnowEvent";
+            Sprite s = Resources.Load<Sprite>(src);
+            EventIconImage.sprite = s;
+            EventNameText.text = "폭설";
+            EventDescText.text = "폭설이 발생하면 스테미너가 빠르게 감소합니다.\n피난처로 대피하고 모닥불을 피워 피해를 최소화하세요.";
+        }
+        EventDescTitle.SetActive(true);
+    }
+
+    public void DefaultEventDesc()
+    {
+        EventIconImage.sprite = null;
+        EventNameText.text = "";
+        EventDescText.text = "";
+        EventDescOff();
+    }
+    
+    public void EventDescOn()
+    {
+        EventDescText.gameObject.SetActive(true);
+    }
+
+    public void EventDescOff()
+    {
+        EventDescText.gameObject.SetActive(false);
+    }
+
 }
 
 
