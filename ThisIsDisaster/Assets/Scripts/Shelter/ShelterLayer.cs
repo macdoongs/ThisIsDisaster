@@ -100,7 +100,7 @@ namespace Shelter
             
             for (int i = 0; i < shelterItems.Length; i++) {
                 if (tiles.Count > shelterItems.Length - i) {
-                    TileUnit tile = tiles[UnityEngine.Random.Range(0, tiles.Count)];
+                    TileUnit tile = tiles[StageGenerator.Instance.ReadNextValue(0, tiles.Count)];
                     tiles.Remove(tile);
 
                     ItemManager.Manager.MakeDropItem(shelterItems[i], tile);

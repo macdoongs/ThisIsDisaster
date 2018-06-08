@@ -52,6 +52,11 @@ public class AttackSender : MonoBehaviour
         if (recv == null) return;
         if (_attackedTargets.Contains(recv)) return;
         if (recv.Owner.Equals(this.Owner)) return;
+        if (recv.Owner != null) {
+            if (Owner != null) {
+                if (Owner.GetType() == recv.Owner.GetType()) return;
+            }
+        }
 
         _attackedTargets.Add(recv);
         recv.OnAttackReceive(Owner, Owner.GetAttackDamage());

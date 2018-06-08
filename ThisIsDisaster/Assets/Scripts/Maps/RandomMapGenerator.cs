@@ -238,6 +238,12 @@ public class RandomMapGenerator : MonoBehaviour
         var list = _levelDic[height];
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
+
+    public TileUnit GetRandomTileByHeight_Sync(int height) {
+        if (!_levelDic.ContainsKey(height)) return null;
+        var list = _levelDic[height];
+        return list[StageGenerator.Instance.ReadNextValue(0, list.Count)];
+    }
 }
 
 //#if UNITY_EDITOR

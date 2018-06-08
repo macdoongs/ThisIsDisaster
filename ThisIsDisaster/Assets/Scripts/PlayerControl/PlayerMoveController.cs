@@ -268,7 +268,9 @@ public class PlayerMoveController : MonoBehaviour {
         if (autoTileMovementSetter.Owner != null) {
             if (autoTileMovementSetter.Owner.IsInShelter())
             {
-                transform.Translate(pos);
+                //calc movement range
+                if (autoTileMovementSetter.Owner.CurrentShelter.Unit.GetTile(pos + transform.position) != null)
+                    transform.Translate(pos);
                 return;
             }
         }

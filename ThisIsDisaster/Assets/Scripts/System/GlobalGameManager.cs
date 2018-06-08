@@ -10,10 +10,11 @@ public enum GameState
     None
 }
 
-public enum GameNetworkType {
-Single,
-Multi,
-None//Lobby etc
+public enum GameNetworkType
+{
+    Single,
+    Multi,
+    None//Lobby etc
 }
 
 public class GlobalParameters : ISavedData {
@@ -118,6 +119,12 @@ public class GlobalGameManager {
 #endif
         //testing
         SetGameNetworkType(GameNetworkType.Multi);
+
+        if (GameLogManager.Instance != null) {
+#if UNITY_EDITOR
+            Debug.Log("Ready to log");
+#endif
+        }
     }
 
     public void SetHost(bool isHost) {

@@ -46,11 +46,11 @@ public class EarthquakeEvent : EventBase
         //current.y = 0f;
         effect.transform.localRotation = Quaternion.Euler(current);
         effect.transform.localScale = Vector3.one;
-        Debug.Log("Make Bird");
+        //Debug.Log("Make Bird");
     }
 
     public void SetOriginTile() {
-        TileUnit originTile = RandomMapGenerator.Instance.GetRandomTileByHeight(0);
+        TileUnit originTile = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(0);
         _originTile = originTile;
         _effect.SetOriginTile(originTile);
     }
