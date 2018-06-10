@@ -135,17 +135,32 @@ public class NPCManager : IObserver
         {
             FixedUpdate();
         }
+        else if (notice == NoticeName.MonsterRegen) {
+            RegenMonster();
+        }
+    }
+
+    void RegenMonster() {
+        foreach (var npc in _npcs) {
+            if (npc.CurrentHp <= 0f) {
+                npc.Init();
+                var tile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);
+                npc.UpdatePosition(tile.transform.position);
+            }
+        }
     }
 
     public void ObserveNotices()
     {
         Notice.Instance.Observe(NoticeName.Update, this);
         Notice.Instance.Observe(NoticeName.FixedUpdate, this);
+        Notice.Instance.Observe(NoticeName.MonsterRegen, this);
     }
 
     public void RemoveNotices()
     {
         Notice.Instance.Remove(NoticeName.Update, this);
         Notice.Instance.Remove(NoticeName.FixedUpdate, this);
+        Notice.Instance.Remove(NoticeName.MonsterRegen, this);
     }
 }

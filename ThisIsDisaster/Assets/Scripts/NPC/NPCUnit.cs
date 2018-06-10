@@ -178,11 +178,13 @@ namespace NPC
             }
 
             FlipPivot.transform.localScale = scale;
-
         }
 
         public void OnSensePlayer(UnitModel sensor) {
             Debug.Log(string.Format("{0} {1} Sensored {2}", Model.GetUnitName(), Model.instanceId, sensor.GetUnitName()));
+            if (sensor is PlayerModel) {
+                if ((sensor as PlayerModel)._character.IsDead()) return;
+            }
             Model.OnDetectedTarget(sensor);
         }
         

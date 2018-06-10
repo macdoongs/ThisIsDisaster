@@ -27,6 +27,7 @@ public class AutoTileMovementSetter : MonoBehaviour {
     float _targetHeight = 0f;
     float _initialHeight = 0f;
     public bool DisplayStandingTile = false;
+    public bool UpdateRun = true;
 
     // Use this for initialization
     void Start () {
@@ -61,32 +62,43 @@ public class AutoTileMovementSetter : MonoBehaviour {
         Owner = owner;
     }
 
-    // Update is called once per frame
-    void Update () {
+    public void UpdateTile() {
         var cur = _map.GetTile(transform.position);
-        if (cur != _currentTile) {
+        if (cur != _currentTile)
+        {
             if (!cur) return;
 
-            if (Owner != null) {
+            if (Owner != null)
+            {
                 _currentTile.OnExitTile(Owner);
             }
 
             ChangeTile(cur);
 
-            if (Owner != null) {
+            if (Owner != null)
+            {
                 cur.OnEnterTile(Owner);
             }
         }
 
-        if (_heightChangeTimer.started) {
+        if (_heightChangeTimer.started)
+        {
             float rate = Mathf.Lerp(_initialHeight, _targetHeight, _heightChangeTimer.Rate);
             var lp = HeightPivot.transform.localPosition;
-            if (_heightChangeTimer.RunTimer()) {
+            if (_heightChangeTimer.RunTimer())
+            {
                 rate = _targetHeight;
             }
             lp.y = rate;
             HeightPivot.transform.localPosition = lp;
         }
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (!UpdateRun) return;
+
+        UpdateTile();
 	}
 
     public void SetChangeAction(OnTileChanged action) {
@@ -103,6 +115,13 @@ public class AutoTileMovementSetter : MonoBehaviour {
     public void HeightChange(TileUnit tile) {
         _targetHeight = tile.HeightLevel * _heightDelta;
         _initialHeight = HeightPivot.transform.localPosition.y;
+        if (!UpdateRun) {
+
+            var lp = HeightPivot.transform.localPosition;
+            lp.y = _targetHeight;
+            HeightPivot.transform.localPosition = lp;
+            return;
+        }
         if (_targetHeight != _initialHeight) {
             float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
             _heightChangeTimer.StartTimer(time);

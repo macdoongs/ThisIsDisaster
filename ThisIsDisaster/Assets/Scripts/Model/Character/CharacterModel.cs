@@ -31,7 +31,16 @@ public class PlayerModel : UnitModel
 
         //피격시 5% 확률로 부상 
         DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 5);
+
+        bool check = _character.IsDead() == false;
         _character.SubtractHealth(damage);
+
+        if (check) {
+            if (_character.IsDead()) {
+                Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerDead, GlobalParameters.Param.accountName, PlayerDeadType.Monster);
+            }
+        }
+        
 
         SoundLayer.CurrentLayer.PlaySound("se_takedamage");
     }
@@ -799,6 +808,8 @@ public class CharacterModel : MonoBehaviour
                 }
             }
             UpdateStat();
+
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerGetDisorder, GlobalParameters.Param.accountName, type);
         }
     }
 
@@ -819,6 +830,7 @@ public class CharacterModel : MonoBehaviour
                         }
 
                         disorders[disorders.Length - 1] = null;
+                        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerRemoveDisorder, GlobalParameters.Param.accountName, type);
                         break;
                     }
                 }

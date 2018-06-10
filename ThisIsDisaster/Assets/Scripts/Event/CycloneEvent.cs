@@ -173,7 +173,9 @@ public class CycloneEvent : EventBase, IObserver
                     speedDownRate = 0f;
                 }
 
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
+
                 CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
                 CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
 

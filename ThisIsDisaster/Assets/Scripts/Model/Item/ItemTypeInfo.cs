@@ -75,6 +75,7 @@ public class ItemTypeInfo
 
     public Dictionary<string, float> stats = new Dictionary<string, float>();
 
+    public ItemRareness rareness = ItemRareness.Middle;
 
     public List<string> tags = new List<string>();
 

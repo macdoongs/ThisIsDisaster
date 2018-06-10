@@ -120,7 +120,8 @@ public class FloodEvent : EventBase {
                     CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
                     
 
-                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                    //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                    OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                     CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
 
                     _damageTimer.StartTimer(damageTime);

@@ -6,10 +6,21 @@ using System;
 using System.Xml;
 
 namespace GameStaticData {
+    
+
     public class ItemDataLoader : StaticDataLoader
     {
         public const string _itemXmlFilePath = "xml/ItemData";
         const char _tagDiv = ',';
+
+        static ItemRareness ParseRare(string rare) {
+            switch (rare) {
+                case "low": return ItemRareness.Low;
+                case "mid": return ItemRareness.Middle;
+                case "high": return ItemRareness.High;
+                default: return ItemRareness.Middle;
+            }
+        }
 
         protected override bool Load()
         {
@@ -42,6 +53,7 @@ namespace GameStaticData {
             List<string> tags = new List<string>();
             ItemType type = ItemType.Etc;
             Dictionary<string, float> statDic = new Dictionary<string, float>();
+            ItemRareness rareness = ItemRareness.Middle;
 
             XmlNode idNode = itemNode.Attributes.GetNamedItem("id");
             if (idNode!=null) {
@@ -65,6 +77,12 @@ namespace GameStaticData {
                 maxCount = int.Parse(countNode.InnerText.Trim());
             }
 
+            XmlNode rareNode = itemNode.Attributes.GetNamedItem("rareness");
+            if (rareNode != null) {
+                string rareText = rareNode.InnerText.Trim();
+                rareness = ParseRare(rareText);
+
+            }
 
             ///태그를 안쓸것 같음       
             XmlNode tagNode = itemNode.Attributes.GetNamedItem("tag");
@@ -98,6 +116,7 @@ namespace GameStaticData {
 
             ItemTypeInfo newInfo = new ItemTypeInfo(id, name, maxCount, type, description , tags.ToArray());
             newInfo.stats = statDic;
+            newInfo.rareness = rareness;
 
 
             XmlNode spriteNode = itemNode.Attributes.GetNamedItem("sprite");
