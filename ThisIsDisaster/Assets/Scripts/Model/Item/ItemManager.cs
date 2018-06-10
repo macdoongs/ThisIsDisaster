@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+public enum ItemRareness {
+    Low,
+    Middle,
+    High
+}
+
 public class ItemManager {
     public class ItemManagement {
         public long MetaId = 0;
@@ -28,6 +34,13 @@ public class ItemManager {
         }
     }
 
+    /// <summary>
+    /// Rareness prob
+    /// </summary>
+    private const float _lowProb = 0.5f;
+    private const float _midProb = 0.3f;
+    private const float _highProb = 0.1f;
+
     long instanceId = 0;
 
     /// <summary>
@@ -42,6 +55,8 @@ public class ItemManager {
 
     private Dictionary<long, MixtureRecipe> _recipeDic = new Dictionary<long, MixtureRecipe>();
 
+    private Dictionary<ItemRareness, List<ItemTypeInfo>> _rareDic = new Dictionary<ItemRareness, List<ItemTypeInfo>>();
+
     ItemManager() {
         //Load Static Info
         
@@ -55,6 +70,12 @@ public class ItemManager {
         _typeInfoDic.Clear();
         foreach (var info in infos) {
             _typeInfoDic.Add(info.metaId, info);
+            List<ItemTypeInfo> list = null;
+            if (!_rareDic.TryGetValue(info.rareness, out list)) {
+                list = new List<ItemTypeInfo>();
+                _rareDic.Add(info.rareness, list);
+            }
+            list.Add(info);
         }
 
         //LogExistItems();
@@ -185,4 +206,21 @@ public class ItemManager {
         return recipeList;
     }
 
+    public ItemTypeInfo GetRandomItemByRare() {
+        ItemRareness rareness = ItemRareness.Middle;
+        float randVal = UnityEngine.Random.Range(0f, _lowProb + _midProb + _highProb);
+        if (randVal <= _lowProb)
+        {
+            rareness = ItemRareness.Low;
+        }
+        else if (randVal <= _midProb)
+        {
+            rareness = ItemRareness.Middle;
+        }
+        else {
+            rareness = ItemRareness.High;
+        }
+        List<ItemTypeInfo> list = _rareDic[rareness];
+        return list[UnityEngine.Random.Range(0, list.Count)];
+    }
 }

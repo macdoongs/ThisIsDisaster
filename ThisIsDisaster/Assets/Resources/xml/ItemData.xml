@@ -1,188 +1,195 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <root>
-<item id="1" type="weapon" name="장검" sprite="Item/sample/weapon01" description="아이템 설명">
-<damage>20</damage>
-<range_x>10</range_x>
-<range_y>20</range_y>
-</item>
-<item id="2" type="weapon" name="도끼" sprite="Item/sample/weapon02" description="아이템 설명">
-<damage>23</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="3" type="weapon" name="작은 망치" sprite="Item/sample/weapon03" description="아이템 설명">
-<damage>23</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="4" type="weapon" name="지팡이" sprite="Item/sample/weapon04" description="아이템 설명">
-<damage>10</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="5" type="weapon" name="목검" sprite="Item/sample/weapon05" description="아이템 설명">
-<damage>10</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="6" type="weapon" name="단검" sprite="Item/sample/weapon06" description="아이템 설명">
-<damage>12</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="7" type="weapon" name="큰 망치" sprite="Item/sample/weapon07" description="아이템 설명">
-<damage>50</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="8" type="weapon" name="대부" sprite="Item/sample/weapon08" description="아이템 설명">
-<damage>50</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="9" type="weapon" name="도검" sprite="Item/sample/weapon09" description="아이템 설명">
-<damage>50</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="10" type="weapon" name="보검" sprite="Item/sample/weapon10" description="아이템 설명">
-<damage>40</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="11" type="weapon" name="창" sprite="Item/sample/weapon11" description="아이템 설명">
-<damage>60</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="12" type="weapon" name="미늘창" sprite="Item/sample/weapon12" description="아이템 설명">
-<damage>55</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="13" type="weapon" name="소화기" sprite="Item/sample/weapon13" description="아이템 설명">
-<damage>10</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="14" type="weapon" name="식칼" sprite="Item/sample/weapon14" description="아이템 설명">
-<damage>10</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="15" type="weapon" name="톱" sprite="Item/sample/weapon15" description="아이템 설명">
-<damage>10</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="16" type="weapon" name="전기충격기" sprite="Item/sample/weapon16" description="아이템 설명">
-<damage>100</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="17" type="weapon" name="우산" sprite="Item/sample/weapon17" description="아이템 설명">
-<damage>100</damage>
-<range_x>5</range_x>
-<range_y>5</range_y>
-</item>
-<item id="10001" type="head" name="캡모자" sprite="Item/sample/cap" description="아이템 설명">
-<defense>3</defense>
-</item>
-<item id="10002" type="head" name="챙모자" sprite="Item/sample/hat" description="아이템 설명">
-<defense>3</defense>
-</item>
-<item id="10003" type="head" name="안전모" sprite="Item/sample/helmet" description="아이템 설명">
-<defense>5</defense>
-</item>
-<item id="10004" type="head" name="군용 헬멧" sprite="Item/sample/military_helmet" description="아이템 설명">
-<defense>5</defense>
-</item>
-<item id="20001" type="clothes" name="일상복" sprite="Item/sample/clothes01" description="아이템설명">
-<defense>3</defense>
-<stamina_regen>10</stamina_regen>
-</item>
-<item id="20002" type="clothes" name="츄리닝" sprite="Item/sample/clothes02" description="아이템설명">
-<defense>3</defense>
-<stamina_regen>20</stamina_regen>
-</item>
-<item id="20003" type="clothes" name="등산복" sprite="Item/sample/clothes03" description="아이템설명">
-<defense>8</defense>
-</item>
-<item id="20004" type="clothes" name="비옷" sprite="Item/sample/clothes04" description="아이템설명">
-<defense>5</defense>
-</item>
-<item id="20005" type="clothes" name="군복" sprite="Item/sample/clothes05" description="아이템설명">
-<defense>10</defense>
-</item>
-<item id="30001" type="backpack" name="기본 배낭" sprite="Item/sample/backpack1" description="가장 기본적인 가방">
-<size>10</size>
-</item>
-<item id="30002" type="backpack" name="중급 배낭" sprite="Item/sample/backpack2" description="일반적인 가방">
-<size>20</size>
-</item>
-<item id="30003" type="backpack" name="고급 배낭" sprite="Item/sample/backpack3" description="등산용 가방">
-<size>30</size>
-</item>
-<item id="30010" type="bottle" name="물통" sprite="Item/sample/bottle1" desciption="아이템 설명">
-<size>10</size>
-</item>
-<item id="30020" type="bottle" name="대용량 물통" sprite="Item/sample/bottle2" desciption="아이템 설명">
-<size>20</size>
-</item>
-<item id="31001" type="tool_equip" name="손전등" sprite="Item/sample/flashlight" description="아이템 설명">
-<vision>4</vision>
-</item>
-<item id="31002" type="tool_equip" name="횃불" sprite="Item/sample/torch" description="아이템 설명">
-<vision>3</vision>
-</item>
-<item id="31003" type="tool_equip" name="라이터" sprite="Item/sample/lighter" description="아이템 설명">
-<vision>1</vision>
-</item>
-<item id="31004" type="tool_equip" name="양초" sprite="Item/sample/candle" description="아이템 설명">
-<vision>2</vision>
-</item>
-<item id="31005" type="tool_equip" name="마스크" sprite="Item/sample/sun_glasses" description="아이템 설명">
-</item>
-<item id="31006" type="tool_equip" name="담요" sprite="Item/sample/blanket" description="아이템 설명">
-<stamina_regen>15</stamina_regen>
-</item>
-<item id="31007" type="tool_equip" name="침낭" sprite="Item/sample/sleeping_bag" description="아이템 설명">
-<stamina_regen>20</stamina_regen>
-</item>
-  <item id="33001" type="tool_use" name="텐트" sprite="Item/sample/tent" description="텐트를 설치한다. 설치시 주변에서 스테미나 회복이 늘어난다.">
+  <item id="1" type="weapon" name="장검" sprite="Item/sample/weapon01" description="아이템 설명" rareness="low">
+    <damage>20</damage>
+    <range_x>10</range_x>
+    <range_y>20</range_y>
   </item>
-  <item id="33002" type="tool_use" name="모닥불" sprite="Item/sample/campfire2" description="따듯한 모닥불이다. 설치시 주변에서 스테미나 회복이 늘어난다.">
+  <item id="2" type="weapon" name="도끼" sprite="Item/sample/weapon02" description="아이템 설명" rareness="mid">
+    <damage>23</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
   </item>
-  <item id="33003" type="tool_use" name="피뢰침" sprite="Item/sample/lightningrod" description="낙뢰가 예상되는 지점에 설치하면 낙뢰를 대신 맞아주는 피뢰침을 설치한다.">
+  <item id="3" type="weapon" name="작은 망치" sprite="Item/sample/weapon03" description="아이템 설명" rareness="low">
+    <damage>23</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
   </item>
-  <item id="33004" type="tool_use" name="AED" sprite="Item/sample/AED" description="자동제세동기. 심장의 기능이 정지하거나 호흡이 멈추었을 때 사용하는 응급 처치 기기이다. 
-아이템을 보유하고 있을 경우 플레이어 사망 시 1회 부활할 수 있다.">
+  <item id="4" type="weapon" name="지팡이" sprite="Item/sample/weapon04" description="아이템 설명" rareness="low">
+    <damage>10</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
   </item>
-  <item id="40001" type="etc" name="눈덩이" sprite="Item/sample/snow" description="아이템 설명">
-<stamina>10</stamina>
-</item>
-<item id="40002" type="etc" name="물" sprite="Item/sample/water" description="아이템 설명">
-<stamina>30</stamina>
-</item>
-<item id="40003" type="etc" name="생고기" sprite="Item/sample/meat" description="아이템 설명">
-<stamina>20</stamina>
-</item>
-<item id="41001" type="etc" name="약" sprite="Item/sample/medicine" description="비상약">
-<health>20</health>
-</item>
-<item id="41002" type="etc" name="구급 상자" sprite="Item/sample/first_aid_kit" description="아이템 설명">
-<health>80</health>
-</item>
-<item id="41003" type="etc" name="음식" sprite="Item/sample/food" description="아이템 설명">
-<stamina>30</stamina>
-</item>
-<item id="41004" type="etc" name="필기구" sprite="Item/sample/contract" description="아이템 설명">
-</item>
+  <item id="5" type="weapon" name="목검" sprite="Item/test/weapon05" description="아이템 설명" rareness="low">
+    <damage>10</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="6" type="weapon" name="단검" sprite="Item/sample/weapon06" description="아이템 설명" rareness="low">
+    <damage>12</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="7" type="weapon" name="큰 망치" sprite="Item/sample/weapon07" description="아이템 설명" rareness="mid">
+    <damage>50</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="8" type="weapon" name="대부" sprite="Item/sample/weapon08" description="아이템 설명" rareness="mid">
+    <damage>50</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="9" type="weapon" name="도검" sprite="Item/sample/weapon09" description="아이템 설명" rareness="mid">
+    <damage>50</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="10" type="weapon" name="보검" sprite="Item/sample/weapon10" description="아이템 설명" rareness="mid">
+    <damage>40</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="11" type="weapon" name="창" sprite="Item/sample/weapon11" description="아이템 설명" rareness="high">
+    <damage>60</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="12" type="weapon" name="미늘창" sprite="Item/sample/weapon12" description="아이템 설명" rareness="mid">
+    <damage>55</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="13" type="weapon" name="소화기" sprite="Item/sample/weapon13" description="아이템 설명" rareness="mid">
+    <damage>10</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+    <grade>2</grade>
+  </item>
+  <item id="14" type="weapon" name="식칼" sprite="Item/test/weapon14" description="아이템 설명" rareness="low">
+    <damage>10</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="15" type="weapon" name="톱" sprite="Item/test/weapon15" description="아이템 설명" rareness="low">
+    <damage>10</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+  </item>
+  <item id="16" type="weapon" name="전기충격기" sprite="Item/test/weapon16" description="아이템 설명" rareness="high">
+    <damage>100</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+    <grade>2</grade>
+  </item>
+  <item id="17" type="weapon" name="우산" sprite="Item/sample/weapon17" description="아이템 설명" rareness="high">
+    <damage>100</damage>
+    <range_x>5</range_x>
+    <range_y>5</range_y>
+    <grade>2</grade>
+  </item>
+  <item id="10001" type="head" name="캡모자" sprite="Item/sample/cap" description="아이템 설명" rareness="low">
+    <defense>3</defense>
+  </item>
+  <item id="10002" type="head" name="챙모자" sprite="Item/sample/hat" description="아이템 설명" rareness="low">
+    <defense>3</defense>
+  </item>
+  <item id="10003" type="head" name="안전모" sprite="Item/sample/helmet" description="아이템 설명" rareness="mid">
+    <defense>5</defense>
+  </item>
+  <item id="10004" type="head" name="군용 헬멧" sprite="Item/sample/military_helmet" description="아이템 설명" rareness="mid">
+    <defense>5</defense>
+  </item>
+  <item id="20001" type="clothes" name="일상복" sprite="Item/test/clothes01" description="아이템설명" rareness="low">
+    <defense>3</defense>
+    <stamina_regen>10</stamina_regen>
+  </item>
+  <item id="20002" type="clothes" name="츄리닝" sprite="Item/test/clothes02" description="아이템설명" rareness="mid">
+    <defense>3</defense>
+    <stamina_regen>20</stamina_regen>
+  </item>
+  <item id="20003" type="clothes" name="등산복" sprite="Item/test/clothes03" description="아이템설명" rareness="mid">
+    <defense>8</defense>
+  </item>
+  <item id="20004" type="clothes" name="비옷" sprite="Item/test/clothes04" description="아이템설명" rareness="mid">
+    <defense>5</defense>
+  </item>
+  <item id="20005" type="clothes" name="군복" sprite="Item/test/clothes05" description="아이템설명" rareness="high">
+    <defense>10</defense>
+  </item>
+  <item id="20006" type="clothes" name="공장 점퍼" sprite="Item/test/clothes06" description="아이템설명" rareness="high">
+    <defense>8</defense>
+  </item>
+  <item id="20007" type="clothes" name="간호복" sprite="Item/test/clothes07" description="아이템설명" rareness="mid">
+    <defense>5</defense>
+  </item>
+  <item id="20008" type="clothes" name="의사 가운" sprite="Item/test/clothes08" description="아이템설명" rareness="mid">
+    <defense>5</defense>
+  </item>
+  <item id="30001" type="backpack" name="기본 배낭" sprite="Item/sample/backpack1" description="가장 기본적인 가방" rareness="low">
+    <size>10</size>
+  </item>
+  <item id="30002" type="backpack" name="중급 배낭" sprite="Item/sample/backpack2" description="일반적인 가방" rareness="mid">
+    <size>20</size>
+  </item>
+  <item id="30003" type="backpack" name="고급 배낭" sprite="Item/sample/backpack3" description="등산용 가방" rareness="high">
+    <size>30</size>
+  </item>
+  <item id="30010" type="bottle" name="물통" sprite="Item/sample/bottle1" desciption="아이템 설명" rareness="low">
+    <size>10</size>
+  </item>
+  <item id="30020" type="bottle" name="대용량 물통" sprite="Item/sample/bottle2" desciption="아이템 설명" rareness="high">
+    <size>20</size>
+  </item>
+  <item id="31001" type="tool_equip" name="손전등" sprite="Item/sample/flashlight" description="아이템 설명" rareness="high">
+    <vision>4</vision>
+  </item>
+  <item id="31002" type="tool_equip" name="횃불" sprite="Item/sample/torch" description="아이템 설명" rareness="mid">
+    <vision>3</vision>
+  </item>
+  <item id="31003" type="tool_equip" name="라이터" sprite="Item/sample/lighter" description="아이템 설명" rareness="low">
+    <vision>1</vision>
+  </item>
+  <item id="31004" type="tool_equip" name="양초" sprite="Item/sample/candle" description="아이템 설명" rareness="mid">
+    <vision>2</vision>
+  </item>
+  <item id="31005" type="tool_equip" name="마스크" sprite="Item/sample/sun_glasses" description="아이템 설명">
+  </item>
+  <item id="31006" type="tool_equip" name="담요" sprite="Item/sample/blanket" description="아이템 설명" rareness="low">
+    <stamina_regen>15</stamina_regen>
+  </item>
+  <item id="31007" type="tool_equip" name="침낭" sprite="Item/sample/sleeping_bag" description="아이템 설명" rareness="mid">
+    <stamina_regen>20</stamina_regen>
+  </item>
+  <item id="33001" type="tool_use" name="텐트" sprite="Item/sample/tent" description="아이템 설명" rareness="high">
+  </item>
+  <item id="33002" type="tool_use" name="모닥불" sprite="Item/sample/campfire2" description="아이템 설명" rareness="mid">
+  </item>
+  <item id="40001" type="etc" name="눈덩이" sprite="Item/sample/snow" description="아이템 설명" rareness="low">
+    <stamina>10</stamina>
+  </item>
+  <item id="40002" type="etc" name="물" sprite="Item/sample/water" description="아이템 설명" rareness="low">
+    <stamina>30</stamina>
+  </item>
+  <item id="40003" type="etc" name="생고기" sprite="Item/sample/meat" description="아이템 설명" rareness="low">
+    <stamina>20</stamina>
+  </item>
+  <item id="41001" type="etc" name="약" sprite="Item/sample/medicine" description="비상약" rareness="mid">
+    <health>20</health>
+  </item>
+  <item id="41002" type="etc" name="구급 상자" sprite="Item/sample/first_aid_kit" description="아이템 설명" rareness="high">
+    <health>80</health>
+  </item>
+  <item id="41003" type="etc" name="음식" sprite="Item/sample/food" description="아이템 설명" rareness="mid">
+    <stamina>30</stamina>
+  </item>
+  <item id="41004" type="etc" name="필기구" sprite="Item/sample/contract" description="아이템 설명" rareness="low">
+  </item>
 
-<item id="50001" type="normal" name="나뭇가지" sprite="Item/sample/branch" description="아이템 설명"></item>
-<item id="50002" type="normal" name="부싯돌" sprite="Item/sample/flint" description="아이템 설명"></item>
-<item id="50003" type="normal" name="가죽" sprite="Item/sample/leather" description="아이템 설명"></item>
-<item id="51001" type="normal" name="강철" sprite="Item/sample/steel" description="아이템 설명"></item>
+  <item id="50001" type="normal" name="나뭇가지" sprite="Item/sample/branch" description="아이템 설명" rareness="low"></item>
+  <item id="50002" type="normal" name="부싯돌" sprite="Item/sample/flint" description="아이템 설명" rareness="low"></item>
+  <item id="50003" type="normal" name="가죽" sprite="Item/sample/leather" description="아이템 설명" rareness="low"></item>
+  <item id="51001" type="normal" name="강철" sprite="Item/sample/steel" description="아이템 설명" rareness="mid"></item>
 
 
 </root>

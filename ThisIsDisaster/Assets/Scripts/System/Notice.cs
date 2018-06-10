@@ -14,6 +14,7 @@ public static class NoticeName {
     public static string OnPlayerExitShelter = "OnPlayerExitShelter";
 
     public static string SaveGameLog = "SaveGameLog";
+    public static string MonsterRegen = "MonsterRegen";
     //network message
     public static string OnPlayerConnected = "OnPlayerConnected";
     public static string OnPlayerDisconnected = "OnPlayerDisconnected";

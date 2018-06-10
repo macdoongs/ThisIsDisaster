@@ -98,7 +98,9 @@ public class FireEvent : EventBase
                 {
                     float healthDamageRate = 1f;
 
-                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                    //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+
+                    OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                 }
             }
 

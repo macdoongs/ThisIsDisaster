@@ -19,6 +19,12 @@ public enum GameLogType {
     PlayerRemoveDisorder,
 }
 
+public enum PlayerDeadType {
+    Monster,
+    Event,
+    Environment
+}
+
 public class GameLogManager : IObserver
 {
     static class GameLogFormat {

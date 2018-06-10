@@ -2,5 +2,11 @@
 <root>
   <environment id="0" name="_tree_grass" prefab="TreeGrass" script=""/>
   <environment id="1" name="_grass" prefab="Grass" script=""/>
-  <environment id="2" name="_tree_grass" prefab="TreeGrass_Polar" script=""/>
+  <environment id="2" name="_tree_polar" prefab="TreeGrass_Polar" script=""/>
+  <environment id="3" name="_flower_1" prefab="Flower_1" script=""/>
+  <environment id="4" name="_grass_1" prefab="Grass_1" script=""/>
+  <environment id="5" name="_mushroom" prefab="Mushroom" script=""/>
+  <environment id="6" name="_stone_1" prefab="Stone_1" script=""/>
+  <environment id="7" name="_stump" prefab="Stump" script=""/>
+  <environment id="8" name="_tree_short" prefab="Tree_Short" script=""/>
 </root>

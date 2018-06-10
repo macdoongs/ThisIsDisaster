@@ -55,7 +55,8 @@ public class DroughtEvent : EventBase
                 float healthDamageRate = 1f;
                 float staminaDamageRate = 3f;
 
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                 CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
 
                 _damageTimer.StartTimer(damageTime);

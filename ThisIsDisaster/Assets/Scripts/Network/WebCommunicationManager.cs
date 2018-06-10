@@ -294,6 +294,7 @@ namespace Json
             Debug.Log("Received ReceiveMultiplayLobby");
             Debug.Log(ur[0].result_data.nickname);
         }
+
         #endregion
     }
 }
