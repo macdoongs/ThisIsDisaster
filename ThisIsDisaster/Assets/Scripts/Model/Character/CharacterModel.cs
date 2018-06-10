@@ -127,6 +127,10 @@ public class CharacterModel : MonoBehaviour
         public bool enabled;
     }
 
+    public bool isPlayerDead = false;
+
+    public bool MoveRestrict = false;
+
     public List<TileUnit> EffectTiles = new List<TileUnit>();
     public long EffectItemID;
     public bool EffectToken = false;
@@ -145,7 +149,7 @@ public class CharacterModel : MonoBehaviour
     private int defaultVisionLevel = 0;
 
     public Stats CurrentStats = new Stats();
-
+    public float tempMoveSpeed;
     public int attack_range_x = 0;
     public int attack_range_y = 0;
     public int bagSize = 0;
@@ -238,10 +242,18 @@ public class CharacterModel : MonoBehaviour
     Timer _restorationTimer = new Timer();//회복 타이머
     private void Update()
     {
+        if (MoveRestrict)
+        {
+            CurrentStats.MoveSpeed = 0;
+        }
+
         //일정 시간마다 HP, Stamina 회복
         if (_restorationTimer.RunTimer()) {
-            _restorationTimer.StartTimer(nextTime);
-            StatRegeneration();
+            if (!isPlayerDead)
+            {
+                _restorationTimer.StartTimer(nextTime);
+                StatRegeneration();
+            }
         }
 
         EffectTileEffect(GetPlayerModel().GetCurrentTile());
@@ -443,7 +455,15 @@ public class CharacterModel : MonoBehaviour
     }
 
     public bool HasItem(int itemMetaId) {
-        return ItemSpace.ContainsKey(itemMetaId);
+        
+        foreach(var item in ItemLists)
+        {
+            if (item.metaInfo.metaId.Equals(itemMetaId))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void PrintItemsInItems()
@@ -614,6 +634,12 @@ public class CharacterModel : MonoBehaviour
                     MaskSprite();
                 }
 
+                if (equipment.metaInfo.metaId.Equals(31006)|| equipment.metaInfo.metaId.Equals(31007))
+                {
+                    tempMoveSpeed = CurrentStats.MoveSpeed;
+                    MoveRestrict = true;
+                }
+
                 result = true;
                 SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
@@ -726,6 +752,11 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot.metaInfo.metaId.Equals(31005))
             {
                 RemoveMaskSprite();
+            }
+            if (toolSlot.metaInfo.metaId.Equals(31006) || toolSlot.metaInfo.metaId.Equals(31007))
+            {
+                CurrentStats.MoveSpeed = tempMoveSpeed;
+                MoveRestrict = false;
             }
 
             toolSlot = null;
@@ -929,9 +960,13 @@ public class CharacterModel : MonoBehaviour
                 {
                     RegionItemStats.StaminaRegen += 5;                    
                 }
-                else
+                else if(EffectItemID.Equals(33002))
                 {
                     RegionItemStats.StaminaRegen += 3;
+                }
+                else
+                {
+                    //피뢰침 효과
                 }
                 UpdateStat();
             }
@@ -1014,6 +1049,37 @@ public class CharacterModel : MonoBehaviour
 
             SoundLayer.CurrentLayer.PlaySound("se_bonfire");
         }
+        else if (etc.metaInfo.metaId.Equals(33003))
+        {
+            EffectItemID = etc.metaInfo.metaId;
+            TileUnit currentTile = GetPlayerModel().GetCurrentTile();
+            if (EffectTiles.Contains(currentTile))
+            {
+                InGameUIScript.Instance.Notice("아이템 사용", "근처에 이미 다른 아이템이 설치되어 있습니다.");
+                result = false;
+                return result;
+            }
+            var item = ItemManager.Manager.MakeDropItem(33003, currentTile);
+            item.ItemRenderer.transform.localScale *= 1.5f;
+            item.isRegionEffect = true;
+            result = true;
+
+            for (int i = -5; i <= 5; i++)
+            {
+                int x = currentTile.x + i;
+
+                for (int j = -5; j <= 5; j++)
+                {
+                    int y = currentTile.y + j;
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                    if (tile == null) continue;
+                    else
+                        EffectTiles.Add(tile);
+                }
+            }
+
+            //SoundLayer.CurrentLayer.PlaySound("se_bonfire");
+        }
 
         if (etc.metaInfo.metaId.Equals(41001))
         {//약 특수효과
@@ -1089,6 +1155,14 @@ public class CharacterModel : MonoBehaviour
         if (script != null) {
             script.Capature(1f);
         }
+        isPlayerDead = true;
+        
+        InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33003));
+    }
+
+    public void AEDContain()
+    {
+
     }
 
     //HP 감소
@@ -1352,6 +1426,13 @@ public class CharacterModel : MonoBehaviour
         SpeedFactor = value;
     }
 
+    public void RetryGame()
+    {
+        isPlayerDead = false;
+        CurrentStats.Health = CurrentStats.MaxHealth;
+        CurrentStats.Stamina = CurrentStats.MaxStamina;
+    }
+
 
     public class Stats
     {
@@ -1400,5 +1481,7 @@ public class CharacterModel : MonoBehaviour
             ;
         }
     }
+
+
 
 }
