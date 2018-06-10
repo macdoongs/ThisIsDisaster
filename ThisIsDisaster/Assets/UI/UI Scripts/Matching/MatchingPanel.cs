@@ -53,8 +53,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
         _slotAccount.Add(0, GlobalParameters.Param.accountId);
 
 
-        matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, GlobalParameters.Param.accountLevel, GlobalParameters.Param.accountName, false);
+        matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, GlobalParameters.Param.accountLevel, GlobalParameters.Param.accountName, true);
         matchingSlots[0].SetPlayerReady(false);
+        matchingSlots[1].SetPlayerReady(false);
+        matchingSlots[2].SetPlayerReady(false);
+        matchingSlots[3].SetPlayerReady(false);
     }
 
     private void Update()
@@ -100,7 +103,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
         SetGameStarting(false);
 
         GoMatching();
-        InvokeRepeating("GetMultiplayLobby", 3.0f, 3.0f);
+        GetMultiplayLobby();
 
     }
 
@@ -353,7 +356,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
         JsonData result_data = jsonResult["result_data"];
         resultMsg = jsonResult["result_msg"].ToString();
 
-        string player = result_data["email"].ToString();
+        string playerEmail = result_data["email"].ToString();
 
         string userData = JsonHelper.fixJson(result_data["user_list"].ToJson());
         Json.User[] users = JsonHelper.FromJson<Json.User>(userData);
@@ -363,48 +366,60 @@ public class MatchingPanel : MonoBehaviour, IObserver
         Debug.Log(userData);
 
         int[] order = new int[4];
-        for (int i = 0; i < users.Length; i++)
+
+        int idx = -1;
+        int num = users.Length;
+
+        for (int i = 0; i < num; i++)
         {
             if (users[i].role == "host")
             {
                 hostIP = users[i].ip;
-                OnHost();
             }
-            else
+
+            if (users[i].email == playerEmail)
             {
-                MatchingPanel.Instance.SetHostAddress(hostIP);
-                OnGuest();
+                idx = i;
             }
-
-
-            if (users[i].email == player)
-            {
-                if (i > 0)
-                {
-                    int temp = order[0];
-                    order[0] = i;
-                    order[i] = temp;
-                }
-            }
-
 
         }
 
+        matchingSlots[0].SetPlayer(users[idx].id, users[idx].level, users[idx].nickname, true);
+        
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 1; i < 4; i++)
         {
-            if(i > users.Length - 1)
+            if(i >= num)
             {
-                matchingSlots[i] = new MatchingSlot();
-
+                matchingSlots[i].ClearPlayer();
             }
-            else
+            else if(i < num)
             {
-                matchingSlots[i].SetPlayer(users[i].id, users[i].level, users[i].nickname, false);
-                matchingSlots[i].SetPlayerReady(false);
+                for (int k = i-1; k < num; k++)
+                {
+                    if(k == idx)
+                    {
+                        continue;
+                    }
+                    matchingSlots[i].SetPlayer(users[k].id, users[k].level, users[k].nickname, false);
+                    break;
+                }
 
             }
         }
+
+        MatchingPanel.Instance.SetHostAddress(hostIP);
+        if (users[idx].role == "host")
+        {
+            Debug.Log("host");
+            OnHost();
+        }
+        else
+        {
+            Debug.Log("guest");
+            OnGuest();
+        }
+
     }
 
     public void PostHttpRequest()

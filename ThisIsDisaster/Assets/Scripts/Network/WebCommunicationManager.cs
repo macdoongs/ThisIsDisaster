@@ -268,7 +268,7 @@ namespace Json
 
             UserResponse ur = JsonUtility.FromJson<UserResponse>(message);
             Debug.Log("Received User Response");
-            if(ur.result_code == 200)
+            if(ur.result_code == 200 && ur.result_data.email != "test@gmail.com")
             {
                 GlobalParameters.Param.accountId = ur.result_data.id;
                 GlobalParameters.Param.accountName = ur.result_data.nickname;

@@ -59,7 +59,7 @@ public class LobbySceneScript : MonoBehaviour {
     public void SetUI()
     {
 
-        PlayerName.text = GlobalParameters.Param.accountName.ToString();
+        PlayerName.text = GlobalParameters.Param.accountName;
         PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
         PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
     }

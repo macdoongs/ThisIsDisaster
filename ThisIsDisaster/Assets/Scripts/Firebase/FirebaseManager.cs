@@ -83,8 +83,10 @@ public class FirebaseManager : MonoBehaviour
 		if (auth.CurrentUser != user) { 
 
 			if (!SignedInFirebase && user != null) { 
-				Debug.LogFormat("Signed out {0}", user.UserId); 
-			} 
+				Debug.LogFormat("Signed out {0}", user.UserId);
+                GlobalParameters.Param.accountName = user.DisplayName;
+                GlobalParameters.Param.accountEmail = user.Email;
+            } 
 			user = auth.CurrentUser; 
 			if (SignedInFirebase) { 
 				Log(string.Format("Signed in {0}", user.UserId)); 
@@ -92,9 +94,18 @@ public class FirebaseManager : MonoBehaviour
 				emailAddress = user.Email ?? ""; 
 				Log(string.Format("Signed in {0} _ {1}", displayName, emailAddress));
 
-            } 
-		} 
-	} 
+                GlobalParameters.Param.accountName = displayName;
+                GlobalParameters.Param.accountEmail = emailAddress;
+
+            }
+        }
+        else
+        {
+            GlobalParameters.Param.accountEmail = auth.CurrentUser.Email;
+            GlobalParameters.Param.accountName = auth.CurrentUser.DisplayName;
+            
+        }
+    } 
 
 
         #region FACEBOOK 로그인 
