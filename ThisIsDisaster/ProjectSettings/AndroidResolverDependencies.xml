@@ -58,5 +58,6 @@
     <file>Assets/Plugins/Android/com.google.firebase.firebase-core-12.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-12.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-license-12.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.games.gpgs-plugin-support-0.9.50.aar</file>
   </files>
 </dependencies>

@@ -57,9 +57,8 @@ public class GameLogManager : IObserver
 
     public class LogMessage {
         public int id = 0;
-        public string title = "error";
+        public string title = "gamelog";
         public string log = "";
-        public long create = 1525685748965;
 
         public LogMessage(string log) {
             id = GlobalParameters.Param.accountId;
@@ -78,14 +77,14 @@ public class GameLogManager : IObserver
             return _instance;
         }
     }
-    private const string _errorLog = "error/";
-    private const string logFormat = "“id”:“{0}”, “title”:“error”, “log”:“{1}”, “create”: 1525685748965";
+    private const string _gameLog = "game/log/";
+    private const string logFormat = "“id”:“{0}”, “title”:“error”, “log”:“{1}”";
 
     static string LogSrc
     {
         get
         {
-            return _errorLog;
+            return _gameLog;
         }
     }
 
@@ -107,7 +106,7 @@ public class GameLogManager : IObserver
     }
 
     public string GetLog() {
-        WebManager.SendRequest(Json.RequestMethod.GET, "errors");
+        WebManager.SendRequest(Json.RequestMethod.GET, "game/logs");
         return "";  
     }
 

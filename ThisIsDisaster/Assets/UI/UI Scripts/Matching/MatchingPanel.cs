@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using NetworkComponents;
+using System.IO;
 using System.Net;
+using LitJson;
+using System.Text;
 
 public class MatchingPanel : MonoBehaviour, IObserver
 {
@@ -25,6 +28,14 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     string hostAddress = "";
 
+
+
+    private string url = "http://api.thisisdisaster.com/";
+    private string result = null;
+
+    int resultCode = 0;
+    string resultMsg;
+
     public bool IsEnabled {
         private set; get;
     }
@@ -40,10 +51,17 @@ public class MatchingPanel : MonoBehaviour, IObserver
         hostAddress = GetLocalHost();
         //zero is account
         _slotAccount.Add(0, GlobalParameters.Param.accountId);
+
+
+        matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, GlobalParameters.Param.accountLevel, GlobalParameters.Param.accountName, false);
+        matchingSlots[0].SetPlayerReady(false);
     }
 
     private void Update()
     {
+        if(!IsEnabled)
+            CancelInvoke("GetMultiplayLobby");
+
         if (_delayEventTrigger.started)
         {
             if (_delayEventTrigger.RunTimer())
@@ -52,6 +70,8 @@ public class MatchingPanel : MonoBehaviour, IObserver
                 {
                     _delayEvent();
                 }
+
+                
             }
         }
     }
@@ -75,13 +95,13 @@ public class MatchingPanel : MonoBehaviour, IObserver
          */
     public void OnOpenPanel() {
         IsEnabled = true;
+
         Show();
         SetGameStarting(false);
-        
-        matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, 1, GlobalParameters.Param.accountName, true);
-        matchingSlots[0].SetPlayerReady(false);
-        
-        //do smth
+
+        GoMatching();
+        InvokeRepeating("GetMultiplayLobby", 3.0f, 3.0f);
+
     }
 
     public void OnClosePanel() {
@@ -89,6 +109,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
         IsEnabled = false;
         Hide();
         LobbyUIScript.Instance.DefaultMenu();
+
+
+        string email = GlobalParameters.Param.accountEmail;
+
+        WebManager.SendRequest(Json.RequestMethod.POST, "game/multiplay/leave?email=" + email, "");
     }
 
     void Show() {
@@ -98,7 +123,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     void Hide() {
         AnimatorUtil.SetTrigger(PivotCTRL, "Hide");
     }
-
+    
     #region Network
     string GetLocalHost()
     {
@@ -159,16 +184,20 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
     public void OnHost() {
         SetIsHost(true);
+#if true
         GameServer.Instance.SetLocalAddress(GetLocalHost());
         GameServer.Instance.InitializeNetworkModule();
+
         //StartUdpServer();
         StartUdpServer(NetConfig.GAME_PORT);
         StartHostServer();
+#endif
         GameServer.Instance.MakeMatchingView();
     }
 
     public void OnGuest() {
         SetIsHost(false);
+#if true
         GameServer.Instance.SetLocalAddress(GetLocalHost());
         GameServer.Instance.InitializeNetworkModule();
         ConnectToHost();
@@ -179,6 +208,8 @@ public class MatchingPanel : MonoBehaviour, IObserver
         //_delayEventTrigger.StartTimer(1f);
         //StartUdpServer();
         //GameServer.Instance.SendMatchingRequest();
+        
+#endif
     }
 
     void SendMatchingRequest() {
@@ -193,11 +224,25 @@ public class MatchingPanel : MonoBehaviour, IObserver
         GameServer.Instance.SendGameServerRequest(GameServerRequestType.MatchingData);
     }
 
+
+    Json.WebCommunicationManager WebManager
+    {
+        get
+        {
+            return Json.WebCommunicationManager.Manager;
+        }
+    }
+
+
     public void OnClickGameStart() {
         if (!_isHost) return;
         GlobalGameManager.Instance.SetGameNetworkType(GameNetworkType.Multi);
         GlobalGameManager.Instance.OnGameStart();
         GameServer.Instance.DestroyMatchingView();
+
+        string email = GlobalParameters.Param.accountEmail;
+
+        WebManager.SendRequest(Json.RequestMethod.GET, "game/start?mode=multiplay&email=" + email, "");
     }
 
     public void SetIsHost(bool isHost) {
@@ -290,5 +335,129 @@ public class MatchingPanel : MonoBehaviour, IObserver
         StartingPanel.alpha = state ? 1f : 0f;
     }
 
-    #endregion
+#endregion
+
+
+    public void GetHttpRequest(string url)
+    {
+        WebClient webClient = new WebClient();
+        Stream stream = webClient.OpenRead(url);
+        result = new StreamReader(stream).ReadToEnd();
+    }
+
+    public void GetDataFromJson()
+    {
+        JsonData jsonResult = JsonMapper.ToObject(result);
+        resultCode = int.Parse(jsonResult["result_code"].ToString());
+
+        JsonData result_data = jsonResult["result_data"];
+        resultMsg = jsonResult["result_msg"].ToString();
+
+        string player = result_data["email"].ToString();
+
+        string userData = JsonHelper.fixJson(result_data["user_list"].ToJson());
+        Json.User[] users = JsonHelper.FromJson<Json.User>(userData);
+
+        string hostIP = "";
+
+        Debug.Log(userData);
+
+        int[] order = new int[4];
+        for (int i = 0; i < users.Length; i++)
+        {
+            if (users[i].role == "host")
+            {
+                hostIP = users[i].ip;
+                OnHost();
+            }
+            else
+            {
+                MatchingPanel.Instance.SetHostAddress(hostIP);
+                OnGuest();
+            }
+
+
+            if (users[i].email == player)
+            {
+                if (i > 0)
+                {
+                    int temp = order[0];
+                    order[0] = i;
+                    order[i] = temp;
+                }
+            }
+
+
+        }
+
+
+        for (int i = 0; i < 4; i++)
+        {
+            if(i > users.Length - 1)
+            {
+                matchingSlots[i] = new MatchingSlot();
+
+            }
+            else
+            {
+                matchingSlots[i].SetPlayer(users[i].id, users[i].level, users[i].nickname, false);
+                matchingSlots[i].SetPlayerReady(false);
+
+            }
+        }
+    }
+
+    public void PostHttpRequest()
+    {
+        Debug.Log("PostHttpRequest");
+
+        string email = GlobalParameters.Param.accountEmail;
+
+
+        Json.User userData = new Json.User();
+
+        userData.email = email;
+        userData.ip = GetLocalHost();
+
+        var jsonMsg = JsonUtility.ToJson(userData);
+
+        WebManager.SendRequest(Json.RequestMethod.POST, "game/multiplay/join", jsonMsg);
+
+        /*
+        WebClient webClient = new WebClient();
+
+        Json.User user = new Json.User();
+        user.email = GlobalParameters.Param.accountEmail;
+        user.ip = GetLocalHost();
+
+
+        using (WebClient client = new WebClient())
+        {
+            Debug.Log("using WebClient");
+            var reqparm = new System.Collections.Specialized.NameValueCollection();
+            reqparm.Add("email", user.email);
+            reqparm.Add("ip", user.ip);
+
+            Debug.Log(reqparm);
+
+            byte[] responsebytes = client.UploadValues(url + "game/multiplay/join", "POST", reqparm);
+            string responsebody = Encoding.UTF8.GetString(responsebytes);
+        }
+        */
+    }
+
+    void GoMatching() {
+        PostHttpRequest();
+    }
+
+    void GetMultiplayLobby()
+    {
+        Debug.Log("GetMultiplayLobby");
+        string email = GlobalParameters.Param.accountEmail;
+
+        Debug.Log(email);
+
+        GetHttpRequest(url + "game/multiplay/lobby?email=" + email);
+        GetDataFromJson();
+    }
 }

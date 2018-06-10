@@ -9,10 +9,10 @@ namespace Json
     {
         public int result_code;
         public string result_msg;
-        public string response_type;
+        public string result_type;
 
         public Response() {
-            response_type = typeof(Response).ToString();
+            result_type = typeof(Response).ToString();
         }
 
         public bool GetResult()
@@ -29,10 +29,15 @@ namespace Json
     [Serializable]
     public class User
     {
+        public int id;
+        public string email;
         public string nickname;
-        public string score;
-        public string level;
-        public string gold;
+        public int score;
+        public int level;
+        public int exp;
+        public int gold;
+        public string ip;
+        public string role;
     }
 
     [Serializable]
@@ -41,7 +46,7 @@ namespace Json
         public User result_data;
 
         public UserResponse() {
-            response_type = typeof(UserResponse).ToString();
+            result_type = "User";
         }
         
         public static new UserResponse CreateFromJson(string jsonString) {

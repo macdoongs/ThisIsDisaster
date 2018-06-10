@@ -21,7 +21,13 @@ public class GlobalParameters : ISavedData {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
     public string accountName = "Player";
-    
+    public string accountEmail = "test@gmail.com";
+    public int accountLevel = 1;
+    public int accountExp = 0;
+    public int accountScore = 0;
+    public int accountGold = 0;
+
+    public bool isLoad = false;
     public bool isConnected = false;
     public bool isDisconnnected = false;
 
@@ -34,6 +40,12 @@ public class GlobalParameters : ISavedData {
         Dictionary<string, object> output = new Dictionary<string, object>();
         output.Add("accountId", accountId);
         output.Add("accountName", accountName);
+        output.Add("accountEmail", accountEmail);
+        output.Add("accountLevel", accountLevel);
+        output.Add("accountExp", accountExp);
+        output.Add("accountScore", accountScore);
+        output.Add("accountGold", accountGold);
+
         return output;
     }
 
@@ -41,6 +53,11 @@ public class GlobalParameters : ISavedData {
     {
         FileManager.TryGetValue(data, "accountId", ref accountId);
         FileManager.TryGetValue(data, "accountName", ref accountName);
+        FileManager.TryGetValue(data, "accountEmail", ref accountEmail);
+        FileManager.TryGetValue(data, "accountLevel", ref accountLevel);
+        FileManager.TryGetValue(data, "accountExp", ref accountExp);
+        FileManager.TryGetValue(data, "accountScore", ref accountScore);
+        FileManager.TryGetValue(data, "accountGold", ref accountGold);
     }
 
     public string GetPath()

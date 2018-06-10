@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 
 public class LobbySceneScript : MonoBehaviour {
 
-    private string url = "http://api.thisisdisaster.com/user/lobby";
+    //private string url = "http://api.thisisdisaster.com/user";
     private string result = null;
 
     public Text PlayerName;
@@ -17,53 +18,49 @@ public class LobbySceneScript : MonoBehaviour {
     public Text PlayerExp;
 
 
-    public string name;
-    public int level;
-    public float exp;
-    public long gold;
+    public string nickname = "DefaultName";
+    public int level = 1;
+    public int exp = 0;
+    public int gold = 0;
 
     int resultCode = 0;
     string resultMsg;
 
     // Use this for initialization
-    void Start () {
-        GetHttpRequest();
-        GetDataFromJson();
-        if(resultCode == 200)
-            SetUI();
+    void Start ()
+    {
+        LoadUser();
+        SetUI();
+        InvokeRepeating("SetUI", 0f, 5.0f);
     }
 	
 	// Update is called once per frame
-	void Update () {
-        if (resultCode == 200)
+	void Update ()
+    {
         SetUI();
     }
 
-    public void GetHttpRequest()
+    Json.WebCommunicationManager WebManager
     {
-        WebClient webClient = new WebClient();
-        Stream stream = webClient.OpenRead(url);
-        result = new StreamReader(stream).ReadToEnd();
+        get
+        {
+            return Json.WebCommunicationManager.Manager;
+        }
     }
 
-    public void GetDataFromJson()
+
+    public void LoadUser()
     {
-        JsonData jsonResult = JsonMapper.ToObject(result);
-        resultCode = int.Parse(jsonResult["result_code"].ToString());
+        string email = GlobalParameters.Param.accountEmail;
 
-        JsonData result_data = jsonResult["result_data"];
-        resultMsg = jsonResult["result_msg"].ToString();
-
-        name = result_data["nickname"].ToString();
-        level = int.Parse(result_data["level"].ToString());
-        exp = float.Parse(result_data["exp"].ToString());
-        gold = int.Parse(result_data["gold"].ToString());
+        WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + email, "");
     }
-
+    
     public void SetUI()
     {
-        PlayerName.text = name;
-        PlayerLevel.text = level.ToString();
-        PlayerExp.text = exp.ToString();
+
+        PlayerName.text = GlobalParameters.Param.accountName.ToString();
+        PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
+        PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
     }
 }
