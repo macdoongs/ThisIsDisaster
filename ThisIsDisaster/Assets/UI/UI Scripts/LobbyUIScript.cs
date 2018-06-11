@@ -114,8 +114,12 @@ public class LobbyUIScript : MonoBehaviour {
         if (mode == 1) {
             matching.OnOpenPanel();
         }
-        else
+        else {
+            if (matching.IsEnabled) {
+                matching.OnClosePanel();
+            }
             StartPanel.SetActive(true);
+        }
     }
 
     public void StartGame()

@@ -48,10 +48,14 @@ public class GameManager : MonoBehaviour {
         public const float EVENT_RUN_TIME = 70f;
         public const float EVENT_END_TIME = 20f;
         public const float STAGE_CLOSE_TIME = 5f;
+
+        public const float MONSTER_REGEN_TIME = 30f;
+
         public Timer stageTimer = new Timer();
         public StageEventType currentEventType = StageEventType.Init;
         public StageEventType nextEventType = StageEventType.Ready;
         public Timer eventHandleTimer = new Timer();
+        public Timer monsterRegenTimer = new Timer();
 
         private bool clockEnabled = false;
         public int EventGenerateCount = 2;
@@ -63,7 +67,8 @@ public class GameManager : MonoBehaviour {
             currentEventType = StageEventType.Init;
             nextEventType = StageEventType.Ready;
             SetNextEventTime(nextEventType, true);
-            
+
+            monsterRegenTimer.StartTimer(MONSTER_REGEN_TIME);
         }
 
         public void SetEventGenerateCount(int count) {
@@ -104,6 +109,11 @@ public class GameManager : MonoBehaviour {
 
         public void Update() {
             stageTimer.RunTimer();
+            if (monsterRegenTimer.RunTimer()) {
+                monsterRegenTimer.StartTimer(MONSTER_REGEN_TIME);
+                //
+                Notice.Instance.Send(NoticeName.MonsterRegen);
+            }
             if (clockEnabled) {
                 CurrentGameManager.UpdateClock(eventHandleTimer.elapsed, eventHandleTimer.maxTime);
             }
@@ -160,11 +170,14 @@ public class GameManager : MonoBehaviour {
         void EndCurrentEvent()
         {
             EventManager.Manager.EndEvent(generatedEvent);
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.EventEnded, generatedEvent);
+
         }
 
         void StartCurrentEvent()
         {
             EventManager.Manager.OnStart(generatedEvent);
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.EventStarted, generatedEvent);
 
         }
 
@@ -172,13 +185,15 @@ public class GameManager : MonoBehaviour {
         {
             EventGenerateCount--;
             generatedEvent = GameManager.CurrentGameManager.GetWeatherType();
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.EventGenerated, generatedEvent);
+            
             EventManager.Manager.OnGenerate(generatedEvent);
             //EventManager.Manager.OnStart(generatedEvent);
         }
 
         void EndStage() {
-            CurrentGameManager.EndStage();
-            
+            CurrentGameManager.EndStage(true);
+
         }
     }
 
@@ -200,12 +215,15 @@ public class GameManager : MonoBehaviour {
 
     public UnitControllerBase CommonPlayerObject;
 
-    public ClimateType CurrentStageClimateTpye = ClimateType.Island;
+    public ClimateType CurrentStageClimateType = ClimateType.Island;
 
     private StageClockInfo _stageClock = new StageClockInfo();
     private StageGenerator.ClimateInfo _currentClimateInfo = null;
 
     public UnityEngine.UI.Text Clock;
+    int[] fieldDropItems = new int[] {
+            5,1,6,10001,20001,30001,310004
+        };
 
     private void Awake()
     {
@@ -229,10 +247,13 @@ public class GameManager : MonoBehaviour {
 
         GenerateWorld(StageGenerator.Instance.ReadNextValue());
 
+        TileUnit zeroTile = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(1);
+
         var localPlayer = MakePlayerCharacter(GlobalParameters.Param.accountName,
             GlobalParameters.Param.accountId, true);
         localPlayer.AccountId = GlobalParameters.Param.accountId;
-        
+
+        localPlayer.GetComponent<CharacterModel>().GetPlayerModel().SetCurrentTileForcely(zeroTile);
 
         if (NetworkComponents.NetworkModule.Instance != null)
         {
@@ -244,6 +265,8 @@ public class GameManager : MonoBehaviour {
             foreach (var kv in GlobalGameManager.Instance._remotePlayers) {
                 var c = MakePlayerCharacter(kv.Value.ToString(), kv.Key, false);
                 c.AccountId = kv.Value;
+
+                c.GetComponent<CharacterModel>().GetPlayerModel().SetCurrentTileForcely(zeroTile);
             }
         }
 
@@ -257,30 +280,25 @@ public class GameManager : MonoBehaviour {
     {
         //make shelter
         //add shelter item
-        var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight(3);
+        var randTile = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(3);
         //Debug.LogError(randTile.x + " " + randTile.y);
         Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
-
-#if MIDDLE_PRES
+        
         var list = CellularAutomata.Instance.GetRoomsCoord(3, 20);
         foreach (var v in list) {
             TileUnit tile = RandomMapGenerator.Instance.GetTile(v.tileX, v.tileY);
-            ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], tile);
+            ItemManager.Manager.MakeDropItem(fieldDropItems[StageGenerator.Instance.ReadNextValue(0, fieldDropItems.Length)], tile);
         }
-#endif
     }
     
 #if MIDDLE_PRES
-    int[] dropItems = new int[] {
-            5,1,6,10001,20001,30001,310004
-        };
 #endif
 
     public void GenerateWorld(int seed)
     {
-        CurrentStageClimateTpye = StageGenerator.Instance.GetRandomClimateType();
+        CurrentStageClimateType = StageGenerator.Instance.GetRandomClimateType();
 
-        StageGenerator.ClimateInfo info = StageGenerator.Instance.GetClimateInfo(CurrentStageClimateTpye);
+        StageGenerator.ClimateInfo info = StageGenerator.Instance.GetClimateInfo(CurrentStageClimateType);
         CellularAutomata.Instance.MaxHeightLevel = info.MaxHeightLevel;
         List<string> tileSrc = new List<string>(info.tileSpriteSrc.Values);
         RandomMapGenerator.Instance.SetTileSprite(tileSrc);
@@ -304,6 +322,7 @@ public class GameManager : MonoBehaviour {
                     TileUnit tile = RandomMapGenerator.Instance.GetTile(coords[i].tileX, coords[i].tileY);
                     model.UpdatePosition(tile.transform.position);
                     model.SetCurrentTileForcely(tile);
+
                 }
             }
         }
@@ -342,16 +361,31 @@ public class GameManager : MonoBehaviour {
     {
         _stageClock.Update();
         Notice.Instance.Send(NoticeName.Update);
+
+        if (Input.GetKeyDown(KeyCode.F12)) {
+            EndStage(true);
+        }
 	}
 
     public void StartStage() {
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageStart, GlobalGameManager.Instance.GameNetworkType, CurrentStageClimateType);
         _stageClock.StartStage();
     }
 
-    public void EndStage() {
+    public void EndStage(bool isVictory) {
         //do smth
         Debug.LogError("Stage Ended");
-        InGameUIScript.Instance.StageClear();
+
+        var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
+        if (script != null)
+        {
+            script.Capature();
+        }
+
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType, isVictory ? "승리" : "패배", CurrentStageClimateType);
+
+        if (isVictory)
+            InGameUIScript.Instance.StageClear();
     }
 
     public UnitControllerBase GetLocalPlayer() {

@@ -157,6 +157,32 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 212000013116176358, guid: f07251709fb1a48228f0fbeb1e933c02,
+        type: 2}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000013682163348, guid: f07251709fb1a48228f0fbeb1e933c02,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 35cc7ee73f9ebb44f940631ef14272e1,
+        type: 3}
+    - target: {fileID: 1000013482996670, guid: f07251709fb1a48228f0fbeb1e933c02, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012898326096, guid: f07251709fb1a48228f0fbeb1e933c02,
+        type: 2}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000013135682378, guid: f07251709fb1a48228f0fbeb1e933c02,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 33b1f85edae679d4c9a3fcb51916b3d2,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f07251709fb1a48228f0fbeb1e933c02, type: 2}
   m_IsPrefabParent: 0
@@ -276,6 +302,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714b1bdabdeb33d4881f63801e33d814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _character: {fileID: 0}
+  jumpDelay: 1
+  PlayerMovementCTRL: {fileID: 0}
+  FlipPivot: {fileID: 0}
+  MaxHealth: 100
+  health: 100
+  stamina: 100
+  autoTileMovementSetter: {fileID: 0}
+  _heightAscendTime: 0.1
+  _heightDescendTime: 0.25
+  HorizontalMovementFactor: 1
+  VerticalMovementFactor: 1
+  joystickObject: {fileID: 0}
+  joystick: {fileID: 0}
 --- !u!4 &798363469
 Transform:
   m_ObjectHideFlags: 0

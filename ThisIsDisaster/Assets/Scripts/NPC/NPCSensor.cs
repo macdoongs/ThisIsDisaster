@@ -40,6 +40,7 @@ namespace NPC
         }
 
         public bool Check() {
+            if (_player.IsDead()) return false;
             Vector3 target = _player.transform.position;
             Vector3 current = transform.position;
             Vector3 diff = target - current;

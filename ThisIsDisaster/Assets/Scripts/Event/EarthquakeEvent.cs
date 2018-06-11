@@ -46,11 +46,11 @@ public class EarthquakeEvent : EventBase
         //current.y = 0f;
         effect.transform.localRotation = Quaternion.Euler(current);
         effect.transform.localScale = Vector3.one;
-        Debug.Log("Make Bird");
+        //Debug.Log("Make Bird");
     }
 
     public void SetOriginTile() {
-        TileUnit originTile = RandomMapGenerator.Instance.GetRandomTileByHeight(0);
+        TileUnit originTile = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(0);
         _originTile = originTile;
         _effect.SetOriginTile(originTile);
     }
@@ -80,7 +80,8 @@ public class EarthquakeEvent : EventBase
             if (_damageTimer.RunTimer())
             {
                 float speedDownValue = 0.4f;
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * _effect.GetEarthquakeForce());
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * _effect.GetEarthquakeForce());
+                OnGiveDamageToPlayer(damageHealthPerSec * _effect.GetEarthquakeForce());
                 //CharacterModel.Instance.SubtractStamina(damageEnergyPerSec);
                 CharacterModel.Instance.SetSpeedFactor(1f - speedDownValue);
                 _damageTimer.StartTimer(damageTime);

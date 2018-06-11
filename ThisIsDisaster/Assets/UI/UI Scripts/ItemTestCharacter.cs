@@ -13,7 +13,6 @@ public class ItemTestCharacter : MonoBehaviour {
     static long[] _tool_use = { 33001, 33002};
     static long[] _etc = { 40001, 40002, 40003, 41001, 41002, 41003};
     static long[] _norm = { 50002, 50003, 50004, 51001};
-    bool token = true;
 
     private CharacterModel _player = null;
     public CharacterModel CharacterUnit {
@@ -38,13 +37,6 @@ public class ItemTestCharacter : MonoBehaviour {
 
     public void Update()
     {
-        if (token)
-        {
-            ItemManager.Manager.AddItem(CharacterUnit, 33001, 1);
-            ItemManager.Manager.AddItem(CharacterUnit, 33002, 1);
-            ItemManager.Manager.AddItem(CharacterUnit, 30003, 1);
-            token = false;
-        }
 
         if (Input.GetKeyDown(KeyCode.F1)){
             GetEqip();

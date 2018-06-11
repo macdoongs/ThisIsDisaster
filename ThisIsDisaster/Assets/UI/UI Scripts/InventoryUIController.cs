@@ -888,18 +888,18 @@ public class InventoryUIController : MonoBehaviour, IObserver {
     {
         ItemModel PrevBackpack = PlayerCharacter.backpackSlot;
         ItemModel NextBackpack = PlayerCharacter.ItemLists[itemPosition];
-
-        if(PrevBackpack.GetSize() < NextBackpack.GetSize())
+        
+        if(PlayerCharacter.ItemLists.Count > NextBackpack.GetSize()-1)
         {
-            PlayerCharacter.RemoveEquipment("backpack");
-            PlayerCharacter.WearEquipment(NextBackpack);          
-            PlayerCharacter.AddItem(PrevBackpack, 1);
-            RemoveSlotItem();
+            InGameUIScript.Instance.Notice("Warning", "인벤토리 공간이 부족합니다.\n가방을 비워주세요");
             defaultDescriptions();
         }
         else
         {
-            InGameUIScript.Instance.Notice("Warning","작은 사이즈의 가방으로 교체할 수 없습니다.");
+            PlayerCharacter.RemoveEquipment("backpack");
+            PlayerCharacter.WearEquipment(NextBackpack);
+            PlayerCharacter.AddItem(PrevBackpack, 1);
+            RemoveSlotItem();
             defaultDescriptions();
         }
 

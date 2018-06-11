@@ -110,11 +110,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d1d8d923102d8f41955e3952637e05e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AdditionalValue: 0
   _changer: {fileID: 114584291284868774}
   HeightPivot: {fileID: 4808339158800824}
   _heightAscendTime: 0.1
   _heightDescendTime: 0.25
   DisplayStandingTile: 0
+  UpdateRun: 0
 --- !u!212 &212185703044717086
 SpriteRenderer:
   m_ObjectHideFlags: 1

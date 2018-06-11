@@ -123,7 +123,8 @@ public class ThunderstormEvent : EventBase
                     staminaDamageRate *= 0.5f;
                 }
 
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                 CharacterModel.Instance.SubtractStamina(damageEnergePerSec * staminaDamageRate);
 
                 _damageTimer.StartTimer(damageTime);

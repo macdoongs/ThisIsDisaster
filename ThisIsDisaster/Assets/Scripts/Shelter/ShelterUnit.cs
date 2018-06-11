@@ -11,12 +11,35 @@ namespace Shelter
             private set;
         }
 
+        public Transform pivot;
+
         public void SetModel(ShelterModel model) {
             Model = model;
             UpdateTilePosition();
             Model.MakeExitTile();
         }
 
+        public TileUnit GetTile(Vector3 globalPosition) {
+            TileUnit output = null;
+            pivot.transform.position = new Vector3(globalPosition.x, globalPosition.y, pivot.transform.position.z);
+            Collider2D[] cs = Physics2D.OverlapPointAll(pivot.transform.position);
+            if (cs != null && cs.Length > 0) {
+                Collider2D tile = null;
+                foreach (var h in cs) {
+                    if (h.tag == "Tile") {
+                        tile = h;
+                        break;
+                    }
+                }
+
+                if (tile) {
+                    TileUnit unit = tile.transform.parent.GetComponent<TileUnit>();
+                    output = unit;
+                }
+            }
+            return output;
+        }
+        
         public void UpdateTilePosition() {
             float xInitial = 0f;
             float yInitial = 0f;

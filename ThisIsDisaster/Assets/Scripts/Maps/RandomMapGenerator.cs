@@ -202,6 +202,13 @@ public class RandomMapGenerator : MonoBehaviour
         return dic[x][y];
     }
 
+    public List<TileUnit> GetTilesByHeight(int height) {
+        if (height < 0 || height > 3) {
+            return new List<TileUnit>();
+        }
+        return _levelDic[height];
+    }
+
     public TileUnit GetTile(Vector3 globalPosition) {
         TileUnit output = null;
 
@@ -237,6 +244,12 @@ public class RandomMapGenerator : MonoBehaviour
         if (!_levelDic.ContainsKey(height)) return null;
         var list = _levelDic[height];
         return list[UnityEngine.Random.Range(0, list.Count)];
+    }
+
+    public TileUnit GetRandomTileByHeight_Sync(int height) {
+        if (!_levelDic.ContainsKey(height)) return null;
+        var list = _levelDic[height];
+        return list[StageGenerator.Instance.ReadNextValue(0, list.Count)];
     }
 }
 

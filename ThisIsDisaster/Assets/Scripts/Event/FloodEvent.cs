@@ -27,6 +27,7 @@ public class FloodEvent : EventBase {
 
 		rainObject = EventManager.Manager.MakeWorldRain();
 		darkObject = EventManager.Manager.MakeWorldDark();
+        _effect.Init();
 	}
 
 	public override void OnStart()
@@ -37,6 +38,9 @@ public class FloodEvent : EventBase {
 		darkObject.SetActive(true);
 
         _damageTimer.StartTimer(damageTime);
+        _lifeTimeTimer.StartTimer(lifeTime);
+
+        _effect.AddHalf(0);
 	}
 
 	public override void OnEnd()
@@ -46,6 +50,7 @@ public class FloodEvent : EventBase {
 		rainObject.SetActive(false);
 		darkObject.SetActive(false);
 
+        _effect.ClearWaters();
 		rainObject = null;
 		darkObject = null;
 	}
@@ -53,7 +58,8 @@ public class FloodEvent : EventBase {
     public override void OnExecute()
     {
         if (_lifeTimeTimer.started)
-        { _lifeTimeTimer.RunTimer();
+        {
+            _lifeTimeTimer.RunTimer();
 
 
             if (_lifeTimeTimer.elapsed < 5)
@@ -83,7 +89,9 @@ public class FloodEvent : EventBase {
                 var rainParticle = rainObject.GetComponent<ParticleSystem>();
                 if (rainParticle != null)
                 {
-                    rainParticle.maxParticles -= 5;
+                    var main = rainParticle.main;
+                    main.maxParticles -= 5;
+                    //rainParticle.maxParticles -= 5;
                 }
             }
 
@@ -97,31 +105,46 @@ public class FloodEvent : EventBase {
 
                     var player = CharacterModel.Instance;
                     
-                    if(RandomMapGenerator.Instance.GetDepth(player.transform.position) == 1)
-                    {
-                        healthDamageRate = 2;
-                        staminaDamageRate = 2;
-                        speedDownRate = 0.5f;
-                    }
-                    else if (RandomMapGenerator.Instance.GetDepth(player.transform.position) == 2)
-                    {
-                        healthDamageRate = 1;
-                        staminaDamageRate = 2;
-                        speedDownRate = 0.3f;
-                    }
-                    else
-                    {
-                        healthDamageRate = 0;
-                        staminaDamageRate = 2;
-                        speedDownRate = 0.2f;
+
+                    PlayerModel pm = player.GetPlayerModel();
+                    if (pm != null) {
+                        if (pm.IsInShelter())
+                        {
+                            //ignore all damage
+                        }
+                        else {
+                            TileUnit current = pm.GetCurrentTile();
+                            switch (current.HeightLevel) {
+                                case 0:
+                                case 1:
+                                    healthDamageRate = 2;
+                                    staminaDamageRate = 2;
+                                    speedDownRate = 0.5f;
+                                    break;
+                                case 2:
+                                    healthDamageRate = 1;
+                                    staminaDamageRate = 2;
+                                    speedDownRate = 0.3f;
+                                    break;
+                                case 3:
+                                    healthDamageRate = 1;
+                                    staminaDamageRate = 2;
+                                    speedDownRate = 0.3f;
+                                    break;
+                            }
+
+                            player.SetSpeedFactor(1f - speedDownRate);
+                            OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
+                            player.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+                        }
                     }
 
-
-                    CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
+                   // CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
                     
 
-                    CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
-                    CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+                    //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                    //OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
+                    //CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
 
                     _damageTimer.StartTimer(damageTime);
                 }

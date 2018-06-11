@@ -23,9 +23,11 @@ namespace Shelter
 
         public void MakeRandomShelter(TileUnit accessPoint) {
             ShelterModel newShelter = new ShelterModel(_instId++, _instId * PositionInterval);
-            newShelter.Width = UnityEngine.Random.Range(20, 40);
-            newShelter.Height = UnityEngine.Random.Range(20, 40);
+            //newShelter.Width = UnityEngine.Random.Range(20, 40);
+            //newShelter.Height = UnityEngine.Random.Range(20, 40);
             newShelter.AccessTile = accessPoint;
+            newShelter.Width = StageGenerator.Instance.ReadNextValue(20, 40);
+            newShelter.Height = StageGenerator.Instance.ReadNextValue(20, 40);
             accessPoint.SetEnterAction(newShelter.AccessShelter);
             //access point make as ShelterAccess
             accessPoint.spriteRenderer.color = Color.gray;

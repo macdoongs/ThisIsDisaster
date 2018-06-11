@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class PlayerMoveController : MonoBehaviour {
     const float _SPEED_FACTOR = 0.2f;
+    const float _ZERO_TILE_SPEED_PANELTY = 0.5f;
+    const float _ZERO_TILE_STAMINA_PANELTY = 2f;
     public float MoveSpeed {
         get {
-            return _character.CurrentStats.MoveSpeed * _SPEED_FACTOR;
+            return _character.CurrentStats.MoveSpeed * _SPEED_FACTOR * _zeroTilePanelty;
         }
     }
+    private float _zeroTilePanelty = 1f;
 
     public CharacterModel _character = null;
     public float jumpDelay = 1f;
@@ -34,14 +37,9 @@ public class PlayerMoveController : MonoBehaviour {
     public float HorizontalMovementFactor = 1f;
     public float VerticalMovementFactor = 1f;
 
-    float _targetHeight = 0f;
-    float _initialHeight = 0f;
-
-    float _movableSpace_x = 0f;
-    float _movableSpace_y = 0f;
-
     private int _jumpingLevel = 0;
 
+    private bool _isInZeroTile = false;
 
     public GameObject joystickObject;
     public Joystick joystick;
@@ -72,6 +70,7 @@ public class PlayerMoveController : MonoBehaviour {
         currentTile = tile;
 
         SetNearTileAlpha(currentTile, 0.6f);
+        CheckEnterTile(tile);
 
         //_targetHeight = currentTile.HeightLevel * 0.25f;//no magic numer, change const
         //_initialHeight = FlipPivot.transform.localPosition.y;
@@ -79,6 +78,25 @@ public class PlayerMoveController : MonoBehaviour {
         //    float time = _targetHeight > _initialHeight ? _heightAscendTime : _heightDescendTime;
         //    _heightChangeTimer.StartTimer(time);
         //}
+    }
+
+    void CheckEnterTile(TileUnit current) {
+        if (current.HeightLevel == 0)
+        {
+            _zeroTilePanelty = _ZERO_TILE_SPEED_PANELTY;
+            if (_isInZeroTile) {
+                CharacterModel.Instance.SubtractStamina(_ZERO_TILE_STAMINA_PANELTY);
+            }
+            _isInZeroTile = true;
+        }
+        else {
+            _zeroTilePanelty = 1f;
+            _isInZeroTile = false;
+        }
+    }
+    
+    void EnterZeroTile() {
+        
     }
 
     void SetNearTileAlpha(TileUnit tile, float alpha)
@@ -268,7 +286,9 @@ public class PlayerMoveController : MonoBehaviour {
         if (autoTileMovementSetter.Owner != null) {
             if (autoTileMovementSetter.Owner.IsInShelter())
             {
-                transform.Translate(pos);
+                //calc movement range
+                if (autoTileMovementSetter.Owner.CurrentShelter.Unit.GetTile(pos + transform.position) != null)
+                    transform.Translate(pos);
                 return;
             }
         }

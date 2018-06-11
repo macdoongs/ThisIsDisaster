@@ -34,8 +34,11 @@ public class StatusBarUIScript : MonoBehaviour {
 
     public Disorder[] disorders;
 
-    public GameObject DisorderDescPanel;
+    public GameObject DisorderDescriptionTotalPanel;
     public Image DisorderDescImage;
+    public GameObject DisorderDescPanelTitle;
+
+    public Image DisorderDescPanel;
     public Text DisorderDescName;
     public Text DisorderDesc;
     public Text DisorderRecoveryCondition;
@@ -83,11 +86,16 @@ public class StatusBarUIScript : MonoBehaviour {
         disorders = PlayerCharacter.GetComponent<CharacterModel>().disorders;
         DefaultDisorder();
 
+        bool TitleToken = false;
+
         int index = 0;
         foreach (var disorder in disorders)
         {
+
+
             if (disorder != null)
             {
+                TitleToken = true;
                 Disorder.DisorderType type = disorder.disorderType;
 
                 if (type.Equals(Disorder.DisorderType.mirage))
@@ -129,6 +137,8 @@ public class StatusBarUIScript : MonoBehaviour {
             if (index == 5)
                 break;
         }
+
+        DisorderDescPanelTitle.SetActive(TitleToken);
     }
 
     public void DefaultDisorder()
@@ -170,7 +180,11 @@ public class StatusBarUIScript : MonoBehaviour {
         DefaultDisorderDescription();
 
         Disorder disorder = disorders[index];
-        
+        if(disorder == null)
+        {
+            return;
+        }
+
         Disorder.DisorderType type = disorder.disorderType;
 
         if (type.Equals(Disorder.DisorderType.mirage))
@@ -214,7 +228,18 @@ public class StatusBarUIScript : MonoBehaviour {
             DisorderRecoveryCondition.text = "아이템 '생고기','음식'을 소모해 굶주림 회복";
         }
 
-        DisorderDescPanel.SetActive(true);
+        float y = 0f;
+
+        foreach(var text in DisorderDescPanel.GetComponentsInChildren<Text>())
+        {
+            y += text.GetComponent<RectTransform>().rect.height;
+        }
+                
+   //     Debug.Log("DisorderDesc Height : " + y.ToString());
+   //     DisorderDescPanel.rectTransform.sizeDelta = new Vector2(DisorderDescPanel.rectTransform.sizeDelta.x, y + 30); 
+     //   DisorderDescPanel.GetComponent<BoxCollider2D>().size = new Vector2(DisorderDescPanel.rectTransform.sizeDelta.x, y + 30);
+
+        DisorderDescriptionTotalPanel.SetActive(true);
     }
 
     public void DefaultDisorderDescription()

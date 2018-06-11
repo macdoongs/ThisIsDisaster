@@ -89,7 +89,13 @@ public class AstarCalculator {
                 Cost_O = 0,
                 parent = null
             };
-            CalculateNode(originNode);
+            try
+            {
+                CalculateNode(originNode);
+            }
+            catch {
+                return new List<TileUnit>();
+            }
             Node parent = _searchNodeList[_searchNodeList.Count - 1];
             
             while (parent != null) {
@@ -105,54 +111,6 @@ public class AstarCalculator {
         Node GetOpenTile(int hash) {
             return opened[hash];
         }
-        /*
-         int currentX = current.x;
-            int currentY = current.y;
-            int curIndex = GetTileIndex(current);
-            
-            for (int i = 0; i < INDEX_MAX; i++) {
-                int index_x = _indexer[i];
-                int x = current.x + index_x;
-                for (int j = 0; j < INDEX_MAX; j++) {
-                    if (i == 1 && i == j) continue;//current
-                    int index_y = _indexer[j];
-                    int y = current.y + index_y;
-                    TileUnit tile = Instance.GetTile(x, y);
-                    int tileIndex = GetTileIndex(tile);
-
-                    if (closed.ContainsKey(tileIndex)) continue;
-                    if (opened.ContainsKey(tileIndex)) continue;
-
-                    if (tile.HeightLevel <= MinimalHeight) {
-                        //check movable
-                        closed.Add(tileIndex, tile);
-                        continue;
-                    }
-
-                    int cost_h = GetHeuristicCost(tile);
-                    int cost_o = oCost + GetDistValue(index_x, index_y);
-
-                    Node openTile = new Node()
-                    {
-                        Cost_H = cost_h,
-                        Cost_O = cost_o,
-                        tile = tile,
-                        parent = current
-                    };
-                    opened.Add(tileIndex, openTile);
-                }
-            }
-            int minimal = int.MaxValue;
-            int selectedIndex = -1;
-            foreach (var kv in opened) {
-                if (kv.Value.Cost_F < minimal) {
-                    minimal = kv.Value.Cost_F;
-                    selectedIndex = kv.Key;
-                }
-            }
-            Node open = opened[selectedIndex];
-
-             */
 
         void CalculateNode(Node selectedNode) {
             _searchNodeList.Add(selectedNode);
@@ -250,72 +208,6 @@ public class AstarCalculator {
                 }
                 opened.Add(tileHash, open);
             }
-            /*
-            for (int i = 0; i < INDEX_MAX; i++)
-            {
-                int index_x = _indexer[i];
-                int x = currentX + index_x;
-
-                for (int j = 0; j < INDEX_MAX; j++) {
-                    int index_y = _indexer[j];
-                    int cost = GetDistValue(index_x, index_y);
-                    if (cost == 0) continue;//본인제외
-
-                    int y = currentY + index_y;
-
-                    TileUnit tile = Instance.GetTile(x, y);
-
-                    if (tile == null) continue;
-                    if (tile == Destination) {
-                        //arrived
-                        //selectedAsPath.Add(Destination);
-                        Node destNode = new Node() {
-                            tile = Destination,
-                            Cost_H = 0,
-                            Cost_O = 0,
-                            parent = selectedNode
-                        };
-                        _searchNodeList.Add(destNode);
-                        return;
-                    }
-
-                    int tileHash = GetTileIndex(tile);
-                    if (closed.ContainsKey(tileHash)) continue;
-                    if (tile.HeightLevel <= MinimalHeight) {
-                        closed.Add(tileHash, tile);
-                        continue;
-                    }
-                    int current_O_cost = selectedNode.Cost_O + cost;
-                    int current_H_cost = GetHeuristicCost(tile);
-                    //int total = current_O_cost + current_H_cost;
-
-                    near.Add(tile);
-
-                    if (opened.ContainsKey(tileHash))
-                    {
-                        var node = opened[tileHash];
-                        if (node.Cost_O > current_O_cost) {
-                            node.Cost_O = current_O_cost;
-                        }
-                        node.parent = selectedNode;
-                        continue;
-                    }
-                    
-                    Node open = new Node() {
-                        tile = tile,
-                        Cost_O = current_O_cost,
-                        Cost_H = current_H_cost,
-                        parent = selectedNode
-                    };
-
-                    if (!closed.ContainsKey(tileHash)) {
-                        closed.Add(tileHash, tile);
-                    }
-                    opened.Add(tileHash, open);
-                }
-            }
-            //Debug.Log(opened.Count);
-            */
             int selected = 0;
             int minCost = int.MaxValue;
             //현재 위치에서 대각선은 바로 갈 수 있는지 체크해야 할듯?
@@ -328,11 +220,6 @@ public class AstarCalculator {
             }
 
             Node select = opened[selected];
-            if (!near.Contains(select.tile))
-            {
-                //remove path recursivly
-                
-            }
             CalculateNode(select);
         }
 
@@ -406,6 +293,11 @@ public class AstarCalculator {
         }
         Calculation calculation = new Calculation(model);
         var list = calculation.CalculateAstar(origin, dest);
+        if (list.Count == 0)
+        {
+            model.MoveControl.StopMovement();
+            return null;
+        }
         PathInfo output = new PathInfo
         {
             Origin = origin,

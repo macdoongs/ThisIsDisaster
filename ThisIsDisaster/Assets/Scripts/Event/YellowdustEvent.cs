@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class YellowdustEvent : EventBase
 {
-	SandEffect _effect = null;     // 모래입자
+	GameObject _effect = null;     // 모래입자
 	GameObject YellowObject = null;          // 노란 화면
 
     Timer _damageTimer = new Timer();
@@ -59,7 +59,8 @@ public class YellowdustEvent : EventBase
                     staminaDamageRate *= 0.5f;
                 }
 
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                 CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
 
                 _damageTimer.StartTimer(damageTime);

@@ -31,7 +31,20 @@ public class PlayerModel : UnitModel
 
         //피격시 5% 확률로 부상 
         DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 5);
+
+        bool check = _character.IsDead() == false;
         _character.SubtractHealth(damage);
+
+        if (check) {
+            if (_character.IsDead()) {
+                Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerDead, GlobalParameters.Param.accountName, PlayerDeadType.Monster);
+                if (!_character.HasItem(33004)) {
+                    GameManager.CurrentGameManager.EndStage(false);
+                }
+                //
+            }
+        }
+        
 
         SoundLayer.CurrentLayer.PlaySound("se_takedamage");
     }
@@ -76,9 +89,11 @@ public class PlayerModel : UnitModel
             if (shelter != null)
             {
                 Notice.Instance.Send(NoticeName.OnPlayerEnterShelter, shelter);
+                Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerEnterShelter, GlobalParameters.Param.accountName);
             }
             else {
                 Notice.Instance.Send(NoticeName.OnPlayerExitShelter);
+                Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerExitShelter, GlobalParameters.Param.accountName);
             }
         }
     }
@@ -116,6 +131,10 @@ public class CharacterModel : MonoBehaviour
         public bool enabled;
     }
 
+    public bool isPlayerDead = false;
+
+    public bool MoveRestrict = false;
+
     public List<TileUnit> EffectTiles = new List<TileUnit>();
     public long EffectItemID;
     public bool EffectToken = false;
@@ -134,9 +153,9 @@ public class CharacterModel : MonoBehaviour
     private int defaultVisionLevel = 0;
 
     public Stats CurrentStats = new Stats();
-
-    public int attack_range_x = 0;
-    public int attack_range_y = 0;
+    public float tempMoveSpeed;
+    public float attack_range_x = 0;
+    public float attack_range_y = 0;
     public int bagSize = 0;
     public int waterMax = 0;
     public int visionLevel = 0;
@@ -227,10 +246,18 @@ public class CharacterModel : MonoBehaviour
     Timer _restorationTimer = new Timer();//회복 타이머
     private void Update()
     {
+        if (MoveRestrict)
+        {
+            CurrentStats.MoveSpeed = 0;
+        }
+
         //일정 시간마다 HP, Stamina 회복
         if (_restorationTimer.RunTimer()) {
-            _restorationTimer.StartTimer(nextTime);
-            StatRegeneration();
+            if (!isPlayerDead)
+            {
+                _restorationTimer.StartTimer(nextTime);
+                StatRegeneration();
+            }
         }
 
         EffectTileEffect(GetPlayerModel().GetCurrentTile());
@@ -435,7 +462,15 @@ public class CharacterModel : MonoBehaviour
     }
 
     public bool HasItem(int itemMetaId) {
-        return ItemSpace.ContainsKey(itemMetaId);
+        
+        foreach(var item in ItemLists)
+        {
+            if (item.metaInfo.metaId.Equals(itemMetaId))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void PrintItemsInItems()
@@ -600,6 +635,18 @@ public class CharacterModel : MonoBehaviour
                 {
                     visionLevel = toolSlot.GetVision();
                 }
+
+                if (equipment.metaInfo.metaId.Equals(31005))
+                {//마스크 착용시
+                    MaskSprite();
+                }
+
+                if (equipment.metaInfo.metaId.Equals(31006)|| equipment.metaInfo.metaId.Equals(31007))
+                {
+                    tempMoveSpeed = CurrentStats.MoveSpeed;
+                    MoveRestrict = true;
+                }
+
                 result = true;
                 SoundLayer.CurrentLayer.PlaySound("se_equip");
             }
@@ -673,11 +720,6 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
 
-            if (ItemLists.Count > defaultBagSize)
-            {
-                Debug.Log("아이템이 너무 많습니다.");
-                return;
-            }
             bagSize = defaultBagSize;
             backpackSlot = null;
             SoundLayer.CurrentLayer.PlaySound("se_unequip");
@@ -707,6 +749,16 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot.GetStaminaRegen() != 0)
             {
                 SubtractStats(toolSlot);
+            }
+
+            if (toolSlot.metaInfo.metaId.Equals(31005))
+            {
+                RemoveMaskSprite();
+            }
+            if (toolSlot.metaInfo.metaId.Equals(31006) || toolSlot.metaInfo.metaId.Equals(31007))
+            {//침낭
+                CurrentStats.MoveSpeed = tempMoveSpeed;
+                MoveRestrict = false;
             }
 
             toolSlot = null;
@@ -789,6 +841,8 @@ public class CharacterModel : MonoBehaviour
                 }
             }
             UpdateStat();
+
+            Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerGetDisorder, GlobalParameters.Param.accountName, type);
         }
     }
 
@@ -809,6 +863,7 @@ public class CharacterModel : MonoBehaviour
                         }
 
                         disorders[disorders.Length - 1] = null;
+                        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerRemoveDisorder, GlobalParameters.Param.accountName, type);
                         break;
                     }
                 }
@@ -845,8 +900,9 @@ public class CharacterModel : MonoBehaviour
         if(CurrentStats.Defense < 0)
             CurrentStats.Defense = 0;
         CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage + EventStats.Damage;
-        if (CurrentStats.Damage < 0)
-            CurrentStats.Damage = 0;
+        if (CurrentStats.Damage < 5f) {
+            CurrentStats.Damage = 5f;
+        }
         CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen + EventStats.HealthRegen + RegionItemStats.HealthRegen;
         CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen + EventStats.StaminaRegen + RegionItemStats.StaminaRegen;
         CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed + EventStats.MoveSpeed;
@@ -907,9 +963,13 @@ public class CharacterModel : MonoBehaviour
                 {
                     RegionItemStats.StaminaRegen += 5;                    
                 }
-                else
+                else if(EffectItemID.Equals(33002))
                 {
                     RegionItemStats.StaminaRegen += 3;
+                }
+                else
+                {
+                    //피뢰침 효과
                 }
                 UpdateStat();
             }
@@ -992,6 +1052,37 @@ public class CharacterModel : MonoBehaviour
 
             SoundLayer.CurrentLayer.PlaySound("se_bonfire");
         }
+        else if (etc.metaInfo.metaId.Equals(33003))
+        {//피뢰침
+            EffectItemID = etc.metaInfo.metaId;
+            TileUnit currentTile = GetPlayerModel().GetCurrentTile();
+            if (EffectTiles.Contains(currentTile))
+            {
+                InGameUIScript.Instance.Notice("아이템 사용", "근처에 이미 다른 아이템이 설치되어 있습니다.");
+                result = false;
+                return result;
+            }
+            var item = ItemManager.Manager.MakeDropItem(33003, currentTile);
+            item.ItemRenderer.transform.localScale *= 1.5f;
+            item.isRegionEffect = true;
+            result = true;
+
+            for (int i = -5; i <= 5; i++)
+            {
+                int x = currentTile.x + i;
+
+                for (int j = -5; j <= 5; j++)
+                {
+                    int y = currentTile.y + j;
+                    TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                    if (tile == null) continue;
+                    else
+                        EffectTiles.Add(tile);
+                }
+            }
+
+            //SoundLayer.CurrentLayer.PlaySound("se_bonfire");
+        }
 
         if (etc.metaInfo.metaId.Equals(41001))
         {//약 특수효과
@@ -1063,6 +1154,19 @@ public class CharacterModel : MonoBehaviour
 
         attackReceiver.gameObject.SetActive(false);
         ctrl.enabled = false;
+
+        var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
+        if (script != null) {
+            script.Capature(1f);
+        }
+        isPlayerDead = true;
+        
+        InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33004));
+    }
+
+    public void AEDContain()
+    {
+
     }
 
     //HP 감소
@@ -1144,24 +1248,9 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// This is Odd
-    /// </summary>
     public void WeaponSprite()
     {
-        //if (weaponSlot != null)
-        //{
-        //    string src = weaponSlot.metaInfo.spriteSrc;
-        //    Sprite s = Resources.Load<Sprite>(src);
 
-
-        //    SpriteParts[7].sprite = s;
-        //}
-        //else
-        //{
-        //    //SpriteParts[7].sprite = null;
-        //    ClearSpritePart(PlayerSpriteParts.Head);
-        //}
         if (weaponSlot != null)
         {
             SetSprite(PlayerSpriteParts.FrontWeapon, weaponSlot.metaInfo);
@@ -1290,6 +1379,23 @@ public class CharacterModel : MonoBehaviour
         }
     }       
 
+    public void MaskSprite()
+    {
+        string src = "item/sample/mask0";
+        Sprite s = Resources.Load<Sprite>(src);
+
+        SpriteParts[11].sprite = s;
+        SpriteParts[11].color = Color.white;
+        SpriteParts[11].transform.gameObject.SetActive(true);
+    }
+
+    public void RemoveMaskSprite()
+    {
+        SpriteParts[11].sprite = null;
+        SpriteParts[11].color = Color.clear;
+        SpriteParts[11].transform.gameObject.SetActive(false);
+    }
+
     public int GetReservedItemCount(ItemModel item)
     {
         for(int i = 0; i < ItemLists.Count; i++)
@@ -1307,6 +1413,13 @@ public class CharacterModel : MonoBehaviour
 
     public void SetSpeedFactor(float value = 1f) {
         SpeedFactor = value;
+    }
+
+    public void RetryGame()
+    {
+        isPlayerDead = false;
+        CurrentStats.Health = CurrentStats.MaxHealth;
+        CurrentStats.Stamina = CurrentStats.MaxStamina;
     }
 
 
@@ -1357,5 +1470,7 @@ public class CharacterModel : MonoBehaviour
             ;
         }
     }
+
+
 
 }

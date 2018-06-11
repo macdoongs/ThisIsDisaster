@@ -269,6 +269,7 @@ namespace Json
             Debug.Log("Received User Response");
             Debug.Log(ur.result_data.nickname);
         }
+
         #endregion
     }
 }

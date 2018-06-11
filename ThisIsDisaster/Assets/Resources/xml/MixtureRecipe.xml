@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <root>
   <recipe resultID="31002">
-    <material id="50003" num="1"/>
-    <material id="50002" num="3"/>
+    <material id="50002" num="1"/>
+    <material id="50001" num="3"/>
   </recipe>
   <recipe resultID="4">
     <material id="50002" num="5"/>
+  </recipe>
+  <recipe resultID="33003">
+    <material id="51001" num="2"/>    
+  </recipe>
+  <recipe resultID="33002">
+    <material id="50001" num="5"/>
+    <material id="50002" num="2"/>
+  </recipe>
+  <recipe resultID="41003">
+    <material id="40003" num="1"/>
+    <material id="50002" num="1"/>
+  </recipe>
+  <recipe resultID="40002">
+    <material id="40001" num="2"/>
   </recipe>
 </root>
