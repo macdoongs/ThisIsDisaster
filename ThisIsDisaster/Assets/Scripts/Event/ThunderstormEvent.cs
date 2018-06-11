@@ -237,6 +237,7 @@ public class ThunderstormEvent : EventBase
         ThunderEffect.StartEffect(UnityEngine.Random.Range(1f, 1.5f));
 
         TileUnit pos = _thunderFallPos.Dequeue();
+        PlaySoundPos ("event_Thunder", pos.transform.position);
         if (pos != null) {
             MakeThunderHit(pos);
             for (int i = _RANGE_MIN; i <= _RANGE_MAX; i++) {

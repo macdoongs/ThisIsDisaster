@@ -93,5 +93,6 @@ public class SoundLayer : MonoBehaviour {
     public void ReturnPlayer(SoundPlayer player) {
         _usableQueue.Enqueue(player);
         _usingList.Remove(player);
+        player.transform.SetParent(this.transform);
     }
 }

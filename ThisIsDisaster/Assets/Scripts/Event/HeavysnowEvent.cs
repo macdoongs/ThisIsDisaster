@@ -39,6 +39,7 @@ public class HeavysnowEvent : EventBase
 
     private List<SpriteRenderer> _addedTiles = new List<SpriteRenderer>();
     private List<TileUnit> zeroTile = new List<TileUnit>();
+    SoundPlayer _sound = null;
 
     public HeavysnowEvent()
 	{
@@ -74,6 +75,8 @@ public class HeavysnowEvent : EventBase
 
         _effectDelayTimer.StartTimer(_EFFECT_DELAYTIME);
         AddSnowSprite();
+        _sound = PlaySoundCamera("event_Heavysnow");
+        _sound.PlayLoop();
     }
 
     void SetSnowAlpha(float alpha) {
@@ -106,6 +109,9 @@ public class HeavysnowEvent : EventBase
 		snowEffect.SetActive(false);
 		cloudEffect.SetActive(false);
         EffectFilter.enabled = false;
+        if (_sound != null) {
+            _sound.Stop();
+        }
     }
 
 	public override void OnDestroy()

@@ -19,6 +19,8 @@ public class FloodEvent : EventBase {
 
     Timer _levelDelayTimer = new Timer();
     private const float _LEVEL_DELAY_TIME = 15f;
+
+    SoundPlayer _floodSound = null;
     
     public FloodEvent() {
 		type = WeatherType.Flood;
@@ -46,6 +48,7 @@ public class FloodEvent : EventBase {
         _effect.AddHalf(0);
         _levelDelayTimer.StartTimer(_LEVEL_DELAY_TIME);
         //_effect.AddHalf(1);
+        _floodSound = PlaySoundCamera("event_Flood");
 	}
 
 	public override void OnEnd()
@@ -58,6 +61,11 @@ public class FloodEvent : EventBase {
         _effect.ClearWaters();
 		rainObject = null;
 		darkObject = null;
+
+        if (_floodSound != null) {
+            _floodSound.Stop();
+            _floodSound = null;
+        }
 	}
 
     public override void OnExecute()
