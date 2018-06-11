@@ -307,6 +307,9 @@ public class GameManager : MonoBehaviour {
 
         CellularAutomata.Instance.GenerateMap();
 
+        Debug.Log("event_" + CurrentStageClimateType.ToString());
+        SoundLayer.CurrentLayer.PlaySound("bgm_"+CurrentStageClimateType.ToString());
+
         //generate world by input
         try
         {

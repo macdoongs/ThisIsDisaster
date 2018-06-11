@@ -396,6 +396,8 @@ public class CharacterModel : MonoBehaviour
                     ItemCounts.Add(amount);
                 }             
             }
+
+            SoundLayer.CurrentLayer.PlaySound("se_takeitem");
         }
 
         else
@@ -409,6 +411,7 @@ public class CharacterModel : MonoBehaviour
             ItemLists.Add(item);
             ItemNames.Add(item.metaInfo.Name);
             ItemCounts.Add(amount);
+            SoundLayer.CurrentLayer.PlaySound("se_takeitem");
         }
         return true;
     }
@@ -1142,6 +1145,7 @@ public class CharacterModel : MonoBehaviour
         if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
             NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Dead");
         }
+        SoundLayer.CurrentLayer.PlaySound("se_dead");
 
         PlayerAttackController attackController = gameObject.GetComponent<PlayerAttackController>();
         if (attackController != null) {

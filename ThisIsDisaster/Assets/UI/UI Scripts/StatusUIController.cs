@@ -45,7 +45,7 @@ public class StatusUIController : MonoBehaviour {
 
     private void Start()
     {
-         
+
     }
 
     public StatusUIController()

@@ -4,24 +4,24 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 14
-  productGUID: 537dbb18cd823394c81ba57a58a7ad1a
+  productGUID: 1f01a92742a5154458698f0ac03115d2
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
-  defaultScreenOrientation: 3
+  defaultScreenOrientation: 4
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: AjouMVP
+  companyName: mvp
   productName: ThisIsDisaster
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
-  m_SplashScreenBackgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 1
-  m_SplashScreenOverlayOpacity: 0.5
-  m_SplashScreenAnimation: 0
+  m_SplashScreenOverlayOpacity: 1
+  m_SplashScreenAnimation: 1
   m_SplashScreenLogoStyle: 1
-  m_SplashScreenDrawMode: 1
+  m_SplashScreenDrawMode: 0
   m_SplashScreenBackgroundAnimationZoom: 1
   m_SplashScreenLogoAnimationZoom: 1
   m_SplashScreenBackgroundLandscapeAspect: 1
@@ -38,11 +38,7 @@ PlayerSettings:
     y: 0
     width: 1
     height: 1
-  m_SplashScreenLogos:
-  - logo: {fileID: 10404, guid: 0000000000000000e000000000000000, type: 0}
-    duration: 2
-  - logo: {fileID: 21300000, guid: 2ed6d5b0368e447d9883f227cb3ba12b, type: 3}
-    duration: 2
+  m_SplashScreenLogos: []
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1024
@@ -163,7 +159,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.mvp.tid
-    Standalone: com.MVP.TD
+    Standalone: com.mvp.tid
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
@@ -181,9 +177,9 @@ PlayerSettings:
   StripUnusedMeshComponents: 0
   VertexChannelCompressionMask:
     serializedVersion: 2
-    m_Bits: 238
+    m_Bits: 4294901998
   iPhoneSdkVersion: 988
-  iOSTargetOSVersionString: 7.0
+  iOSTargetOSVersionString: 8.0
   tvOSSdkVersion: 0
   tvOSRequireExtendedGameController: 0
   tvOSTargetOSVersionString: 9.0
@@ -248,7 +244,7 @@ PlayerSettings:
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
+  AndroidKeystoreName: D:/Github/ThisIsDisaster/ThisIsDisaster/tid_key.keystore
   AndroidKeyaliasName: 
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
@@ -261,39 +257,7 @@ PlayerSettings:
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
-  m_BuildTargetIcons:
-  - m_BuildTarget: Android
-    m_Icons:
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 28cbc7c684cc745779ca43f8633fd483, type: 3}
-      m_Width: 192
-      m_Height: 192
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 144
-      m_Height: 144
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 96
-      m_Height: 96
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 72
-      m_Height: 72
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 48
-      m_Height: 48
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 36
-      m_Height: 36
-      m_Kind: 0
+  m_BuildTargetIcons: []
   m_BuildTargetBatching: []
   m_BuildTargetGraphicsAPIs: []
   m_BuildTargetVRSettings: []
@@ -505,7 +469,7 @@ PlayerSettings:
   ps4ReprojectionSupport: 0
   ps4UseAudio3dBackend: 0
   ps4SocialScreenEnabled: 0
-  ps4ScriptOptimizationLevel: 0
+  ps4ScriptOptimizationLevel: 2
   ps4Audio3dVirtualSpeakerCount: 14
   ps4attribCpuUsage: 0
   ps4PatchPkgPath: 
@@ -569,7 +533,7 @@ PlayerSettings:
   psp2UseLibLocation: 0
   psp2InfoBarOnStartup: 0
   psp2InfoBarColor: 0
-  psp2ScriptOptimizationLevel: 0
+  psp2ScriptOptimizationLevel: 2
   psmSplashimage: {fileID: 0}
   splashScreenBackgroundSourceLandscape: {fileID: 0}
   splashScreenBackgroundSourcePortrait: {fileID: 0}
@@ -587,11 +551,12 @@ PlayerSettings:
   webGLUseWasm: 0
   webGLCompressionFormat: 1
   scriptingDefineSymbols:
-    1: MIDDLE_PRES;NET_DEV
+    1: MIDDLE_PRES
     4: NO_GPGS
     7: MIDDLE_PRES
   platformArchitecture: {}
-  scriptingBackend: {}
+  scriptingBackend:
+    Standalone: 0
   incrementalIl2cppBuild: {}
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 0
@@ -665,6 +630,7 @@ PlayerSettings:
   XboxOneSplashScreen: {fileID: 0}
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
+  XboxOneXTitleMemory: 8
   xboxOneScriptCompiler: 0
   vrEditorSettings:
     daydream:

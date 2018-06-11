@@ -58,7 +58,7 @@ public class PlayerAttackController : MonoBehaviour {
     public void OnAttackClicked() {
         if (IsAttackable())
         {
-            CharacterModel.Instance.SubtractStamina(5f);
+            CharacterModel.Instance.SubtractStamina(5f * 0.5f);
             //Sender.OnAttack();
             if (MoveController)
             {
@@ -70,6 +70,8 @@ public class PlayerAttackController : MonoBehaviour {
                     NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Attack");
                 }
             }
+
+            SoundLayer.CurrentLayer.PlaySound("se_attack_common");
             _attackDelayTimer.StartTimer(NextAttackDelay);
         }
     }

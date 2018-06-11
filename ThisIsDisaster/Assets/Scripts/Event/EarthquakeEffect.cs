@@ -128,6 +128,7 @@ public class EarthquakeEffect : MonoBehaviour
 
 #if MIDDLE_PRES
     void MakeInjury() {
+        return;
         CharacterModel character = GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<CharacterModel>();
         character.GetDisorder(Disorder.DisorderType.injury);
         InGameUIScript.Instance.DisorderNotice(Disorder.DisorderType.injury);
@@ -140,12 +141,12 @@ public class EarthquakeEffect : MonoBehaviour
         {
             float rate = GetEarthquakeForce((_lifeTimeTimer.Rate));
 #if MIDDLE_PRES
-            if (!_injury) {
-                if (rate >= 0.6f) {
-                    MakeInjury();
-                    _injury = true;
-                }
-            }
+            //if (!_injury) {
+            //    if (rate >= 0.6f) {
+            //        MakeInjury();
+            //        _injury = true;
+            //    }
+            //}
 #endif
 
             if (_waveTimer.started)

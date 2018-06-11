@@ -65,7 +65,10 @@ public class EarthquakeEvent : EventBase
         _effect.SetEndEvent(EndEvent);
         _effect.StartEarthquakeEffect(GameManager.StageClockInfo.EVENT_RUN_TIME);
         _damageTimer.StartTimer(damageTime);
-	}
+
+        Debug.Log("eventSoundStart");
+        SoundLayer.CurrentLayer.PlaySound("event_earthquack");
+    }
 
     void EndEvent() {
         EventManager.Manager.EndEvent(this.type);
