@@ -44,11 +44,13 @@ namespace Json
     [Serializable]
     public class User
     {
+        public int id;
         public string email;
         public string nickname;
-        public string score;
-        public string level;
-        public string gold;
+        public int score;
+        public int level;
+        public int exp;
+        public int gold;
     }
 
     [Serializable]

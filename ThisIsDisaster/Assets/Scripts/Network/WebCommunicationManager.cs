@@ -283,6 +283,11 @@ namespace Json
             UserResponse ur = JsonUtility.FromJson<UserResponse>(message);
             Debug.Log("Received User Response");
             Debug.Log(ur.result_data.nickname);
+
+            GlobalParameters.Param.accountId = ur.result_data.id;
+            GlobalParameters.Param.accountLevel = ur.result_data.level;
+            GlobalParameters.Param.accountExp = ur.result_data.exp;
+            GlobalParameters.Param.accountGold = ur.result_data.gold;
         }
 
         void ReceiveMultiplayLobby(string message, Response rootResponse) {
@@ -291,6 +296,7 @@ namespace Json
                 return;
             }
             MultiPlayLobby multi = JsonUtility.FromJson<MultiPlayLobby>(message);
+            
             Notice.Instance.Send(NoticeName.OnReceiveSessionData, multi);
         }
         #endregion

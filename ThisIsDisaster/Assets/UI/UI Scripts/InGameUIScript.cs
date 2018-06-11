@@ -72,7 +72,7 @@ public class InGameUIScript : MonoBehaviour
         {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
             PlayerCharacter.GetComponent<CharacterModel>().PlayerName = GlobalParameters.Param.accountName;
-         //   PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
+            PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
         }
 
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
@@ -152,11 +152,21 @@ public class InGameUIScript : MonoBehaviour
         NoticePanel.SetActive(false);
     }
 
+    Json.WebCommunicationManager WebManager
+    {
+        get
+        {
+            return Json.WebCommunicationManager.Manager;
+        }
+    }
+
     public void StageClear()
     {
         CloseAllUI();
         SetGameLog();
         StageClearUIContorller.Instance.StageClearPanel.SetActive(true);
+        
+        WebManager.SendRequest(Json.RequestMethod.POST, "game/end?email=" + GlobalParameters.Param.accountEmail, "");
     }
 
     public void AttackClicked()

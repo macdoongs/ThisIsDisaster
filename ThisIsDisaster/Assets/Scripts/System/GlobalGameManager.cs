@@ -19,6 +19,7 @@ public enum GameNetworkType
 
 public class GlobalParameters : ISavedData {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
+
     public int accountId = 0;
     public string accountName
     {
@@ -28,8 +29,12 @@ public class GlobalParameters : ISavedData {
         }
     }
     public string accountEmail = "rladudals02@gmail.com";
-    public int accountLevel = 1;
-    public int accountExp = 0;
+    public int accountLevel = 999;
+    public int accountExp = 99;
+    public int accountGold = 99;
+    public int accountScore = 99999;
+
+    public string stage = "";
 
     public bool isConnected = false;
     public bool isDisconnnected = false;
@@ -42,15 +47,25 @@ public class GlobalParameters : ISavedData {
     public Dictionary<string, object> GetSavedData()
     {
         Dictionary<string, object> output = new Dictionary<string, object>();
-        //output.Add("accountId", accountId);
-        //output.Add("accountName", accountName);
+
+        output.Add("accountId", accountId);
+        output.Add("accountEmail", accountEmail);
+        output.Add("accountLevel", accountLevel);
+        output.Add("accountExp", accountExp);
+        output.Add("accountScore", accountScore);
+        output.Add("accountGold", accountGold);
+
         return output;
     }
 
     public void LoadData(Dictionary<string, object> data)
     {
-        //FileManager.TryGetValue(data, "accountId", ref accountId);
-        //FileManager.TryGetValue(data, "accountName", ref accountName);
+        FileManager.TryGetValue(data, "accountId", ref accountId);
+        FileManager.TryGetValue(data, "accountEmail", ref accountEmail);
+        FileManager.TryGetValue(data, "accountLevel", ref accountLevel);
+        FileManager.TryGetValue(data, "accountExp", ref accountExp);
+        FileManager.TryGetValue(data, "accountScore", ref accountScore);
+        FileManager.TryGetValue(data, "accountGold", ref accountGold);
     }
 
     public string GetPath()

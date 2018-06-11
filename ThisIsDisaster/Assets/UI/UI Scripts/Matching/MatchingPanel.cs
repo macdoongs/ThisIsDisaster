@@ -262,6 +262,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
         if (notice == NoticeName.OnReceiveSessionData) {
             Json.MultiPlayLobby lobby = param[0] as Json.MultiPlayLobby;
+            GlobalParameters.Param.stage = lobby.result_data.stage;
 
             foreach (var node in lobby.result_data.user_list) {
                 string emailParsed = GlobalParameters.ParseEmail(node.email);

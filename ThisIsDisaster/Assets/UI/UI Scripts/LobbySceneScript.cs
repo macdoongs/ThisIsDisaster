@@ -29,11 +29,11 @@ public class LobbySceneScript : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        LoadUser();
-        SetUI();
-        InvokeRepeating("SetUI", 0f, 5.0f);
+        StartCoroutine("LoadUser");
     }
 	
+
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -49,18 +49,23 @@ public class LobbySceneScript : MonoBehaviour {
     }
 
 
-    public void LoadUser()
+    IEnumerator LoadUser()
     {
-        string email = GlobalParameters.Param.accountEmail;
+        while (true)
+        {
+            string email = GlobalParameters.Param.accountEmail;
 
-        WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + email, "");
+            WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + email, "");
+
+            yield return new WaitForSeconds(30);
+            Debug.Log("Sending");
+        }
     }
-    
-    public void SetUI()
-    {
 
-        PlayerName.text = GlobalParameters.Param.accountName;
-        //PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
-        //PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
+    void SetUI()
+    {
+            PlayerName.text = GlobalParameters.Param.accountName;
+            PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
+            PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
     }
 }
