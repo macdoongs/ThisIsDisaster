@@ -222,7 +222,8 @@ public class GameManager : MonoBehaviour {
 
     public UnityEngine.UI.Text Clock;
     int[] fieldDropItems = new int[] {
-            5,1,6,10001,20001,30001,310004
+            1,2,3,6,7,15,10001,10003,20001,20003, 20004,30001,
+        30002, 30010, 31004, 31002, 31006 , 33002, 40002, 50001, 50002, 51001
         };
 
     private void Awake()
@@ -284,7 +285,7 @@ public class GameManager : MonoBehaviour {
         //Debug.LogError(randTile.x + " " + randTile.y);
         Shelter.ShelterManager.Instance.MakeRandomShelter(randTile);
         
-        var list = CellularAutomata.Instance.GetRoomsCoord(3, 20);
+        var list = CellularAutomata.Instance.GetRoomsCoord(3, 40);
         foreach (var v in list) {
             TileUnit tile = RandomMapGenerator.Instance.GetTile(v.tileX, v.tileY);
             ItemManager.Manager.MakeDropItem(fieldDropItems[StageGenerator.Instance.ReadNextValue(0, fieldDropItems.Length)], tile);
