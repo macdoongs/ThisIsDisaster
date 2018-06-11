@@ -45,7 +45,7 @@ namespace Json
 
         public WebCommunicationManager() {
             _recieveActions.Add(typeof(Response).ToString(), ReceiveResponse);
-            _recieveActions.Add(typeof(UserResponse).ToString(), ReceiveUserResponse);
+            _recieveActions.Add("User", ReceiveUserResponse);
         }
 
         #region Request
@@ -244,10 +244,10 @@ namespace Json
         public void OnReceiveGETMessage(string message)
         {
             var response = JsonUtility.FromJson<Response>(message);
-            if (_recieveActions.ContainsKey(response.response_type))
+            if (_recieveActions.ContainsKey(response.result_type))
             {
 
-                _recieveActions[response.response_type](message, response);
+                _recieveActions[response.result_type](message, response);
             }
         }
 
@@ -264,10 +264,35 @@ namespace Json
                 Debug.Log("Failed User Response");
                 return;
             }
+            GlobalParameters.Param.isLoad = true;
 
             UserResponse ur = JsonUtility.FromJson<UserResponse>(message);
             Debug.Log("Received User Response");
-            Debug.Log(ur.result_data.nickname);
+            if(ur.result_code == 200 && ur.result_data.email != "test@gmail.com")
+            {
+                GlobalParameters.Param.accountId = ur.result_data.id;
+                GlobalParameters.Param.accountName = ur.result_data.nickname;
+                GlobalParameters.Param.accountEmail = ur.result_data.email;
+                GlobalParameters.Param.accountLevel = ur.result_data.level;
+                GlobalParameters.Param.accountExp = ur.result_data.exp;
+                GlobalParameters.Param.accountScore = ur.result_data.score;
+                GlobalParameters.Param.accountGold = ur.result_data.gold;
+
+            }
+        }
+
+        void ReceiveMultiplayLobby(string message, Response rootResponse)
+        {
+            if (!rootResponse.GetResult())
+            {
+                //failure on user response
+                Debug.Log("Failed User Response");
+                return;
+            }
+
+            UserResponse[] ur = JsonUtility.FromJson<UserResponse[]>(message);
+            Debug.Log("Received ReceiveMultiplayLobby");
+            Debug.Log(ur[0].result_data.nickname);
         }
 
         #endregion

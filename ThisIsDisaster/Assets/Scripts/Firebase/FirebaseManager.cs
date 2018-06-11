@@ -16,7 +16,7 @@ public class FirebaseManager : MonoBehaviour
 {
 
 
-#if false
+#if true
 
     // 이메일 InputField 
     [SerializeField] 
@@ -36,70 +36,83 @@ public class FirebaseManager : MonoBehaviour
 	string displayName; 
 	string emailAddress; 
 	string photoUrl; 
-	string authCode; 
+	string authCode;
+    bool mCheck;
 
-	// Use this for initialization 
-	void Awake () 
-	{ 
-
-		// facebook sdk 초기화 
-		if (!FB.IsInitialized) { 
+    // Use this for initialization 
+    void Start() 
+	{
+        // facebook sdk 초기화 
+        if (!FB.IsInitialized) { 
 			FB.Init(FacebookInitCallBack, OnHideUnity); 
-		} 
+		}
 
-		// 초기화 
-		InitializeFirebase(); 
+        // 초기화 
+#if false
+        //InitalizeGooglePlay();
+#endif
+        InitializeFirebase();
+    }
 
-		InitalizeGooglePlay();
-	} 
 
-	void InitializeFirebase() { 
+    void InitializeFirebase() { 
 		auth = Firebase.Auth.FirebaseAuth.DefaultInstance; 
 		auth.StateChanged += AuthStateChanged; 
 	} 
 
-	void InitalizeGooglePlay() {
-		PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder() 
-			.RequestServerAuthCode(false /* Don't force refresh */)
-			.RequestIdToken()
-			.Build(); 
 
-		PlayGamesPlatform.InitializeInstance(config); 
-		PlayGamesPlatform.DebugLogEnabled = true; 
-		PlayGamesPlatform.Activate(); 
-	}
 
-	/** firebase 앱 내에 가입 여부를 체크한다. */ 
-	private bool SignedInFirebase { 
+    Json.WebCommunicationManager WebManager
+    {
+        get
+        {
+            return Json.WebCommunicationManager.Manager;
+        }
+    }
+
+    /** firebase 앱 내에 가입 여부를 체크한다. */
+    private bool SignedInFirebase { 
 		get { 
 			return user != auth.CurrentUser && auth.CurrentUser != null; 
 		} 
 	} 
 
 	/** 상태변화 추적 */ 
-	void AuthStateChanged(object sender, System.EventArgs eventArgs) { 
+	void AuthStateChanged(object sender, System.EventArgs eventArgs) {
+        Log("AuthStateChanged");
 		if (auth.CurrentUser != user) { 
 
 			if (!SignedInFirebase && user != null) { 
-				Debug.LogFormat("Signed out {0}", user.UserId); 
-			} 
+				Debug.LogFormat("Signed out {0}", user.UserId);
+                GlobalParameters.Param.accountName = user.DisplayName;
+                GlobalParameters.Param.accountEmail = user.Email;
+            } 
 			user = auth.CurrentUser; 
 			if (SignedInFirebase) { 
 				Log(string.Format("Signed in {0}", user.UserId)); 
 				displayName = user.DisplayName ?? ""; 
 				emailAddress = user.Email ?? ""; 
-				Log(string.Format("Signed in {0} _ {1}", displayName, emailAddress)); 
+				Log(string.Format("Signed in {0} _ {1}", displayName, emailAddress));
 
-				LoadingSceneManager.LoadScene("Lobby Scene");
-			} 
-		} 
-	} 
+                GlobalParameters.Param.accountName = displayName;
+                GlobalParameters.Param.accountEmail = emailAddress;
+
+            }
+        }
+        else
+        {
+            GlobalParameters.Param.accountEmail = auth.CurrentUser.Email;
+            GlobalParameters.Param.accountName = auth.CurrentUser.DisplayName;
+            
+        }
+    } 
 
 
-#region FACEBOOK 로그인 
+        #region FACEBOOK 로그인 
 	/** Facebook 초기화 콜백 */ 
-	void FacebookInitCallBack() { 
-		if (FB.IsInitialized) { 
+	void FacebookInitCallBack() {
+        Log("FacebookInitCallBack");
+        if (FB.IsInitialized) { 
 			Log("Successed to Initalize the Facebook SDK"); 
 			FB.ActivateApp(); 
 		} else { 
@@ -108,8 +121,9 @@ public class FirebaseManager : MonoBehaviour
 	} 
 
 	/** Facebook 로그인이 활성화되는 경우 호출 */ 
-	void OnHideUnity(bool isGameShown) { 
-		if (!isGameShown) { 
+	void OnHideUnity(bool isGameShown) {
+        Log("OnHideUnity");
+        if (!isGameShown) { 
 			// 게임 일시 중지 
 			Time.timeScale = 0; 
 		} else { 
@@ -119,14 +133,16 @@ public class FirebaseManager : MonoBehaviour
 	} 
 
 	/** 페이스북 로그인 요청(버튼과 연결) */ 
-	public void facebookLogin() { 
-		var param = new List<string>() { "public_profile", "email" }; 
+	public void facebookLogin() {
+        Log("facebookLogin");
+        var param = new List<string>() { "public_profile", "email" }; 
 		FB.LogInWithReadPermissions(param, FacebookAuthCallback); 
 	} 
 
 	/** 페이스북 로그인 결과 콜백 */ 
-	void FacebookAuthCallback(ILoginResult result) { 
-		if (result.Error != null) { 
+	void FacebookAuthCallback(ILoginResult result) {
+        Log("FacebookAuthCallback");
+        if (result.Error != null) { 
 			Log(string.Format("Facebook Auth Error: {0}", result.Error)); 
 			return; 
 		} 
@@ -136,22 +152,24 @@ public class FirebaseManager : MonoBehaviour
 
 			// 이미 firebase에 account 등록이 되었는지 확인 
 			if (SignedInFirebase) { 
-				linkFacebookAccount(accessToken); 
-			} else { 
+				linkFacebookAccount(accessToken);
+
+            } else { 
 				// firebase facebook 로그인 연결 호출 부분 
-				registerFacebookAccountToFirebase(accessToken); 
-			} 
+				registerFacebookAccountToFirebase(accessToken);
+            }
 
-			LoadingSceneManager.LoadScene("Lobby Scene");
+            LoadingSceneManager.LoadScene("Lobby Scene");
 
-		} else { 
+        } else { 
 			Log("User cancelled login"); 
 		} 
 	} 
 
 	/** Facebook access token으로 Firebase 등록 요청 */ 
-	void registerFacebookAccountToFirebase(AccessToken accessToken) { 
-		Credential credential = FacebookAuthProvider.GetCredential(accessToken.TokenString); 
+	void registerFacebookAccountToFirebase(AccessToken accessToken) {
+        Log("registerFacebookAccountToFirebase");
+        Credential credential = FacebookAuthProvider.GetCredential(accessToken.TokenString); 
 
 		auth 
 			.SignInWithCredentialAsync(credential) 
@@ -167,13 +185,29 @@ public class FirebaseManager : MonoBehaviour
 
 				user = task.Result; 
 				Log(string.Format("User signed in successfully: {0} ({1})", 
-					user.DisplayName, user.UserId)); 
-			}); 
+					user.DisplayName, user.UserId));
+                
+                GlobalParameters.Param.accountName = user.DisplayName;
+                GlobalParameters.Param.accountEmail = user.Email;
+
+               
+                Json.User userData = new Json.User();
+
+                userData.email = user.Email;
+                userData.nickname = user.DisplayName;
+
+                var jsonMsg = JsonUtility.ToJson(userData);
+
+                WebManager.SendRequest(Json.RequestMethod.POST, "user?platform=facebook", jsonMsg);
+
+                
+            }); 
 	} 
 
 	/** Firebase에 등록된 account를 보유했을 때 새로운 인증을 연결한다. */ 
-	void linkFacebookAccount(AccessToken accessToken) { 
-		Credential credential = FacebookAuthProvider.GetCredential(accessToken.TokenString); 
+	void linkFacebookAccount(AccessToken accessToken) {
+        Log("linkFacebookAccount");
+        Credential credential = FacebookAuthProvider.GetCredential(accessToken.TokenString); 
 
 		auth.CurrentUser 
 			.LinkWithCredentialAsync(credential) 
@@ -189,56 +223,86 @@ public class FirebaseManager : MonoBehaviour
 
 				user = task.Result; 
 				Log(string.Format("Credentials successfully linked to Firebase user: {0} ({1})", 
-					user.DisplayName, user.UserId)); 
-				
-			}); 
-	} 
-#endregion
+					user.DisplayName, user.UserId));
 
-	public void GooglePlayLogin() 
-	{ 
+                GlobalParameters.Param.accountName = user.DisplayName;
+                GlobalParameters.Param.accountEmail = user.Email;
 
-		Social.localUser.Authenticate((success, errorMessage) => 
-			{ 
-				if (success) 
-				{ 
-					resultText.text = string.Format("Google Play login - {0}:{1}", success, Social.localUser.userName); 
-					StartCoroutine(coLogin()); 
-				} 
-				else 
-				{ 
+                WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + user.Email, "");
+            }); 
+	}
+        #endregion
 
-					Debug.Log("google " + errorMessage); 
-					return ; 
-				} 
+#if false
+        #region Google Play 로그인 
+    void InitalizeGooglePlay()
+    {
+        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
+            // enables saving game progress.
+            .EnableSavedGames()
+            .RequestEmail()
+            // requests a server auth code be generated so it can be passed to an
+            //  associated back end server application and exchanged for an OAuth token.
+            .RequestServerAuthCode(false)
+            // requests an ID token be generated.  This OAuth token can be used to
+            //  identify the player to other services such as Firebase.
+            .RequestIdToken()
+            .Build();
 
-				Debug.Log("google " + success); 
-			}); 
-	} 
+        PlayGamesPlatform.InitializeInstance(config);
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+    }
 
-	public IEnumerator coLogin() 
-	{ 
-		resultText.text = string.Format ("\nTry to get Token..."); 
-		while (System.String.IsNullOrEmpty (((PlayGamesLocalUser)Social.localUser).GetIdToken ())) 
-			yield return null; 
+    public void SignInWithPlayGames()
+    {
+        // Initialize Firebase Auth
+        Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
 
-		string idToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken(); 
+        // Sign In and Get a server auth code.
+        UnityEngine.Social.localUser.Authenticate((bool success) => {
+            if (!success)
+            {
+                Debug.LogError("SignInOnClick: Failed to Sign into Play Games Services.");
+                return;
+            }
 
-		resultText.text = string.Format ("\nToken: {0}", idToken); 
-		Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance; 
+            string authCode = PlayGamesPlatform.Instance.GetServerAuthCode();
+            if (string.IsNullOrEmpty(authCode))
+            {
+                Debug.LogError("SignInOnClick: Signed into Play Games Services but failed to get the server auth code.");
+                return;
+            }
+            Debug.LogFormat("SignInOnClick: Auth code is: {0}", authCode);
 
-		Firebase.Auth.Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential (idToken, null); 
-		auth.SignInWithCredentialAsync (credential).ContinueWith ( 
-			task => { 
-				if (task.IsCompleted && !task.IsCanceled && !task.IsFaulted) { 
-					Firebase.Auth.FirebaseUser newUser = task.Result; 
-					resultText.text = string.Format ("FirebaseUser:{0}\nEmail:{1}", newUser.UserId, newUser.Email); 
-				} 
-			}); 
-	} 
+            // Use Server Auth Code to make a credential
+            Firebase.Auth.Credential credential = Firebase.Auth.PlayGamesAuthProvider.GetCredential(authCode);
 
-	// 회원가입 버튼을 눌렀을 때 작동할 함수 
-	public void SignUp() 
+            // Sign In to Firebase with the credential
+            auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("SignInOnClick was canceled.");
+                    return;
+                }
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("SignInOnClick encountered an error: " + task.Exception);
+                    return;
+                }
+
+                Firebase.Auth.FirebaseUser newUser = task.Result;
+                Debug.LogFormat("SignInOnClick: User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+                PlayGamesPlatform.Instance.ShowLeaderboardUI();
+
+                LoadingSceneManager.LoadScene("Lobby Scene");
+            });
+        });
+    }
+        #endregion
+#endif
+    // 회원가입 버튼을 눌렀을 때 작동할 함수 
+    public void SignUp() 
 	{ 
 		// 회원가입 버튼은 인풋 필드가 비어있지 않을 때 작동한다. 
 		if(emailInput.text.Length != 0 && passInput.text.Length != 0) 
@@ -283,9 +347,8 @@ public class FirebaseManager : MonoBehaviour
 	} 
 
 	void Log(string logText) 
-	{ 
-		resultText.text += (logText + "\n"); 
+	{  
 		Debug.Log(logText); 
 	} 
 #endif
-}
+    }

@@ -33,6 +33,7 @@ public class MatchingSlot : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         SetBlockState(true);
+        
 	}
 	
 	// Update is called once per frame
@@ -47,7 +48,7 @@ public class MatchingSlot : MonoBehaviour {
         SetBlockState(false);
 
         //SetPlayerReady(false);
-        this._accountId = AccountId;
+        _accountId = AccountId;
 
         Input.interactable = isLocalPlayer;
         _isReady = false;
@@ -66,8 +67,14 @@ public class MatchingSlot : MonoBehaviour {
     }
 
     public void OnClickReady() {
+        Debug.Log("OnClickReady");
+        Debug.Log(_accountId);
+        Debug.Log(_isReady);
+
         if (_accountId == -1) return;
+
         SetPlayerReady(!_isReady);
+
         if (!GlobalGameManager.Instance.IsHost)
         {
             NetworkComponents.GameServer.Instance.SendMatchingReady(_isReady);
