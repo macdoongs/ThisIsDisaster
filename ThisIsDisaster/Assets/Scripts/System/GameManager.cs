@@ -379,7 +379,9 @@ public class GameManager : MonoBehaviour {
         }
 
         Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType, isVictory ? "승리" : "패배");
-        InGameUIScript.Instance.StageClear();
+
+        if (isVictory)
+            InGameUIScript.Instance.StageClear();
     }
 
     public UnitControllerBase GetLocalPlayer() {
