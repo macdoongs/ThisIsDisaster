@@ -168,7 +168,38 @@ public class ItemManager {
         if (!item.isRegionEffect)
         {
             UnityEngine.Debug.Log("player try to acquire item " + item.ItemModel.metaInfo.Name);
-            if (player._character.AddItem(item.ItemModel, 1))
+
+            if(item.ItemModel.metaInfo.itemType.Equals(ItemType.Head) && player._character.headSlot == null)
+            {
+                player._character.WearEquipment(item.ItemModel);
+                return true;
+            }
+            else if (item.ItemModel.metaInfo.itemType.Equals(ItemType.Clothes) && player._character.clothesSlot == null)
+            {
+                player._character.WearEquipment(item.ItemModel);
+                return true;
+            }
+            else if (item.ItemModel.metaInfo.itemType.Equals(ItemType.Weapon) && player._character.weaponSlot == null)
+            {
+                player._character.WearEquipment(item.ItemModel);
+                return true;
+            }
+            else if (item.ItemModel.metaInfo.itemType.Equals(ItemType.Backpack) && player._character.backpackSlot == null)
+            {
+                player._character.WearEquipment(item.ItemModel);
+                return true;
+            }
+            else if (item.ItemModel.metaInfo.itemType.Equals(ItemType.Bottle) && player._character.bottleSlot == null)
+            {
+                player._character.WearEquipment(item.ItemModel);
+                return true;
+            }
+            else if (item.ItemModel.metaInfo.itemType.Equals(ItemType.Tool_Equip) && player._character.toolSlot == null)
+            {
+                player._character.WearEquipment(item.ItemModel);
+                return true;
+            }
+            else if (player._character.AddItem(item.ItemModel, 1))
             {
                 return true;
             }

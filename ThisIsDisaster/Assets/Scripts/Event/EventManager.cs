@@ -79,8 +79,10 @@ public class EventManager : MonoBehaviour {
 
         evntBase.OnGenerated();
         Debug.Log("Generate " + evntBase.type);
-        //이벤트 시작
+        //이벤트 생성
+        Debug.LogError("이벤트 생성" + evntBase.type.ToString());
         InGameUIScript.Instance.EventNotice(evntBase.type.ToString(), 0);
+        InGameUIScript.Instance.DefaultEventDesc();
         InGameUIScript.Instance.EventDescSetting(type);
     }
 
@@ -126,6 +128,8 @@ public class EventManager : MonoBehaviour {
         e.IsStarted = true;
 
         Debug.Log("Start " + e.type);
+        Debug.LogError("이벤트 시작" + e.type.ToString());
+
         InGameUIScript.Instance.EventNotice(e.type.ToString(), 1);
     }
 
@@ -145,8 +149,9 @@ public class EventManager : MonoBehaviour {
         e.OnEnd();
         e.IsStarted = false;
         Debug.Log("End " + e.type);
-        InGameUIScript.Instance.EventNotice(e.type.ToString(), 2);
         InGameUIScript.Instance.DefaultEventDesc();
+        InGameUIScript.Instance.EventNotice(e.type.ToString(), 2);
+
     }
 
     public void OnDestroyEvent(WeatherType type)
