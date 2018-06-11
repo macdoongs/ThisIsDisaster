@@ -38,7 +38,7 @@ public class LobbySceneScript : MonoBehaviour, IObserver {
 	// Update is called once per frame
 	void Update ()
     {
-        SetUI();
+
     }
 
     Json.WebCommunicationManager WebManager
@@ -71,14 +71,7 @@ public class LobbySceneScript : MonoBehaviour, IObserver {
             Debug.Log("Sending");
         }
     }
-
-    void SetUI()
-    {
-            PlayerName.text = GlobalParameters.Param.accountName;
-            PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
-            PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
-    }
-
+    
     void SetUserData(Json.UserResponse data) {
         PlayerLevel.text = data.result_data.level.ToString();
         PlayerExp.text = data.result_data.exp.ToString();

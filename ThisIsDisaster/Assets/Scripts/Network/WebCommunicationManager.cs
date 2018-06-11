@@ -50,7 +50,7 @@ namespace Json
 
         public WebCommunicationManager() {
             _recieveActions.Add(typeof(Response).ToString(), ReceiveResponse);
-            _recieveActions.Add("User", ReceiveUserResponse);
+            _recieveActions.Add(typeof(UserResponse).ToString(), ReceiveUserResponse);
             _recieveActions.Add(typeof(MultiPlayLobby).ToString(), ReceiveMultiplayLobby);
         }
 
