@@ -72,7 +72,7 @@ public class FloodEvent : EventBase {
         {
             _lifeTimeTimer.RunTimer();
 
-            if (_lifeTimeTimer.Rate > 0.9f && _clearedWater == false)
+            if (_lifeTimeTimer.Rate > 0.85f && _clearedWater == false)
             {
                 _clearedWater = true;
                 _effect.DisappearWater();

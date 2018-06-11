@@ -52,7 +52,6 @@
       <event>cyclone</event>
       <event>flood</event>
       <event>heavysnow</event>
-      <event>landslide</event>
       <event>earthquake</event>
     </events>
 
@@ -90,7 +89,6 @@
     <events>
       <event>earthquake</event>
       <event>fire</event>
-      <event>landslide</event>
       <event>drought</event>
       <event>thunderstorm</event>
     </events>

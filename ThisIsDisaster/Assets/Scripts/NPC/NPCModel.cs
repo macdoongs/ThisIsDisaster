@@ -201,7 +201,8 @@ namespace NPC {
                     OnDefeated();
                 return;
             }
-            Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+            if (attacker != null)
+                Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
             CurrentHp -= damage;
             if (CurrentHp <= 0f)
             {

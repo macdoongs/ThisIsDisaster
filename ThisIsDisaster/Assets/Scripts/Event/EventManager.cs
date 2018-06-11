@@ -178,25 +178,25 @@ public class EventManager : MonoBehaviour {
     private void Update()
     {
 
-		if (Input.GetKeyDown(KeyCode.O))
-        {
-            EventManager.Manager.OnGenerate(currentTestType);
-        }
+		//if (Input.GetKeyDown(KeyCode.O))
+  //      {
+  //          EventManager.Manager.OnGenerate(currentTestType);
+  //      }
 
-		if (Input.GetKeyDown(KeyCode.P))
-        {
-            EventManager.Manager.OnStart(currentTestType);
-        }
+		//if (Input.GetKeyDown(KeyCode.P))
+  //      {
+  //          EventManager.Manager.OnStart(currentTestType);
+  //      }
 
-		if (Input.GetKeyDown(KeyCode.LeftBracket))
-        {
-            EventManager.Manager.EndEvent(currentTestType);
-        }
+		//if (Input.GetKeyDown(KeyCode.LeftBracket))
+  //      {
+  //          EventManager.Manager.EndEvent(currentTestType);
+  //      }
 
-		if (Input.GetKeyDown(KeyCode.RightBracket))
-        {
-            EventManager.Manager.OnDestroyEvent(currentTestType);
-        }
+		//if (Input.GetKeyDown(KeyCode.RightBracket))
+  //      {
+  //          EventManager.Manager.OnDestroyEvent(currentTestType);
+  //      }
     }         // 메뉴 실행 키
 
 	public GameObject MakeWorldBlink() {                       // 공통 비
@@ -323,7 +323,6 @@ public class EventManager : MonoBehaviour {
         return crackObject;
     }
 
-
     public void SetWorldFilterColor(Color color) {
 		if (darkObject = null) {
 			SpriteRenderer renderer = darkObject.GetComponent<SpriteRenderer>();
@@ -376,7 +375,7 @@ public class EventManager : MonoBehaviour {
         return snowObject.GetComponent<SnowEffect>();
     }
 
-   public CloudEffect GetCloudyEffect()
+   public GameObject GetCloudyEffect()
     {                       
         if (cloudObject == null)
         {
@@ -395,7 +394,7 @@ public class EventManager : MonoBehaviour {
 
         }
 
-        return cloudObject.GetComponent<CloudEffect>();
+        return cloudObject;
     }     // map을 하얗게하는 effect   
 
     public GameObject GetSandEffect()

@@ -58,7 +58,7 @@ public class StageGenerator {
 #if MIDDLE_PRES
             if (!_isEarthquakeGenerated)
             {
-                WeatherType currentTest = WeatherType.Flood;
+                WeatherType currentTest = WeatherType.Fire;
                 _isEarthquakeGenerated = true;
                 weatherList.Remove(currentTest);
                 return currentTest;
