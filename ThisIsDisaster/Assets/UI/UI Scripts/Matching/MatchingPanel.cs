@@ -102,12 +102,12 @@ public class MatchingPanel : MonoBehaviour, IObserver
 
         Json.WebCommunicationManager.Manager.AddPostResult(OnReceviveResponse);
         Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.POST, "game/multiplay/join", msg);
-        Debug.Log("Send Post Join Message " + msg);
+        //Debug.Log("Send Post Join Message " + msg);
         //Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.GET, "game/multiplay/lobby?email=" + GlobalParameters.Param.accountEmail);
     }
 
     public void OnReceviveResponse() {
-        Debug.Log("Send Get Lobby Message");
+        //Debug.Log("Send Get Lobby Message");
         Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.GET, "game/multiplay/lobby?email=" + GlobalParameters.Param.accountEmail);
     }
 

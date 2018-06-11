@@ -15,7 +15,10 @@ public class FloodEvent : EventBase {
     public float damageHealthPerSec = 1f;
     public float damageEnergyPerSec = 1f;
     public float damageTime = 1f;
+    private bool _clearedWater = false;
 
+    Timer _levelDelayTimer = new Timer();
+    private const float _LEVEL_DELAY_TIME = 15f;
     
     public FloodEvent() {
 		type = WeatherType.Flood;
@@ -41,7 +44,8 @@ public class FloodEvent : EventBase {
         _lifeTimeTimer.StartTimer(lifeTime);
 
         _effect.AddHalf(0);
-        _effect.AddHalf(1);
+        _levelDelayTimer.StartTimer(_LEVEL_DELAY_TIME);
+        //_effect.AddHalf(1);
 	}
 
 	public override void OnEnd()
@@ -58,10 +62,21 @@ public class FloodEvent : EventBase {
 
     public override void OnExecute()
     {
+        if (_levelDelayTimer.started) {
+            if (_levelDelayTimer.RunTimer()) {
+                _effect.AddHalf(1);
+            }
+        }
+
         if (_lifeTimeTimer.started)
         {
             _lifeTimeTimer.RunTimer();
 
+            if (_lifeTimeTimer.Rate > 0.9f && _clearedWater == false)
+            {
+                _clearedWater = true;
+                _effect.DisappearWater();
+            }
 
             if (_lifeTimeTimer.elapsed < 5)
             {
