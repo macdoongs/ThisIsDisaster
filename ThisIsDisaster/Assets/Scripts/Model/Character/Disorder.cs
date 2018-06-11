@@ -70,7 +70,7 @@ public class Disorder
         MaxHealth = -20;
         Defense = -30;
         Damage = -30;
-        MoveSpeed = -4;
+        MoveSpeed = -3;
     }
 
     public void PoisoningEffect()
@@ -90,7 +90,6 @@ public class Disorder
     {
         Stamina = -20;
         Damage = -40;
-        MoveSpeed = -3;
     }
 
 

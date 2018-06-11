@@ -91,6 +91,13 @@ public class FileManager {
         return true;
     }
 
+    public void DeleteData(ISavedData savedData, string format = ".dat") {
+        string path = GetPath(savedData, format);
+        if (File.Exists(path)) {
+            File.Delete(path);
+        }
+    }
+
     public static bool TryGetValue<T>(Dictionary<string, object> dic, string name, ref T field) {
         object output;
         if (dic.TryGetValue(name, out output) && output is T) {
