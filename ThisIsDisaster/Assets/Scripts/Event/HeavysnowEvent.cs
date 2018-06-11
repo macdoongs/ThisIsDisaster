@@ -13,8 +13,8 @@ public class HeavysnowEvent : EventBase
 
 
     Timer _damageTimer = new Timer();
-    public float damageHealthPerSec = 2f;
-    public float damageEnergyPerSec = 2f;
+    public float damageHealthPerSec = 1f;
+    public float damageEnergyPerSec = 1f;
     public float damageTime = 1f;
 
     public HeavysnowEvent()
@@ -68,7 +68,7 @@ public class HeavysnowEvent : EventBase
             if (_damageTimer.RunTimer())
             {
                 float healthDamageRate = 1f;
-                float staminaDamageRate = 3f;
+                float staminaDamageRate = 1f;
                 float speedDownRate = 0.3f;
 
                 var player = CharacterModel.Instance;

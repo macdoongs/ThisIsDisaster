@@ -44,7 +44,7 @@ public class YellowdustEvent : EventBase
         {
             if (_damageTimer.RunTimer())
             {
-                float healthDamageRate = 1.5f;
+                float healthDamageRate = 1f;
                 float staminaDamageRate = 2f;
                 var player = CharacterModel.Instance;
 
@@ -63,8 +63,7 @@ public class YellowdustEvent : EventBase
                     healthDamageRate *= 0.5f;
                     staminaDamageRate *= 0.5f;
                 }
-
-                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                
                 OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                 CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
 

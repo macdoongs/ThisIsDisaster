@@ -85,11 +85,11 @@ public class DisorderController : MonoBehaviour {
             int x = random.Next(1, 100);
             if (x < 50)
             {
-                MakeDisorderByProbability(Disorder.DisorderType.thirst, 25);
+                MakeDisorderByProbability(Disorder.DisorderType.thirst, 15);
             }
             else
             {
-                MakeDisorderByProbability(Disorder.DisorderType.hunger, 25);
+                MakeDisorderByProbability(Disorder.DisorderType.hunger, 15);
             }
         }
     }
