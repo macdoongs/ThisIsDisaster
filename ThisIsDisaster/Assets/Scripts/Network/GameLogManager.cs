@@ -29,8 +29,8 @@ public class GameLogManager : IObserver
 {
     static class GameLogFormat {
         //ko-kr
-        public const string StageStart = "{0} 스테이지가 시작되었습니다.";//싱글/멀티
-        public const string StageEnd = "{0} 스테이지가 종료되었습니다.";//싱글/멀티, 승리/패배
+        public const string StageStart = "{0} {1} 스테이지가 시작되었습니다.";//싱글/멀티
+        public const string StageEnd = "{0} {2} 스테이지가 종료되었습니다. {1}";//싱글/멀티, 승리/패배
         public const string EventGenerated = "{0} 재난이 감지됩니다.";//재난 종류
         public const string EventStarted = "{0} 재난이 발생하였습니다.";//재난 종류
         public const string EventEnded = "{0} 재난이 종료되었습니다.";//재난 종류
@@ -139,10 +139,17 @@ public class GameLogManager : IObserver
         List<object> p = new List<object>(param);
         p.RemoveAt(0);
         string log = string.Format(format, p.ToArray());
+        SaveLog(log);
+
         Debug.LogError("[GameLog]" + log);
     }
 
-
+    public string OnGameEnd() {
+        string output = builder.ToString();
+        builder.Length = 0;
+        return output;
+    }
+    
     public void ObserveNotices()
     {
         Notice.Instance.Observe(NoticeName.SaveGameLog, this);

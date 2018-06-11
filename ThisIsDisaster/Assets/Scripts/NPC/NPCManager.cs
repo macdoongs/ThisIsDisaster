@@ -146,6 +146,7 @@ public class NPCManager : IObserver
                 npc.Init();
                 var tile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);
                 npc.UpdatePosition(tile.transform.position);
+                Debug.LogError("Regen Monster");
             }
         }
     }

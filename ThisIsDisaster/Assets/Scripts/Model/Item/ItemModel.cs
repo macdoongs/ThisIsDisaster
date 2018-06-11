@@ -47,14 +47,14 @@ public class ItemModel {
         return (int)GetStat("AttackAnim");
     }
 
-    public virtual int GetAttacRangeX()
+    public virtual float GetAttacRangeX()
     {
-        return (int)GetStat("range_x");
+        return GetStat("range_x");
     }
 
-    public virtual int GetAttacRangeY()
+    public virtual float GetAttacRangeY()
     {
-        return (int)GetStat("range_y");
+        return GetStat("range_y");
     }
 
     public virtual int GetSize()

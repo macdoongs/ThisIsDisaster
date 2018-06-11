@@ -5,7 +5,7 @@ using UnityEngine;
 public class ScreenCapture : MonoBehaviour {
     
     Texture2D snapShot = null;
-    public UnityEngine.UI.RawImage rawImage;
+    public UnityEngine.UI.RawImage[] rawImages;
     private bool take = false;
 
     public float xOffset;
@@ -15,7 +15,7 @@ public class ScreenCapture : MonoBehaviour {
     
     private void Start()
     {
-        initialSize = rawImage.rectTransform.sizeDelta;
+        initialSize = rawImages[0].rectTransform.sizeDelta;
     }
 
     private void Update()
@@ -56,9 +56,11 @@ public class ScreenCapture : MonoBehaviour {
 
             texture.Apply();
             snapShot = texture;
-            rawImage.texture = texture;
-            rawImage.SetNativeSize();
-
+            foreach (var rawImage in rawImages)
+            {
+                rawImage.texture = texture;
+                rawImage.SetNativeSize();
+            }
             int std = 0;
             float rate = 0f;
             Vector2 size = initialSize;
@@ -74,8 +76,9 @@ public class ScreenCapture : MonoBehaviour {
                 size = new Vector2(initialSize.x, height * rate);
             }
 
-            rawImage.rectTransform.sizeDelta = size;
-
+            foreach (var rawImage in rawImages) {
+                rawImage.rectTransform.sizeDelta = size;
+            }
         }
     }
 }

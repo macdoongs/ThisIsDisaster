@@ -8,6 +8,8 @@ public class DroughtEvent : EventBase
     GameObject dryObject = null;         // 맵 건조
 	GameObject crackObject = null;      // 공통1 (바닥 갈라짐)
 
+    const float _BLUR_AMOUNT_MAX = 10f;
+    const float _BLUR_GLOW_MAX = 0.05f;
 
     Timer _damageTimer = new Timer();
     public float damageHealthPerSec = 1f;
@@ -15,6 +17,20 @@ public class DroughtEvent : EventBase
     public float damageTime = 1f;
 
     Timer _timer = new Timer();
+
+    Timer _effectTimer = new Timer();
+    const float _EFFECT_TIME = 20f;
+    BlurFilter EffectFilter {
+        get {
+            if (_effectFilter == null) {
+                _effectFilter = Camera.main.gameObject.AddComponent<BlurFilter>();
+            }
+            return _effectFilter;
+        }
+    }
+    BlurFilter _effectFilter = null;
+    
+
     float _lifetime = 5f;
 
 	public DroughtEvent()
@@ -25,7 +41,9 @@ public class DroughtEvent : EventBase
 	public override void OnGenerated()
 	{
         dryObject = EventManager.Manager.MakeWorldDry();
-        crackObject = EventManager.Manager.MakeWorldCrack();
+        //crackObject = EventManager.Manager.MakeWorldCrack();
+
+        EffectFilter.enabled = false;
 	}
 
 	public override void OnStart()
@@ -35,6 +53,10 @@ public class DroughtEvent : EventBase
 
         _timer.StartTimer(_lifetime);
         _damageTimer.StartTimer(damageTime);
+        _effectTimer.StartTimer(_EFFECT_TIME);
+        EffectFilter.enabled = true;
+        EffectFilter.Amount = 0f;
+        EffectFilter.Glow = 0f;
     }
 
     public override void OnExecute()
@@ -47,6 +69,20 @@ public class DroughtEvent : EventBase
             }
         }
 
+        if (_effectTimer.started)
+        {
+            float rate = _effectTimer.Rate;
+            if (_effectTimer.RunTimer())
+            {
+                rate = 1f;
+            }
+
+            float glow = Mathf.Lerp(0f, _BLUR_GLOW_MAX, rate);
+            float amount = Mathf.Lerp(0f, _BLUR_AMOUNT_MAX, rate);
+            EffectFilter.Glow = glow;
+            EffectFilter.Amount = amount;
+        }
+
         if (_damageTimer.started)
         {
             //피난처 안에 있을 경우, 데미지가 반감되게 추가해야함.
@@ -55,10 +91,17 @@ public class DroughtEvent : EventBase
                 float healthDamageRate = 1f;
                 float staminaDamageRate = 3f;
 
-                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
-                OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
-                CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
-
+                if (CharacterModel.Instance.GetPlayerModel().IsInShelter())
+                {
+                    OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate * 0.5f);
+                    CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate * 0.5f);
+                }
+                else
+                {
+                    OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
+                    CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
+                }
+                
                 _damageTimer.StartTimer(damageTime);
             }
 
@@ -67,8 +110,9 @@ public class DroughtEvent : EventBase
 
     public override void OnEnd()
 	{
-		dryObject = null;
-		crackObject = null;
+        dryObject.SetActive(false);
+        
+        EffectFilter.enabled = false;
 	}
 
 	public override void OnDestroy()

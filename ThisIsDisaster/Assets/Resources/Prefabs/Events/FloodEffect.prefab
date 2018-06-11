@@ -549,6 +549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
+  waterLevel: {fileID: 21300000, guid: 5c504652684caa84c9d5b0bf8347ec39, type: 3}
 --- !u!114 &114449145709037552
 MonoBehaviour:
   m_ObjectHideFlags: 1

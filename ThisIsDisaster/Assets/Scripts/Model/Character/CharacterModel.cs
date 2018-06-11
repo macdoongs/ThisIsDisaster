@@ -38,6 +38,10 @@ public class PlayerModel : UnitModel
         if (check) {
             if (_character.IsDead()) {
                 Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerDead, GlobalParameters.Param.accountName, PlayerDeadType.Monster);
+                if (!_character.HasItem(33004)) {
+                    GameManager.CurrentGameManager.EndStage(false);
+                }
+                //
             }
         }
         
@@ -150,8 +154,8 @@ public class CharacterModel : MonoBehaviour
 
     public Stats CurrentStats = new Stats();
     public float tempMoveSpeed;
-    public int attack_range_x = 0;
-    public int attack_range_y = 0;
+    public float attack_range_x = 0;
+    public float attack_range_y = 0;
     public int bagSize = 0;
     public int waterMax = 0;
     public int visionLevel = 0;
@@ -713,11 +717,6 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
 
-            if (ItemLists.Count > defaultBagSize)
-            {
-                Debug.Log("아이템이 너무 많습니다.");
-                return;
-            }
             bagSize = defaultBagSize;
             backpackSlot = null;
             SoundLayer.CurrentLayer.PlaySound("se_unequip");
@@ -754,7 +753,7 @@ public class CharacterModel : MonoBehaviour
                 RemoveMaskSprite();
             }
             if (toolSlot.metaInfo.metaId.Equals(31006) || toolSlot.metaInfo.metaId.Equals(31007))
-            {
+            {//침낭
                 CurrentStats.MoveSpeed = tempMoveSpeed;
                 MoveRestrict = false;
             }
@@ -898,8 +897,9 @@ public class CharacterModel : MonoBehaviour
         if(CurrentStats.Defense < 0)
             CurrentStats.Defense = 0;
         CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage + EventStats.Damage;
-        if (CurrentStats.Damage < 0)
-            CurrentStats.Damage = 0;
+        if (CurrentStats.Damage < 5f) {
+            CurrentStats.Damage = 5f;
+        }
         CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen + EventStats.HealthRegen + RegionItemStats.HealthRegen;
         CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen + EventStats.StaminaRegen + RegionItemStats.StaminaRegen;
         CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed + EventStats.MoveSpeed;
@@ -1050,7 +1050,7 @@ public class CharacterModel : MonoBehaviour
             SoundLayer.CurrentLayer.PlaySound("se_bonfire");
         }
         else if (etc.metaInfo.metaId.Equals(33003))
-        {
+        {//피뢰침
             EffectItemID = etc.metaInfo.metaId;
             TileUnit currentTile = GetPlayerModel().GetCurrentTile();
             if (EffectTiles.Contains(currentTile))
@@ -1157,7 +1157,7 @@ public class CharacterModel : MonoBehaviour
         }
         isPlayerDead = true;
         
-        InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33003));
+        InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33004));
     }
 
     public void AEDContain()
@@ -1244,24 +1244,9 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// This is Odd
-    /// </summary>
     public void WeaponSprite()
     {
-        //if (weaponSlot != null)
-        //{
-        //    string src = weaponSlot.metaInfo.spriteSrc;
-        //    Sprite s = Resources.Load<Sprite>(src);
 
-
-        //    SpriteParts[7].sprite = s;
-        //}
-        //else
-        //{
-        //    //SpriteParts[7].sprite = null;
-        //    ClearSpritePart(PlayerSpriteParts.Head);
-        //}
         if (weaponSlot != null)
         {
             SetSprite(PlayerSpriteParts.FrontWeapon, weaponSlot.metaInfo);

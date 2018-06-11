@@ -10,8 +10,8 @@
       <event>cyclone</event>
       <event>yellowdust</event>
       <event>flood</event>
-      <event>heavysnow</event>
       <event>drought</event>
+      <event>earthquake</event>
     </events>
     
     <map height="3">
@@ -49,16 +49,19 @@
   
   <climate type="polar">
     <events>
-      <event>flood</event>
       <event>cyclone</event>
+      <event>flood</event>
+      <event>heavysnow</event>
+      <event>landslide</event>
+      <event>earthquake</event>
     </events>
 
     <map height="3">
       <zero>slow</zero>
 
       <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Water/ISO_Tile_Water_Shore_4S_04</tile>
-      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_01_ToStone_02</tile>
-      <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_02</tile>
+      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_02</tile>
+      <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_01</tile>
       <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Snow/ISO_Tile_Snow_01</tile>
     </map>
 
@@ -70,15 +73,99 @@
     </items>
 
     <environments>
-      <environment height="2" min="30" max="50">0</environment>
-      <!--tree-->
-      <environment height="3" min="40" max="50">2</environment>
-      <!--tree-->
+      <environment height="2" min="70" max="80">0</environment>
+      <environment height="3" min="60" max="70">2</environment>
+      <environment height="1" min="40" max="50">6</environment>
+      <environment height="3" min="20" max="30">7</environment>
     </environments>
 
     <npcs>
       <npc max="5">4</npc>
       <npc max="6">1</npc>
+    </npcs>
+  </climate>
+  
+    
+  <climate type="desert">
+    <events>
+      <event>earthquake</event>
+      <event>fire</event>
+      <event>landslide</event>
+      <event>drought</event>
+      <event>thunderstorm</event>
+    </events>
+
+    <map height="3">
+      <zero>slow</zero>
+
+      <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Sand/ISO_Tile_Sand_03</tile>
+      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Sand/ISO_Tile_Sand_01</tile>
+      <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Sand/ISO_Tile_Sand_02</tile>
+      <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Sand/ISO_Tile_Sand_01</tile>
+    </map>
+
+    <items>
+      <item>1</item>
+      <item>2</item>
+      <item>3</item>
+      <item>4</item>
+    </items>
+
+    <environments>
+      <environment height="1" min="40" max="50">6</environment>
+      <environment height="3" min="20" max="30">9</environment>
+      <environment height="1" min="20" max="30">10</environment>
+      <environment height="1" min="20" max="30">11</environment>
+      <environment height="2" min="30" max="50">12</environment>
+      <environment height="2" min="30" max="50">13</environment>
+    </environments>
+
+    <npcs>
+      <npc max="5">4</npc>
+      <npc max="6">1</npc>
+    </npcs>
+  </climate>
+  
+    
+  <climate type="forest">
+    <events>
+      <event>fire</event>
+      <event>cyclone</event>
+      <event>yellowdust</event>
+      <event>flood</event>
+      <event>drought</event>
+    </events>
+    
+    <map height="3">
+      <zero>slow</zero>
+      
+      <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_GrassPatch_02</tile>
+      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_Grass_01</tile>
+      <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_Grass_01</tile>
+      <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Dirt/ISO_Tile_Dirt_01</tile>
+    </map>
+
+    <items>
+      <item>1</item>
+      <item>2</item>
+      <item>3</item>
+      <item>4</item>
+    </items>
+
+    <environments>
+      <environment height="3" min="30" max="50">0</environment><!--tree-->
+      <environment height="2" min="150" max="160">1</environment>
+      
+      <environment height="2" min="60" max="70">3</environment>
+      <environment height="2" min="20" max="30">4</environment>
+      <environment height="3" min="20" max="30">5</environment>
+      <environment height="1" min="40" max="50">6</environment>
+      <environment height="3" min="20" max="30">7</environment>
+    </environments>
+
+    <npcs>
+      <npc max="5">3</npc>
+      <npc max="3">6</npc>
     </npcs>
   </climate>
   <!--

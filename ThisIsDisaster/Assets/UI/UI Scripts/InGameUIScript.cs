@@ -34,6 +34,10 @@ public class InGameUIScript : MonoBehaviour
     public GameObject AEDButton;
     public GameObject PlayerDeadPanel;
 
+    public GameObject GameLogUI;
+    public GameObject GameLogPivot;
+    public Text GameLogText;
+
     public static InGameUIScript Instance
     {
         private set;
@@ -76,6 +80,10 @@ public class InGameUIScript : MonoBehaviour
         InventoryUIController.Instance.InitialCategory();
         DefaultEventDesc();
         PlayerDeadPanel.SetActive(false);
+        GameLogUI.SetActive(false);
+        GameLogPivot.SetActive(false);
+
+
     }
 
     public void Update()
@@ -147,6 +155,7 @@ public class InGameUIScript : MonoBehaviour
     public void StageClear()
     {
         CloseAllUI();
+        SetGameLog();
         StageClearUIContorller.Instance.StageClearPanel.SetActive(true);
     }
 
@@ -184,7 +193,9 @@ public class InGameUIScript : MonoBehaviour
         else if (eventName == "Earthquake")
             Name = "지진";
         else if (eventName == "Thunderstorm")
-            Name = "천둥";
+            Name = "낙뢰";
+        else if (eventName == "Fire")
+            Name = "화재";
         else
             Name = "폭설";
 
@@ -246,6 +257,7 @@ public class InGameUIScript : MonoBehaviour
 
     public void BackToLobbyScene()
     {
+
         SceneManager.LoadScene("Lobby Scene");
     }
 
@@ -303,7 +315,7 @@ public class InGameUIScript : MonoBehaviour
         }
         else if (weather.Equals(WeatherType.Landslide))
         {//산사태
-            src = "EventIcon/landslidEvent";
+            src = "EventIcon/landslideEvent";
             Sprite s = Resources.Load<Sprite>(src);
             EventIconImage.sprite = s;
             EventNameText.text = "산사태";
@@ -326,12 +338,6 @@ public class InGameUIScript : MonoBehaviour
             EventDescText.text = "폭설이 발생하면 스테미너가 빠르게 감소합니다.\n피난처로 대피하고 모닥불을 피워 피해를 최소화하세요.";
         }
         float y = EventDescText.rectTransform.sizeDelta.y;
-    //    EventDescPanel.rectTransform.sizeDelta = new Vector2(EventDescPanel.rectTransform.sizeDelta.x, y);
-        Debug.LogError(EventDescPanel.rectTransform.sizeDelta.x);
-        Debug.LogError(y);
-
-
-//        EventDescPanel.GetComponent<BoxCollider2D>().size = new Vector2(EventDescPanel.rectTransform.sizeDelta.x, EventDescText.rectTransform.rect.height + 20);
         EventDescTitle.SetActive(true);
     }
 
@@ -365,14 +371,47 @@ public class InGameUIScript : MonoBehaviour
         {
             AEDText.SetActive(false);
             AEDButton.SetActive(false);
+
+
+            SetGameLog();
         }
         PlayerDeadPanel.SetActive(true);
     }
 
     public void Retry()
     {
+        int index = 0;
+
+        for (index = 0; index < PlayerCharacter.GetComponent<CharacterModel>().ItemLists.Count; index++)
+        {
+            ItemModel item = PlayerCharacter.GetComponent<CharacterModel>().ItemLists[index];
+            if (item.metaInfo.metaId.Equals(33004))
+            {
+                break;
+            }
+
+        }
+
+        InventoryUIController.Instance.GetItemPosition(index);
+        InventoryUIController.Instance.RemoveSlotItem();
         PlayerDeadPanel.SetActive(false);
         PlayerCharacter.GetComponent<CharacterModel>().RetryGame();
+    }
+
+    public void SetGameLog() {
+        string text = GameLogManager.Instance.OnGameEnd();
+        GameLogText.text = text;
+        GameLogUI.SetActive(true);
+    }
+
+    public void OnClickLog() {
+        if (GameLogPivot.activeInHierarchy)
+        {
+            GameLogPivot.SetActive(false);
+        }
+        else {
+            GameLogPivot.SetActive(true);
+        }
     }
 }
 
