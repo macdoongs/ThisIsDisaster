@@ -1152,7 +1152,7 @@ public class CharacterModel : MonoBehaviour
         }
         isPlayerDead = true;
         
-        InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33003));
+        InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33004));
     }
 
     public void AEDContain()
