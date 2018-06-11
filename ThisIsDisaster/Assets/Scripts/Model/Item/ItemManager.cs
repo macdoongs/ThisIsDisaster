@@ -244,7 +244,7 @@ public class ItemManager {
         {
             rareness = ItemRareness.Low;
         }
-        else if (randVal <= _midProb)
+        else if (randVal <= _lowProb + _midProb)
         {
             rareness = ItemRareness.Middle;
         }

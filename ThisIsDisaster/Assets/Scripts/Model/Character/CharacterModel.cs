@@ -782,6 +782,7 @@ public class CharacterModel : MonoBehaviour
     }
 
     //장비 착용시 스텟 업데이트
+
     public void AddStats(ItemModel equip)
     {
         ItemStats.Health += equip.GetHealth();
@@ -791,8 +792,11 @@ public class CharacterModel : MonoBehaviour
         ItemStats.Defense  += equip.GetDefense();
         ItemStats.Damage += equip.GetDamage();
 
-        attack_range_x = equip.GetAttacRangeX();
-        attack_range_y = equip.GetAttacRangeY();
+        if (equip.metaInfo.itemType == ItemType.Weapon)
+        {
+            attack_range_x = equip.GetAttacRangeX();
+            attack_range_y = equip.GetAttacRangeY();
+        }
         ItemStats.HealthRegen += equip.GetHealthRegen();
         ItemStats.StaminaRegen += equip.GetStaminaRegen();
 
@@ -808,15 +812,18 @@ public class CharacterModel : MonoBehaviour
         ItemStats.Stamina -= equip.GetStamina();
         ItemStats.Defense -= equip.GetDefense();
         ItemStats.Damage -= equip.GetDamage();
-        
-        if(equip.GetAttacRangeX() != 0)
-        {
-            attack_range_x = default_attack_range_x;
-        }
 
-        if(equip.GetAttacRangeY() != 0)
+        if (equip.metaInfo.itemType == ItemType.Weapon)
         {
-            attack_range_y = default_attack_range_y;
+            if (equip.GetAttacRangeX() != 0)
+            {
+                attack_range_x = default_attack_range_x;
+            }
+
+            if (equip.GetAttacRangeY() != 0)
+            {
+                attack_range_y = default_attack_range_y;
+            }
         }
 
         ItemStats.HealthRegen -= equip.GetHealthRegen();

@@ -198,7 +198,8 @@ public class UnitMoveControl
                 {
                     if (_missingTimer.RunTimer())
                     {
-                        FollowMissing(); return;
+                        FollowMissing();
+                        return;
                     }
                 }
             }

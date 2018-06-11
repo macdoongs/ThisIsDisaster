@@ -142,6 +142,7 @@ public class NPCManager : IObserver
 
     void RegenMonster() {
         foreach (var npc in _npcs) {
+            if (npc.MetaInfo.Id == 0) continue;
             if (npc.CurrentHp <= 0f) {
                 npc.Init();
                 var tile = RandomMapGenerator.Instance.GetRandomTileByHeight(1);

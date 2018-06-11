@@ -150,14 +150,10 @@ namespace NPC {
 #endif
         }
 
-#if MIDDLE_PRES
-        int[] dropItems = new int[] {
-            5,1,6,10001,20001,30001,310004
-        };
-#endif
-
         public void OnVictoried() {
+            Script.StopWandering();
             Script.OnVictoried();
+            MoveControl.StopMovement();
             _executeState = NPCExectueState.Wander;
             Unit.SetSensing(true);
         }
@@ -299,7 +295,6 @@ namespace NPC {
                 Unit.SetSensing(true);
                 _executeState = NPCExectueState.Wander;
             }
-            
             
         }
 

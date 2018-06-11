@@ -56,6 +56,11 @@ namespace Environment
             return MetaInfo.Name;
         }
 
+        public override TileUnit GetCurrentTile()
+        {
+            return GetTileSetter().GetCurrentTile();
+        }
+
         public override AutoTileMovementSetter GetTileSetter()
         {
             return Unit.TileSetter;

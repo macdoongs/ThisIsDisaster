@@ -128,6 +128,27 @@ public class EarthquakeEffect : MonoBehaviour
 
 #if MIDDLE_PRES
     void MakeInjury() {
+
+        for (int i = -_maxDistance; i <= _maxDistance; i++)
+        {
+            int x = _originTile.x + i;
+
+            for (int j = -_maxDistance; j <= _maxDistance; j++)
+            {
+                int y = _originTile.y + j;
+                TileUnit tile = RandomMapGenerator.Instance.GetTile(x, y);
+                if (tile == null) continue;
+                foreach (var unit in tile._currentEnteredUnits) {
+                    if (unit is Environment.EnvironmentModel) {
+                        Environment.EnvironmentModel model = unit as Environment.EnvironmentModel;
+                        if (model.Script is Environment.TreeScript) {
+                            (model.Script as Environment.TreeScript).OnBroken();
+                        }
+                    }
+                }
+            }
+        }
+
         return;
         CharacterModel character = GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<CharacterModel>();
         character.GetDisorder(Disorder.DisorderType.injury);
@@ -141,12 +162,14 @@ public class EarthquakeEffect : MonoBehaviour
         {
             float rate = GetEarthquakeForce((_lifeTimeTimer.Rate));
 #if MIDDLE_PRES
-            //if (!_injury) {
-            //    if (rate >= 0.6f) {
-            //        MakeInjury();
-            //        _injury = true;
-            //    }
-            //}
+            if (!_injury)
+            {
+                if (rate >= 0.6f)
+                {
+                    MakeInjury();
+                    _injury = true;
+                }
+            }
 #endif
 
             if (_waveTimer.started)
