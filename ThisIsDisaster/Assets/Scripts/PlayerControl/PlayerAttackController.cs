@@ -70,6 +70,8 @@ public class PlayerAttackController : MonoBehaviour {
                     NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Attack");
                 }
             }
+
+            SoundLayer.CurrentLayer.PlaySound("se_attack_common");
             _attackDelayTimer.StartTimer(NextAttackDelay);
         }
     }
