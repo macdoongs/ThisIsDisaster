@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Facebook.Unity;
 
 public class LobbyUIScript : MonoBehaviour {
 
@@ -129,4 +130,14 @@ public class LobbyUIScript : MonoBehaviour {
         GlobalGameManager.Instance.OnGameStart();
     }
 
+    public void LogOut()
+    {
+        AccountManager.Instance.ClearAccount();
+
+        FB.Init();
+        FB.ActivateApp();
+        FB.LogOut();
+
+        LoadingSceneManager.LoadScene("Login Scene");
+    }
 }

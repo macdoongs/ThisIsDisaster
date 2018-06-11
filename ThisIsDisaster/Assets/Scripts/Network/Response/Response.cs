@@ -44,6 +44,7 @@ namespace Json
     [Serializable]
     public class User
     {
+        public string email;
         public string nickname;
         public string score;
         public string level;
