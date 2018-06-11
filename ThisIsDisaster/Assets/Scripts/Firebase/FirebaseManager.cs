@@ -36,11 +36,6 @@ public class FirebaseManager : MonoBehaviour
     // Use this for initialization 
     void Start() 
 	{
-        if (AccountManager.Instance.CheckAccount())
-        {
-            LoadingSceneManager.LoadScene("Lobby Scene");
-        }
-
         // facebook sdk 초기화 
         if (!FB.IsInitialized) { 
 			FB.Init(FacebookInitCallBack, OnHideUnity); 

@@ -19,29 +19,10 @@ public class LoadingSceneManager : MonoBehaviour
 
     private void Start()
     {
-        LoadUser();
-
         StartCoroutine(LoadScene());
     }
 
     string nextSceneName;
-
-    
-    Json.WebCommunicationManager WebManager
-    {
-        get
-        {
-            return Json.WebCommunicationManager.Manager;
-        }
-    }
-
-
-    public void LoadUser()
-    {
-        string email = GlobalParameters.Param.accountEmail;
-        Debug.Log("user?email=" + email);
-        WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + email, "");
-    }
 
 
     public static void LoadScene(string sceneName)
