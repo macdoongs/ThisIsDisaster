@@ -244,6 +244,7 @@ public class InGameUIScript : MonoBehaviour
 
     public void BackToLobbyScene()
     {
+
         SceneManager.LoadScene("Lobby Scene");
     }
 
@@ -325,8 +326,8 @@ public class InGameUIScript : MonoBehaviour
         }
         float y = EventDescText.rectTransform.sizeDelta.y;
     //    EventDescPanel.rectTransform.sizeDelta = new Vector2(EventDescPanel.rectTransform.sizeDelta.x, y);
-        Debug.LogError(EventDescPanel.rectTransform.sizeDelta.x);
-        Debug.LogError(y);
+        //Debug.LogError(EventDescPanel.rectTransform.sizeDelta.x);
+        //Debug.LogError(y);
 
 
 //        EventDescPanel.GetComponent<BoxCollider2D>().size = new Vector2(EventDescPanel.rectTransform.sizeDelta.x, EventDescText.rectTransform.rect.height + 20);
@@ -363,6 +364,8 @@ public class InGameUIScript : MonoBehaviour
         {
             AEDText.SetActive(false);
             AEDButton.SetActive(false);
+
+            GameManager.CurrentGameManager.EndStage(false);
         }
         PlayerDeadPanel.SetActive(true);
     }

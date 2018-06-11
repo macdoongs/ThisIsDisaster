@@ -192,12 +192,8 @@ public class GameManager : MonoBehaviour {
         }
 
         void EndStage() {
-            CurrentGameManager.EndStage();
+            CurrentGameManager.EndStage(true);
 
-            var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
-            if (script != null) {
-                script.Capature();
-            }
         }
     }
 
@@ -372,10 +368,17 @@ public class GameManager : MonoBehaviour {
         _stageClock.StartStage();
     }
 
-    public void EndStage() {
+    public void EndStage(bool isVictory) {
         //do smth
         Debug.LogError("Stage Ended");
-        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType);
+
+        var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
+        if (script != null)
+        {
+            script.Capature();
+        }
+
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType, isVictory ? "승리" : "패배");
         InGameUIScript.Instance.StageClear();
     }
 

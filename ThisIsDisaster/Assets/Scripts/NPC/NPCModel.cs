@@ -79,7 +79,7 @@ namespace NPC {
 
         public void Init() {
             _state = NPCState.Generated;
-
+            Unit.hpSlider.gameObject.SetActive(true);
             CurrentHp = MaxHP;
         }
 

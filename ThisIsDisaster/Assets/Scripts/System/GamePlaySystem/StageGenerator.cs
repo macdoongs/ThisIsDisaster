@@ -50,23 +50,17 @@ public class StageGenerator {
         public List<EnvInfo> envInfoList = new List<EnvInfo>();
         public List<NpcInfo> npcInfoList = new List<NpcInfo>();
 #if MIDDLE_PRES
-        WeatherType[] testTypes = new WeatherType[2] {
-             WeatherType.Earthquake,
-             WeatherType.Cyclone
-        };
-
-        List<WeatherType> testTypeList = new List<WeatherType>();
+        private bool _isEarthquakeGenerated = false;
 #endif
 
 
         public WeatherType GetNextWeather() {
 #if MIDDLE_PRES
-            if (testTypeList.Count == 0) {
-                testTypeList.AddRange(testTypes);
+            if (!_isEarthquakeGenerated) {
+                _isEarthquakeGenerated = true;
+                return WeatherType.Earthquake;
             }
-            var sel = testTypeList[0];
-            testTypeList.Remove(sel);
-            return sel;
+            weatherList.Remove(WeatherType.Earthquake);
 #endif
             int randIndexMax = weatherList.Count;
             int index = StageGenerator.Instance.ReadNextValue(randIndexMax);
@@ -95,7 +89,6 @@ public class StageGenerator {
     private Dictionary<ClimateType, ClimateInfo> _climateDic = new Dictionary<ClimateType, ClimateInfo>();
 
     public StageGenerator() {
-        //SetSeed(3);
     }
 
     public void InitClimateType(List<ClimateInfo> infos) {
@@ -109,16 +102,12 @@ public class StageGenerator {
         if (_climateDic.ContainsKey(type)) return _climateDic[type];
         return null;
     }
-
-    /// <summary>
-    /// 호스트측에서 한 번 호출해야하는 함수이기 때문에 시드값을 동기화하지는 않도록
-    /// </summary>
-    /// <returns></returns>
+    
     public ClimateType GetRandomClimateType() {
-        int selected = UnityEngine.Random.Range(0, 4);
+        int selected = ReadNextValue(0, 4);
         
         //test code
-        return ClimateType.Island;
+        return ClimateType.Forest;
 
         return (ClimateType)selected;
     }

@@ -9,4 +9,10 @@
   <environment id="6" name="_stone_1" prefab="Stone_1" script=""/>
   <environment id="7" name="_stump" prefab="Stump" script=""/>
   <environment id="8" name="_tree_short" prefab="Tree_Short" script=""/>
+
+  <environment id="9" name="_desert_tree_1" prefab="Desert_Tree_1" script=""/>
+  <environment id="10" name="_desert_skull_1" prefab="Desert_Skull_1" script=""/>
+  <environment id="11" name="_desert_skull_2" prefab="Desert_Skull_2" script=""/>
+  <environment id="12" name="_desert_cactus_1" prefab="Desert_Cactus_1" script=""/>
+  <environment id="13" name="_desert_cactus_2" prefab="Desert_Cactus_2" script=""/>
 </root>
