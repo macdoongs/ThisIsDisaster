@@ -202,6 +202,13 @@ public class RandomMapGenerator : MonoBehaviour
         return dic[x][y];
     }
 
+    public List<TileUnit> GetTilesByHeight(int height) {
+        if (height < 0 || height > 3) {
+            return new List<TileUnit>();
+        }
+        return _levelDic[height];
+    }
+
     public TileUnit GetTile(Vector3 globalPosition) {
         TileUnit output = null;
 

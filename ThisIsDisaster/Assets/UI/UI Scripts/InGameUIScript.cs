@@ -374,7 +374,7 @@ public class InGameUIScript : MonoBehaviour
             AEDText.SetActive(false);
             AEDButton.SetActive(false);
 
-            GameManager.CurrentGameManager.EndStage(false);
+            //GameManager.CurrentGameManager.EndStage(false);
             SetGameLog();
         }
         PlayerDeadPanel.SetActive(true);

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class YellowdustEvent : EventBase
 {
-	SandEffect _effect = null;     // 모래입자
+	GameObject _effect = null;     // 모래입자
 	GameObject YellowObject = null;          // 노란 화면
 
     Timer _damageTimer = new Timer();

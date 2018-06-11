@@ -36,6 +36,9 @@ public class EventBase {
         if (check) {
             if (character.IsDead()) {
                 Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerDead, GlobalParameters.Param.accountName, type);
+                if (!character.HasItem(33004)) {
+                    GameManager.CurrentGameManager.EndStage(false);
+                }
             }
         }
     }

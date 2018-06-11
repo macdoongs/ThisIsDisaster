@@ -58,7 +58,7 @@ public class StageGenerator {
 #if MIDDLE_PRES
             if (!_isEarthquakeGenerated) {
                 _isEarthquakeGenerated = true;
-                return WeatherType.Earthquake;
+                return WeatherType.Yellowdust;
             }
             weatherList.Remove(WeatherType.Earthquake);
 #endif

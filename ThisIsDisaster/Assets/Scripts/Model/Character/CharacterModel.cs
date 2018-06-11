@@ -38,6 +38,10 @@ public class PlayerModel : UnitModel
         if (check) {
             if (_character.IsDead()) {
                 Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.PlayerDead, GlobalParameters.Param.accountName, PlayerDeadType.Monster);
+                if (!_character.HasItem(33004)) {
+                    GameManager.CurrentGameManager.EndStage(false);
+                }
+                //
             }
         }
         

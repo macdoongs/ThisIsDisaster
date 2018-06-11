@@ -222,6 +222,7 @@ public class EventManager : MonoBehaviour {
                 effectObject = Instantiate(effectObject);
                 effectObject.transform.SetParent(Camera.main.transform);
                 effectObject.SetActive(false);
+                effectObject.transform.localPosition = new Vector3(0f, 5f, 0f);
 
             }
 
@@ -284,6 +285,10 @@ public class EventManager : MonoBehaviour {
                 effectObject.transform.SetParent(Camera.main.transform);
                 effectObject.SetActive(false);
 
+                SpriteRenderer renderer = effectObject.GetComponent<SpriteRenderer>();
+                if (renderer != null) {
+
+                }
             }
 
             dryObject = effectObject;
@@ -388,27 +393,27 @@ public class EventManager : MonoBehaviour {
         return cloudObject.GetComponent<CloudEffect>();
     }     // map을 하얗게하는 effect   
 
-    public SandEffect GetSandEffect()
+    public GameObject GetSandEffect()
     {
         if (sandObject == null)
         {
-            GameObject effectObject = Resources.Load<GameObject>("Prefabs/SandEffect");
+            GameObject effectObject = Resources.Load<GameObject>("Prefabs/Events/SandStorm");
             if (effectObject)
             {
                 effectObject = Instantiate(effectObject);
                 effectObject.transform.SetParent(Camera.main.transform);
-                effectObject.transform.localPosition = new Vector3(0f, 5f, 10f);
+                effectObject.transform.localPosition = new Vector3(0f, 0f, 0f);
                 effectObject.transform.localScale = Vector3.one;
-                effectObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                effectObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
                 effectObject.SetActive(false);
-
+                
             }
 
             sandObject = effectObject;
 
         }
 
-        return sandObject.GetComponent<SandEffect>();
+        return sandObject;
     }
 
     public CycloneEffect GetCycloneEffect()
