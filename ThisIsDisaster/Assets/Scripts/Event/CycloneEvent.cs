@@ -26,6 +26,9 @@ public class CycloneEvent : EventBase, IObserver
     public float damageEnergyPerSec = 2f;
     public float damageTime = 1f;
 
+    SoundPlayer _rainSound;
+    SoundPlayer _thunderSound;
+
     GameObject _thunderRender = null;
     ThunderRenderEffect ThunderEffect {
         get {
@@ -58,6 +61,7 @@ public class CycloneEvent : EventBase, IObserver
 
         LoadThunderRender();
 
+        _rainSound = PlaySoundCamera("event_Rain");
     }
 
     void LoadThunderRender() {
@@ -74,6 +78,8 @@ public class CycloneEvent : EventBase, IObserver
     void InvokeThunder() {
         darkObject.SetActive(false);
         ThunderEffect.StartEffect(UnityEngine.Random.Range(0.5f, 1f));
+
+        PlaySound("event_Thunder");
     }
 
     public void OnEndThunder() {
@@ -193,6 +199,10 @@ public class CycloneEvent : EventBase, IObserver
         ThunderEffect.gameObject.SetActive(false);
         rainObject.gameObject.SetActive(false);
         CharacterModel.Instance.SetSpeedFactor();
+
+        if (_rainSound != null) {
+            _rainSound.Stop();
+        }
 	}
 
 	public override void OnDestroy()

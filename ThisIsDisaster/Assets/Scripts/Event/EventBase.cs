@@ -29,6 +29,23 @@ public class EventBase {
 
     }
 
+    public virtual SoundPlayer PlaySound(string src) {
+        return SoundLayer.CurrentLayer.PlaySound(src);
+    }
+
+    public virtual SoundPlayer PlaySoundCamera(string src) {
+        var sfx = PlaySound(src);
+        sfx.transform.position = Camera.main.transform.position;
+        sfx.transform.SetParent(Camera.main.transform);
+        return sfx;
+    }
+
+    public virtual SoundPlayer PlaySoundPos(string src, Vector3 pos) {
+        var sfx = PlaySound(src);
+        sfx.transform.position = new Vector3(pos.x, pos.y, sfx.transform.position.z);
+        return sfx;
+    }
+
     public virtual void OnGiveDamageToPlayer(float damageValue) {
         CharacterModel character = CharacterModel.Instance;
         bool check = character.IsDead() == false;

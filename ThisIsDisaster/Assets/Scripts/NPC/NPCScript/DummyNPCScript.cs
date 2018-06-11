@@ -101,6 +101,7 @@ namespace NPC
 
                 spreadTimer.StartTimer(_SPREAD_TIME);
                 spread.SpreadNext();
+                SoundLayer.CurrentLayer.PlaySound("event_Fire");
             }
         }
 

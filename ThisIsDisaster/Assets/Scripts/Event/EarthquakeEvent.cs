@@ -12,8 +12,8 @@ public class EarthquakeEvent : EventBase
     EarthquakeEffect _effect = null;
     
     Timer _damageTimer = new Timer();
-    public float damageHealthPerSec = 1f;
-    public float damageEnergyPerSec = 2f;
+    public float damageHealthPerSec = 5f;
+    public float damageEnergyPerSec = 5f;
     public float damageTime = 1f;
 
     public EarthquakeEvent()

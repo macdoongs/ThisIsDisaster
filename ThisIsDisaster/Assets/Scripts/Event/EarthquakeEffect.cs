@@ -128,7 +128,7 @@ public class EarthquakeEffect : MonoBehaviour
 
 #if MIDDLE_PRES
     void MakeInjury() {
-
+        SoundLayer.CurrentLayer.PlaySound("event_Earthquake");
         for (int i = -_maxDistance; i <= _maxDistance; i++)
         {
             int x = _originTile.x + i;
