@@ -704,11 +704,6 @@ public class CharacterModel : MonoBehaviour
                 return;
             }
 
-            if (ItemLists.Count > defaultBagSize)
-            {
-                Debug.Log("아이템이 너무 많습니다.");
-                return;
-            }
             bagSize = defaultBagSize;
             backpackSlot = null;
             SoundLayer.CurrentLayer.PlaySound("se_unequip");
@@ -745,7 +740,7 @@ public class CharacterModel : MonoBehaviour
                 RemoveMaskSprite();
             }
             if (toolSlot.metaInfo.metaId.Equals(31006) || toolSlot.metaInfo.metaId.Equals(31007))
-            {
+            {//침낭
                 CurrentStats.MoveSpeed = tempMoveSpeed;
                 MoveRestrict = false;
             }
@@ -1038,7 +1033,7 @@ public class CharacterModel : MonoBehaviour
             SoundLayer.CurrentLayer.PlaySound("se_bonfire");
         }
         else if (etc.metaInfo.metaId.Equals(33003))
-        {
+        {//피뢰침
             EffectItemID = etc.metaInfo.metaId;
             TileUnit currentTile = GetPlayerModel().GetCurrentTile();
             if (EffectTiles.Contains(currentTile))
@@ -1232,24 +1227,9 @@ public class CharacterModel : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// This is Odd
-    /// </summary>
     public void WeaponSprite()
     {
-        //if (weaponSlot != null)
-        //{
-        //    string src = weaponSlot.metaInfo.spriteSrc;
-        //    Sprite s = Resources.Load<Sprite>(src);
 
-
-        //    SpriteParts[7].sprite = s;
-        //}
-        //else
-        //{
-        //    //SpriteParts[7].sprite = null;
-        //    ClearSpritePart(PlayerSpriteParts.Head);
-        //}
         if (weaponSlot != null)
         {
             SetSprite(PlayerSpriteParts.FrontWeapon, weaponSlot.metaInfo);
