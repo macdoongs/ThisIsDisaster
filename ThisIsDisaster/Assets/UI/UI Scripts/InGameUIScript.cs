@@ -72,7 +72,7 @@ public class InGameUIScript : MonoBehaviour
         {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
             PlayerCharacter.GetComponent<CharacterModel>().PlayerName = GlobalParameters.Param.accountName;
-            //PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
+         //   PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
         }
 
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);
@@ -196,6 +196,8 @@ public class InGameUIScript : MonoBehaviour
             Name = "낙뢰";
         else if (eventName == "Fire")
             Name = "화재";
+        else if (eventName == "Landslide")
+            Name = "산사태";
         else
             Name = "폭설";
 

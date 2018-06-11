@@ -6,8 +6,6 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Unity.Editor;
 using Facebook.Unity;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
@@ -48,10 +46,6 @@ public class FirebaseManager : MonoBehaviour
 			FB.Init(FacebookInitCallBack, OnHideUnity); 
 		}
 
-        // 초기화 
-#if false
-        //InitalizeGooglePlay();
-#endif
         InitializeFirebase();
     }
 
@@ -155,6 +149,7 @@ public class FirebaseManager : MonoBehaviour
 				registerFacebookAccountToFirebase(accessToken);
             }
 
+            LoadingSceneManager.LoadScene("Lobby Scene");
 
         } else { 
 			Log("User cancelled login"); 
@@ -196,8 +191,7 @@ public class FirebaseManager : MonoBehaviour
 
                 WebManager.SendRequest(Json.RequestMethod.POST, "user?platform=facebook", jsonMsg);
 
-
-                LoadingSceneManager.LoadScene("Lobby Scene");
+                
             }); 
 	} 
 
@@ -237,81 +231,11 @@ public class FirebaseManager : MonoBehaviour
                 Log(user.ProviderId);
 
                 WebManager.SendRequest(Json.RequestMethod.POST, "authorize", jsonMsg);
-
-
-                LoadingSceneManager.LoadScene("Lobby Scene");
             }); 
 	}
         #endregion
+    
 
-#if false
-        #region Google Play 로그인 
-    void InitalizeGooglePlay()
-    {
-        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
-            // enables saving game progress.
-            .EnableSavedGames()
-            .RequestEmail()
-            // requests a server auth code be generated so it can be passed to an
-            //  associated back end server application and exchanged for an OAuth token.
-            .RequestServerAuthCode(false)
-            // requests an ID token be generated.  This OAuth token can be used to
-            //  identify the player to other services such as Firebase.
-            .RequestIdToken()
-            .Build();
-
-        PlayGamesPlatform.InitializeInstance(config);
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
-    }
-
-    public void SignInWithPlayGames()
-    {
-        // Initialize Firebase Auth
-        Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-
-        // Sign In and Get a server auth code.
-        UnityEngine.Social.localUser.Authenticate((bool success) => {
-            if (!success)
-            {
-                Debug.LogError("SignInOnClick: Failed to Sign into Play Games Services.");
-                return;
-            }
-
-            string authCode = PlayGamesPlatform.Instance.GetServerAuthCode();
-            if (string.IsNullOrEmpty(authCode))
-            {
-                Debug.LogError("SignInOnClick: Signed into Play Games Services but failed to get the server auth code.");
-                return;
-            }
-            Debug.LogFormat("SignInOnClick: Auth code is: {0}", authCode);
-
-            // Use Server Auth Code to make a credential
-            Firebase.Auth.Credential credential = Firebase.Auth.PlayGamesAuthProvider.GetCredential(authCode);
-
-            // Sign In to Firebase with the credential
-            auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("SignInOnClick was canceled.");
-                    return;
-                }
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("SignInOnClick encountered an error: " + task.Exception);
-                    return;
-                }
-
-                Firebase.Auth.FirebaseUser newUser = task.Result;
-                Debug.LogFormat("SignInOnClick: User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
-                PlayGamesPlatform.Instance.ShowLeaderboardUI();
-
-                LoadingSceneManager.LoadScene("Lobby Scene");
-            });
-        });
-    }
-        #endregion
-#endif
     // 회원가입 버튼을 눌렀을 때 작동할 함수 
     public void SignUp() 
 	{ 
