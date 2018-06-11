@@ -16,7 +16,7 @@ public class FirebaseManager : MonoBehaviour
 {
 
 
-#if true
+#if false
 
     // 이메일 InputField 
     [SerializeField] 
@@ -84,7 +84,7 @@ public class FirebaseManager : MonoBehaviour
 
 			if (!SignedInFirebase && user != null) { 
 				Debug.LogFormat("Signed out {0}", user.UserId);
-                GlobalParameters.Param.accountName = user.DisplayName;
+                //GlobalParameters.Param.accountName = user.DisplayName;
                 GlobalParameters.Param.accountEmail = user.Email;
             } 
 			user = auth.CurrentUser; 
@@ -94,7 +94,7 @@ public class FirebaseManager : MonoBehaviour
 				emailAddress = user.Email ?? ""; 
 				Log(string.Format("Signed in {0} _ {1}", displayName, emailAddress));
 
-                GlobalParameters.Param.accountName = displayName;
+                //GlobalParameters.Param.accountName = displayName;
                 GlobalParameters.Param.accountEmail = emailAddress;
 
             }
@@ -102,7 +102,7 @@ public class FirebaseManager : MonoBehaviour
         else
         {
             GlobalParameters.Param.accountEmail = auth.CurrentUser.Email;
-            GlobalParameters.Param.accountName = auth.CurrentUser.DisplayName;
+            //GlobalParameters.Param.accountName = auth.CurrentUser.DisplayName;
             
         }
     } 
@@ -187,13 +187,13 @@ public class FirebaseManager : MonoBehaviour
 				Log(string.Format("User signed in successfully: {0} ({1})", 
 					user.DisplayName, user.UserId));
                 
-                GlobalParameters.Param.accountName = user.DisplayName;
+                //GlobalParameters.Param.accountName = user.DisplayName;
                 GlobalParameters.Param.accountEmail = user.Email;
 
                
                 Json.User userData = new Json.User();
 
-                userData.email = user.Email;
+                //userData.email = user.Email;
                 userData.nickname = user.DisplayName;
 
                 var jsonMsg = JsonUtility.ToJson(userData);
@@ -225,7 +225,7 @@ public class FirebaseManager : MonoBehaviour
 				Log(string.Format("Credentials successfully linked to Firebase user: {0} ({1})", 
 					user.DisplayName, user.UserId));
 
-                GlobalParameters.Param.accountName = user.DisplayName;
+                //GlobalParameters.Param.accountName = user.DisplayName;
                 GlobalParameters.Param.accountEmail = user.Email;
 
                 WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + user.Email, "");
