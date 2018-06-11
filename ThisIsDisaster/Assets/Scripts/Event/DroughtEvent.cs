@@ -23,7 +23,11 @@ public class DroughtEvent : EventBase
     BlurFilter EffectFilter {
         get {
             if (_effectFilter == null) {
-                _effectFilter = Camera.main.gameObject.AddComponent<BlurFilter>();
+                _effectFilter = Camera.main.gameObject.GetComponent<BlurFilter>();
+                if (_effectFilter == null)
+                {
+                    _effectFilter = Camera.main.gameObject.AddComponent<BlurFilter>();
+                }
             }
             return _effectFilter;
         }

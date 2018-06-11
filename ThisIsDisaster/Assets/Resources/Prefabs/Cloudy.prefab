@@ -20,14 +20,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4925224581093588}
   - component: {fileID: 212891937102891398}
-  - component: {fileID: 114584225914354662}
   m_Layer: 0
   m_Name: Cloudy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4925224581093588
 Transform:
   m_ObjectHideFlags: 1
@@ -41,19 +40,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114584225914354662
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1019817941305018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6164194386e4ed47985399cda860c8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: 0
-  cloudyObject: {fileID: 1019817941305018}
 --- !u!212 &212891937102891398
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -85,8 +71,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -375714855
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e7562280e1ab53e4eb32a3a1f8c8774f, type: 3}
   m_Color: {r: 0.86764705, g: 0.86764705, b: 0.86764705, a: 0.384}
