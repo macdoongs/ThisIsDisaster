@@ -150,8 +150,8 @@ public class CharacterModel : MonoBehaviour
 
     public Stats CurrentStats = new Stats();
     public float tempMoveSpeed;
-    public int attack_range_x = 0;
-    public int attack_range_y = 0;
+    public float attack_range_x = 0;
+    public float attack_range_y = 0;
     public int bagSize = 0;
     public int waterMax = 0;
     public int visionLevel = 0;
@@ -893,8 +893,9 @@ public class CharacterModel : MonoBehaviour
         if(CurrentStats.Defense < 0)
             CurrentStats.Defense = 0;
         CurrentStats.Damage = DefaultStats.Damage + ItemStats.Damage + DisorderStats.Damage + EventStats.Damage;
-        if (CurrentStats.Damage < 0)
-            CurrentStats.Damage = 0;
+        if (CurrentStats.Damage < 5f) {
+            CurrentStats.Damage = 5f;
+        }
         CurrentStats.HealthRegen = DefaultStats.HealthRegen + ItemStats.HealthRegen + DisorderStats.HealthRegen + EventStats.HealthRegen + RegionItemStats.HealthRegen;
         CurrentStats.StaminaRegen = DefaultStats.StaminaRegen + ItemStats.StaminaRegen + DisorderStats.StaminaRegen + EventStats.StaminaRegen + RegionItemStats.StaminaRegen;
         CurrentStats.MoveSpeed = DefaultStats.MoveSpeed + DisorderStats.MoveSpeed + EventStats.MoveSpeed;

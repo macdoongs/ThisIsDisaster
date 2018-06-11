@@ -139,10 +139,10 @@
     <map height="3">
       <zero>slow</zero>
       
-      <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Dirt/ISO_Tile_Dirt_01</tile>
-      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Dirt/ISO_Tile_Dirt_02</tile>
+      <tile level="0">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_GrassPatch_02</tile>
+      <tile level="1">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_Grass_01</tile>
       <tile level="2">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_Grass_01</tile>
-      <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Grass/ISO_Tile_Dirt_01_GrassPatch_02</tile>
+      <tile level="3">Sprites/2D_Iso_Tile_Pack_Starter/Sprites/Dirt/ISO_Tile_Dirt_01</tile>
     </map>
 
     <items>

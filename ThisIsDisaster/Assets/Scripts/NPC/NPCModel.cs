@@ -81,6 +81,9 @@ namespace NPC {
             _state = NPCState.Generated;
             Unit.hpSlider.gameObject.SetActive(true);
             CurrentHp = MaxHP;
+            Unit.animTarget.SetActive(true);
+            _executeState = NPCExectueState.None;
+            MoveControl.StopMovement();
         }
 
         public void OnGenerated() {

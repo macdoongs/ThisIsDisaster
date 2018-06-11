@@ -90,6 +90,7 @@ public class PlayerAttackController : MonoBehaviour {
 
     public void SetAttackRange(float x, float y)
     {
+        Debug.LogError("Set Attack Range : " + x + " " + y);
         float xValue = x / 5f;
         float yValue = y / 5f;
         var col = Sender.GetComponent<BoxCollider2D>();

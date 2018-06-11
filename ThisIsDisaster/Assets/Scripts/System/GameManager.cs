@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour {
 
     public UnitControllerBase CommonPlayerObject;
 
-    public ClimateType CurrentStageClimateTpye = ClimateType.Island;
+    public ClimateType CurrentStageClimateType = ClimateType.Island;
 
     private StageClockInfo _stageClock = new StageClockInfo();
     private StageGenerator.ClimateInfo _currentClimateInfo = null;
@@ -296,9 +296,9 @@ public class GameManager : MonoBehaviour {
 
     public void GenerateWorld(int seed)
     {
-        CurrentStageClimateTpye = StageGenerator.Instance.GetRandomClimateType();
+        CurrentStageClimateType = StageGenerator.Instance.GetRandomClimateType();
 
-        StageGenerator.ClimateInfo info = StageGenerator.Instance.GetClimateInfo(CurrentStageClimateTpye);
+        StageGenerator.ClimateInfo info = StageGenerator.Instance.GetClimateInfo(CurrentStageClimateType);
         CellularAutomata.Instance.MaxHeightLevel = info.MaxHeightLevel;
         List<string> tileSrc = new List<string>(info.tileSpriteSrc.Values);
         RandomMapGenerator.Instance.SetTileSprite(tileSrc);
@@ -361,10 +361,14 @@ public class GameManager : MonoBehaviour {
     {
         _stageClock.Update();
         Notice.Instance.Send(NoticeName.Update);
+
+        if (Input.GetKeyDown(KeyCode.F12)) {
+            EndStage(true);
+        }
 	}
 
     public void StartStage() {
-        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageStart, GlobalGameManager.Instance.GameNetworkType);
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageStart, GlobalGameManager.Instance.GameNetworkType, CurrentStageClimateType);
         _stageClock.StartStage();
     }
 
@@ -378,7 +382,7 @@ public class GameManager : MonoBehaviour {
             script.Capature();
         }
 
-        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType, isVictory ? "승리" : "패배");
+        Notice.Instance.Send(NoticeName.SaveGameLog, GameLogType.StageEnd, GlobalGameManager.Instance.GameNetworkType, isVictory ? "승리" : "패배", CurrentStageClimateType);
 
         if (isVictory)
             InGameUIScript.Instance.StageClear();

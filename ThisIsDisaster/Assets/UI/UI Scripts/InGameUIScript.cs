@@ -34,6 +34,10 @@ public class InGameUIScript : MonoBehaviour
     public GameObject AEDButton;
     public GameObject PlayerDeadPanel;
 
+    public GameObject GameLogUI;
+    public GameObject GameLogPivot;
+    public Text GameLogText;
+
     public static InGameUIScript Instance
     {
         private set;
@@ -74,6 +78,10 @@ public class InGameUIScript : MonoBehaviour
         InventoryUIController.Instance.InitialCategory();
         DefaultEventDesc();
         PlayerDeadPanel.SetActive(false);
+        GameLogUI.SetActive(false);
+        GameLogPivot.SetActive(false);
+
+
     }
 
     public void Update()
@@ -145,6 +153,7 @@ public class InGameUIScript : MonoBehaviour
     public void StageClear()
     {
         CloseAllUI();
+        SetGameLog();
         StageClearUIContorller.Instance.StageClearPanel.SetActive(true);
     }
 
@@ -366,6 +375,7 @@ public class InGameUIScript : MonoBehaviour
             AEDButton.SetActive(false);
 
             GameManager.CurrentGameManager.EndStage(false);
+            SetGameLog();
         }
         PlayerDeadPanel.SetActive(true);
     }
@@ -374,6 +384,22 @@ public class InGameUIScript : MonoBehaviour
     {
         PlayerDeadPanel.SetActive(false);
         PlayerCharacter.GetComponent<CharacterModel>().RetryGame();
+    }
+
+    public void SetGameLog() {
+        string text = GameLogManager.Instance.OnGameEnd();
+        GameLogText.text = text;
+        GameLogUI.SetActive(true);
+    }
+
+    public void OnClickLog() {
+        if (GameLogPivot.activeInHierarchy)
+        {
+            GameLogPivot.SetActive(false);
+        }
+        else {
+            GameLogPivot.SetActive(true);
+        }
     }
 }
 
