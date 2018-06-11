@@ -81,13 +81,10 @@ public class LobbySceneScript : MonoBehaviour, IObserver {
 
     void SetUserData(Json.UserResponse data) {
         PlayerLevel.text = data.result_data.level.ToString();
-        PlayerExp.text = data.result_data.exp;
+        PlayerExp.text = data.result_data.exp.ToString();
 
-        int value = 0;
-        if (int.TryParse(data.result_data.exp, out value)) {
-            float rate = value * 0.01f;
-            PlayerExpFill.fillAmount = rate;
-        }
+        float rate = data.result_data.exp * 0.01f;
+        PlayerExpFill.fillAmount = rate;
     }
 
     public void OnNotice(string notice, params object[] param)
