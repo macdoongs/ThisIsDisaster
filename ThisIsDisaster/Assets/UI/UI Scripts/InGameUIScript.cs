@@ -66,13 +66,15 @@ public class InGameUIScript : MonoBehaviour
         }
     }
 
+
+
     public void Init()
     {
         if (PlayerCharacter == null)
         {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
             PlayerCharacter.GetComponent<CharacterModel>().PlayerName = GlobalParameters.Param.accountName;
-            PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
+            PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel;
         }
 
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);

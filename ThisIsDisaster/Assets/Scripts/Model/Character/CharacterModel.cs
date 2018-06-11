@@ -140,7 +140,7 @@ public class CharacterModel : MonoBehaviour
     public bool EffectToken = false;
     //테스트용 값
     public string PlayerName = "TestID";
-    public string PlayerLevel = "123";
+    public int PlayerLevel = 123;
 
 
     public Stats DefaultStats = new Stats();

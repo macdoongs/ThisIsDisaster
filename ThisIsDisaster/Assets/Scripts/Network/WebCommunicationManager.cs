@@ -286,11 +286,13 @@ namespace Json
             }
 
             UserResponse ur = JsonUtility.FromJson<UserResponse>(message);
-            Notice.Instance.Send(NoticeName.OnReceiveUserData, ur);
+            
             GlobalParameters.Param.accountId = ur.result_data.id;
             GlobalParameters.Param.accountLevel = ur.result_data.level;
             GlobalParameters.Param.accountExp = ur.result_data.exp;
             GlobalParameters.Param.accountGold = ur.result_data.gold;
+
+            Notice.Instance.Send(NoticeName.OnReceiveUserData, ur);
         }
 
         void ReceiveMultiplayLobby(string message, Response rootResponse) {

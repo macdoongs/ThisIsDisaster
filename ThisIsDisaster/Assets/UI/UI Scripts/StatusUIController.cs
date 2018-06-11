@@ -79,7 +79,7 @@ public class StatusUIController : MonoBehaviour {
     {
         PlayerName.text = PlayerCharacter.GetComponent<CharacterModel>().PlayerName;
 
-        PlayerLevel.text = PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel;
+        PlayerLevel.text = PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel.ToString();
 
     }
 

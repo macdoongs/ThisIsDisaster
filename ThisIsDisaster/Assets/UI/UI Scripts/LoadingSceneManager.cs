@@ -19,7 +19,7 @@ public class LoadingSceneManager : MonoBehaviour
 
     private void Start()
     {
-        //LoadUser();
+        LoadUser();
 
         StartCoroutine(LoadScene());
     }

@@ -93,7 +93,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
         Show();
         SetGameStarting(false);
         
-        matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, 1, GlobalParameters.Param.accountName, true);
+        matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, GlobalParameters.Param.accountLevel, GlobalParameters.Param.accountName, true);
         matchingSlots[0].SetPlayerReady(false);
 
         //test

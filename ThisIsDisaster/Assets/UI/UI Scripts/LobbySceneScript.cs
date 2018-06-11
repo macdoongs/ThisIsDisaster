@@ -73,9 +73,9 @@ public class LobbySceneScript : MonoBehaviour, IObserver {
     }
     
     void SetUserData(Json.UserResponse data) {
+        PlayerName.text = GlobalGameManager.Param.accountName;
         PlayerLevel.text = data.result_data.level.ToString();
         PlayerExp.text = data.result_data.exp.ToString();
-
         float rate = data.result_data.exp * 0.01f;
         PlayerExpFill.fillAmount = rate;
     }
