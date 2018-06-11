@@ -196,9 +196,8 @@ public class InGameUIScript : MonoBehaviour
             Name = "낙뢰";
         else if (eventName == "Fire")
             Name = "화재";
-        else if (eventName == "Landslide") {
+        else if (eventName == "Landslide")
             Name = "산사태";
-        }
         else
             Name = "폭설";
 
