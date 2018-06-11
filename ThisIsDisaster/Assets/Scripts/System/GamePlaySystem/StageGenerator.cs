@@ -107,7 +107,7 @@ public class StageGenerator {
         int selected = ReadNextValue(0, 4);
         
         //test code
-        return ClimateType.Forest;
+        //return ClimateType.Forest;
 
         return (ClimateType)selected;
     }
