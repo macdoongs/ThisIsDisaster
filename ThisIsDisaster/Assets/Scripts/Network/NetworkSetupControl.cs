@@ -353,7 +353,7 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     }
 
     public void OnSetAccount(string account) {
-        GlobalGameManager.Param.accountName = account;
+        //GlobalGameManager.Param.accountName = account;
         if (GameManager.CurrentGameManager != null) {
             if (GameManager.CurrentGameManager.GetLocalPlayer() != null)
                 GameManager.CurrentGameManager.GetLocalPlayer().SetUnitName(GlobalParameters.Param.accountName);
@@ -369,7 +369,7 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
     public void UpdateAccountId(string input) {
         int value = 0;
         if (int.TryParse(input, out value)) {
-            GlobalGameManager.Param.accountId = value;
+            //GlobalGameManager.Param.accountId = value;
         }
         
     }
@@ -378,8 +378,7 @@ public class NetworkSetupControl : MonoBehaviour, IObserver
         Debug.LogError("Received Sync Info" + packetSender);
         GameSyncPacket packet = new GameSyncPacket(data);
         GameSyncData sync = packet.GetPacket();
-
-
+        
         if (packetSender == GlobalParameters.Param.accountId) return;
         Debug.Log("Received Packet Info : " + sync.accountName + " " + sync.accountId);
     }

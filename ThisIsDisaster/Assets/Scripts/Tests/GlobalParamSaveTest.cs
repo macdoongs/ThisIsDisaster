@@ -23,13 +23,13 @@ public class GlobalParamSaveTest : MonoBehaviour {
     public void OnEnterAccountId(string text) {
         int parsed = -1;
         if (int.TryParse(text, out parsed)) {
-            GlobalParameters.Param.accountId = parsed;
+            //GlobalParameters.Param.accountId = parsed;
         }
     }
 
     public void OnEnterAccountName(string text) {
         if (string.IsNullOrEmpty(text)) return;
-        GlobalParameters.Param.accountName = text;
+        //GlobalParameters.Param.accountName = text;
     }
 
     public void OnClickSave() {

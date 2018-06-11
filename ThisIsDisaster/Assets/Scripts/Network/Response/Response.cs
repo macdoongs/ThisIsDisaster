@@ -23,21 +23,31 @@ namespace Json
         public static Response CreateFromJson(string jsonString) {
             return JsonUtility.FromJson<Response>(jsonString);
         }
+
+        public static Response CreateDummy() {
+            Response re = new Response
+            {
+                result_code = 200,
+                result_msg = "Success",
+                result_type = "Response"
+            };
+
+            return re;
+        }
+        public static string CreateDummyString() {
+            var js = JsonUtility.ToJson(CreateDummy());
+            return js;
+        }
     }
     
     #region UserResponse
     [Serializable]
     public class User
     {
-        public int id;
-        public string email;
         public string nickname;
-        public int score;
-        public int level;
-        public int exp;
-        public int gold;
-        public string ip;
-        public string role;
+        public string score;
+        public string level;
+        public string gold;
     }
 
     [Serializable]
@@ -46,7 +56,7 @@ namespace Json
         public User result_data;
 
         public UserResponse() {
-            result_type = "User";
+            result_type = typeof(UserResponse).ToString();
         }
         
         public static new UserResponse CreateFromJson(string jsonString) {

@@ -16,12 +16,15 @@ namespace Json
         PUT,
         DELETE
     }
+    
     public class WebCommunicationManager : MonoBehaviour
     {
 
         const string url = "http://api.thisisdisaster.com/";
 
         public delegate void JsonResponseAction(string message, Response response);
+
+        public delegate void OnReceiveResponseAction();
 
         private static WebCommunicationManager _manager = null;
         public static WebCommunicationManager Manager {
@@ -31,6 +34,8 @@ namespace Json
         }
 
         private Dictionary<string, JsonResponseAction> _recieveActions = new Dictionary<string, JsonResponseAction>();
+
+        private Queue<OnReceiveResponseAction> _postResult = new Queue<OnReceiveResponseAction>();
 
         private bool _requestErrorOccured = false;
 
@@ -45,7 +50,12 @@ namespace Json
 
         public WebCommunicationManager() {
             _recieveActions.Add(typeof(Response).ToString(), ReceiveResponse);
-            _recieveActions.Add("User", ReceiveUserResponse);
+            _recieveActions.Add(typeof(UserResponse).ToString(), ReceiveUserResponse);
+            _recieveActions.Add(typeof(MultiPlayLobby).ToString(), ReceiveMultiplayLobby);
+        }
+
+        public void AddPostResult(OnReceiveResponseAction action) {
+            _postResult.Enqueue(action);
         }
 
         #region Request
@@ -124,9 +134,9 @@ namespace Json
             else
             {
                 msg = request.downloadHandler.text;
-                Debug.Log(msg);
+                Debug.Log("POST : "+msg);
 
-                if (request.responseCode == 201)
+                if (request.responseCode == 200)
                 {
                     //post success
                 }
@@ -141,12 +151,17 @@ namespace Json
                     //error
                     _requestErrorOccured = true;
                 }
+                
             }
 
             if (!_requestErrorOccured)
             {
                 yield return null;
-                Debug.Log(api + " POST request : " + msg);
+                //Debug.Log(api + " POST request : " + msg);
+                if (_postResult.Count > 0) {
+                    Response response = JsonUtility.FromJson<Response>(msg);
+                    (_postResult.Dequeue())();
+                }
             }
         }
 
@@ -244,10 +259,10 @@ namespace Json
         public void OnReceiveGETMessage(string message)
         {
             var response = JsonUtility.FromJson<Response>(message);
-            if (_recieveActions.ContainsKey(response.result_type))
+            Debug.Log("response " + response.result_type);
+            if (_recieveActions.ContainsKey( "Json." + response.result_type))
             {
-
-                _recieveActions[response.result_type](message, response);
+                _recieveActions["Json." + response.result_type](message, response);
             }
         }
 
@@ -264,37 +279,20 @@ namespace Json
                 Debug.Log("Failed User Response");
                 return;
             }
-            GlobalParameters.Param.isLoad = true;
 
             UserResponse ur = JsonUtility.FromJson<UserResponse>(message);
             Debug.Log("Received User Response");
-            if(ur.result_code == 200 && ur.result_data.email != "test@gmail.com")
-            {
-                GlobalParameters.Param.accountId = ur.result_data.id;
-                GlobalParameters.Param.accountName = ur.result_data.nickname;
-                GlobalParameters.Param.accountEmail = ur.result_data.email;
-                GlobalParameters.Param.accountLevel = ur.result_data.level;
-                GlobalParameters.Param.accountExp = ur.result_data.exp;
-                GlobalParameters.Param.accountScore = ur.result_data.score;
-                GlobalParameters.Param.accountGold = ur.result_data.gold;
-
-            }
+            Debug.Log(ur.result_data.nickname);
         }
 
-        void ReceiveMultiplayLobby(string message, Response rootResponse)
-        {
-            if (!rootResponse.GetResult())
-            {
-                //failure on user response
-                Debug.Log("Failed User Response");
+        void ReceiveMultiplayLobby(string message, Response rootResponse) {
+            if (!rootResponse.GetResult()) {
+                Debug.Log("Failed MultiplayLobby Response");
                 return;
             }
-
-            UserResponse[] ur = JsonUtility.FromJson<UserResponse[]>(message);
-            Debug.Log("Received ReceiveMultiplayLobby");
-            Debug.Log(ur[0].result_data.nickname);
+            MultiPlayLobby multi = JsonUtility.FromJson<MultiPlayLobby>(message);
+            Notice.Instance.Send(NoticeName.OnReceiveSessionData, multi);
         }
-
         #endregion
     }
 }
