@@ -28,7 +28,9 @@ public class GlobalParameters : ISavedData {
         }
     }
     public string accountEmail = "rladudals02@gmail.com";
-    
+    public int accountLevel = 1;
+    public int accountExp = 0;
+
     public bool isConnected = false;
     public bool isDisconnnected = false;
 

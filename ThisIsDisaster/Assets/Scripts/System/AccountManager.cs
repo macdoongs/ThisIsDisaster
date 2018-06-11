@@ -41,6 +41,14 @@ public class AccountManager : ISavedData
         return output;
     }
 
+    Json.WebCommunicationManager WebManager
+    {
+        get
+        {
+            return Json.WebCommunicationManager.Manager;
+        }
+    }
+
     public void LoadData(Dictionary<string, object> data)
     {
         string accountEmail = "";
@@ -49,6 +57,7 @@ public class AccountManager : ISavedData
         if (string.IsNullOrEmpty(accountEmail)) return;
         //서버와의 통신을 통해 계정 정보를 불러와야 합니다
         GlobalParameters.Param.accountEmail = accountEmail;
+        WebManager.SendRequest(Json.RequestMethod.GET, "user?email=" + accountEmail, "");
     }
 
     public string GetPath()

@@ -1,0 +1,74 @@
+{
+  "project_info": {
+    "project_number": "791663390275",
+    "firebase_url": "https://thisisdisaster-204407.firebaseio.com",
+    "project_id": "thisisdisaster-204407",
+    "storage_bucket": "thisisdisaster-204407.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791663390275:android:3ae1dc737f5ff024",
+        "android_client_info": {
+          "package_name": "com.mvp.tid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791663390275-7lep1c95f11399c60sg6l9uuqd41quf5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mvp.tid",
+            "certificate_hash": "f689da73c703153a4e0da5919cfc6251f54e5151"
+          }
+        },
+        {
+          "client_id": "791663390275-g7l95i983n1m90ibcfgk78efvbs8nf04.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "791663390275-iej3pej5voo7qckv0ud6g726jtdvueuc.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "791663390275-rl6kb539vqvlhbcvqlb5moa28jt3naup.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "791663390275-g7l95i983n1m90ibcfgk78efvbs8nf04.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfMmE9lSlx5qkWErWvPaz-uWyv51Z3r_c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791663390275-g7l95i983n1m90ibcfgk78efvbs8nf04.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "791663390275-75aheg42u1asa17omtcklu2r4o5k1a6f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mvp.tid"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

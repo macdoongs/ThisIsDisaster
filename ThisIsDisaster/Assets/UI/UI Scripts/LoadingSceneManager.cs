@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class LoadingSceneManager : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class LoadingSceneManager : MonoBehaviour
 
     string nextSceneName;
 
+    
     Json.WebCommunicationManager WebManager
     {
         get
