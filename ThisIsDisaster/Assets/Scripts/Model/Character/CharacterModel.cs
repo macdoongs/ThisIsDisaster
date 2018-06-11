@@ -30,7 +30,7 @@ public class PlayerModel : UnitModel
         Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
 
         //피격시 5% 확률로 부상 
-        DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 5);
+        DisorderController.Instance.MakeDisorderByProbability(Disorder.DisorderType.injury, 3);
 
         bool check = _character.IsDead() == false;
         _character.SubtractHealth(damage);
@@ -643,9 +643,8 @@ public class CharacterModel : MonoBehaviour
 
                 if (equipment.metaInfo.metaId.Equals(31006)|| equipment.metaInfo.metaId.Equals(31007))
                 {
-                    tempMoveSpeed = CurrentStats.MoveSpeed;
-                    MoveRestrict = true;
-                }
+                    PlayerMoveController ctrl = gameObject.GetComponent<PlayerMoveController>();
+                    ctrl.enabled = false;                }
 
                 result = true;
                 SoundLayer.CurrentLayer.PlaySound("se_equip");
@@ -758,7 +757,8 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot.metaInfo.metaId.Equals(31006) || toolSlot.metaInfo.metaId.Equals(31007))
             {//침낭
                 CurrentStats.MoveSpeed = tempMoveSpeed;
-                MoveRestrict = false;
+                PlayerMoveController ctrl = gameObject.GetComponent<PlayerMoveController>();
+                ctrl.enabled = true;
             }
 
             toolSlot = null;
@@ -1107,7 +1107,7 @@ public class CharacterModel : MonoBehaviour
         {//생고기 특수효과
             System.Random random = new System.Random();
             int randomInt = random.Next(0, 100);
-            if (randomInt < 25)
+            if (randomInt < 10)
                 GetDisorder(Disorder.DisorderType.poisoning);
             RevoerDisorderByType(Disorder.DisorderType.hunger);
             result = true;
@@ -1162,11 +1162,6 @@ public class CharacterModel : MonoBehaviour
         isPlayerDead = true;
         
         InGameUIScript.Instance.PlayerDeadPanelOn(HasItem(33004));
-    }
-
-    public void AEDContain()
-    {
-
     }
 
     //HP 감소
@@ -1417,6 +1412,24 @@ public class CharacterModel : MonoBehaviour
 
     public void RetryGame()
     {
+        PlayerMoveController ctrl = gameObject.GetComponent<PlayerMoveController>();
+        Animator anim = ctrl.PlayerMovementCTRL;
+
+        AnimatorUtil.SetTrigger(anim, "Jump");
+        if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
+        {
+            NetworkComponents.GameServer.Instance.SendPlayerAnimTrigger("Jump");
+        }
+
+        PlayerAttackController attackController = gameObject.GetComponent<PlayerAttackController>();
+        if (attackController != null)
+        {
+            attackController.enabled = true;
+        }
+
+        attackReceiver.gameObject.SetActive(true);
+        ctrl.enabled = true;
+
         isPlayerDead = false;
         CurrentStats.Health = CurrentStats.MaxHealth;
         CurrentStats.Stamina = CurrentStats.MaxStamina;
@@ -1470,7 +1483,4 @@ public class CharacterModel : MonoBehaviour
             ;
         }
     }
-
-
-
 }
