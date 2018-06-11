@@ -67,7 +67,7 @@ public class EarthquakeEvent : EventBase
         _damageTimer.StartTimer(damageTime);
 
         Debug.Log("eventSoundStart");
-        SoundLayer.CurrentLayer.PlaySound("event_earthquack");
+        SoundLayer.CurrentLayer.PlaySound("event_Earthquack");
     }
 
     void EndEvent() {
