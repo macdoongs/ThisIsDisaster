@@ -41,6 +41,7 @@ public class FloodEvent : EventBase {
         _lifeTimeTimer.StartTimer(lifeTime);
 
         _effect.AddHalf(0);
+        _effect.AddHalf(1);
 	}
 
 	public override void OnEnd()

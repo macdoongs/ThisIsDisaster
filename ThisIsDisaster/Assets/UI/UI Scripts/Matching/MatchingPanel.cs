@@ -5,6 +5,16 @@ using UnityEngine.UI;
 using NetworkComponents;
 using System.Net;
 
+[System.Serializable]
+public class MatchingJoinMessage {
+    public string email = "";
+    public string ip = "";
+    public MatchingJoinMessage() {
+        email = GlobalParameters.Param.accountEmail;
+        ip = MatchingPanel.Instance.GetLocalHost();
+    }
+}
+
 public class MatchingPanel : MonoBehaviour, IObserver
 {
     public static MatchingPanel Instance { private set; get; }
@@ -80,8 +90,25 @@ public class MatchingPanel : MonoBehaviour, IObserver
         
         matchingSlots[0].SetPlayer(GlobalParameters.Param.accountId, 1, GlobalParameters.Param.accountName, true);
         matchingSlots[0].SetPlayerReady(false);
-        
+
+        //test
+        //if (!string.IsNullOrEmpty(GlobalParameters.Param.hostAddress)) { 
+        //    SetHostAddress(GlobalParameters.Param.hostAddress);
+        //}
+
         //do smth
+        var jsonMsg = new MatchingJoinMessage();
+        var msg = JsonUtility.ToJson(jsonMsg);
+
+        Json.WebCommunicationManager.Manager.AddPostResult(OnReceviveResponse);
+        Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.POST, "game/multiplay/join", msg);
+        Debug.Log("Send Post Join Message " + msg);
+        //Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.GET, "game/multiplay/lobby?email=" + GlobalParameters.Param.accountEmail);
+    }
+
+    public void OnReceviveResponse() {
+        Debug.Log("Send Get Lobby Message");
+        Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.GET, "game/multiplay/lobby?email=" + GlobalParameters.Param.accountEmail);
     }
 
     public void OnClosePanel() {
@@ -89,6 +116,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
         IsEnabled = false;
         Hide();
         LobbyUIScript.Instance.DefaultMenu();
+        SendStartMessage();
+    }
+
+    void SendStartMessage() {
+        Json.WebCommunicationManager.Manager.SendRequest(Json.RequestMethod.POST, "game/start?mode=multiplay&email=" + GlobalParameters.Param.accountEmail, Json.Response.CreateDummyString());
     }
 
     void Show() {
@@ -100,7 +132,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     }
 
     #region Network
-    string GetLocalHost()
+    public string GetLocalHost()
     {
         return Network.player.ipAddress.ToString();
     }
@@ -158,6 +190,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     }
 
     public void OnHost() {
+        Debug.Log("Make Host");
         SetIsHost(true);
         GameServer.Instance.SetLocalAddress(GetLocalHost());
         GameServer.Instance.InitializeNetworkModule();
@@ -189,6 +222,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
         //_delayEventTrigger.StartTimer(1f);
     }
 
+    private void OnApplicationQuit()
+    {
+        SendStartMessage();
+    }
+
     void RequestMatchingData() {
         GameServer.Instance.SendGameServerRequest(GameServerRequestType.MatchingData);
     }
@@ -198,6 +236,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
         GlobalGameManager.Instance.SetGameNetworkType(GameNetworkType.Multi);
         GlobalGameManager.Instance.OnGameStart();
         GameServer.Instance.DestroyMatchingView();
+        SendStartMessage();
     }
 
     public void SetIsHost(bool isHost) {
@@ -207,6 +246,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
     }
 
     public void ResetNetwork() {
+        SendStartMessage();
         NetworkModule.Instance.Disconnect();
         NetworkModule.Instance.StopGameServer();
         NetworkModule.Instance.StopServer();
@@ -219,16 +259,44 @@ public class MatchingPanel : MonoBehaviour, IObserver
             StartUdpServer(node + NetConfig.GAME_PORT);
             RequestMatchingData();
         }
+
+        if (notice == NoticeName.OnReceiveSessionData) {
+            Json.MultiPlayLobby lobby = param[0] as Json.MultiPlayLobby;
+
+            foreach (var node in lobby.result_data.user_list) {
+                string emailParsed = GlobalParameters.ParseEmail(node.email);
+
+                if (emailParsed == GlobalParameters.Param.accountName) {
+                    GlobalParameters.Param.accountId = node.id;
+
+                    if (node.role == "host")
+                    {
+                        OnHost();
+                        return;
+                    }   
+                }
+            }
+
+            foreach (var node in lobby.result_data.user_list) {
+                if (node.role == "host") {
+                    SetHostAddress(node.ip);
+                    OnGuest();
+                    break;
+                }
+            }
+        }
     }
 
     public void ObserveNotices()
     {
         Notice.Instance.Observe(NoticeName.OnReceiveMatchingResponse, this);
+        Notice.Instance.Observe(NoticeName.OnReceiveSessionData, this);
     }
 
     public void RemoveNotices()
     {
         Notice.Instance.Remove(NoticeName.OnReceiveMatchingResponse, this);
+        Notice.Instance.Remove(NoticeName.OnReceiveSessionData, this);
     }
 
     public void SetMatchingData(NetworkComponents.Matching.MatchingData data) {

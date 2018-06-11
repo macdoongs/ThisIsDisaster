@@ -20,32 +20,47 @@ public enum GameNetworkType
 public class GlobalParameters : ISavedData {
     public static GlobalParameters Param { get { return GlobalGameManager.Param; } }
     public int accountId = 0;
-    public string accountName = "Player";
+    public string accountName
+    {
+        get
+        {
+            return ParseEmail(accountEmail);
+        }
+    }
+    public string accountEmail = "rladudals02@gmail.com";
     
     public bool isConnected = false;
     public bool isDisconnnected = false;
 
     public int AdditionalPortNum = 0;
+    public string hostAddress = "";
     
     public void Init() { }
 
     public Dictionary<string, object> GetSavedData()
     {
         Dictionary<string, object> output = new Dictionary<string, object>();
-        output.Add("accountId", accountId);
-        output.Add("accountName", accountName);
+        //output.Add("accountId", accountId);
+        //output.Add("accountName", accountName);
         return output;
     }
 
     public void LoadData(Dictionary<string, object> data)
     {
-        FileManager.TryGetValue(data, "accountId", ref accountId);
-        FileManager.TryGetValue(data, "accountName", ref accountName);
+        //FileManager.TryGetValue(data, "accountId", ref accountId);
+        //FileManager.TryGetValue(data, "accountName", ref accountName);
     }
 
     public string GetPath()
     {
         return "globalParam";
+    }
+
+    public static string ParseEmail(string email) {
+        string[] splitted = email.Split('@');
+        if (splitted.Length > 0)
+            return splitted[0];
+        return "";
     }
 }
 
@@ -110,9 +125,17 @@ public class GlobalGameManager {
             int id = GlobalParameters.Param.accountId;
             if (int.TryParse(split[1], out id))
             {
-                GlobalParameters.Param.accountId = id;
+                //GlobalParameters.Param.accountId = id;
             }
-            GlobalParameters.Param.accountName = split[3];
+            GlobalParameters.Param.accountEmail = split[3];
+            if (split.Length > 4)
+            {
+                string ip = split[5];
+                if (!string.IsNullOrEmpty(ip))
+                {
+                    GlobalParameters.Param.hostAddress = ip;
+                }
+            }
 
             Debug.LogError("Set Global Param " + id + " " + GlobalParameters.Param.accountName);
         }

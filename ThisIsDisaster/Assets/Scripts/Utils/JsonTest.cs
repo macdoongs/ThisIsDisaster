@@ -13,7 +13,7 @@ public class JsonTest : MonoBehaviour {
         {
             result_code = 200,
             result_msg = "testing2",
-            response_type = typeof(UserResponse).ToString(),
+            result_type = typeof(UserResponse).ToString(),
             result_data = new User() {
                 nickname = "testChar",
                 score = "10",
@@ -45,6 +45,7 @@ public class JsonTest : MonoBehaviour {
         //WebCommunicationManager.Manager.OnReceiveGETMessage(failJson);
         string jsonBody = @"{
      “email”: “test@test.com”,
+    “nickname”: “test”,
     “password”: “assdfa”
 }";
 
@@ -57,11 +58,11 @@ public class JsonTest : MonoBehaviour {
         
 
         //WebCommunicationManager.Manager.SendRequest(RequestMethod.GET, "user");
-        //WebCommunicationManager.Manager.SendRequest(RequestMethod.POST, "user", jsonBody);
+        WebCommunicationManager.Manager.SendRequest(RequestMethod.POST, "user", jsonBody);
         //WebCommunicationManager.Manager.SendRequest(RequestMethod.DELETE, "user", jsonBody);
         //WebCommunicationManager.Manager.SendRequest(RequestMethod.PUT, "notice/" + 0, deleteBody);
         Debug.Log("SaveLog");
-        GameLogManager.Instance.SaveLog("Testing Log");
+        //GameLogManager.Instance.SaveLog("Testing Log");
 
         
     }
