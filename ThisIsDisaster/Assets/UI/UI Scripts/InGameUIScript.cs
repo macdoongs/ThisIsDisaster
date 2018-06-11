@@ -72,7 +72,7 @@ public class InGameUIScript : MonoBehaviour
         {
             PlayerCharacter = GameManager.CurrentGameManager.GetLocalPlayer().gameObject;
             PlayerCharacter.GetComponent<CharacterModel>().PlayerName = GlobalParameters.Param.accountName;
-            PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
+            //PlayerCharacter.GetComponent<CharacterModel>().PlayerLevel = GlobalParameters.Param.accountLevel.ToString();
         }
 
         StatusUIController.Instance.SetPlayerInfo(PlayerCharacter);

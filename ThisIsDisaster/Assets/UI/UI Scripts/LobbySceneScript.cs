@@ -60,7 +60,7 @@ public class LobbySceneScript : MonoBehaviour {
     {
 
         PlayerName.text = GlobalParameters.Param.accountName;
-        PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
-        PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
+        //PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
+        //PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
     }
 }
