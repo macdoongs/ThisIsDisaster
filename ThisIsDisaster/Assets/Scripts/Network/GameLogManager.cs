@@ -142,6 +142,11 @@ public class GameLogManager : IObserver
         SaveLog(log);
 
         Debug.LogError("[GameLog]" + log);
+        if (type == GameLogType.StageEnd) {
+            if (InGameUIScript.Instance != null) {
+                InGameUIScript.Instance.SetGameLog();
+            }
+        }
     }
 
     public string OnGameEnd() {

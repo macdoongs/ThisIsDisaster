@@ -78,9 +78,7 @@ public class EventManager : MonoBehaviour {
         dictioary.Add(type, evntBase);
 
         evntBase.OnGenerated();
-        Debug.Log("Generate " + evntBase.type);
         //이벤트 생성
-        Debug.LogError("이벤트 생성" + evntBase.type.ToString());
         InGameUIScript.Instance.EventNotice(evntBase.type.ToString(), 0);
         InGameUIScript.Instance.DefaultEventDesc();
         InGameUIScript.Instance.EventDescSetting(type);

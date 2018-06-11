@@ -35,7 +35,7 @@ namespace NPC
         }
 
         public float GetSpeed() {
-            return GetStatValue(DefaultStatSection.speed) * GameStaticInfo.GameSpeedFactor;
+            return GetStatValue(DefaultStatSection.speed);
         }
 
         public float GetDefense() {

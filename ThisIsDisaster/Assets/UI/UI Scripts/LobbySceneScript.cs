@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 
-public class LobbySceneScript : MonoBehaviour {
+public class LobbySceneScript : MonoBehaviour, IObserver {
 
     //private string url = "http://api.thisisdisaster.com/user";
     private string result = null;
@@ -16,6 +16,7 @@ public class LobbySceneScript : MonoBehaviour {
     public Text PlayerName;
     public Text PlayerLevel;
     public Text PlayerExp;
+    public Image PlayerExpFill;
 
 
     public string nickname = "DefaultName";
@@ -48,6 +49,15 @@ public class LobbySceneScript : MonoBehaviour {
         }
     }
 
+    private void OnEnable()
+    {
+        ObserveNotices();
+    }
+
+    private void OnDisable()
+    {
+        RemoveNotices();
+    }
 
     public void LoadUser()
     {
@@ -62,5 +72,35 @@ public class LobbySceneScript : MonoBehaviour {
         PlayerName.text = GlobalParameters.Param.accountName;
         //PlayerLevel.text = GlobalParameters.Param.accountLevel.ToString();
         //PlayerExp.text = GlobalParameters.Param.accountExp.ToString();
+    }
+
+    void SetUserData(Json.UserResponse data) {
+        PlayerLevel.text = data.result_data.level.ToString();
+        PlayerExp.text = data.result_data.exp;
+
+        int value = 0;
+        if (int.TryParse(data.result_data.exp, out value)) {
+            float rate = value * 0.01f;
+            PlayerExpFill.fillAmount = rate;
+        }
+    }
+
+    public void OnNotice(string notice, params object[] param)
+    {
+        if (NoticeName.OnReceiveUserData == notice) {
+            Json.UserResponse ur = param[0] as Json.UserResponse;
+
+            SetUserData(ur);
+        }
+    }
+
+    public void ObserveNotices()
+    {
+        Notice.Instance.Observe(NoticeName.OnReceiveUserData, this);
+    }
+
+    public void RemoveNotices()
+    {
+        Notice.Instance.Remove(NoticeName.OnReceiveUserData, this);
     }
 }

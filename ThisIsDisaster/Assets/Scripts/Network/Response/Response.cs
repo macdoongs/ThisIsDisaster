@@ -49,6 +49,7 @@ namespace Json
         public string score;
         public string level;
         public string gold;
+        public string exp;
     }
 
     [Serializable]

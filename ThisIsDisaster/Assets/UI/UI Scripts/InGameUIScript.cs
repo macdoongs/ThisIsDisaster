@@ -155,7 +155,7 @@ public class InGameUIScript : MonoBehaviour
     public void StageClear()
     {
         CloseAllUI();
-        SetGameLog();
+        //SetGameLog();
         StageClearUIContorller.Instance.StageClearPanel.SetActive(true);
     }
 
@@ -374,8 +374,6 @@ public class InGameUIScript : MonoBehaviour
             AEDText.SetActive(false);
             AEDButton.SetActive(false);
 
-
-            SetGameLog();
         }
         PlayerDeadPanel.SetActive(true);
     }

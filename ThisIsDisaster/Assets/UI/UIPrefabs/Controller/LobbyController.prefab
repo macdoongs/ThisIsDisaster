@@ -55,7 +55,7 @@ MonoBehaviour:
   PlayerName: {fileID: 0}
   PlayerLevel: {fileID: 0}
   PlayerExp: {fileID: 0}
-  name: 
+  nickname: DefaultName
   level: 0
   exp: 0
   gold: 0

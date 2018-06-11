@@ -103,5 +103,11 @@ namespace NPC
                 spread.SpreadNext();
             }
         }
+
+        public override void OnDefeated()
+        {
+            Debug.Log("Dummy dead");
+            Unit.animTarget.SetActive(false);
+        }
     }
 }

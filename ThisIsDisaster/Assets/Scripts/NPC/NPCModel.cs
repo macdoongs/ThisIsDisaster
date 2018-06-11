@@ -84,6 +84,8 @@ namespace NPC {
             Unit.animTarget.SetActive(true);
             _executeState = NPCExectueState.None;
             MoveControl.StopMovement();
+
+            Debug.Log(GetSpeed());
         }
 
         public void OnGenerated() {
@@ -197,8 +199,8 @@ namespace NPC {
                     OnDefeated();
                 return;
             }
-            if (attacker != null)
-                Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+            //if (attacker != null)
+                //Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
             CurrentHp -= damage;
             if (CurrentHp <= 0f)
             {
@@ -289,7 +291,7 @@ namespace NPC {
         }
 
         public void OnAttackEnd() {
-            Debug.Log(GetUnitName() + " AttackEnd");
+            //Debug.Log(GetUnitName() + " AttackEnd");
             if (_state == NPCState.Execute)
             {
                 Unit.SetSensing(true);

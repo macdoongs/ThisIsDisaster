@@ -228,9 +228,9 @@ public class GlobalGameManager {
         LoadingSceneManager.LoadScene("Lobby Scene");
     }
 
-    public Dictionary<int, int> _remotePlayers = new Dictionary<int, int>();
+    public Dictionary<int, NetworkComponents.Matching.MatchingNode> _remotePlayers = new Dictionary<int, NetworkComponents.Matching.MatchingNode>();
     //other data need
-    public void AddRemotePlayer(int clientNode, int clientId) {
+    public void AddRemotePlayer(int clientNode, NetworkComponents.Matching.MatchingNode clientId) {
         _remotePlayers.Add(clientNode, clientId);
     }
 
@@ -249,7 +249,6 @@ public class GlobalGameManager {
 
     public void OnSceneLoaded()
     {
-        Debug.Log(_completed);
         if (_completed != null) {
             _completed();
             _completed = null;

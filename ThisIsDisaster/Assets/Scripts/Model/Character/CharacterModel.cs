@@ -634,6 +634,7 @@ public class CharacterModel : MonoBehaviour
                 if(toolSlot.GetVision() != 0)
                 {
                     visionLevel = toolSlot.GetVision();
+                    Notice.Instance.Send(NoticeName.SetIndicatorState, true);
                 }
 
                 if (equipment.metaInfo.metaId.Equals(31005))
@@ -644,7 +645,8 @@ public class CharacterModel : MonoBehaviour
                 if (equipment.metaInfo.metaId.Equals(31006)|| equipment.metaInfo.metaId.Equals(31007))
                 {
                     PlayerMoveController ctrl = gameObject.GetComponent<PlayerMoveController>();
-                    ctrl.enabled = false;                }
+                    ctrl.enabled = false;
+                }
 
                 result = true;
                 SoundLayer.CurrentLayer.PlaySound("se_equip");
@@ -744,6 +746,7 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot.GetVision() != 0)
             {
                 visionLevel = 0;
+                Notice.Instance.Send(NoticeName.SetIndicatorState, false);
             }
             if (toolSlot.GetStaminaRegen() != 0)
             {

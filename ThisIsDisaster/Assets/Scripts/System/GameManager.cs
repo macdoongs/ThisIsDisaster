@@ -125,7 +125,6 @@ public class GameManager : MonoBehaviour {
 
         void ExecuteNextStep()
         {
-            Debug.LogError(currentEventType + " Expired");
             switch (nextEventType)
             {
                 case StageEventType.Ready:
@@ -264,8 +263,8 @@ public class GameManager : MonoBehaviour {
 
         if (GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi) {
             foreach (var kv in GlobalGameManager.Instance._remotePlayers) {
-                var c = MakePlayerCharacter(kv.Value.ToString(), kv.Key, false);
-                c.AccountId = kv.Value;
+                var c = MakePlayerCharacter(kv.Value.playerName, kv.Key, false);
+                c.AccountId = kv.Value.accountId;
 
                 c.GetComponent<CharacterModel>().GetPlayerModel().SetCurrentTileForcely(zeroTile);
             }
@@ -308,7 +307,6 @@ public class GameManager : MonoBehaviour {
 
         CellularAutomata.Instance.GenerateMap();
 
-        Debug.Log("event_" + CurrentStageClimateType.ToString());
         SoundLayer.CurrentLayer.PlaySound("bgm_"+CurrentStageClimateType.ToString());
 
         //generate world by input
@@ -381,7 +379,7 @@ public class GameManager : MonoBehaviour {
         Debug.LogError("Stage Ended");
 
         var script = Camera.main.gameObject.GetComponent<ScreenCapture>();
-        if (script != null)
+        if (script != null && isVictory)
         {
             script.Capature();
         }
@@ -504,8 +502,6 @@ public class GameManager : MonoBehaviour {
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GlobalGameManager.Instance.OnSceneLoaded();
-        Debug.LogError("OnSceneLoaded: " + scene.name);
-        //Debug.Log(mode);
     }
 
     public void CheckStartMultiStage() {
