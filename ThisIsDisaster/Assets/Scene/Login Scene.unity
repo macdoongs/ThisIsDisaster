@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -39,6 +39,7 @@ RenderSettings:
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -54,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -147,7 +147,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.040023804, y: -0.020811081}
+  m_AnchoredPosition: {x: -0.040023804, y: -0.020812988}
   m_SizeDelta: {x: 0.2999878, y: -0.6289978}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!61 &159616508
@@ -215,7 +215,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 949924933}
-        m_MethodName: GooglePlayLogin
+        m_MethodName: SignInWithPlayGames
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -375,7 +375,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.039978027, y: -0.020950317}
+  m_AnchoredPosition: {x: -0.039978027, y: -0.020935059}
   m_SizeDelta: {x: 0.2999878, y: -0.62799835}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!61 &720332695
@@ -684,7 +684,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 949924931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f89fc82765f24804889382aa2736c6c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f856ccc6e3de3c40be62ac587b4eeff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   emailInput: {fileID: 0}
@@ -788,7 +788,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.37, y: 0.24666503}
   m_AnchorMax: {x: 0.63000005, y: 0.4041711}
-  m_AnchoredPosition: {x: -0.0015903, y: -21}
+  m_AnchoredPosition: {x: -0.0015869141, y: -21}
   m_SizeDelta: {x: -0.0033875, y: -1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1062540355
@@ -925,7 +925,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.37, y: 0.24666503}
   m_AnchorMax: {x: 0.63000005, y: 0.4041711}
-  m_AnchoredPosition: {x: 0.000039101, y: 131}
+  m_AnchoredPosition: {x: 0.000030517578, y: 131}
   m_SizeDelta: {x: -0.000030518, y: -1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2009728563
@@ -993,7 +993,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.37, y: 0.35000002}
   m_AnchorMax: {x: 0.63000005, y: 0.5}
-  m_AnchoredPosition: {x: -0.0007910712, y: 145.99}
+  m_AnchoredPosition: {x: -0.00079345703, y: 145.98999}
   m_SizeDelta: {x: -0.0016785, y: 2.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2033739009

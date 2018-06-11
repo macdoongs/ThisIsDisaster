@@ -15,41 +15,33 @@
       },
       "oauth_client": [
         {
-          "client_id": "791663390275-7q17inadq96cfk4j63r7vbiup10td5g3.apps.googleusercontent.com",
+          "client_id": "791663390275-7lep1c95f11399c60sg6l9uuqd41quf5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mvp.tid",
-            "certificate_hash": "97376357dbfd9c0b644ad61d8f3a89b56609b2cc"
+            "certificate_hash": "f689da73c703153a4e0da5919cfc6251f54e5151"
           }
         },
         {
-          "client_id": "791663390275-bkl4v0b3bdloef3hijr6ohn9t6lpd50v.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mvp.tid",
-            "certificate_hash": "bac12cd03ab6f3f592976ec3d1c3ef4ee0a20da6"
-          }
-        },
-        {
-          "client_id": "791663390275-8mr3kic6k256tjg7sqnbjqvdloie5itd.apps.googleusercontent.com",
+          "client_id": "791663390275-g7l95i983n1m90ibcfgk78efvbs8nf04.apps.googleusercontent.com",
           "client_type": 3
         },
         {
-          "client_id": "791663390275-0lahd1pffu7v8p0l0hqu2pka0i27d52o.apps.googleusercontent.com",
+          "client_id": "791663390275-iej3pej5voo7qckv0ud6g726jtdvueuc.apps.googleusercontent.com",
           "client_type": 3
         },
         {
-          "client_id": "791663390275-9d4ah4don21gcuv1pjrfmid3v2jc7qb5.apps.googleusercontent.com",
+          "client_id": "791663390275-rl6kb539vqvlhbcvqlb5moa28jt3naup.apps.googleusercontent.com",
           "client_type": 3
         },
         {
-          "client_id": "791663390275-8mr3kic6k256tjg7sqnbjqvdloie5itd.apps.googleusercontent.com",
+          "client_id": "791663390275-g7l95i983n1m90ibcfgk78efvbs8nf04.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA-3BZqzlfW96euahJkT21hq_f9Jq0Jhmc"
+          "current_key": "AIzaSyDfMmE9lSlx5qkWErWvPaz-uWyv51Z3r_c"
         }
       ],
       "services": {
@@ -60,8 +52,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "791663390275-8mr3kic6k256tjg7sqnbjqvdloie5itd.apps.googleusercontent.com",
+              "client_id": "791663390275-g7l95i983n1m90ibcfgk78efvbs8nf04.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "791663390275-75aheg42u1asa17omtcklu2r4o5k1a6f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mvp.tid"
+              }
             }
           ]
         },

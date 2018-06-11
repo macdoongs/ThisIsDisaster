@@ -50,9 +50,7 @@ public class ThunderstormEvent : EventBase
 		//rainObject.SetActive(true);
 		darkObject.SetActive(true);
         rainObject.SetActive(true);
-
-		blinkObject = null;
-		lightningObject = null;
+        
 
         _lifeTimeTimer.StartTimer(lifeTime);
         _damageTimer.StartTimer(damageTime);

@@ -16,9 +16,9 @@ public class JsonTest : MonoBehaviour {
             result_type = typeof(UserResponse).ToString(),
             result_data = new User() {
                 nickname = "testChar",
-                score = "10",
-                level = "1",
-                gold = "0"
+                score = 10,
+                level = 1,
+                gold = 0
             }
         };
 
@@ -34,9 +34,9 @@ public class JsonTest : MonoBehaviour {
             result_data = new User()
             {
                 nickname = "testChar",
-                score = "10",
-                level = "1",
-                gold = "0"
+                score = 10,
+                level = 1,
+                gold = 0
             }
         };
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.45076954, g: 0.49893332, b: 0.565259, a: 1}
+  m_IndirectSpecularColor: {r: 0.45076966, g: 0.49893355, b: 0.5652596, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -7802,11 +7802,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 86861888cb31abf469feeb5a5e72e432, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -22247,7 +22247,7 @@ RectTransform:
   - {fileID: 1824657020}
   - {fileID: 883855667}
   m_Father: {fileID: 1346015275}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -39662,7 +39662,7 @@ RectTransform:
   - {fileID: 1840948998}
   - {fileID: 1058883114}
   m_Father: {fileID: 1346015275}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -41273,8 +41273,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 751955321}
   - {fileID: 1305557886}
+  - {fileID: 751955321}
   - {fileID: 1404088535}
   m_Father: {fileID: 1665890809}
   m_RootOrder: 7
