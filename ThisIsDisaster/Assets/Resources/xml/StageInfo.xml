@@ -33,7 +33,12 @@
     <environments>
       <environment height="3" min="30" max="50">0</environment><!--tree-->
       <environment height="2" min="150" max="160">1</environment>
-      <!--tree-->
+      
+      <environment height="2" min="60" max="70">3</environment>
+      <environment height="2" min="20" max="30">4</environment>
+      <environment height="3" min="20" max="30">5</environment>
+      <environment height="1" min="40" max="50">6</environment>
+      <environment height="3" min="20" max="30">7</environment>
     </environments>
 
     <npcs>

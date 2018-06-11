@@ -48,10 +48,14 @@ public class GameManager : MonoBehaviour {
         public const float EVENT_RUN_TIME = 70f;
         public const float EVENT_END_TIME = 20f;
         public const float STAGE_CLOSE_TIME = 5f;
+
+        public const float MONSTER_REGEN_TIME = 30f;
+
         public Timer stageTimer = new Timer();
         public StageEventType currentEventType = StageEventType.Init;
         public StageEventType nextEventType = StageEventType.Ready;
         public Timer eventHandleTimer = new Timer();
+        public Timer monsterRegenTimer = new Timer();
 
         private bool clockEnabled = false;
         public int EventGenerateCount = 2;
@@ -63,7 +67,8 @@ public class GameManager : MonoBehaviour {
             currentEventType = StageEventType.Init;
             nextEventType = StageEventType.Ready;
             SetNextEventTime(nextEventType, true);
-            
+
+            monsterRegenTimer.StartTimer(MONSTER_REGEN_TIME);
         }
 
         public void SetEventGenerateCount(int count) {
@@ -104,6 +109,11 @@ public class GameManager : MonoBehaviour {
 
         public void Update() {
             stageTimer.RunTimer();
+            if (monsterRegenTimer.RunTimer()) {
+                monsterRegenTimer.StartTimer(MONSTER_REGEN_TIME);
+                //
+                Notice.Instance.Send(NoticeName.MonsterRegen);
+            }
             if (clockEnabled) {
                 CurrentGameManager.UpdateClock(eventHandleTimer.elapsed, eventHandleTimer.maxTime);
             }
@@ -215,6 +225,9 @@ public class GameManager : MonoBehaviour {
     private StageGenerator.ClimateInfo _currentClimateInfo = null;
 
     public UnityEngine.UI.Text Clock;
+    int[] fieldDropItems = new int[] {
+            5,1,6,10001,20001,30001,310004
+        };
 
     private void Awake()
     {
@@ -278,14 +291,11 @@ public class GameManager : MonoBehaviour {
         var list = CellularAutomata.Instance.GetRoomsCoord(3, 20);
         foreach (var v in list) {
             TileUnit tile = RandomMapGenerator.Instance.GetTile(v.tileX, v.tileY);
-            ItemManager.Manager.MakeDropItem(dropItems[StageGenerator.Instance.ReadNextValue(0, dropItems.Length)], tile);
+            ItemManager.Manager.MakeDropItem(fieldDropItems[StageGenerator.Instance.ReadNextValue(0, fieldDropItems.Length)], tile);
         }
     }
     
 #if MIDDLE_PRES
-    int[] dropItems = new int[] {
-            5,1,6,10001,20001,30001,310004
-        };
 #endif
 
     public void GenerateWorld(int seed)
@@ -316,6 +326,7 @@ public class GameManager : MonoBehaviour {
                     TileUnit tile = RandomMapGenerator.Instance.GetTile(coords[i].tileX, coords[i].tileY);
                     model.UpdatePosition(tile.transform.position);
                     model.SetCurrentTileForcely(tile);
+
                 }
             }
         }

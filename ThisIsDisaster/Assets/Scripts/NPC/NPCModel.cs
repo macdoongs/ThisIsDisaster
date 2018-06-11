@@ -139,8 +139,9 @@ namespace NPC {
             Unit.hpSlider.gameObject.SetActive(false);
 
             _state = NPCState.Destroied;
+            ItemManager.Manager.MakeDropItem((int)ItemManager.Manager.GetRandomItemByRare().metaId, GetCurrentTile());
 #if MIDDLE_PRES
-            ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], GetCurrentTile());
+            //ItemManager.Manager.MakeDropItem(dropItems[UnityEngine.Random.Range(0, dropItems.Length)], GetCurrentTile());
 #else
             ItemManager.Manager.MakeDropItem(41003, GetCurrentTile());
 #endif

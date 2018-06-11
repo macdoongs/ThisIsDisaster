@@ -80,7 +80,8 @@ public class HeavysnowEvent : EventBase
                     speedDownRate = 0f;
                 }
 
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * healthDamageRate);
+                OnGiveDamageToPlayer(damageHealthPerSec * healthDamageRate);
                 CharacterModel.Instance.SubtractStamina(damageEnergyPerSec * staminaDamageRate);
                 CharacterModel.Instance.SetSpeedFactor(1f - speedDownRate);
 

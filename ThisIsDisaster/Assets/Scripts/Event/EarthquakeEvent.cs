@@ -78,7 +78,8 @@ public class EarthquakeEvent : EventBase
             if (_damageTimer.RunTimer())
             {
                 float speedDownValue = 0.4f;
-                CharacterModel.Instance.SubtractHealth(damageHealthPerSec * _effect.GetEarthquakeForce());
+                //CharacterModel.Instance.SubtractHealth(damageHealthPerSec * _effect.GetEarthquakeForce());
+                OnGiveDamageToPlayer(damageHealthPerSec * _effect.GetEarthquakeForce());
                 //CharacterModel.Instance.SubtractStamina(damageEnergyPerSec);
                 CharacterModel.Instance.SetSpeedFactor(1f - speedDownValue);
                 _damageTimer.StartTimer(damageTime);
