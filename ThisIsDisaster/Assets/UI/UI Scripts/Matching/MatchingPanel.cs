@@ -84,6 +84,11 @@ public class MatchingPanel : MonoBehaviour, IObserver
         매칭 호스트 지정: MatchingPanel.Instance.SetHostAddress(ipAddr : string);
          */
     public void OnOpenPanel() {
+
+        NetworkModule.Instance.Disconnect();
+        NetworkModule.Instance.StopGameServer();
+        NetworkModule.Instance.StopServer();
+
         IsEnabled = true;
         Show();
         SetGameStarting(false);

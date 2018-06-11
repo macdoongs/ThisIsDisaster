@@ -69,12 +69,19 @@ public class EnvironmentManager : IObserver
     }
 
     void Update() {
-        foreach (var env in _envs) {
-
-        }
     }
 
     void FixedUpdate() { }
+
+    public List<EnvironmentModel> GetEnvironmentObjects(int metaId) {
+        List<EnvironmentModel> output = _envs.FindAll((x => x.MetaInfo.Id == metaId));
+        return output;
+    }
+
+    public List<EnvironmentModel> GetTrees() {
+        List<EnvironmentModel> output = _envs.FindAll((x => x.Script is TreeScript));
+        return output;
+    }
 
     public void OnNotice(string notice, params object[] param)
     {

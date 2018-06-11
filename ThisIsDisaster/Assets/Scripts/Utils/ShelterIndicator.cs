@@ -36,13 +36,14 @@ public class ShelterIndicator : MonoBehaviour, IObserver {
 
     // Update is called once per frame
     void Update () {
-        if (Input.GetKeyDown(KeyCode.F12)) {
-            SetActive(!state);
-        }
 
         if (_shelter != null && state && player != null) {
             UpdateIndicator();
         }
+    }
+
+    public void OnClickIndicator() {
+        SetActive(!state);
     }
 
     void UpdateIndicator() {
@@ -64,13 +65,13 @@ public class ShelterIndicator : MonoBehaviour, IObserver {
     }
 
     void SetShelter(Shelter.ShelterModel shelter) {
-        Debug.Log("setshelter");
         _shelter = shelter;
     }
 
     public void ObserveNotices()
     {
         Notice.Instance.Observe(NoticeName.AddShelter, this);
+        Notice.Instance.Observe(NoticeName.SetIndicatorState, this);
         Notice.Instance.Observe(NoticeName.LocalPlayerGenerated, this);
     }
 
@@ -84,6 +85,16 @@ public class ShelterIndicator : MonoBehaviour, IObserver {
             }
         }
 
+        if (notice == NoticeName.SetIndicatorState) {
+            if (CharacterModel.Instance.visionLevel > 0)
+            {
+                SetActive(true);
+            }
+            else {
+                SetActive(false);
+            }
+        }
+
         if (notice == NoticeName.LocalPlayerGenerated) {
             player = GameManager.CurrentGameManager.GetLocalPlayer().GetComponent<CharacterModel>();
         }
@@ -92,6 +103,7 @@ public class ShelterIndicator : MonoBehaviour, IObserver {
     public void RemoveNotices()
     {
         Notice.Instance.Remove(NoticeName.AddShelter, this);
+        Notice.Instance.Remove(NoticeName.SetIndicatorState, this);
         Notice.Instance.Remove(NoticeName.LocalPlayerGenerated, this);
     }
 

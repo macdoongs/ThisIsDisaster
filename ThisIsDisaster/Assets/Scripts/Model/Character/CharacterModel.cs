@@ -634,6 +634,7 @@ public class CharacterModel : MonoBehaviour
                 if(toolSlot.GetVision() != 0)
                 {
                     visionLevel = toolSlot.GetVision();
+                    Notice.Instance.Send(NoticeName.SetIndicatorState, true);
                 }
 
                 if (equipment.metaInfo.metaId.Equals(31005))
@@ -644,7 +645,8 @@ public class CharacterModel : MonoBehaviour
                 if (equipment.metaInfo.metaId.Equals(31006)|| equipment.metaInfo.metaId.Equals(31007))
                 {
                     PlayerMoveController ctrl = gameObject.GetComponent<PlayerMoveController>();
-                    ctrl.enabled = false;                }
+                    ctrl.enabled = false;
+                }
 
                 result = true;
                 SoundLayer.CurrentLayer.PlaySound("se_equip");
@@ -744,6 +746,7 @@ public class CharacterModel : MonoBehaviour
             if (toolSlot.GetVision() != 0)
             {
                 visionLevel = 0;
+                Notice.Instance.Send(NoticeName.SetIndicatorState, false);
             }
             if (toolSlot.GetStaminaRegen() != 0)
             {
@@ -782,6 +785,7 @@ public class CharacterModel : MonoBehaviour
     }
 
     //장비 착용시 스텟 업데이트
+
     public void AddStats(ItemModel equip)
     {
         ItemStats.Health += equip.GetHealth();
@@ -791,8 +795,11 @@ public class CharacterModel : MonoBehaviour
         ItemStats.Defense  += equip.GetDefense();
         ItemStats.Damage += equip.GetDamage();
 
-        attack_range_x = equip.GetAttacRangeX();
-        attack_range_y = equip.GetAttacRangeY();
+        if (equip.metaInfo.itemType == ItemType.Weapon)
+        {
+            attack_range_x = equip.GetAttacRangeX();
+            attack_range_y = equip.GetAttacRangeY();
+        }
         ItemStats.HealthRegen += equip.GetHealthRegen();
         ItemStats.StaminaRegen += equip.GetStaminaRegen();
 
@@ -808,15 +815,18 @@ public class CharacterModel : MonoBehaviour
         ItemStats.Stamina -= equip.GetStamina();
         ItemStats.Defense -= equip.GetDefense();
         ItemStats.Damage -= equip.GetDamage();
-        
-        if(equip.GetAttacRangeX() != 0)
-        {
-            attack_range_x = default_attack_range_x;
-        }
 
-        if(equip.GetAttacRangeY() != 0)
+        if (equip.metaInfo.itemType == ItemType.Weapon)
         {
-            attack_range_y = default_attack_range_y;
+            if (equip.GetAttacRangeX() != 0)
+            {
+                attack_range_x = default_attack_range_x;
+            }
+
+            if (equip.GetAttacRangeY() != 0)
+            {
+                attack_range_y = default_attack_range_y;
+            }
         }
 
         ItemStats.HealthRegen -= equip.GetHealthRegen();

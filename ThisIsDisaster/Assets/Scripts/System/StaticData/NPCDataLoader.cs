@@ -64,15 +64,15 @@ namespace GameStaticData
                 }
                 if (speedNode != null)
                 {
-                    newInfo.stats.Add("speed", float.Parse(maxHpNode.InnerText.Trim()));
+                    newInfo.stats.Add("speed", float.Parse(speedNode.InnerText.Trim()));
                 }
                 if (defenseNode != null)
                 {
-                    newInfo.stats.Add("defense", float.Parse(maxHpNode.InnerText.Trim()));
+                    newInfo.stats.Add("defense", float.Parse(defenseNode.InnerText.Trim()));
                 }
                 if (damageNode != null)
                 {
-                    newInfo.stats.Add("damage", float.Parse(maxHpNode.InnerText.Trim()));
+                    newInfo.stats.Add("damage", float.Parse(damageNode.InnerText.Trim()));
                 }
                 if (scriptNode != null) {
                     script = scriptNode.InnerText.Trim();

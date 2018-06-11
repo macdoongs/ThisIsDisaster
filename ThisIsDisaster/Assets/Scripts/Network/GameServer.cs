@@ -603,13 +603,14 @@ namespace NetworkComponents {
                         if (GlobalGameManager.Instance.IsHost == false)
                         {
                             Network.SetClientNode(0, clientNode);
-                            GlobalGameManager.Instance.AddRemotePlayer(10000, node.accountId);
+                            
+                            GlobalGameManager.Instance.AddRemotePlayer(10000, node);
                             continue;
                         }
                     }
                     
                     Network.SetClientNode(node.nodeIndex, clientNode);
-                    GlobalGameManager.Instance.AddRemotePlayer(clientNode, node.accountId);
+                    GlobalGameManager.Instance.AddRemotePlayer(clientNode, node);
                 }
                 else
                 {

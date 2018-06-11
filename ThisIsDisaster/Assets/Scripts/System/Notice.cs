@@ -10,6 +10,7 @@ public static class NoticeName {
     public static string LocalPlayerGenerated = "LocalPlayerGenerated";
 
     public static string AddShelter = "AddShelter";
+    public static string SetIndicatorState = "SetIndicatorState";
     public static string OnPlayerEnterShelter = "OnPlayerEnterShelter";
     public static string OnPlayerExitShelter = "OnPlayerExitShelter";
 
@@ -21,6 +22,7 @@ public static class NoticeName {
     public static string OnStartSession = "OnStartSession";
     public static string OnReceiveMatchingResponse = "OnReceiveMatchingResponse";
     public static string OnReceiveSessionData = "OnReceiveSessionData";
+    public static string OnReceiveUserData = "OnReceiveUserData";
 }
 
 public class Notice {

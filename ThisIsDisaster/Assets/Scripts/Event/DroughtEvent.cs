@@ -53,7 +53,7 @@ public class DroughtEvent : EventBase
 	public override void OnStart()
 	{
 		dryObject.SetActive(true);
-		crackObject.SetActive(true);
+		//crackObject.SetActive(true);
 
         _timer.StartTimer(_lifetime);
         _damageTimer.StartTimer(damageTime);

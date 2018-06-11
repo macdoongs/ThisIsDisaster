@@ -12,6 +12,7 @@ namespace Environment {
 
         public void SetModel(EnvironmentModel model) {
             Model = model;
+            
         }
     }
 }

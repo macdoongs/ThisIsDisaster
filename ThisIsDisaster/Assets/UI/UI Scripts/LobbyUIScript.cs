@@ -121,7 +121,6 @@ public class LobbyUIScript : MonoBehaviour {
             }
             StartPanel.SetActive(true);
         }
-        Debug.Log("GameModeClicked");
     }
 
     public void StartGame()

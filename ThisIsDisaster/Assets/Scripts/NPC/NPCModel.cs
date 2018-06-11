@@ -84,6 +84,8 @@ namespace NPC {
             Unit.animTarget.SetActive(true);
             _executeState = NPCExectueState.None;
             MoveControl.StopMovement();
+
+            Debug.Log(GetSpeed());
         }
 
         public void OnGenerated() {
@@ -150,14 +152,10 @@ namespace NPC {
 #endif
         }
 
-#if MIDDLE_PRES
-        int[] dropItems = new int[] {
-            5,1,6,10001,20001,30001,310004
-        };
-#endif
-
         public void OnVictoried() {
+            Script.StopWandering();
             Script.OnVictoried();
+            MoveControl.StopMovement();
             _executeState = NPCExectueState.Wander;
             Unit.SetSensing(true);
         }
@@ -201,8 +199,8 @@ namespace NPC {
                     OnDefeated();
                 return;
             }
-            if (attacker != null)
-                Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
+            //if (attacker != null)
+                //Debug.Log(GetUnitName() + " Attacked By " + attacker.GetUnitName());
             CurrentHp -= damage;
             if (CurrentHp <= 0f)
             {
@@ -293,13 +291,12 @@ namespace NPC {
         }
 
         public void OnAttackEnd() {
-            Debug.Log(GetUnitName() + " AttackEnd");
+            //Debug.Log(GetUnitName() + " AttackEnd");
             if (_state == NPCState.Execute)
             {
                 Unit.SetSensing(true);
                 _executeState = NPCExectueState.Wander;
             }
-            
             
         }
 

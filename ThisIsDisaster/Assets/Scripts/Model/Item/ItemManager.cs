@@ -196,6 +196,9 @@ public class ItemManager {
             }
             else if (item.ItemModel.metaInfo.itemType.Equals(ItemType.Tool_Equip) && player._character.toolSlot == null)
             {
+                if (item.ItemModel.metaInfo.metaId.Equals(31006) || item.ItemModel.metaInfo.metaId.Equals(31007)) {
+                    return true;
+                }
                 player._character.WearEquipment(item.ItemModel);
                 return true;
             }
@@ -244,7 +247,7 @@ public class ItemManager {
         {
             rareness = ItemRareness.Low;
         }
-        else if (randVal <= _midProb)
+        else if (randVal <= _lowProb + _midProb)
         {
             rareness = ItemRareness.Middle;
         }

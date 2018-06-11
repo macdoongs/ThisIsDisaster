@@ -39,7 +39,12 @@ namespace Environment
             loaded.transform.localRotation = Quaternion.Euler(Vector3.zero);
             return loaded;
         }
-        
-        
+
+        private void Update()
+        {
+            if (Model.Script is TreeScript) {
+                (Model.Script as TreeScript).Update();
+            }
+        }
     }
 }

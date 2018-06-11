@@ -50,7 +50,7 @@ namespace Json
 
         public WebCommunicationManager() {
             _recieveActions.Add(typeof(Response).ToString(), ReceiveResponse);
-            _recieveActions.Add(typeof(UserResponse).ToString(), ReceiveUserResponse);
+            _recieveActions.Add("User", ReceiveUserResponse);
             _recieveActions.Add(typeof(MultiPlayLobby).ToString(), ReceiveMultiplayLobby);
         }
 
@@ -259,10 +259,15 @@ namespace Json
         public void OnReceiveGETMessage(string message)
         {
             var response = JsonUtility.FromJson<Response>(message);
-            Debug.Log("response " + response.result_type);
             if (_recieveActions.ContainsKey( "Json." + response.result_type))
             {
                 _recieveActions["Json." + response.result_type](message, response);
+                return;
+            }
+
+            if (_recieveActions.ContainsKey(response.result_type)) {
+
+                _recieveActions[response.result_type](message, response);
             }
         }
 
@@ -281,9 +286,7 @@ namespace Json
             }
 
             UserResponse ur = JsonUtility.FromJson<UserResponse>(message);
-            Debug.Log("Received User Response");
-            Debug.Log(ur.result_data.nickname);
-
+            Notice.Instance.Send(NoticeName.OnReceiveUserData, ur);
             GlobalParameters.Param.accountId = ur.result_data.id;
             GlobalParameters.Param.accountLevel = ur.result_data.level;
             GlobalParameters.Param.accountExp = ur.result_data.exp;
