@@ -48,9 +48,14 @@ public class YellowdustEvent : EventBase
                 float staminaDamageRate = 2f;
                 var player = CharacterModel.Instance;
 
-                if (player.toolSlot.metaInfo.metaId.Equals(31005))
+                try
                 {
-                    healthDamageRate -= 1f;
+                    if (player.toolSlot.metaInfo.metaId.Equals(31005))
+                    {
+                        healthDamageRate -= 1f;
+                    }
+                }
+                catch {
                 }
 
                 if (player.GetPlayerModel().IsInShelter())
