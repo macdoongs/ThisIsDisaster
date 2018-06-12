@@ -457,7 +457,7 @@ public class GameManager : MonoBehaviour {
     public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
         UnitControllerBase controller = null;
 
-        Debug.LogError("Coordinate from " + node);
+        //Debug.LogError("Coordinate from " + node);
 
         if (RemotePlayer.TryGetValue(node, out controller))
         {

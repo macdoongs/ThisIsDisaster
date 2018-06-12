@@ -54,7 +54,6 @@ public class UnitControllerBase : MonoBehaviour
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
-        Debug.Log(string.Format("{0} set position {1}", _unitName, position));
     }
 
     public void SetDirection(float xDiff) {

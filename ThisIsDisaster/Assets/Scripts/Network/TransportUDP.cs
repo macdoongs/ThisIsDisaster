@@ -373,7 +373,6 @@ namespace NetworkComponents {
                     {
                         _socket.SendTo(buffer, sendSize, SocketFlags.None, _remoteEndPoint);
                         sendSize = _sendQueue.Dequeue(ref buffer, buffer.Length);
-                        Debug.LogError("UDP SendSize : " + sendSize);
                     }
                 }
             }
