@@ -39,7 +39,7 @@ public class ThunderstormEvent : EventBase
     const int _RANGE_MIN = -2;
     const int _RANGE_MAX = 2;
 
-    private Queue<TileUnit> _thunderFallPos = new Queue<TileUnit>();
+    private List<TileUnit> _thunderFallPos = new List<TileUnit>();
     int thunderFallCount = 6;
 
     ThunderRenderEffect ThunderEffect
@@ -90,7 +90,7 @@ public class ThunderstormEvent : EventBase
 
         for (int i = 0; i < thunderFallCount; i++) {
             var pos = RandomMapGenerator.Instance.GetRandomTileByHeight_Sync(3);
-            _thunderFallPos.Enqueue(pos);
+            _thunderFallPos.Add(pos);
             pos.spriteRenderer.color = Color.red;
         }
         //StartDamageByEvent(eventDamage, damageTime);
@@ -236,33 +236,46 @@ public class ThunderstormEvent : EventBase
         darkObject.SetActive(false);
         ThunderEffect.StartEffect(UnityEngine.Random.Range(1f, 1.5f));
 
-        TileUnit pos = _thunderFallPos.Dequeue();
-        PlaySoundPos ("event_Thunder", pos.transform.position);
-        if (pos != null) {
-            MakeThunderHit(pos);
-            for (int i = _RANGE_MIN; i <= _RANGE_MAX; i++) {
-                for (int j = _RANGE_MIN; j <= _RANGE_MAX; j++) {
-                    TileUnit tile = RandomMapGenerator.Instance.GetTile(pos.x + i, pos.y + j);
-                    if (tile != null) {
-                        foreach (var unit in tile._currentEnteredUnits) {
-                            if (unit is NPC.NPCModel) {
-                                NPC.NPCModel model = (unit as NPC.NPCModel);
-                                if (model.CurrentHp > 0f) {
-                                    model.OnTakeDamage(null, _THUNDER_HIT_DAMAGE);
-                                }
-                            }
-                            else if (unit is PlayerModel)
+        PlaySoundPos("event_Thunder", Camera.main.transform.position);
+        bool _playerhit = false;
+        foreach (var pos in _thunderFallPos) {
+            if (pos != null)
+            {
+                MakeThunderHit(pos);
+                for (int i = _RANGE_MIN; i <= _RANGE_MAX; i++)
+                {
+                    for (int j = _RANGE_MIN; j <= _RANGE_MAX; j++)
+                    {
+                        TileUnit tile = RandomMapGenerator.Instance.GetTile(pos.x + i, pos.y + j);
+                        if (tile != null)
+                        {
+                            foreach (var unit in tile._currentEnteredUnits)
                             {
-                                OnGiveDamageToPlayer(_THUNDER_HIT_DAMAGE);
-                            }
-                            else {
-                                continue;
+                                if (unit is NPC.NPCModel)
+                                {
+                                    NPC.NPCModel model = (unit as NPC.NPCModel);
+                                    if (model.CurrentHp > 0f)
+                                    {
+                                        model.OnTakeDamage(null, _THUNDER_HIT_DAMAGE);
+                                    }
+                                }
+                                else if (unit is PlayerModel)
+                                {
+                                    if (_playerhit) continue;
+                                    OnGiveDamageToPlayer(_THUNDER_HIT_DAMAGE);
+                                    _playerhit = true;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        
     }
 
     public void OnEndThunder()

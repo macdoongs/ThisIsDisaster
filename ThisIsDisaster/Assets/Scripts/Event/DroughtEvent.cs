@@ -9,7 +9,7 @@ public class DroughtEvent : EventBase
 	GameObject crackObject = null;      // 공통1 (바닥 갈라짐)
 
     const float _BLUR_AMOUNT_MAX = 10f;
-    const float _BLUR_GLOW_MAX = 0.05f;
+    const float _BLUR_GLOW_MAX = 0.27f;
 
     Timer _damageTimer = new Timer();
     public float damageHealthPerSec = 1f;

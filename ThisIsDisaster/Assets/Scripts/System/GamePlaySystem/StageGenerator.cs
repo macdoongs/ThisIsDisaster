@@ -55,15 +55,6 @@ public class StageGenerator {
 
 
         public WeatherType GetNextWeather() {
-#if MIDDLE_PRES
-            //if (!_isEarthquakeGenerated)
-            //{
-            //    WeatherType currentTest = WeatherType.Flood;
-            //    _isEarthquakeGenerated = true;
-            //    weatherList.Remove(currentTest);
-            //    return currentTest;
-            //}
-#endif
             int randIndexMax = weatherList.Count;
             int index = StageGenerator.Instance.ReadNextValue(randIndexMax);
             WeatherType selected = weatherList[index];
@@ -107,7 +98,6 @@ public class StageGenerator {
     
     public ClimateType GetRandomClimateType() {
         int selected = ReadNextValue(0, 4);
-
         return (ClimateType)selected;
     }
 
