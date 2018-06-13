@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkComponents;
+using System.Text;
 
 public enum GameState
 {
@@ -132,6 +133,8 @@ public class GlobalGameManager {
         if (FileManager.Instance.ExistFile(GlobalParameters.Param)) {
             FileManager.Instance.LoadData(GlobalParameters.Param);
         }
+
+
 
 #if NET_DEV
         string texts = FileManager.Instance.GetLocalTextData(GlobalParameters.Param.GetPath(), ".txt");

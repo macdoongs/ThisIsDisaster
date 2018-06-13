@@ -124,5 +124,15 @@ public class FileManager {
 
         return output;
     }
-    
+
+    public void SaveLocalTextData(string savedText, string src, string format = ".txt") {
+        CheckDataPath();
+        string path = Application.persistentDataPath + LocalData + src + format;
+        try {
+            File.WriteAllText(path, savedText);
+        }
+        catch {
+        }
+
+    }
 }

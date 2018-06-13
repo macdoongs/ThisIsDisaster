@@ -86,7 +86,6 @@ public class UnitControllerBase : MonoBehaviour
     public void SendCharacterCoordinate(int index, List<CharacterCoordinates> coords) {
         if (Network && GlobalGameManager.Instance.GameNetworkType == GameNetworkType.Multi)
         {
-            //check connection
             CharacterData data = new CharacterData()
             {
                 index = index,
@@ -100,7 +99,6 @@ public class UnitControllerBase : MonoBehaviour
             }
 
             CharacterMovingPacket packet = new CharacterMovingPacket(data);
-            //int sendSize = Network.SendUnreliable<CharacterData>(packet);
             Network.SendUnreliableToAll(packet);
 
         }
@@ -108,10 +106,6 @@ public class UnitControllerBase : MonoBehaviour
 
     public void OnReceiveCharacterCoordinate(CharacterData data) {
         behaviour.CalcCoordinates(data.index, data.coordinates);
-        //check movable state
-
-        //behaviour.CalcRemotePosition();
-        //update position
     }
 
     public void OnEventHandling(NetEventState state) {

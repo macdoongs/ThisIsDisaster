@@ -457,15 +457,17 @@ public class GameManager : MonoBehaviour {
     public void OnReceiveCharacterCoordinate(int node, NetworkComponents.PacketId packetId, byte[] data) {
         UnitControllerBase controller = null;
 
-        //Debug.LogError("Coordinate from " + node);
-
-        if (RemotePlayer.TryGetValue(node, out controller))
+        try
         {
-            NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
-            NetworkComponents.CharacterData charData = packet.GetPacket();
-            //Debug.Log(charData.ToString());
-            //Debug.LogError("Position Info " + packetSender);
-            controller.OnReceiveCharacterCoordinate(charData);
+            if (RemotePlayer.TryGetValue(node, out controller))
+            {
+                NetworkComponents.CharacterMovingPacket packet = new NetworkComponents.CharacterMovingPacket(data);
+                NetworkComponents.CharacterData charData = packet.GetPacket();
+                controller.OnReceiveCharacterCoordinate(charData);
+            }
+        }
+        catch (Exception e){
+            Debug.LogError("Smth odd in Character coord " + e);
         }
     }
 

@@ -34,10 +34,6 @@ public class UnitBehaviourBase : MonoBehaviour
     {
         try
         {
-            //CalcRemotePosition();
-            ExecuteStepMove();
-            if (!IsRemoteCharacter)
-                CalcLocalPosition();
         }
         catch (System.Exception e) {
             Debug.Log(e);
@@ -54,76 +50,43 @@ public class UnitBehaviourBase : MonoBehaviour
 
     public virtual void CalcCoordinates(int index, CharacterCoordinates[] data)
     {
-        do
+        try
         {
-            if (data.Length <= 0) break;
-
-            if (index <= _plotIndex) { break; }
-            int s = data.Length - (index - _plotIndex);
-            if (s < 0) break;
-
-            for (int i = s; i < data.Length; i++) {
-                _culling.Add(data[i]);
-            }
-            _plotIndex = index;
-            SplineData spline = new SplineData();
-            spline.CalcSpline(_culling);
-            CharacterCoordinates plot = new CharacterCoordinates();
-            for (int i = 0; i < spline.GetPlotNum(); i++)
+            do
             {
-                spline.GetPoint(i, out plot);
-                _plots.Add(plot);
+                if (data.Length <= 0) break;
+
+                if (index <= _plotIndex) { break; }
+                int s = data.Length - (index - _plotIndex);
+                if (s < 0) break;
+
+                for (int i = s; i < data.Length; i++)
+                {
+                    _culling.Add(data[i]);
+                }
+                _plotIndex = index;
+                SplineData spline = new SplineData();
+                spline.CalcSpline(_culling);
+                CharacterCoordinates plot = new CharacterCoordinates();
+                for (int i = 0; i < spline.GetPlotNum(); i++)
+                {
+                    spline.GetPoint(i, out plot);
+                    _plots.Add(plot);
+                }
+                if (_culling.Count > _PLOT_NUM)
+                {
+                    _culling.RemoveRange(0, _culling.Count - _PLOT_NUM);
+                }
             }
-            if (_culling.Count > _PLOT_NUM) {
-                _culling.RemoveRange(0, _culling.Count - _PLOT_NUM);
-            }
+            while (false);
         }
-        while (false);
-#if false
-        SplineData spline = new SplineData();
-        for (int i = 0; i < data.Length; i++)
-        {
-            int p = index - _PLOT_NUM - i + 1;
-            if (p < _plotIndex)
-            {
-                _culling.Add(data[i]);
-            }
+        catch {
 
         }
-
-        _plotIndex = index;
-        spline.CalcSpline(_culling, _CULLING_NUM);
-
-        CharacterCoordinates plot = new CharacterCoordinates();
-        for (int i = 0; i < spline.GetPlotNum(); i++)
-        {
-            spline.GetPoint(i, out plot);
-            _plots.Add(plot);
-        }
-
-        if (_culling.Count > _PLOT_NUM)
-        {
-            _culling.RemoveAt(0);
-        }
-#endif
     }
     
     protected void ExecuteStepMove()
     {
-        return;
-        Vector3 pos = Controller.GetPosition();
-        if (_plots.Count > 0)
-        {
-            CharacterCoordinates coord = _plots[0];
-            pos = new Vector3(coord.x, coord.y, coord.z);
-            _plots.RemoveAt(0);
-        }
-
-        if (Vector3.Distance(pos, Controller.GetPosition()) > 0f)
-        {
-            Controller.SetPosition(pos);
-        }
-
     }
 
     public void ReceivePointFromNetwork(Vector3 pos)
@@ -174,8 +137,6 @@ public class UnitBehaviourBase : MonoBehaviour
     }
 
     public void CalcLocalPosition() {
-        //check network state
-        //currently considered as Connected
         do
         {
             _coordSendCount = (_coordSendCount + 1) % SplineData.SEND_ITERVAL;

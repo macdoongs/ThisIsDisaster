@@ -77,7 +77,7 @@ public class SplineData
         float totalDist = spline.CalcTotalDistance();
         for (int i = 0; i < SEND_ITERVAL; i++)
         {
-            float rate = (float)i / (float)SEND_ITERVAL;
+            float rate = i / (float)SEND_ITERVAL;
             tracer.ProceedByDistance(totalDist * rate);
             _points.Add(CharacterCoordinates.SetFromVector(tracer.GetCurrent().position));
         }
@@ -283,6 +283,8 @@ namespace SimpleSpline
             distance = dist;
         }
 
+        int _THRESHOLD = 100;
+
         public void ProceedByDistance(float dist)
         {
             do
@@ -298,7 +300,7 @@ namespace SimpleSpline
                 cv0 = curve.CalcVertex(t);
                 cv = cv0;
 
-                float dt = dist / curve.CalcTotalDistance() * curve.GetEnd();
+                float dt = (dist / curve.CalcTotalDistance()) * curve.GetEnd();
                 float sdt = dt >= 0f ? 1f : -1f;
                 dt = Mathf.Abs(dt);
                 float dt0 = dt;
@@ -310,55 +312,63 @@ namespace SimpleSpline
 
                 maxTimes = Mathf.Max(maxTimes, 1);
 
-                for (i = 0; i < maxTimes; i++)
+                if (maxTimes > _THRESHOLD) {
+                    maxTimes = _THRESHOLD;
+                }
+                try
                 {
-                    t0 = t;
-                    t += sdt * dt;
-                    if (t >= curve.GetEnd() && sdt >= 0f)
+                    for (i = 0; i < maxTimes; i++)
                     {
-                        t = curve.GetEnd();
-                        if (dt < dt0)
+                        t0 = t;
+                        t += sdt * dt;
+                        if (t >= curve.GetEnd() && sdt >= 0f)
                         {
-                            isEnded = true;
+                            t = curve.GetEnd();
+                            if (dt < dt0)
+                            {
+                                isEnded = true;
+                            }
+
+                            dt = Mathf.Max(0f, t - t0);
+
+                        }
+                        else if (t < 0f && sdt < 0f)
+                        {
+                            t = 0f;
+                            if (dt < dt0)
+                            {
+                                isEnded = true;
+                            }
+
+                            dt = Mathf.Max(0f, Mathf.Abs(t - t0));
                         }
 
-                        dt = Mathf.Max(0f, t - t0);
+                        cv = curve.CalcVertex(t);
+                        advanced0 = advanced;
+                        advanced += Vector3.Distance(cv0.position, cv.position);
 
-                    }
-                    else if (t < 0f && sdt < 0f)
-                    {
-                        t = 0f;
-                        if (dt < dt0)
+                        if (isEnded) break;
+
+                        if (advanced >= Mathf.Abs(dist))
                         {
-                            isEnded = true;
+                            dt *= 0.5f;
+                            if (dt < dt0 / 100f)
+                            {
+                                break;
+                            }
+
+                            t = t0;
+                            advanced = advanced0;
                         }
-
-                        dt = Mathf.Max(0f, Mathf.Abs(t - t0));
-                    }
-
-                    cv = curve.CalcVertex(t);
-                    advanced0 = advanced;
-                    advanced += Vector3.Distance(cv0.position, cv.position);
-
-                    if (isEnded) break;
-
-                    if (advanced >= Mathf.Abs(dist))
-                    {
-                        dt *= 0.5f;
-                        if (dt < dt0 / 100f)
+                        else
                         {
-                            break;
+                            cv0 = cv;
                         }
-
-                        t = t0;
-                        advanced = advanced0;
-                    }
-                    else
-                    {
-                        cv0 = cv;
                     }
                 }
+                catch {
 
+                }
             }
             while (false);
         }
