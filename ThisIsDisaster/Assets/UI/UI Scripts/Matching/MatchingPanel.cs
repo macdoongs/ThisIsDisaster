@@ -122,6 +122,7 @@ public class MatchingPanel : MonoBehaviour, IObserver
         Hide();
         LobbyUIScript.Instance.DefaultMenu();
         SendStartMessage();
+        ResetNetwork();
     }
 
     void SendStartMessage() {
@@ -206,17 +207,41 @@ public class MatchingPanel : MonoBehaviour, IObserver
     }
 
     public void OnGuest() {
-        SetIsHost(false);
-        GameServer.Instance.SetLocalAddress(GetLocalHost());
-        GameServer.Instance.InitializeNetworkModule();
-        ConnectToHost();
-        GameServer.Instance.MakeMatchingView();
+        try
+        {
+            SetIsHost(false);
+            GameServer.Instance.SetLocalAddress(GetLocalHost());
+            GameServer.Instance.InitializeNetworkModule();
+            ConnectToHost();
+            GameServer.Instance.MakeMatchingView();
 
-        SendMatchingRequest();
+            SendMatchingRequest();
+        }
+        catch (System.Exception e){
+            OnClosePanel();
+        }
         //_delayEvent = new DelayEvent(SendMatchingRequest);
         //_delayEventTrigger.StartTimer(1f);
         //StartUdpServer();
         //GameServer.Instance.SendMatchingRequest();
+    }
+
+    IEnumerator OnGuestCoroutine() {
+        yield return new WaitForEndOfFrame();
+        try
+        {
+            SetIsHost(false);
+            GameServer.Instance.SetLocalAddress(GetLocalHost());
+            GameServer.Instance.InitializeNetworkModule();
+            ConnectToHost();
+            GameServer.Instance.MakeMatchingView();
+
+            SendMatchingRequest();
+        }
+        catch (System.Exception e)
+        {
+            OnClosePanel();
+        }
     }
 
     void SendMatchingRequest() {

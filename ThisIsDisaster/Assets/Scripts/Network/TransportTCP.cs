@@ -346,6 +346,7 @@ namespace NetworkComponents {
                 _socket = null;
                 _isConnected = false;
                 NetDebug.LogError(e.ToString());
+                throw new Exception("Socket Exception");
             }
 
             NetDebug.Log("TransportTCP Connected: " + _isConnected.ToString());

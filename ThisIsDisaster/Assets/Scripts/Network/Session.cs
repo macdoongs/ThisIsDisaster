@@ -199,6 +199,7 @@ namespace NetworkComponents
 
             catch {
                 NetDebug.LogError("connecation failed, Execption");
+                throw new Exception("Socket Exception");
             }
             if (_handler != null) {
                 NetEventState state = new NetEventState(NetEventType.Connect, ret ? NetEventResult.Success : NetEventResult.Failure);
